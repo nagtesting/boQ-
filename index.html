@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>multicalci-test — API Testing Environment</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.card{background:#1e2330;border:1px solid #2d3347;border-radius:12px;padding:40px;max-width:560px;width:90%;text-align:center;}
+h1{font-size:1.6rem;margin-bottom:8px;color:#88c9ee;}
+.badge{display:inline-block;padding:4px 12px;background:rgba(10,92,140,.3);border:1px solid rgba(14,122,186,.5);border-radius:20px;font-size:.75rem;color:#88c9ee;margin-bottom:24px;}
+p{color:#b8bed4;margin-bottom:24px;line-height:1.6;}
+.btn{display:inline-block;padding:12px 28px;background:#0a5c8c;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;font-size:.95rem;transition:background .2s;}
+.btn:hover{background:#0e7aba;}
+.status{margin-top:24px;padding:14px;background:rgba(6,95,70,.2);border:1px solid rgba(6,95,70,.4);border-radius:8px;font-size:.85rem;color:#6ee7b7;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="badge">🧪 TEST ENVIRONMENT</div>
+  <h1>multicalci-test</h1>
+  <p>This is the API testing environment for multicalci.com. All calculators here use secure server-side API calls instead of client-side JavaScript.</p>
+  <a href="/steam-properties-calculator/" class="btn">🔥 Test Steam Calculator API</a>
+  <div class="status">
+    ✅ API Security Test — Calculations run on Vercel server<br>
+    ✅ Formulas hidden from browser<br>
+    ✅ IAPWS-IF97 engine via /api/steam
+  </div>
+</div>
+</body>
+</html>
