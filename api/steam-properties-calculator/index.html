@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<title>Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com</title>
+<meta name="description" content="Free steam tables calculator using IAPWS-IF97. Calculate enthalpy, entropy, density and viscosity of steam.">
+<link rel="canonical" href="https://multicalci.com/steam-properties-calculator/">
+<meta property="og:title" content="Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com">
+<meta property="og:description" content="Free steam tables calculator using IAPWS-IF97. Calculate enthalpy, entropy, density and viscosity of steam.">
+<meta property="og:url" content="https://multicalci.com/steam-properties-calculator/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Steam Properties Calculator — IAPWS-IF97","description":"Free steam tables calculator using IAPWS-IF97 standard for enthalpy, entropy, specific volume, quality and all steam properties.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/steam-properties-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0f1117;--ink2:#1e2330;--ink3:#2d3347;--mid:#4a5068;--subtle:#6b7491;
+  --pale:#b8bed4;--ghost:#d8dce8;--tint:#eceef5;
+  --bg:#f4f5f9;--sur:#ffffff;--sur2:#f8f9fc;
+  --stm:#0a5c8c;--stm2:#0e7aba;--stm-p:#e8f4fb;--stm-m:#a5d4ee;
+  --amb:#b85c00;--amb-p:#fef4e6;--amb-m:#fddba8;
+  --teal:#0a6b5c;--teal-p:#e8f5f2;--teal-m:#a5d9ce;
+  --blu:#1a3a8c;--blu-p:#eef2ff;
+  --grn:#065f46;--grn-p:#d1fae5;
+  --red:#8b1a1a;--red-p:#fde8e8;
+  --pur:#5b21b6;--pur-p:#ede9fe;
+  --bd:#d0d4e0;--bd2:#b8bece;--r:10px;
+  --sh:0 1px 3px rgba(15,17,23,.08),0 4px 16px rgba(15,17,23,.06);
+  --sh-md:0 2px 8px rgba(15,17,23,.1),0 8px 32px rgba(15,17,23,.08);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:15.5px;line-height:1.55;}
+
+/* Mobile-only home button */
+.hdr-home-mobile{display:none;align-items:center;gap:6px;text-decoration:none;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);color:#fff;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.3px;}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.hdr{background:var(--ink);padding:0 32px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent,transparent 18px,rgba(255,255,255,.022) 18px,rgba(255,255,255,.022) 19px);}
+.hdr::after{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(10,92,140,.5) 0%,transparent 70%);}
+/* Accent bar at bottom of header */
+.hdr-accent{height:3px;background:linear-gradient(90deg,var(--stm) 0%,var(--stm2) 40%,var(--teal) 100%);}
+
+.hdr-in{position:relative;z-index:1;max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:22px 0;}
+.hdr-left{display:flex;align-items:center;gap:16px;}
+.hdr-ico{width:52px;height:52px;background:var(--stm);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset;}
+.hdr-title{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;letter-spacing:-.3px;color:#fff;line-height:1;margin-bottom:5px;}
+.hdr-sub{font-size:.83rem;color:var(--ghost);font-weight:500;letter-spacing:.01em;}
+.hdr-bs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.hb{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border:1px solid;}
+.hb.stm{border-color:rgba(14,122,186,.6);color:#88c9ee;background:rgba(10,92,140,.25);}
+.hb.std{border-color:rgba(255,255,255,.18);color:var(--ghost);background:rgba(255,255,255,.07);}
+
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
+.page{max-width:1300px;margin:0 auto;padding:22px 18px 32px;}
+.mg{display:grid;grid-template-columns:420px 1fr;gap:18px;align-items:start;}
+@media(max-width:980px){.mg{grid-template-columns:1fr;}}
+
+/* ══════════════════════════════════════
+   CARDS
+══════════════════════════════════════ */
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px;}
+.card:last-child{margin-bottom:0;}
+.ch{padding:13px 18px;border-bottom:1px solid var(--bd);background:var(--sur2);display:flex;align-items:center;gap:9px;}
+.ch-ico{font-size:15px;line-height:1;}
+.ch-ttl{font-size:.84rem;font-weight:700;text-transform:uppercase;letter-spacing:.55px;color:var(--ink2);font-family:'Syne',sans-serif;}
+.ch-right{margin-left:auto;}
+.cb{padding:18px;}
+
+/* ══════════════════════════════════════
+   UNIT SYSTEM TABS
+══════════════════════════════════════ */
+.sys-tabs{display:flex;background:var(--tint);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.st{flex:1;padding:8px 6px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;color:var(--subtle);cursor:pointer;transition:all .15s;text-align:center;}
+.st.on{background:var(--stm);color:#fff;}
+.st:hover:not(.on){background:rgba(10,92,140,.07);color:var(--ink2);}
+
+/* ══════════════════════════════════════
+   FLUID TYPE BUTTONS
+══════════════════════════════════════ */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;}
+.fb{padding:10px 11px;border:1.5px solid var(--bd);border-radius:8px;background:var(--sur2);cursor:pointer;transition:all .17s;text-align:left;width:100%;}
+.fb:hover{border-color:var(--stm);background:var(--stm-p);}
+.fb.on{border-color:var(--stm);background:var(--stm-p);box-shadow:0 0 0 3px rgba(10,92,140,.1);}
+.fb .fi{font-size:16px;display:block;margin-bottom:3px;}
+.fb .fn{font-size:.82rem;font-weight:700;color:var(--ink2);display:block;line-height:1.2;}
+.fb .fv{font-size:.71rem;color:var(--subtle);display:block;margin-top:1px;}
+
+/* Phase type label */
+.ftype-lbl{font-size:.75rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;}
+
+/* ══════════════════════════════════════
+   FORM CONTROLS
+══════════════════════════════════════ */
+.fg{margin-bottom:13px;}
+.fg:last-child{margin-bottom:0;}
+.fg label{display:block;font-size:.85rem;font-weight:700;color:var(--ink3);margin-bottom:5px;}
+.fg label .uh{font-weight:500;color:var(--subtle);font-size:.77rem;}
+.fg input,.fg select{
+  width:100%;padding:9px 11px;
+  border:1.5px solid var(--bd);border-radius:7px;
+  font-size:.95rem;font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--ink);background:var(--sur);
+  transition:border-color .15s,box-shadow .15s;
+}
+.fg input:focus,.fg select:focus{border-color:var(--stm);outline:none;box-shadow:0 0 0 3px rgba(10,92,140,.1);}
+.fg select{font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;}
+.range-hint{font-size:.75rem;color:var(--subtle);margin-top:4px;font-family:'JetBrains Mono',monospace;}
+.range-hint.ok{color:var(--teal);}
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.calc-btn{
+  width:100%;padding:12px 16px;
+  background:var(--stm);color:#fff;border:none;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .18s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.calc-btn:hover{background:var(--stm2);transform:translateY(-1px);box-shadow:0 4px 18px rgba(10,92,140,.3);}
+.calc-btn:active{transform:translateY(0);}
+.calc-btn.sec{background:var(--ink2);color:#fff;}
+.calc-btn.sec:hover{background:var(--ink3);color:#fff;box-shadow:0 4px 18px rgba(15,17,23,.25);}
+.calc-btn.ghost{background:transparent;color:var(--stm);border:1.5px solid var(--stm-m);}
+.calc-btn.ghost:hover{background:var(--stm-p);transform:translateY(-1px);}
+.calc-btn.ghost-grey{background:transparent;color:var(--subtle);border:1.5px solid var(--bd);}
+.calc-btn.ghost-grey:hover{background:var(--tint);transform:none;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-row .calc-btn{flex:1;min-width:140px;}
+
+/* ══════════════════════════════════════
+   RESULTS PLACEHOLDER
+══════════════════════════════════════ */
+.ph{padding:52px 24px;text-align:center;}
+.ph-ico{font-size:3rem;margin-bottom:12px;opacity:.38;}
+.ph-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--mid);margin-bottom:4px;}
+.ph-txt{font-size:.88rem;color:var(--subtle);font-weight:500;}
+
+/* ══════════════════════════════════════
+   PHASE BANNER (results header)
+══════════════════════════════════════ */
+.banner{border-radius:10px;padding:20px 24px;margin-bottom:14px;position:relative;overflow:hidden;}
+.banner.compressed{background:linear-gradient(135deg,#0a5c8c 0%,#0e7aba 100%);}
+.banner.sat-liq{background:linear-gradient(135deg,#0a6b5c 0%,#0e8a73 100%);}
+.banner.wet{background:linear-gradient(135deg,#5b21b6 0%,#6d28d9 100%);}
+.banner.sat-vap{background:linear-gradient(135deg,#92400e 0%,#b45309 100%);}
+.banner.superheat{background:linear-gradient(135deg,#1e2330 0%,#2d3347 100%);}
+.banner::after{content:'';position:absolute;right:-20px;top:-20px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+.ban-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.18);font-size:.72rem;font-weight:700;letter-spacing:.4px;color:#fff;margin-bottom:10px;backdrop-filter:blur(4px);}
+.ban-lbl{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.68);margin-bottom:5px;}
+.ban-val{font-family:'Bebas Neue',sans-serif;font-size:2.9rem;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:5px;}
+.ban-val .bmu{font-size:1.35rem;opacity:.72;margin-left:5px;}
+.ban-sub{font-size:.82rem;color:rgba(255,255,255,.82);font-weight:500;}
+
+/* ══════════════════════════════════════
+   METRIC PROPERTY CARDS
+══════════════════════════════════════ */
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.mg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;}
+.mc{background:var(--sur);border:1px solid var(--bd);border-radius:9px;padding:13px 15px;border-left:3px solid var(--bd2);transition:box-shadow .15s;}
+.mc:hover{box-shadow:var(--sh);}
+.mc.c-stm{border-left-color:var(--stm);}
+.mc.c-am{border-left-color:var(--amb);}
+.mc.c-tl{border-left-color:var(--teal);}
+.mc.c-bl{border-left-color:var(--blu);}
+.mc.c-rd{border-left-color:var(--red);}
+.mc.c-gn{border-left-color:var(--grn);}
+.mc.c-pu{border-left-color:var(--pur);}
+.mc-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--subtle);margin-bottom:4px;}
+.mc-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--ink);line-height:1.25;}
+.mc-u{font-size:.74rem;color:var(--mid);margin-left:3px;font-weight:600;}
+.mc-note{font-size:.72rem;color:var(--mid);margin-top:4px;font-weight:600;}
+
+/* ══════════════════════════════════════
+   BADGES
+══════════════════════════════════════ */
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:9px;font-size:.74rem;font-weight:700;}
+.b-r{background:var(--red-p);color:var(--red);}
+.b-s{background:var(--stm-p);color:var(--stm);}
+.b-a{background:var(--amb-p);color:var(--amb);}
+
+/* ══════════════════════════════════════
+   SECTION TITLES
+══════════════════════════════════════ */
+.sec{
+  font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.55px;
+  color:var(--ink2);padding-bottom:8px;margin-bottom:11px;margin-top:16px;
+  border-bottom:2px solid var(--bd);
+  display:flex;align-items:center;gap:7px;
+  font-family:'Syne',sans-serif;
+}
+.sec:first-child{margin-top:0;}
+.sec-ico{font-size:13px;opacity:.8;}
+
+/* ══════════════════════════════════════
+   ALERTS / WARNINGS
+══════════════════════════════════════ */
+.warn{padding:10px 14px;border-radius:7px;font-size:.83rem;font-weight:600;margin-bottom:9px;line-height:1.55;}
+.warn:last-child{margin-bottom:0;}
+.wi{background:var(--stm-p);border-left:3px solid var(--stm);color:var(--stm);}
+.wa{background:var(--amb-p);border-left:3px solid var(--amb);color:#7a3d00;}
+.wr{background:var(--red-p);border-left:3px solid var(--red);color:var(--red);}
+
+/* ══════════════════════════════════════
+   SPINNER
+══════════════════════════════════════ */
+.spin-wrap{display:none;align-items:center;justify-content:center;padding:44px;flex-direction:column;gap:13px;}
+.spin-wrap.on{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--tint);border-top-color:var(--stm);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══════════════════════════════════════
+   PHASE DIAGRAM STRIP (decorative)
+══════════════════════════════════════ */
+.phase-strip{
+  display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--bd);
+  margin-bottom:16px;height:7px;
+}
+.ps-liq{flex:2;background:linear-gradient(90deg,#0a5c8c,#0e7aba);}
+.ps-sat{flex:1;background:linear-gradient(90deg,#5b21b6,#92400e);}
+.ps-sup{flex:3;background:linear-gradient(90deg,#92400e,#b45309,#1e2330);}
+
+/* ══════════════════════════════════════
+   TERMS PANEL (now at bottom)
+══════════════════════════════════════ */
+.terms-panel{
+  max-height:0;overflow:hidden;
+  transition:max-height .55s cubic-bezier(0.4,0,0.2,1),opacity .35s ease,margin .35s ease;
+  opacity:0;margin-top:0;
+}
+.terms-panel.open{max-height:4000px;opacity:1;margin-top:18px;}
+.terms-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.terms-ch{
+  padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--sur2);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.terms-ch-left{display:flex;align-items:center;gap:10px;}
+.terms-ch-ico{width:34px;height:34px;background:var(--stm);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.terms-ch-ttl{font-size:.84rem;font-weight:700;text-transform:uppercase;letter-spacing:.55px;color:var(--ink2);font-family:'Syne',sans-serif;}
+.terms-ch-sub{font-size:.76rem;color:var(--subtle);margin-top:1px;}
+.terms-ch-right{display:flex;align-items:center;gap:8px;}
+.terms-close{
+  width:30px;height:30px;border-radius:50%;background:transparent;
+  border:1.5px solid var(--bd);color:var(--subtle);cursor:pointer;
+  font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.terms-close:hover{background:var(--red-p);border-color:var(--red);color:var(--red);}
+
+.terms-body{padding:20px;}
+.terms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:11px;margin-bottom:16px;}
+
+/* individual term cards */
+.term-card{
+  background:var(--sur2);border:1px solid var(--bd);border-radius:9px;
+  padding:14px 16px;border-left:3px solid var(--bd2);
+  transition:box-shadow .15s,border-color .15s;
+}
+.term-card:hover{box-shadow:var(--sh);border-color:var(--bd2);}
+.term-card.c-stm{border-left-color:var(--stm);}
+.term-card.c-teal{border-left-color:var(--teal);}
+.term-card.c-amb{border-left-color:var(--amb);}
+.term-card.c-pur{border-left-color:var(--pur);}
+.term-card.c-red{border-left-color:var(--red);}
+.term-card.c-grn{border-left-color:var(--grn);}
+.term-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.term-name{font-weight:700;font-size:.89rem;color:var(--ink);}
+.term-sym{
+  font-family:'JetBrains Mono',monospace;font-size:.77rem;
+  padding:2px 7px;border-radius:4px;background:var(--stm-p);color:var(--stm);
+  font-style:italic;font-weight:700;flex-shrink:0;
+}
+.term-card.c-teal .term-sym{background:var(--teal-p);color:var(--teal);}
+.term-card.c-amb  .term-sym{background:var(--amb-p);color:var(--amb);}
+.term-card.c-pur  .term-sym{background:var(--pur-p);color:var(--pur);}
+.term-card.c-red  .term-sym{background:var(--red-p);color:var(--red);}
+.term-card.c-grn  .term-sym{background:var(--grn-p);color:var(--grn);}
+.term-formula{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--amb);
+  margin-bottom:8px;background:var(--amb-p);padding:3px 8px;border-radius:4px;display:inline-block;
+}
+.term-desc{font-size:.82rem;color:var(--mid);line-height:1.62;}
+.term-unit{font-size:.73rem;color:var(--subtle);margin-top:7px;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:5px;}
+.term-unit::before{content:'';width:12px;height:1px;background:var(--bd2);}
+
+/* Accuracy info box */
+.acc-box{
+  background:var(--ink);border-radius:9px;padding:15px 18px;margin-top:4px;
+}
+.acc-box-t{font-size:.73rem;font-weight:700;color:var(--pale);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.acc-box pre{font-family:'JetBrains Mono',monospace;font-size:.79rem;color:#a8bfd8;line-height:1.95;white-space:pre-wrap;word-break:break-word;}
+.acc-box pre .hl{color:#f9c580;}
+
+/* ══════════════════════════════════════
+   BOTTOM TERMS TRIGGER BAR
+══════════════════════════════════════ */
+.terms-trigger{
+  background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);
+  box-shadow:var(--sh);padding:16px 20px;margin-top:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.terms-trigger-left{display:flex;align-items:center;gap:12px;}
+.terms-trigger-ico{width:38px;height:38px;background:var(--stm-p);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.terms-trigger-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--ink2);}
+.terms-trigger-sub{font-size:.78rem;color:var(--subtle);margin-top:1px;}
+.terms-trigger-right{display:flex;gap:8px;flex-wrap:wrap;}
+.trig-btn{
+  padding:8px 18px;border-radius:7px;font-family:'DM Sans',sans-serif;
+  font-size:.83rem;font-weight:700;cursor:pointer;transition:all .17s;
+  display:flex;align-items:center;gap:6px;border:none;
+}
+.trig-btn.primary{background:var(--stm);color:#fff;}
+.trig-btn.primary:hover{background:var(--stm2);transform:translateY(-1px);}
+.trig-btn.outline{background:transparent;color:var(--ink2);border:1.5px solid var(--bd);}
+.trig-btn.outline:hover{background:var(--tint);border-color:var(--bd2);}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.footer{
+  border-top:1px solid var(--bd);margin-top:24px;padding:18px 0 0;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.footer-left{font-size:.8rem;color:var(--subtle);}
+.footer-left strong{color:var(--mid);}
+.footer-right{font-size:.75rem;color:var(--subtle);}
+
+/* ══════════════════════════════════════
+   SHARE SYSTEM
+══════════════════════════════════════ */
+.share-wrap{position:relative;}
+.share-btn{
+  display:flex;align-items:center;gap:6px;padding:7px 14px;
+  border-radius:8px;border:1.5px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.1);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;
+  cursor:pointer;transition:all .16s;backdrop-filter:blur(6px);
+  -webkit-tap-highlight-color:transparent;
+}
+.share-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.38);}
+.share-dd{
+  display:none;position:absolute;top:calc(100% + 9px);right:0;
+  background:#fff;border:1px solid var(--bd2);border-radius:12px;
+  box-shadow:0 8px 40px rgba(15,17,23,.18);min-width:236px;z-index:600;
+  overflow:hidden;animation:ddDrop .16s ease;
+}
+.share-dd.open{display:block;}
+@keyframes ddDrop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.shdr{padding:9px 14px 6px;font-size:.62rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--subtle);border-bottom:1px solid var(--bd);}
+.sitm{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;
+  border:none;background:transparent;width:100%;font-family:'DM Sans',sans-serif;
+  -webkit-tap-highlight-color:transparent;transition:background .1s;}
+.sitm:hover{background:var(--tint);}
+.sico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;flex-shrink:0;color:#fff;}
+.si-wa{background:#25D366;}.si-tw{background:#1D9BF0;}.si-li{background:#0A66C2;}
+.si-fb{background:#1877F2;}.si-rd{background:#FF4500;}.si-em{background:#475569;}
+.sname{font-size:.8rem;font-weight:700;color:var(--ink);text-align:left;}
+.sdesc{font-size:.67rem;color:var(--subtle);}
+.sdiv{height:1px;background:var(--bd);margin:3px 0;}
+.scopy-row{padding:6px 12px 10px;display:flex;gap:6px;align-items:center;}
+.surl-box{flex:1;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--subtle);
+  background:var(--sur2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.bcopy{padding:6px 11px;border:none;border-radius:6px;background:var(--stm);
+  color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:background .15s;}
+.bcopy.copied{background:var(--teal);}
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--ink);color:#fff;padding:10px 20px;
+  border-radius:10px;font-size:.83rem;font-weight:700;
+  z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+  opacity:0;pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 24px rgba(15,17,23,.3);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+@media(max-width:480px){.share-lbl{display:none;}.share-dd{right:-8px;min-width:220px;}}
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.eng-dot.pulse{animation:engPulse 1.4s ease-in-out infinite;}
+@keyframes engPulse{0%,100%{opacity:1}50%{opacity:.25}}
+.fade-up{animation:fadeUp .28s ease forwards;}
+
+/* ══════════════════════════════════════
+   INPUT title field
+══════════════════════════════════════ */
+.rpt-input{
+  width:100%;padding:8px 11px;
+  border:1.5px solid var(--bd);border-radius:7px;
+  font-size:.84rem;font-family:'DM Sans',sans-serif;
+  color:var(--ink);background:var(--sur2);
+  transition:border-color .15s;
+}
+.rpt-input:focus{outline:none;border-color:var(--stm);}
+.rpt-lbl{font-size:.8rem;font-weight:600;color:var(--mid);margin-bottom:5px;display:block;}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:700px){
+  .mg2{grid-template-columns:1fr;}
+  .mg3{grid-template-columns:1fr 1fr;}
+  .hdr{padding:0 16px;}
+  .page{padding:14px 12px 24px;}
+  .terms-grid{grid-template-columns:1fr;}
+  .btn-row{flex-direction:column;}
+  .btn-row .calc-btn{flex:none;}
+  .footer{flex-direction:column;gap:4px;}
+  .terms-trigger{flex-direction:column;align-items:flex-start;}
+  .hdr-bs{display:none;}
+  .hdr-home-mobile{display:flex !important;}
+  .hdr-title{font-size:1.3rem;}
+  .mg3{grid-template-columns:1fr 1fr;}
+  .ban-val{font-size:2.2rem;}
+  .mc-val{font-size:1rem;}
+  .btn-row{flex-direction:column;}
+  .btn-row .calc-btn{flex:none;}
+  body{font-size:14.5px;}
+  .page{padding:12px 10px 80px;}
+}
+@media(max-width:420px){
+  .fgrid{grid-template-columns:1fr;}
+  .mg2{grid-template-columns:1fr;}
+  .mg3{grid-template-columns:1fr;}
+  .hdr-title{font-size:1.15rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-left">
+      <div class="hdr-ico">💧</div>
+      <div>
+        <div class="hdr-title">Steam &amp; Water Properties</div>
+        <div class="hdr-sub">IAPWS-IF97 · pyXSteam Engine · Compressed Liquid · Saturated · Wet Steam · Superheated · SI &amp; Imperial</div>
+      </div>
+    </div>
+    <a href="https://multicalci.com/" class="hdr-home-mobile" title="Home">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+      Home
+    </a>
+    <div class="hdr-bs">
+      <a href="https://multicalci.com/" class="hb home-btn" title="Back to MultiCalci Home" style="display:flex;align-items:center;gap:6px;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);color:#fff;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.3px;transition:background .16s,border-color .16s;cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.20)'" onmouseout="this.style.background='rgba(255,255,255,0.10)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+        Home
+      </a>
+      <div class="hb stm">IAPWS-IF97</div>
+      <div class="hb std">Regions 1–5</div>
+      <div class="hb std">0.01–800°C</div>
+      <div class="hb std">0–1000 bar</div>
+      <div class="share-wrap" id="shareWrap">
+        <button class="share-btn" onclick="toggleShare(event)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          <span class="share-lbl">Share</span>
+        </button>
+        <div class="share-dd" id="shareDD">
+          <div class="shdr" id="shareHdr">📤 Share Calculator</div>
+          <button class="sitm" onclick="shareVia('whatsapp')">
+            <div class="sico si-wa">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.126 1.523 5.868L0 24l6.302-1.498A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.597-.503-5.1-1.378L2 22l1.418-4.787A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            </div>
+            <div><div class="sname">WhatsApp</div><div class="sdesc">Share with contacts</div></div>
+          </button>
+          <button class="sitm" onclick="shareVia('twitter')">
+            <div class="sico si-tw"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div><div class="sname">X (Twitter)</div><div class="sdesc">Post to followers</div></div>
+          </button>
+          <button class="sitm" onclick="shareVia('linkedin')">
+            <div class="sico si-li"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>
+            <div><div class="sname">LinkedIn</div><div class="sdesc">Share professionally</div></div>
+          </button>
+          <button class="sitm" onclick="shareVia('facebook')">
+            <div class="sico si-fb"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
+            <div><div class="sname">Facebook</div><div class="sdesc">Share on timeline</div></div>
+          </button>
+          <button class="sitm" onclick="shareVia('reddit')">
+            <div class="sico si-rd"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg></div>
+            <div><div class="sname">Reddit</div><div class="sdesc">Post to community</div></div>
+          </button>
+          <button class="sitm" onclick="shareVia('email')">
+            <div class="sico si-em"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></div>
+            <div><div class="sname">Email</div><div class="sdesc">Send full report via email</div></div>
+          </button>
+          <button class="sitm" id="nativeShareBtn" style="display:none" onclick="shareVia('native')">
+            <div class="sico" style="background:var(--stm)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+            <div><div class="sname">More Options…</div><div class="sdesc">System share sheet</div></div>
+          </button>
+          <div class="sdiv"></div>
+          <div class="scopy-row">
+            <div class="surl-box" id="shareUrlBox"></div>
+            <button class="bcopy" id="copyUrlBtn" onclick="copyShareUrl()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="hdr-accent"></div>
+
+<!-- ══════════════════════════════════════
+     MAIN PAGE
+══════════════════════════════════════ -->
+<div class="page">
+<div class="mg">
+
+<!-- ═══════ INPUT PANEL ═══════ -->
+<div>
+
+<!-- CARD 1: Configuration -->
+<div class="card">
+  <div class="ch">
+    <span class="ch-ico">⚙️</span>
+    <span class="ch-ttl">Configuration</span>
+  </div>
+  <div class="cb">
+
+    <!-- Unit system toggle -->
+    <div class="sys-tabs">
+      <button class="st on" id="btnSI"  onclick="setSys('SI')">SI Metric</button>
+      <button class="st"    id="btnIMP" onclick="setSys('IMP')">Imperial (US)</button>
+    </div>
+
+    <!-- Phase type buttons -->
+    <div class="ftype-lbl">Select Fluid / Phase Type</div>
+    <div class="fgrid">
+      <button class="fb" onclick="setType('compressed',this)">
+        <span class="fi">🌊</span><span class="fn">Compressed Liquid</span><span class="fv">Subcooled water · P &gt; P_sat</span>
+      </button>
+      <button class="fb" onclick="setType('sat-liq',this)">
+        <span class="fi">💧</span><span class="fn">Saturated Liquid</span><span class="fv">x = 0</span>
+      </button>
+      <button class="fb" onclick="setType('wet',this)">
+        <span class="fi">🌫️</span><span class="fn">Wet Steam</span><span class="fv">Two-phase · 0 &lt; x &lt; 1</span>
+      </button>
+      <button class="fb" onclick="setType('sat-vap',this)">
+        <span class="fi">♨️</span><span class="fn">Saturated Vapor</span><span class="fv">x = 1 · dry steam</span>
+      </button>
+      <button class="fb" onclick="setType('superheat',this)" style="grid-column:1/-1;">
+        <span class="fi">🔥</span><span class="fn">Superheated Steam</span><span class="fv">T &gt; T_sat at given pressure</span>
+      </button>
+    </div>
+
+    <!-- Phase diagram strip (visual cue) -->
+    <div class="phase-strip" title="Phase regions: Compressed Liquid | Saturation Curve | Superheated Steam">
+      <div class="ps-liq"></div>
+      <div class="ps-sat"></div>
+      <div class="ps-sup"></div>
+    </div>
+
+    <!-- Dynamic input fields -->
+    <div id="dynFields"></div>
+
+  </div>
+</div>
+
+<!-- CARD 2: Calculate & Export (hidden until type selected) -->
+<div class="card" id="calcCard" style="display:none;">
+  <div class="ch">
+    <span class="ch-ico">🧮</span>
+    <span class="ch-ttl">Calculate &amp; Export</span>
+  </div>
+  <div class="cb">
+
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="calc-btn" onclick="doCalcClick()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Calculate
+      </button>
+      <button class="calc-btn sec" onclick="genPDF()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        PDF Report
+      </button>
+    </div>
+
+    <div style="margin-bottom:8px;">
+      <label class="rpt-lbl">Report Title / Project Name</label>
+      <input type="text" id="rptTitle" class="rpt-input" placeholder="Optional — appears in PDF header">
+    </div>
+
+    <button class="calc-btn ghost-grey" onclick="resetAll()" style="font-size:.84rem;padding:8px;">
+      ↺ &nbsp;Reset
+    </button>
+
+  </div>
+</div>
+
+</div><!-- /input col -->
+
+<!-- ═══════ RESULTS PANEL ═══════ -->
+<div id="R">
+  <div class="card">
+    <div class="ch">
+      <span class="ch-ico">📊</span>
+      <span class="ch-ttl">Results</span>
+      <span class="ch-right" id="resultsUnit" style="font-size:.76rem;color:var(--subtle);font-family:'JetBrains Mono',monospace;"></span>
+    </div>
+    <div class="cb" id="resultsBody">
+      <div class="ph">
+        <div class="ph-ico">💧</div>
+        <div class="ph-title">Ready to Calculate</div>
+        <div class="ph-txt">Select a fluid type on the left, enter conditions, then click Calculate</div>
+      </div>
+      <div class="spin-wrap" id="spinner">
+        <div class="spinner"></div>
+        <div style="font-size:.84rem;color:var(--subtle);">Computing properties…</div>
+      </div>
+      <div id="results"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /mg -->
+
+<!-- ══════════════════════════════════════
+     TERMS TRIGGER BAR
+══════════════════════════════════════ -->
+<div class="terms-trigger">
+  <div class="terms-trigger-left">
+    <div class="terms-trigger-ico">📖</div>
+    <div>
+      <div class="terms-trigger-title">Thermodynamic Terms &amp; Definitions — IAPWS-IF97</div>
+      <div class="terms-trigger-sub">Formulas · Engineering significance · Accuracy notes · Key reference values</div>
+    </div>
+  </div>
+  <div class="terms-trigger-right">
+    <button class="trig-btn outline" onclick="openDefinitionsPage()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open Full Page
+    </button>
+    <button class="trig-btn primary" onclick="toggleTerms()" id="termsToggleBtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+      Show Here
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TERMS PANEL (collapsed by default, at bottom)
+══════════════════════════════════════ -->
+<div class="terms-panel" id="termsPanel">
+  <div class="terms-card">
+    <div class="terms-ch">
+      <div class="terms-ch-left">
+        <div class="terms-ch-ico">📖</div>
+        <div>
+          <div class="terms-ch-ttl">Thermodynamic Terms &amp; Definitions</div>
+          <div class="terms-ch-sub">IAPWS-IF97 properties — formulas, engineering use &amp; accuracy</div>
+        </div>
+      </div>
+      <div class="terms-ch-right">
+        <button class="trig-btn outline" onclick="openDefinitionsPage()" style="padding:6px 12px;font-size:.78rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Full Page
+        </button>
+        <button class="terms-close" onclick="toggleTerms()" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="terms-body">
+
+      <div class="sec"><span class="sec-ico">⚡</span>Property Definitions</div>
+      <div class="terms-grid">
+
+        <div class="term-card c-stm">
+          <div class="term-head">
+            <div class="term-name">Specific Enthalpy</div>
+            <span class="term-sym">h</span>
+          </div>
+          <div class="term-formula">h = u + P·v</div>
+          <div class="term-desc">Total thermodynamic energy per unit mass — internal energy plus flow work (P·v). The key property for boiler, heat exchanger, and turbine design. For open systems: Q = ṁ·Δh.</div>
+          <div class="term-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb</div>
+        </div>
+
+        <div class="term-card c-teal">
+          <div class="term-head">
+            <div class="term-name">Specific Entropy</div>
+            <span class="term-sym" style="background:var(--teal-p);color:var(--teal);">s</span>
+          </div>
+          <div class="term-formula">ds = δQ<sub>rev</sub> / T</div>
+          <div class="term-desc">Measure of molecular disorder per unit mass. Constant in ideal isentropic processes (turbines, compressors). Higher entropy = more energy degraded. Always increases in real processes.</div>
+          <div class="term-unit">SI: kJ/(kg·K) &nbsp;|&nbsp; Imperial: BTU/(lb·°R)</div>
+        </div>
+
+        <div class="term-card c-amb">
+          <div class="term-head">
+            <div class="term-name">Internal Energy</div>
+            <span class="term-sym" style="background:var(--amb-p);color:var(--amb);">u</span>
+          </div>
+          <div class="term-formula">u = h − P·v</div>
+          <div class="term-desc">Microscopic kinetic + potential energy stored in molecules, excluding flow work. Used in closed-system (piston-cylinder) energy balances. At saturation: u_f = h_f − P·v_f.</div>
+          <div class="term-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb</div>
+        </div>
+
+        <div class="term-card c-pur">
+          <div class="term-head">
+            <div class="term-name">Specific Volume</div>
+            <span class="term-sym" style="background:var(--pur-p);color:var(--pur);">v</span>
+          </div>
+          <div class="term-formula">v = V/m = 1/ρ</div>
+          <div class="term-desc">Volume per unit mass — reciprocal of density. Liquid water ≈ 0.001 m³/kg. Steam expands dramatically at low pressure: v_g ≈ 206 m³/kg at 0.01°C. Critical for pipe and nozzle sizing.</div>
+          <div class="term-unit">SI: m³/kg &nbsp;|&nbsp; Imperial: ft³/lb</div>
+        </div>
+
+        <div class="term-card c-stm">
+          <div class="term-head">
+            <div class="term-name">Density</div>
+            <span class="term-sym">ρ</span>
+          </div>
+          <div class="term-formula">ρ = 1/v &nbsp;[kg/m³]</div>
+          <div class="term-desc">Mass per unit volume. Saturated liquid ≈ 958 kg/m³ at 100°C. Saturated steam at 1 bar ≈ 0.598 kg/m³ — approximately 1600× less dense. Used for flow velocity and pressure drop calculations.</div>
+          <div class="term-unit">SI: kg/m³ &nbsp;|&nbsp; Imperial: lb/ft³</div>
+        </div>
+
+        <div class="term-card c-red">
+          <div class="term-head">
+            <div class="term-name">Steam Quality</div>
+            <span class="term-sym" style="background:var(--red-p);color:var(--red);">x</span>
+          </div>
+          <div class="term-formula">x = m<sub>vapor</sub> / m<sub>total</sub></div>
+          <div class="term-desc">Vapor mass fraction in two-phase mixture. x = 0: saturated liquid; x = 1: dry saturated vapor. For mixture: h = h_f + x·h_fg. Turbine exhaust must have x ≥ 0.88 to prevent blade erosion.</div>
+          <div class="term-unit">Dimensionless · Range: 0.0 – 1.0</div>
+        </div>
+
+        <div class="term-card c-amb">
+          <div class="term-head">
+            <div class="term-name">Latent Heat</div>
+            <span class="term-sym" style="background:var(--amb-p);color:var(--amb);">h_fg</span>
+          </div>
+          <div class="term-formula">h_fg = h_g − h_f</div>
+          <div class="term-desc">Energy required to convert saturated liquid → saturated vapor at constant T and P. At 100°C: 2257 kJ/kg. Decreases with rising pressure, reaching zero at the critical point (374.14°C, 220.9 bar).</div>
+          <div class="term-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb</div>
+        </div>
+
+        <div class="term-card c-teal">
+          <div class="term-head">
+            <div class="term-name">Degree of Superheat</div>
+            <span class="term-sym" style="background:var(--teal-p);color:var(--teal);">ΔT_sh</span>
+          </div>
+          <div class="term-formula">ΔT_sh = T − T_sat(P)</div>
+          <div class="term-desc">How far above saturation temperature superheated steam is. Higher superheat → more specific work in turbines. Power plants use 50–200°C superheat. ΔT_sh = 0 marks the saturation boundary.</div>
+          <div class="term-unit">SI: °C &nbsp;|&nbsp; Imperial: °F</div>
+        </div>
+
+        <div class="term-card c-pur">
+          <div class="term-head">
+            <div class="term-name">Critical Point</div>
+            <span class="term-sym" style="background:var(--pur-p);color:var(--pur);">Tc, Pc</span>
+          </div>
+          <div class="term-formula">T_c = 374.14°C · P_c = 220.9 bar</div>
+          <div class="term-desc">Above this state, liquid and vapor phases become indistinguishable — h_fg = 0 and ρ_f = ρ_g = 317 kg/m³. Supercritical steam is used in advanced power plants for efficiencies above 45%.</div>
+          <div class="term-unit">IAPWS-IF97 reference values</div>
+        </div>
+
+        <div class="term-card c-grn">
+          <div class="term-head">
+            <div class="term-name">Saturation Pressure</div>
+            <span class="term-sym" style="background:var(--grn-p);color:var(--grn);">P_sat</span>
+          </div>
+          <div class="term-formula">Wagner equation — ±0.003 bar</div>
+          <div class="term-desc">Equilibrium pressure at which phase change occurs at a given T. At 100°C = 1.01325 bar; at 200°C = 15.54 bar; at 300°C = 85.88 bar. Used for flash calculation and steam trap sizing.</div>
+          <div class="term-unit">SI: bar / MPa &nbsp;|&nbsp; Imperial: psia</div>
+        </div>
+
+      </div>
+
+      <div class="sec" style="margin-top:18px;"><span class="sec-ico">🔬</span>Formulation Accuracy — IAPWS-IF97</div>
+      <div class="acc-box">
+        <div class="acc-box-t">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Calculation Method &amp; Error Bounds
+        </div>
+        <pre><span class="hl">Saturation Pressure:</span>  Wagner equation (IAPWS-IF97 §8.1)  →  ±0.003 bar
+<span class="hl">T_sat from P:</span>         Newton iteration on Wagner           →  ±0.01°C
+<span class="hl">Sat. Properties:</span>      Interpolated reference tables (34 pts, 0.01–374°C)
+                      h_f, h_fg, h_g  →  ±0.3 kJ/kg
+                      s_f, s_fg, s_g  →  ±0.002 kJ/(kg·K)
+                      v_f, v_g        →  ±0.1%
+<span class="hl">Compressed Liquid:</span>    h = h_f(T) + v_f·ΔP  (IAPWS approx.)   →  ±0.5%
+<span class="hl">Superheated Steam:</span>    Cp polynomial + sat. boundary           →  ±0.5%
+
+For critical engineering decisions, always verify against certified IAPWS-IF97 tables.</pre>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    <strong>Steam &amp; Water Properties Calculator</strong> &nbsp;·&nbsp; IAPWS-IF97 Industrial Formulation
+  </div>
+  <div class="footer-right">
+    For engineering reference use · Verify critical values against official IAPWS-IF97 tables
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBALS
+═══════════════════════════════════════════════════════════════════ */
+let SYS = 'SI';
+let _lastResult = null;
+let _activeType = '';
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNIT CONVERSIONS
+═══════════════════════════════════════════════════════════════════ */
+const CONV = {
+  T:   v => v * 9/5 + 32,
+  dT:  v => v * 9/5,
+  P:   v => v * 14.5038,
+  h:   v => v * 0.429922,
+  s:   v => v * 0.238846,
+  v:   v => v * 16.01846,
+  rho: v => v * 0.062428,
+  u:   v => v * 0.429922,
+};
+const UNITS = {
+  SI:  { T:'°C', P:'bar', h:'kJ/kg', s:'kJ/(kg·K)', v:'m³/kg', rho:'kg/m³', u:'kJ/kg', dT:'°C' },
+  IMP: { T:'°F', P:'psia', h:'BTU/lb', s:'BTU/(lb·°R)', v:'ft³/lb', rho:'lb/ft³', u:'BTU/lb', dT:'°F' },
+};
+
+function cv(val, prop) {
+  if (!isFinite(val)) return NaN;
+  return SYS === 'SI' ? val : (CONV[prop] ? CONV[prop](val) : val);
+}
+function fmt(val, dp, prop) {
+  const v = cv(val, prop);
+  if (!isFinite(v)) return '—';
+  return parseFloat(v.toFixed(dp)).toLocaleString('en-US', {minimumFractionDigits: dp, maximumFractionDigits: dp});
+}
+const uu = () => UNITS[SYS];
+
+/* ═══════════════════════════════════════════════════════════════════
+   FORM RENDERING
+═══════════════════════════════════════════════════════════════════ */
+function setSys(sys) {
+  // Capture current raw input values before re-rendering
+  const prevP = document.getElementById('fPres')?.value || '';
+  const prevT = document.getElementById('fTemp')?.value || '';
+  const prevQ = document.getElementById('fQual')?.value || '';
+  const prevBy = document.getElementById('fBy')?.value || 'P';
+
+  SYS = sys;
+  document.getElementById('btnSI').classList.toggle('on',  sys === 'SI');
+  document.getElementById('btnIMP').classList.toggle('on', sys === 'IMP');
+  if (_activeType) {
+    renderFields(_activeType);
+    // Restore 'By' selector first
+    const byEl = document.getElementById('fBy');
+    if (byEl && prevBy) { byEl.value = prevBy; renderFields(_activeType); }
+    // Convert and restore inputs
+    const pEl = document.getElementById('fPres');
+    const tEl = document.getElementById('fTemp');
+    const qEl = document.getElementById('fQual');
+    if (pEl && prevP !== '') {
+      const pSI = parseFloat(prevP);
+      if (isFinite(pSI)) {
+        // If switching: SI->IMP multiply by 14.5038, IMP->SI divide
+        const pConv = sys === 'SI' ? (pSI / 14.5038) : (pSI * 14.5038);
+        pEl.value = prevP === '' ? '' : pConv.toFixed(4);
+      }
+    }
+    if (tEl && prevT !== '') {
+      const tRaw = parseFloat(prevT);
+      if (isFinite(tRaw)) {
+        const tConv = sys === 'SI' ? ((tRaw - 32) * 5/9) : (tRaw * 9/5 + 32);
+        tEl.value = tConv.toFixed(2);
+      }
+    }
+    if (qEl && prevQ !== '') qEl.value = prevQ;
+    liveHint();
+    // Re-run calculation if we already had a result
+    if (_lastResult) doCalcClick();
+  }
+}
+
+function setType(type, btn) {
+  _activeType = type;
+  document.querySelectorAll('.fgrid .fb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderFields(type);
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('calcCard').style.display = '';
+  // Hide placeholder inside resultsBody specifically
+  document.querySelectorAll('#resultsBody .ph').forEach(el => el.style.display = 'none');
+  _lastResult = null;
+}
+
+function renderFields(type) {
+  const el = document.getElementById('dynFields');
+  const u  = uu();
+
+  const pField = () => `
+    <div class="fg">
+      <label>Pressure <span class="uh">(${u.P})</span></label>
+      <input type="number" id="fPres" step="any" min="0" required
+        placeholder="${SYS==='SI'?'e.g. 10.0':'e.g. 145.0'}" oninput="liveHint()">
+      <div class="range-hint" id="hintP">${SYS==='SI'?'Valid: 0.006 – 220.9 bar':'Valid: 0.09 – 3204 psia'}</div>
+    </div>`;
+
+  const tField = (superh=false) => `
+    <div class="fg">
+      <label>Temperature <span class="uh">(${u.T})</span>${superh?' <span style="color:var(--subtle);font-weight:500;font-size:.76rem;">— must exceed T_sat</span>':''}</label>
+      <input type="number" id="fTemp" step="any" required
+        placeholder="${SYS==='SI'?(superh?'e.g. 300':'e.g. 150'):(superh?'e.g. 572':'e.g. 302')}">
+      <div class="range-hint">${SYS==='SI'?(superh?'Valid: T > T_sat, max 800°C':'Valid: 0.01 – 374°C'):(superh?'Valid: T > T_sat, max 1472°F':'Valid: 32 – 705°F')}</div>
+    </div>`;
+
+  const byField = t => `
+    <div class="fg">
+      <label>Specify saturation by</label>
+      <select id="fBy" onchange="renderFields('${t}')">
+        <option value="P">Pressure</option>
+        <option value="T">Temperature</option>
+      </select>
+    </div>`;
+
+  switch(type) {
+    case 'compressed':
+      el.innerHTML = pField() + tField();
+      break;
+    case 'sat-liq':
+    case 'sat-vap': {
+      const by = document.getElementById('fBy')?.value || 'P';
+      el.innerHTML = byField(type) + (by==='P' ? pField() : tField());
+      break;
+    }
+    case 'wet': {
+      const by2 = document.getElementById('fBy')?.value || 'P';
+      el.innerHTML = byField(type) + (by2==='P' ? pField() : tField()) + `
+        <div class="fg">
+          <label>Steam Quality x <span class="uh">(0 = saturated liquid &nbsp;·&nbsp; 1 = saturated vapor)</span></label>
+          <input type="number" id="fQual" step="0.001" min="0" max="1" required placeholder="e.g. 0.85">
+          <div class="range-hint">Valid: 0.000 – 1.000</div>
+        </div>`;
+      break;
+    }
+    case 'superheat':
+      el.innerHTML = pField() + tField(true);
+      break;
+  }
+}
+
+/* Lightweight Tsat approximation for UI hint only */
+function _tSatHint(P) {
+  if (!isFinite(P)||P<=0||P>220.64) return NaN;
+  const Tc=647.096,Pc=220.64;
+  let T=100*Math.pow(P/1.01325,0.27)+273.15;
+  for(let i=0;i<30;i++){
+    const fn=t=>{const tau=1-t/Tc;return Pc*Math.exp((Tc/t)*(-7.85951783*tau+1.84408259*Math.pow(tau,1.5)-11.7866497*Math.pow(tau,3)+22.6807411*Math.pow(tau,3.5)-15.9618719*Math.pow(tau,4)+1.80122502*Math.pow(tau,7.5)));};
+    const Pc2=fn(T),dP=(fn(T+0.01)-Pc2)/0.01;
+    if(!isFinite(dP)||dP===0)break;
+    const dT=(Pc2-P)/dP;T-=dT;
+    if(Math.abs(dT)<1e-4)break;
+  }
+  return T-273.15;
+}
+
+function liveHint() {
+  const pEl = document.getElementById('fPres');
+  const hP  = document.getElementById('hintP');
+  if (!pEl || !hP) return;
+  const Praw = parseFloat(pEl.value);
+  if (!isFinite(Praw) || Praw <= 0) {
+    hP.textContent = SYS === 'SI' ? 'Valid: 0.006 – 220.9 bar' : 'Valid: 0.09 – 3204 psia';
+    hP.className = 'range-hint';
+    return;
+  }
+  const P_bar = SYS === 'SI' ? Praw : Praw / 14.5038;
+  if (P_bar < 0.006) { hP.textContent = '⚠ Pressure below minimum (0.006 bar)'; hP.className = 'range-hint'; return; }
+  const maxP = (_activeType === 'superheat') ? 1000 : 220.9;
+  if (P_bar > maxP) { hP.textContent = `⚠ Exceeds maximum pressure (${maxP} bar) for this phase type`; hP.className = 'range-hint'; return; }
+  const Ts = _tSatHint(P_bar);
+  if (isFinite(Ts)) {
+    const T_disp = SYS === 'SI' ? `${Ts.toFixed(1)}°C` : `${(Ts*9/5+32).toFixed(1)}°F`;
+    hP.textContent = _activeType === 'superheat'
+      ? `T_sat ≈ ${T_disp} — enter T above this value`
+      : `T_sat ≈ ${T_disp} at this pressure`;
+    hP.className = 'range-hint ok';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALCULATE  —  100% server-side via Vercel API
+   No calculation logic runs in the browser.
+═══════════════════════════════════════════════════════════════════ */
+let _apiPending = false;
+
+async function doCalcClick() {
+  if (!_activeType) return;
+  if (_apiPending) return;
+
+  const pRaw = parseFloat(document.getElementById('fPres')?.value);
+  const tRaw = parseFloat(document.getElementById('fTemp')?.value);
+  const xRaw = parseFloat(document.getElementById('fQual')?.value);
+  const by   = document.getElementById('fBy')?.value || 'P';
+
+  // Convert display units → SI (bar / °C) for the API
+  const P_bar = isFinite(pRaw) ? (SYS==='SI' ? pRaw : pRaw / 14.5038) : null;
+  const T_C   = isFinite(tRaw) ? (SYS==='SI' ? tRaw : (tRaw - 32) * 5/9) : null;
+  const x     = isFinite(xRaw) ? xRaw : null;
+
+  document.getElementById('results').innerHTML = '';
+  document.querySelectorAll('#resultsBody .ph').forEach(el => el.style.display = 'none');
+  document.getElementById('spinner').classList.add('on');
+  _apiPending = true;
+
+  try {
+    const response = await fetch('/api/steam', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: _activeType, P_bar, T_C, x, specBy: by, sys: SYS })
+    });
+
+    document.getElementById('spinner').classList.remove('on');
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      showError(err.error || `Server error (${response.status}). Please try again.`);
+      return;
+    }
+
+    const json = await response.json();
+    if (json.error) { showError(json.error); return; }
+    if (json.success && json.data) {
+      _lastResult = json.data;
+      showResults(json.data);
+    }
+  } catch(e) {
+    document.getElementById('spinner').classList.remove('on');
+    showError('Could not reach the calculation server. Check your connection and try again.');
+  } finally {
+    _apiPending = false;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DISPLAY RESULTS
+═══════════════════════════════════════════════════════════════════ */
+function showError(msg) {
+  document.getElementById('results').innerHTML = `
+    <div class="warn wr fade-up" style="margin-top:8px;">
+      ⚠️ &nbsp;${msg}
+    </div>`;
+}
+
+function fmtV(val, prop) {
+  // Special formatter for specific volume — switches to exponential for tiny values
+  const v = cv(val, prop);
+  if (!isFinite(v)) return '—';
+  if (v < 0.0001) return v.toExponential(4);
+  if (v < 0.001)  return v.toFixed(7);
+  if (v < 0.01)   return v.toFixed(6);
+  return v.toFixed(5);
+}
+
+function showResults(r) {
+  const u = uu();
+  const hasX   = r.x !== null && r.x !== undefined;
+  const hasDTs = r.dT_sh !== undefined;
+  const hasSat = r.hfg   !== undefined;
+
+  // Unit label in card header
+  const unitEl = document.getElementById('resultsUnit');
+  if (unitEl) unitEl.textContent = SYS === 'SI' ? 'Metric SI' : 'Imperial US';
+
+  const banHTML = `
+    <div class="banner ${r.phaseCls} fade-up">
+      <div class="ban-pill">💧 ${r.phase}</div>
+      <div class="ban-lbl">Specific Enthalpy</div>
+      <div class="ban-val">${fmt(r.h,1,'h')}<span class="bmu">${u.h}</span></div>
+      <div class="ban-sub">${fmt(r.P,4,'P')} ${u.P} &nbsp;·&nbsp; ${fmt(r.T,2,'T')} ${u.T} &nbsp;·&nbsp; T_sat = ${fmt(r.Tsat,2,'T')} ${u.T}</div>
+    </div>`;
+
+  // State properties
+  const stateHTML = `
+    <div class="sec"><span class="sec-ico">🌡️</span>State &amp; Conditions</div>
+    <div class="mg3 fade-up">
+      <div class="mc c-stm">
+        <div class="mc-lbl">Temperature</div>
+        <div class="mc-val">${fmt(r.T,3,'T')}<span class="mc-u">${u.T}</span></div>
+      </div>
+      <div class="mc c-am">
+        <div class="mc-lbl">Pressure</div>
+        <div class="mc-val">${fmt(r.P,4,'P')}<span class="mc-u">${u.P}</span></div>
+      </div>
+      <div class="mc c-tl">
+        <div class="mc-lbl">T_sat at P</div>
+        <div class="mc-val">${fmt(r.Tsat,3,'T')}<span class="mc-u">${u.T}</span></div>
+      </div>
+    </div>`;
+
+  // Thermodynamic properties
+  const thermHTML = `
+    <div class="sec"><span class="sec-ico">⚡</span>Thermodynamic Properties</div>
+    <div class="mg2 fade-up">
+      <div class="mc c-stm">
+        <div class="mc-lbl">Specific Enthalpy (h)</div>
+        <div class="mc-val">${fmt(r.h,2,'h')}<span class="mc-u">${u.h}</span></div>
+      </div>
+      <div class="mc c-tl">
+        <div class="mc-lbl">Specific Entropy (s)</div>
+        <div class="mc-val">${fmt(r.s,5,'s')}<span class="mc-u">${u.s}</span></div>
+      </div>
+      <div class="mc c-pu">
+        <div class="mc-lbl">Specific Volume (v)</div>
+        <div class="mc-val">${fmtV(r.v,'v')}<span class="mc-u">${u.v}</span></div>
+      </div>
+      <div class="mc c-bl">
+        <div class="mc-lbl">Density (ρ)</div>
+        <div class="mc-val">${fmt(r.rho,4,'rho')}<span class="mc-u">${u.rho}</span></div>
+      </div>
+      <div class="mc c-am">
+        <div class="mc-lbl">Internal Energy (u)</div>
+        <div class="mc-val">${fmt(r.u,2,'u')}<span class="mc-u">${u.u}</span></div>
+      </div>
+      ${hasX ? `
+      <div class="mc c-rd">
+        <div class="mc-lbl">Steam Quality (x)</div>
+        <div class="mc-val">${(r.x*100).toFixed(2)}<span class="mc-u">% vapor</span></div>
+        ${r.x < 0.88 ? '<div class="mc-note"><span class="bdg b-r">⚠ x &lt; 0.88 — erosion risk</span></div>' : ''}
+      </div>` : ''}
+      ${hasDTs ? `
+      <div class="mc c-am">
+        <div class="mc-lbl">Degree of Superheat (ΔT_sh)</div>
+        <div class="mc-val">${fmt(r.dT_sh,2,'dT')}<span class="mc-u">${u.dT}</span></div>
+      </div>` : ''}
+    </div>`;
+
+  // Saturation pair (shown for sat-liq, sat-vap, wet steam, compressed liquid)
+  let satHTML = '';
+  if (hasSat) {
+    satHTML = `
+      <div class="sec"><span class="sec-ico">📊</span>Saturation Values at T_sat = ${fmt(r.Tsat,2,'T')} ${u.T}</div>
+      <div class="mg3 fade-up">
+        <div class="mc c-stm">
+          <div class="mc-lbl">h_f &nbsp;<span style="font-weight:500;text-transform:none;">sat. liquid</span></div>
+          <div class="mc-val">${fmt(r.hf,2,'h')}<span class="mc-u">${u.h}</span></div>
+        </div>
+        <div class="mc c-rd">
+          <div class="mc-lbl">h_fg &nbsp;<span style="font-weight:500;text-transform:none;">latent heat</span></div>
+          <div class="mc-val">${fmt(r.hfg,2,'h')}<span class="mc-u">${u.h}</span></div>
+        </div>
+        <div class="mc c-tl">
+          <div class="mc-lbl">h_g &nbsp;<span style="font-weight:500;text-transform:none;">sat. vapor</span></div>
+          <div class="mc-val">${fmt(r.hg,2,'h')}<span class="mc-u">${u.h}</span></div>
+        </div>
+      </div>
+      <div class="mg3 fade-up">
+        <div class="mc c-stm">
+          <div class="mc-lbl">s_f</div>
+          <div class="mc-val">${fmt(r.sf,5,'s')}<span class="mc-u">${u.s}</span></div>
+        </div>
+        <div class="mc c-rd">
+          <div class="mc-lbl">s_fg</div>
+          <div class="mc-val">${fmt(r.sfg,5,'s')}<span class="mc-u">${u.s}</span></div>
+        </div>
+        <div class="mc c-tl">
+          <div class="mc-lbl">s_g</div>
+          <div class="mc-val">${fmt(r.sg,5,'s')}<span class="mc-u">${u.s}</span></div>
+        </div>
+      </div>
+      <div class="mg2 fade-up">
+        <div class="mc c-pu">
+          <div class="mc-lbl">v_f &nbsp;<span style="font-weight:500;text-transform:none;">sat. liquid vol.</span></div>
+          <div class="mc-val">${fmtV(r.vf,'v')}<span class="mc-u">${u.v}</span></div>
+        </div>
+        <div class="mc c-bl">
+          <div class="mc-lbl">v_g &nbsp;<span style="font-weight:500;text-transform:none;">sat. vapor vol.</span></div>
+          <div class="mc-val">${fmtV(r.vg,'v')}<span class="mc-u">${u.v}</span></div>
+        </div>
+      </div>`;
+  }
+
+  // Notes / warnings
+  let notes = `<div class="sec"><span class="sec-ico">📋</span>Notes</div>`;
+  if (r._note)
+    notes += `<div class="warn wa fade-up">ℹ️ ${r._note}</div>`;
+  if (hasX && r.x < 0.88)
+    notes += `<div class="warn wa fade-up">⚠️ <strong>Low quality steam:</strong> x = ${(r.x*100).toFixed(1)}%. Turbine exhaust should maintain x ≥ 88% to prevent blade erosion from liquid droplet impingement.</div>`;
+  if (r.P > 210 && r.P < 222)
+    notes += `<div class="warn wa fade-up">⚠️ <strong>Near critical pressure:</strong> Properties change very rapidly approaching T_c = 374.14°C, P_c = 220.9 bar. Interpolation accuracy is reduced in this region.</div>`;
+  notes += `<div class="warn wi fade-up">ℹ &nbsp;<strong>${_pyReady ? 'pyXSteam (IAPWS-IF97)' : 'IAPWS-IF97 · NIST Table Engine'}:</strong> ${_pyReady ? 'Full IAPWS-IF97 equations via pyXSteam — ±0.01 kJ/kg accuracy.' : 'Wagner saturation + NIST cubic-spline interpolation — ±0.1–0.3%. Open in a full browser for pyXSteam accuracy.'}</div>`;
+
+  document.getElementById('results').innerHTML = banHTML + stateHTML + thermHTML + satHTML + notes;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════════════════ */
+function resetAll() {
+  _activeType = '';
+  _lastResult = null;
+  document.querySelectorAll('.fgrid .fb').forEach(b => b.classList.remove('on'));
+  document.getElementById('dynFields').innerHTML = '';
+  document.getElementById('results').innerHTML = '';
+  const unitEl = document.getElementById('resultsUnit');
+  if (unitEl) unitEl.textContent = '';
+  document.getElementById('calcCard').style.display = 'none';
+  document.getElementById('spinner').classList.remove('on');
+  // Restore placeholder — remove any stale ones first then insert fresh
+  const rb = document.getElementById('resultsBody');
+  if (rb) {
+    rb.querySelectorAll('.ph').forEach(el => el.remove());
+    const ph = document.createElement('div');
+    ph.className = 'ph';
+    ph.innerHTML = '<div class="ph-ico">💧</div><div class="ph-title">Ready to Calculate</div><div class="ph-txt">Select a fluid type on the left, enter conditions, then click Calculate</div>';
+    rb.insertBefore(ph, rb.firstChild);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TERMS TOGGLE (inline panel at bottom)
+═══════════════════════════════════════════════════════════════════ */
+function toggleTerms() {
+  const panel = document.getElementById('termsPanel');
+  const btn   = document.getElementById('termsToggleBtn');
+  const isOpen = panel.classList.toggle('open');
+  if (btn) {
+    btn.innerHTML = isOpen
+      ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 19V5M5 12l7 7 7-7"/></svg> Hide`
+      : `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12l7-7 7 7"/></svg> Show Here`;
+  }
+  if (isOpen) {
+    setTimeout(() => panel.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   OPEN FULL DEFINITIONS PAGE (new tab)
+═══════════════════════════════════════════════════════════════════ */
+function openDefinitionsPage() {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com</title>
+<meta name="description" content="Free steam tables calculator using IAPWS-IF97. Calculate enthalpy, entropy, density and viscosity of steam.">
+<link rel="canonical" href="https://multicalci.com/steam-properties-calculator/">
+<meta property="og:title" content="Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com">
+<meta property="og:description" content="Free steam tables calculator using IAPWS-IF97. Calculate enthalpy, entropy, density and viscosity of steam.">
+<meta property="og:url" content="https://multicalci.com/steam-properties-calculator/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Steam Properties Calculator — IAPWS-IF97 Steam Tables | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0f1117;--ink2:#1e2330;--ink3:#2d3347;--mid:#4a5068;--subtle:#6b7491;
+  --pale:#b8bed4;--ghost:#d8dce8;--tint:#eceef5;
+  --bg:#f4f5f9;--sur:#fff;--sur2:#f8f9fc;
+  --stm:#0a5c8c;--stm2:#0e7aba;--stm-p:#e8f4fb;--stm-m:#a5d4ee;
+  --amb:#b85c00;--amb-p:#fef4e6;
+  --teal:#0a6b5c;--teal-p:#e8f5f2;
+  --pur:#5b21b6;--pur-p:#ede9fe;
+  --red:#8b1a1a;--red-p:#fde8e8;
+  --grn:#065f46;--grn-p:#d1fae5;
+  --bd:#d0d4e0;--bd2:#b8bece;--r:10px;
+  --sh:0 1px 3px rgba(15,17,23,.08),0 4px 16px rgba(15,17,23,.06);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15.5px;line-height:1.6;}
+.hdr{background:var(--ink);padding:0 32px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent,transparent 18px,rgba(255,255,255,.02) 18px,rgba(255,255,255,.02) 19px);}
+.hdr-accent{height:3px;background:linear-gradient(90deg,var(--stm),var(--stm2) 40%,var(--teal));}
+.hdr-in{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.hdr-left{display:flex;align-items:center;gap:14px;}
+.hdr-ico{width:46px;height:46px;background:var(--stm);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hdr-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;letter-spacing:-.2px;margin-bottom:3px;}
+.hdr-sub{font-size:.8rem;color:var(--ghost);}
+.page{max-width:1100px;margin:0 auto;padding:28px 18px 48px;}
+.intro{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);padding:22px 26px;margin-bottom:24px;box-shadow:var(--sh);}
+.intro-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--ink2);margin-bottom:8px;}
+.intro-text{font-size:.9rem;color:var(--mid);line-height:1.7;}
+.sec{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.55px;color:var(--ink2);padding-bottom:9px;margin-bottom:14px;margin-top:24px;border-bottom:2px solid var(--bd);display:flex;align-items:center;gap:7px;font-family:'Syne',sans-serif;}
+.sec:first-child{margin-top:0;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:24px;}
+.def{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);padding:20px 22px;border-left:4px solid var(--bd2);box-shadow:var(--sh);transition:box-shadow .15s;}
+.def:hover{box-shadow:0 4px 24px rgba(15,17,23,.1);}
+.def.c-stm{border-left-color:var(--stm);}
+.def.c-teal{border-left-color:var(--teal);}
+.def.c-amb{border-left-color:var(--amb);}
+.def.c-pur{border-left-color:var(--pur);}
+.def.c-red{border-left-color:var(--red);}
+.def.c-grn{border-left-color:var(--grn);}
+.def-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.def-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--ink);}
+.def-sym{font-family:'JetBrains Mono',monospace;font-size:.82rem;padding:3px 9px;border-radius:5px;background:var(--stm-p);color:var(--stm);font-style:italic;font-weight:700;flex-shrink:0;}
+.def.c-teal .def-sym{background:var(--teal-p);color:var(--teal);}
+.def.c-amb  .def-sym{background:var(--amb-p);color:var(--amb);}
+.def.c-pur  .def-sym{background:var(--pur-p);color:var(--pur);}
+.def.c-red  .def-sym{background:var(--red-p);color:var(--red);}
+.def.c-grn  .def-sym{background:var(--grn-p);color:var(--grn);}
+.def-formula{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--amb);background:var(--amb-p);padding:5px 10px;border-radius:5px;display:inline-block;margin-bottom:10px;}
+.def-desc{font-size:.875rem;color:var(--mid);line-height:1.7;margin-bottom:10px;}
+.def-unit{font-size:.76rem;color:var(--subtle);font-family:'JetBrains Mono',monospace;border-top:1px solid var(--bd);padding-top:8px;margin-top:8px;}
+.def-tip{background:var(--tint);border-radius:6px;padding:8px 11px;font-size:.8rem;color:var(--ink3);line-height:1.6;margin-top:10px;font-weight:600;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-bottom:20px;}
+.ref-table th{background:var(--ink2);color:#fff;padding:9px 12px;text-align:left;font-size:.76rem;font-weight:700;letter-spacing:.3px;font-family:'Syne',sans-serif;}
+.ref-table th:not(:first-child){text-align:right;}
+.ref-table td{padding:8px 12px;border-bottom:1px solid var(--bd);color:var(--ink2);font-weight:600;}
+.ref-table td.num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink);text-align:right;}
+.ref-table tr:nth-child(even) td{background:var(--sur2);}
+.ref-table tr.crit td{background:var(--stm-p);font-weight:800;color:var(--stm);}
+.ref-table tr.crit td.num{font-family:'JetBrains Mono',monospace;}
+.fbox{background:var(--ink);border-radius:var(--r);padding:18px 20px;margin-bottom:20px;}
+.fbox-t{font-size:.74rem;font-weight:700;color:var(--pale);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.fbox pre{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#a8bfd8;line-height:2;white-space:pre-wrap;word-break:break-word;}
+.fbox pre .hl{color:#f9c580;}
+.footer{border-top:1px solid var(--bd);margin-top:32px;padding:18px 0 0;font-size:.8rem;color:var(--subtle);text-align:center;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}.hdr{padding:0 14px;}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-left">
+      <div class="hdr-ico">📖</div>
+      <div>
+        <div class="hdr-title">Thermodynamic Property Definitions</div>
+        <div class="hdr-sub">IAPWS-IF97 Industrial Formulation — Formulas · Engineering significance · Reference values</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <a href="https://multicalci.com/" style="display:flex;align-items:center;gap:6px;text-decoration:none;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);color:#fff;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.3px;" title="Back to MultiCalci Home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+        Home
+      </a>
+      <button onclick="window.close()" style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);color:var(--ghost);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;letter-spacing:.3px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Calculator
+      </button>
+      <div style="font-size:.75rem;color:var(--ghost);font-family:'JetBrains Mono',monospace;">IAPWS-IF97 · Regions 1–5</div>
+    </div>
+  </div>
+</div>
+<div class="hdr-accent"></div>
+
+<div class="page">
+
+<div class="intro">
+  <div class="intro-title">About IAPWS-IF97</div>
+  <div class="intro-text">The International Association for the Properties of Water and Steam (IAPWS) Industrial Formulation 1997 (IF97) is the international standard for thermodynamic properties of water and steam used in industrial calculations. It covers the temperature range from the triple point (0.01°C) to 800°C and pressures up to 100 MPa (1000 bar). The formulation is divided into five regions: compressed liquid (Region 1), two-phase saturation (Region 4), and superheated steam (Regions 2, 3, 5).</div>
+</div>
+
+<div class="sec">⚡ Property Definitions</div>
+<div class="grid">
+
+  <div class="def c-stm">
+    <div class="def-head"><div class="def-name">Specific Enthalpy</div><span class="def-sym">h</span></div>
+    <div class="def-formula">h = u + P·v &nbsp;&nbsp;[kJ/kg]</div>
+    <div class="def-desc">The total thermodynamic energy content per unit mass of a fluid — the sum of internal energy (u) and flow work (P·v). Enthalpy is the fundamental property for analyzing open thermodynamic systems such as boilers, heat exchangers, turbines, and pumps.</div>
+    <div class="def-tip">💡 Q = ṁ·Δh for steady-flow open systems (boilers, heat exchangers)</div>
+    <div class="def-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb &nbsp;|&nbsp; Reference: 0 at triple point liquid</div>
+  </div>
+
+  <div class="def c-teal">
+    <div class="def-head"><div class="def-name">Specific Entropy</div><span class="def-sym" style="background:var(--teal-p);color:var(--teal);">s</span></div>
+    <div class="def-formula">ds = δQ_rev / T &nbsp;&nbsp;[kJ/(kg·K)]</div>
+    <div class="def-desc">A measure of molecular disorder per unit mass. Entropy remains constant in ideal isentropic processes (turbine expansion, pump compression) and always increases in real, irreversible processes. Higher entropy = more energy degraded to waste heat.</div>
+    <div class="def-tip">💡 Isentropic turbine: s_in = s_out. Used on T-s and h-s (Mollier) diagrams.</div>
+    <div class="def-unit">SI: kJ/(kg·K) &nbsp;|&nbsp; Imperial: BTU/(lb·°R)</div>
+  </div>
+
+  <div class="def c-amb">
+    <div class="def-head"><div class="def-name">Internal Energy</div><span class="def-sym" style="background:var(--amb-p);color:var(--amb);">u</span></div>
+    <div class="def-formula">u = h − P·v &nbsp;&nbsp;[kJ/kg]</div>
+    <div class="def-desc">The sum of microscopic kinetic and potential energies stored in molecules, excluding flow work. Internal energy is the energy property used in closed-system (piston-cylinder, rigid vessel) energy balances. At saturation: u_f = h_f − P·v_f.</div>
+    <div class="def-tip">💡 First law for closed systems: ΔU = Q − W</div>
+    <div class="def-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb</div>
+  </div>
+
+  <div class="def c-pur">
+    <div class="def-head"><div class="def-name">Specific Volume</div><span class="def-sym" style="background:var(--pur-p);color:var(--pur);">v</span></div>
+    <div class="def-formula">v = V/m = 1/ρ &nbsp;&nbsp;[m³/kg]</div>
+    <div class="def-desc">Volume occupied per unit mass — the reciprocal of density. Liquid water maintains a nearly constant specific volume (~0.001 m³/kg). Steam specific volume varies enormously with pressure: v_g ≈ 206 m³/kg at 0.01°C but only 0.020 m³/kg at 300°C.</div>
+    <div class="def-tip">💡 Critical for pipe sizing: v determines steam velocity at a given mass flow rate.</div>
+    <div class="def-unit">SI: m³/kg &nbsp;|&nbsp; Imperial: ft³/lb</div>
+  </div>
+
+  <div class="def c-stm">
+    <div class="def-head"><div class="def-name">Density</div><span class="def-sym">ρ</span></div>
+    <div class="def-formula">ρ = m/V = 1/v &nbsp;&nbsp;[kg/m³]</div>
+    <div class="def-desc">Mass per unit volume. Saturated liquid water at 100°C has ρ ≈ 958 kg/m³. Saturated steam at 1 bar has ρ ≈ 0.598 kg/m³ — approximately 1600 times less dense. The ratio of liquid-to-vapor density drives natural circulation in boilers and steam drums.</div>
+    <div class="def-tip">💡 Used to calculate flow velocity: v_flow = ṁ / (ρ · A)</div>
+    <div class="def-unit">SI: kg/m³ &nbsp;|&nbsp; Imperial: lb/ft³</div>
+  </div>
+
+  <div class="def c-red">
+    <div class="def-head"><div class="def-name">Steam Quality</div><span class="def-sym" style="background:var(--red-p);color:var(--red);">x</span></div>
+    <div class="def-formula">x = m_vapor / m_total</div>
+    <div class="def-desc">The vapor mass fraction in a two-phase liquid-vapor mixture. x = 0 defines saturated liquid; x = 1 defines saturated vapor (dry steam). For wet steam, all extensive properties interpolate linearly: h = h_f + x·h_fg, s = s_f + x·s_fg, v = v_f + x·(v_g − v_f).</div>
+    <div class="def-tip">💡 Turbine exhaust must have x ≥ 0.88 to prevent blade erosion from liquid droplet impact.</div>
+    <div class="def-unit">Dimensionless · Range: 0.000 – 1.000</div>
+  </div>
+
+  <div class="def c-amb">
+    <div class="def-head"><div class="def-name">Latent Heat of Vaporization</div><span class="def-sym" style="background:var(--amb-p);color:var(--amb);">h_fg</span></div>
+    <div class="def-formula">h_fg = h_g − h_f &nbsp;&nbsp;[kJ/kg]</div>
+    <div class="def-desc">The energy required to convert one kilogram of saturated liquid into saturated vapor at constant temperature and pressure. At 100°C (atmospheric pressure): h_fg = 2257 kJ/kg. Decreases with rising pressure, approaching zero at the critical point (374.14°C, 220.9 bar).</div>
+    <div class="def-tip">💡 Steam is an excellent heat transfer medium because it releases h_fg on condensation.</div>
+    <div class="def-unit">SI: kJ/kg &nbsp;|&nbsp; Imperial: BTU/lb</div>
+  </div>
+
+  <div class="def c-teal">
+    <div class="def-head"><div class="def-name">Degree of Superheat</div><span class="def-sym" style="background:var(--teal-p);color:var(--teal);">ΔT_sh</span></div>
+    <div class="def-formula">ΔT_sh = T − T_sat(P)</div>
+    <div class="def-desc">The temperature difference between superheated steam and its saturation temperature at the same pressure. Higher superheat increases turbine specific work output and reduces moisture content at turbine exhaust. Modern power plants use 50–200°C superheat; ultra-supercritical plants operate at higher levels.</div>
+    <div class="def-tip">💡 ΔT_sh = 0 marks the saturation boundary — the dew point of steam.</div>
+    <div class="def-unit">SI: °C &nbsp;|&nbsp; Imperial: °F</div>
+  </div>
+
+  <div class="def c-pur">
+    <div class="def-head"><div class="def-name">Critical Point</div><span class="def-sym" style="background:var(--pur-p);color:var(--pur);">T_c, P_c</span></div>
+    <div class="def-formula">T_c = 374.14°C · P_c = 220.9 bar</div>
+    <div class="def-desc">The thermodynamic state above which the distinction between liquid and vapor phases vanishes. At the critical point, h_fg = 0 and the density of liquid and vapor are equal (ρ_c = 317 kg/m³). Supercritical water/steam (above T_c and P_c simultaneously) is used in advanced power plants for efficiencies exceeding 45%.</div>
+    <div class="def-tip">💡 Above the critical pressure, there is no phase change — fluid transforms continuously from liquid-like to gas-like properties.</div>
+    <div class="def-unit">IAPWS-IF97 reference values (exact)</div>
+  </div>
+
+  <div class="def c-grn">
+    <div class="def-head"><div class="def-name">Saturation Pressure</div><span class="def-sym" style="background:var(--grn-p);color:var(--grn);">P_sat</span></div>
+    <div class="def-formula">Wagner equation — IAPWS-IF97 §8.1</div>
+    <div class="def-desc">The equilibrium vapor pressure at which phase change (boiling/condensation) occurs at a given temperature. Increases sharply with temperature: at 100°C = 1.01325 bar (atmospheric), at 180°C = 10.02 bar, at 374.14°C = 220.9 bar (critical). Used to determine flash conditions, steam trap sizing, and boiler design pressure.</div>
+    <div class="def-tip">💡 P_sat doubles approximately every 10°C increase near 100°C — critical for pipe pressure class selection.</div>
+    <div class="def-unit">SI: bar / MPa &nbsp;|&nbsp; Imperial: psia</div>
+  </div>
+
+</div>
+
+<div class="sec" style="margin-top:30px;">📊 IAPWS-IF97 Key Saturation Reference Values</div>
+<div style="overflow-x:auto;">
+<table class="ref-table">
+  <thead>
+    <tr>
+      <th>State / Temperature</th>
+      <th>P_sat (bar)</th>
+      <th>h_f (kJ/kg)</th>
+      <th>h_fg (kJ/kg)</th>
+      <th>h_g (kJ/kg)</th>
+      <th>s_f (kJ/kg·K)</th>
+      <th>s_g (kJ/kg·K)</th>
+      <th>v_g (m³/kg)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Triple Point (0.01°C)</td><td class="num">0.006113</td><td class="num">0.00</td><td class="num">2501.4</td><td class="num">2501.4</td><td class="num">0.0000</td><td class="num">9.1562</td><td class="num">206.14</td></tr>
+    <tr><td>20°C</td><td class="num">0.02338</td><td class="num">83.91</td><td class="num">2453.6</td><td class="num">2537.5</td><td class="num">0.2966</td><td class="num">8.6671</td><td class="num">57.791</td></tr>
+    <tr><td>50°C</td><td class="num">0.1235</td><td class="num">209.3</td><td class="num">2382.0</td><td class="num">2591.3</td><td class="num">0.7037</td><td class="num">8.0762</td><td class="num">12.032</td></tr>
+    <tr><td>100°C (atmospheric)</td><td class="num">1.0133</td><td class="num">419.1</td><td class="num">2256.9</td><td class="num">2676.0</td><td class="num">1.3069</td><td class="num">7.3549</td><td class="num">1.6720</td></tr>
+    <tr><td>5 bar &nbsp;(151.8°C)</td><td class="num">5.000</td><td class="num">640.1</td><td class="num">2107.4</td><td class="num">2747.5</td><td class="num">1.8604</td><td class="num">6.8212</td><td class="num">0.3747</td></tr>
+    <tr><td>10 bar &nbsp;(179.9°C)</td><td class="num">10.00</td><td class="num">762.7</td><td class="num">2013.6</td><td class="num">2778.1</td><td class="num">2.1387</td><td class="num">6.5865</td><td class="num">0.1940</td></tr>
+    <tr><td>20 bar &nbsp;(212.4°C)</td><td class="num">20.00</td><td class="num">908.8</td><td class="num">1890.7</td><td class="num">2799.5</td><td class="num">2.4474</td><td class="num">6.3409</td><td class="num">0.09963</td></tr>
+    <tr><td>50 bar &nbsp;(264.0°C)</td><td class="num">50.00</td><td class="num">1154.2</td><td class="num">1639.6</td><td class="num">2794.0</td><td class="num">2.9202</td><td class="num">5.9737</td><td class="num">0.03944</td></tr>
+    <tr><td>100 bar &nbsp;(311.0°C)</td><td class="num">100.0</td><td class="num">1407.6</td><td class="num">1317.1</td><td class="num">2724.5</td><td class="num">3.3596</td><td class="num">5.6141</td><td class="num">0.01803</td></tr>
+    <tr><td>150 bar &nbsp;(342.2°C)</td><td class="num">150.0</td><td class="num">1609.9</td><td class="num">1000.0</td><td class="num">2609.9</td><td class="num">3.6844</td><td class="num">5.3108</td><td class="num">0.01034</td></tr>
+    <tr><td>200 bar &nbsp;(365.8°C)</td><td class="num">200.0</td><td class="num">1826.5</td><td class="num">585.5</td><td class="num">2412.0</td><td class="num">4.0139</td><td class="num">4.9320</td><td class="num">0.005862</td></tr>
+    <tr class="crit"><td>Critical Point (374.14°C)</td><td class="num">220.9</td><td class="num">2099.3</td><td class="num">0.0</td><td class="num">2099.3</td><td class="num">4.4120</td><td class="num">4.4120</td><td class="num">0.003155</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sec">🔬 Formulation Method &amp; Accuracy</div>
+<div class="fbox">
+  <div class="fbox-t">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+    IAPWS-IF97 — Calculation Method &amp; Error Bounds
+  </div>
+  <pre><span class="hl">Saturation Pressure P_sat(T):</span>
+  Wagner equation — IAPWS-IF97 Equation 30
+  n1·τ + n2·τ^1.5 + n3·τ^3 + n4·τ^3.5 + n5·τ^4 + n6·τ^7.5
+  Accuracy: ±0.003 bar vs official IAPWS-IF97 tables
+
+<span class="hl">Saturation Temperature T_sat(P):</span>
+  Newton-Raphson iteration on Wagner equation
+  Accuracy: ±0.01°C · Converges in &lt;20 iterations
+
+<span class="hl">Saturated Properties (h, s, v):</span>
+  Linear interpolation on 34-point IAPWS-IF97 reference table (0.01–374.14°C)
+  h error: &lt;0.3 kJ/kg · s error: &lt;0.002 kJ/(kg·K) · v error: &lt;0.1%
+
+<span class="hl">Compressed Liquid:</span>
+  h = h_f(T) + v_f·(P − P_sat)   [IAPWS approximation]
+  s ≈ s_f(T)   [pressure correction negligible for liquids]
+  Accuracy: ±0.5% for typical subcooling
+
+<span class="hl">Superheated Steam (Region 2):</span>
+  Cp polynomial calibrated to IAPWS-IF97 Region 2 reference tables
+  h = h_g(P) + Cp·ΔT_sh   ·   s = s_g(P) + Cp·ln(T/T_sat)
+  v from ideal gas with compressibility correction: Z = 1 − 0.0004·P_bar
+  Accuracy: ±0.5% vs certified IAPWS-IF97 tables
+
+<span class="hl">Applicability:</span>
+  T range: 0.01°C – 800°C   ·   P range: 0.006 – 1000 bar
+  Not valid for supercritical region (T &gt; 374°C AND P &gt; 220.9 bar)
+
+For critical engineering decisions, always verify against official IAPWS-IF97
+tables or certified thermodynamic software (e.g., REFPROP, CoolProp).</pre>
+</div>
+
+<div class="footer">
+  Steam &amp; Water Properties Calculator — IAPWS-IF97 International Formulation<br>
+  <span style="font-size:.75rem;">For engineering reference · Verify critical values against official IAPWS-IF97 tables</span>
+</div>
+
+</div>
+<div class="toast" id="toastEl"></div>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); }
+  else   { alert('Could not open new tab — please allow popups for this page.'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PDF REPORT
+═══════════════════════════════════════════════════════════════════ */
+function genPDF() {
+  if (!window.jspdf) { alert('PDF library not loaded — please check your internet connection.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210, M = 14, CW = W - 2*M;
+  let y = 0;
+
+  const DARK  = [15, 17, 23];
+  const STM   = [10, 92, 140];
+  const AMB   = [184, 92, 0];
+  const TEAL  = [10, 107, 92];
+  const MID   = [74, 80, 104];
+  const GHOST = [208, 212, 224];
+  const TINT  = [236, 238, 245];
+  const WHITE = [255, 255, 255];
+
+  const now   = new Date().toLocaleString('en-GB');
+  const u     = uu();
+  const r     = _lastResult;
+  const hasR  = !!r;
+  const title = (document.getElementById('rptTitle')?.value || '').trim();
+
+  function pageHdr(pg, tot) {
+    doc.setFillColor(...DARK);
+    doc.rect(0, 0, W, 26, 'F');
+    doc.setFillColor(...STM);
+    doc.rect(0, 25.5, W, 1.8, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...WHITE);
+    doc.text('STEAM & WATER PROPERTIES — IAPWS-IF97', M, 11);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180, 195, 220);
+    doc.text(`${title || 'Thermodynamic Property Report'}  ·  ${now}`, M, 18.5);
+    doc.text(`Page ${pg} of ${tot}`, W - M, 18.5, { align:'right' });
+    y = 33;
+  }
+
+  function secHdr(label, clr = STM) {
+    if (y > 268) { doc.addPage(); pageHdr(doc.getNumberOfPages(), '—'); }
+    doc.setFillColor(...clr);
+    doc.rect(M, y, CW, 6.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...WHITE);
+    doc.text(label.toUpperCase(), M + 3, y + 4.5);
+    y += 9;
+  }
+
+  // ─── PAGE 1 ───
+  pageHdr(1, 2);
+
+  // Title banner
+  doc.setFillColor(232, 244, 251);
+  doc.rect(M, y, CW, 16, 'F');
+  doc.setDrawColor(...STM); doc.setLineWidth(0.4);
+  doc.rect(M, y, CW, 16, 'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...STM);
+  doc.text('Steam & Water Properties', M + 5, y + 8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...MID);
+  doc.text('IAPWS-IF97 International Formulation  ·  Generated: ' + now, M + 5, y + 13);
+  y += 20;
+
+  // Phase banner
+  if (hasR) {
+    const banClr = {
+      compressed: [10,92,140], 'sat-liq': [10,107,92],
+      wet: [91,33,182], 'sat-vap': [146,64,14], superheat: [30,35,48],
+    }[r.phaseCls] || DARK;
+    doc.setFillColor(...banClr);
+    doc.rect(M, y, CW, 15, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(200, 220, 255);
+    doc.text('CALCULATED PHASE / STATE', M + 3, y + 5.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...WHITE);
+    doc.text(r.phase, M + 3, y + 12);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200, 215, 240);
+    doc.text(
+      `${fmt(r.P,4,'P')} ${u.P}  ·  ${fmt(r.T,2,'T')} ${u.T}  ·  ${SYS==='SI'?'Metric (SI)':'Imperial (US)'}`,
+      W - M - 2, y + 12, { align:'right' }
+    );
+    y += 19;
+  }
+
+  // Results table
+  secHdr('1. Thermodynamic Properties');
+  if (hasR) {
+    const rows = [
+      ['Temperature (T)',               `${fmt(r.T,3,'T')} ${u.T}`],
+      ['Pressure (P)',                  `${fmt(r.P,4,'P')} ${u.P}`],
+      ['Saturation Temperature (T_sat)',`${fmt(r.Tsat,3,'T')} ${u.T}`],
+      ['Specific Enthalpy (h)',         `${fmt(r.h,2,'h')} ${u.h}`],
+      ['Specific Entropy (s)',          `${fmt(r.s,5,'s')} ${u.s}`],
+      ['Specific Volume (v)',           `${fmtV(r.v,'v')} ${u.v}`],
+      ['Density (ρ)',                   `${fmt(r.rho,4,'rho')} ${u.rho}`],
+      ['Internal Energy (u)',           `${fmt(r.u,2,'u')} ${u.u}`],
+    ];
+    if (r.x !== null && r.x !== undefined)
+      rows.push(['Steam Quality (x)', `${(r.x*100).toFixed(3)} % vapor`]);
+    if (r.dT_sh !== undefined)
+      rows.push(['Degree of Superheat (ΔT_sh)', `${fmt(r.dT_sh,2,'dT')} ${u.dT}`]);
+    if (r.hfg !== undefined) rows.push(
+      ['Sat. Liquid Enthalpy (h_f)',   `${fmt(r.hf,2,'h')} ${u.h}`],
+      ['Latent Heat (h_fg)',           `${fmt(r.hfg,2,'h')} ${u.h}`],
+      ['Sat. Vapor Enthalpy (h_g)',    `${fmt(r.hg,2,'h')} ${u.h}`],
+    );
+    if (r.sf !== undefined) rows.push(
+      ['Sat. Liquid Entropy (s_f)',    `${fmt(r.sf,5,'s')} ${u.s}`],
+      ['Entropy of Evaporation (s_fg)',`${fmt(r.sfg,5,'s')} ${u.s}`],
+      ['Sat. Vapor Entropy (s_g)',     `${fmt(r.sg,5,'s')} ${u.s}`],
+    );
+    if (r.vf !== undefined) rows.push(
+      ['Sat. Liquid Volume (v_f)',     `${fmtV(r.vf,'v')} ${u.v}`],
+      ['Sat. Vapor Volume (v_g)',      `${fmtV(r.vg,'v')} ${u.v}`],
+    );
+    doc.autoTable({
+      startY: y, margin:{ left:M, right:M },
+      head: [['Property', 'Value & Unit']],
+      body: rows,
+      styles:{ fontSize:8.5, cellPadding:2.8, lineColor:GHOST, lineWidth:0.3 },
+      headStyles:{ fillColor:STM, textColor:WHITE, fontStyle:'bold' },
+      alternateRowStyles:{ fillColor:TINT },
+      columnStyles:{ 1:{ halign:'right', font:'courier', fontStyle:'bold' } },
+      theme:'grid',
+    });
+    y = doc.lastAutoTable.finalY + 7;
+  } else {
+    doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(...AMB);
+    doc.text('No results yet — run a calculation first, then click PDF Report.', M, y + 4);
+    y += 12;
+  }
+
+  // ─── PAGE 2 ───
+  doc.addPage(); pageHdr(2, 2);
+  y = 38; // reset y after page header on page 2
+
+  secHdr('2. Property Definitions', AMB);
+  doc.autoTable({
+    startY: y, margin:{ left:M, right:M },
+    head: [['Symbol', 'Formula', 'Definition & Engineering Use']],
+    body: [
+      ['h', 'h = u + P·v', 'Specific Enthalpy (kJ/kg) — total energy including flow work. Q = ṁ·Δh for open systems (boilers, turbines).'],
+      ['s', 'ds = δQ/T',   'Specific Entropy (kJ/kg·K) — constant in isentropic processes (ideal turbines). Increases in real processes.'],
+      ['u', 'u = h − P·v', 'Internal Energy (kJ/kg) — molecular energy excluding flow work. Used in closed-system (piston-cylinder) balances.'],
+      ['v', 'v = 1/ρ',     'Specific Volume (m³/kg) — volume per unit mass. Liquid ≈0.001 m³/kg; steam varies widely with P.'],
+      ['ρ', 'ρ = 1/v',     'Density (kg/m³) — mass per volume. Liquid ≈958 kg/m³ at 100°C; saturated steam ≈0.598 kg/m³ at 1 bar.'],
+      ['x', 'x = m_v/m',   'Steam Quality — vapor mass fraction. 0 = saturated liquid; 1 = dry saturated vapor. h = h_f + x·h_fg.'],
+      ['h_fg','h_g − h_f', 'Latent Heat (kJ/kg) — energy for phase change at constant P,T. 2257 at 100°C; zero at critical point.'],
+      ['ΔT_sh','T−T_sat',  'Degree of Superheat (°C) — temperature above saturation. Higher ΔT_sh → more turbine work.'],
+    ],
+    styles:{ fontSize:8, cellPadding:2.5, lineColor:GHOST, lineWidth:0.3 },
+    headStyles:{ fillColor:AMB, textColor:WHITE, fontStyle:'bold' },
+    alternateRowStyles:{ fillColor:TINT },
+    columnStyles:{ 0:{ cellWidth:22, font:'courier', fontStyle:'bold' }, 1:{ cellWidth:38, font:'courier' } },
+    theme:'grid',
+  });
+  y = doc.lastAutoTable.finalY + 7;
+
+  secHdr('3. IAPWS-IF97 Key Reference Values (SI units)', TEAL);
+  doc.autoTable({
+    startY: y, margin:{ left:M, right:M },
+    head: [['State', 'T (°C)', 'P (bar)', 'h_f (kJ/kg)', 'h_fg (kJ/kg)', 'h_g (kJ/kg)', 's_f (kJ/kg·K)', 's_g (kJ/kg·K)', 'v_g (m³/kg)']],
+    body: [
+      ['Triple Point',  '0.01',   '0.00611', '0.00',   '2501.4', '2501.4', '0.0000', '9.1562', '206.14'],
+      ['100°C (atm)',   '100.0',  '1.0133',  '419.1',  '2256.9', '2676.0', '1.3069', '7.3549', '1.6720'],
+      ['5 bar',         '151.8',  '5.000',   '640.1',  '2107.4', '2747.5', '1.8604', '6.8212', '0.3747'],
+      ['10 bar',        '179.9',  '10.00',   '762.7',  '2013.6', '2778.1', '2.1387', '6.5865', '0.1940'],
+      ['20 bar',        '212.4',  '20.00',   '908.8',  '1890.7', '2799.5', '2.4474', '6.3409', '0.09963'],
+      ['50 bar',        '264.0',  '50.00',   '1154.2', '1639.6', '2794.0', '2.9202', '5.9737', '0.03944'],
+      ['100 bar',       '311.0',  '100.0',   '1407.6', '1317.1', '2724.5', '3.3596', '5.6141', '0.01803'],
+      ['Critical Pt',   '374.14', '220.9',   '2099.3', '0.0',    '2099.3', '4.4120', '4.4120', '0.003155'],
+    ],
+    styles:{ fontSize:7.5, cellPadding:2.2, lineColor:GHOST, lineWidth:0.3 },
+    headStyles:{ fillColor:TEAL, textColor:WHITE, fontStyle:'bold', fontSize:7 },
+    alternateRowStyles:{ fillColor:TINT },
+    columnStyles:{
+      1:{halign:'right'}, 2:{halign:'right'},
+      3:{halign:'right',font:'courier'}, 4:{halign:'right',font:'courier'},
+      5:{halign:'right',font:'courier'}, 6:{halign:'right',font:'courier'},
+      7:{halign:'right',font:'courier'}, 8:{halign:'right',font:'courier'},
+    },
+    theme:'grid',
+  });
+  y = doc.lastAutoTable.finalY + 7;
+
+  // Accuracy note
+  doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(...MID);
+  doc.text('IAPWS-IF97 · Wagner saturation equation + 34-point NIST table cubic-spline interpolation. Accuracy ±0.1–0.3%.', M, y);
+  y += 5;
+  doc.text('For critical engineering decisions, verify against official IAPWS-IF97 tables or certified software (REFPROP, CoolProp).', M, y);
+
+  // Footers on all pages — do NOT call pageHdr() here (it would overwrite content)
+  const tot = doc.getNumberOfPages();
+  for (let p = 1; p <= tot; p++) {
+    doc.setPage(p);
+    doc.setDrawColor(...GHOST); doc.setLineWidth(0.3);
+    doc.line(M, 283, W - M, 283);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MID);
+    doc.text('multicalci.com — Steam & Water Properties Calculator — IAPWS-IF97', M, 288);
+    doc.text('For engineering reference only', W/2, 288, { align:'center' });
+    doc.text(`Page ${p} of ${tot}`, W - M, 288, { align:'right' });
+  }
+
+  const dateStr = new Date().toISOString().slice(0, 10);
+  doc.save(`Steam_Properties_Report_${dateStr}.pdf`);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SOCIAL SHARE SYSTEM
+═══════════════════════════════════════════════════════════════════ */
+// Probe environment then start engine (silently skips if WASM unavailable)
+loadPyodideEngine();
+
+const SHARE_URL   = window.location.href;
+const SHARE_TITLE = 'Steam & Water Properties Calculator — IAPWS-IF97';
+const SHARE_TXT   = '💧 Free Steam & Water Properties Calculator — IAPWS-IF97. Compressed liquid, saturated, wet steam & superheated. SI & Imperial.';
+
+function buildShareMsg() {
+  const r = _lastResult, u = uu();
+  let msg = SHARE_TXT + '\n' + SHARE_URL;
+  if (r) {
+    msg += '\n\n📊 Results — ' + r.phase + ':\n'
+      + '• T = ' + fmt(r.T,2,'T') + ' ' + u.T + '\n'
+      + '• P = ' + fmt(r.P,4,'P') + ' ' + u.P + '\n'
+      + '• h = ' + fmt(r.h,2,'h') + ' ' + u.h + '\n'
+      + '• s = ' + fmt(r.s,5,'s') + ' ' + u.s + '\n'
+      + '• v = ' + fmtV(r.v,'v') + ' ' + u.v + '\n'
+      + '• ρ = ' + fmt(r.rho,4,'rho') + ' ' + u.rho + '\n';
+    if (r.hfg !== undefined) msg += '• h_fg = ' + fmt(r.hfg,2,'h') + ' ' + u.h + '\n';
+  }
+  return msg;
+}
+
+function buildEmailBody() {
+  const r = _lastResult, u = uu(), dt = new Date().toLocaleString();
+  let b = SHARE_TITLE + '\n' + SHARE_URL + '\nGenerated: ' + dt + '\nUnit System: ' + (SYS==='SI'?'SI Metric':'Imperial (US)') + '\n\n';
+  if (r) {
+    b += '=== STEAM PROPERTIES REPORT ===\n\nPhase: ' + r.phase + '\n\n';
+    b += 'Temperature (T): ' + fmt(r.T,3,'T') + ' ' + u.T + '\n';
+    b += 'Pressure (P): ' + fmt(r.P,4,'P') + ' ' + u.P + '\n';
+    b += 'T_sat: ' + fmt(r.Tsat,3,'T') + ' ' + u.T + '\n';
+    b += 'Enthalpy (h): ' + fmt(r.h,2,'h') + ' ' + u.h + '\n';
+    b += 'Entropy (s): ' + fmt(r.s,5,'s') + ' ' + u.s + '\n';
+    b += 'Specific Volume (v): ' + fmtV(r.v,'v') + ' ' + u.v + '\n';
+    b += 'Density (rho): ' + fmt(r.rho,4,'rho') + ' ' + u.rho + '\n';
+    b += 'Internal Energy (u): ' + fmt(r.u,2,'u') + ' ' + u.u + '\n';
+    if (r.x !== null && r.x !== undefined) b += 'Steam Quality (x): ' + (r.x*100).toFixed(3) + '% vapor\n';
+    if (r.dT_sh !== undefined) b += 'Superheat (dT_sh): ' + fmt(r.dT_sh,2,'dT') + ' ' + u.dT + '\n';
+    if (r.hfg !== undefined) {
+      b += '\nSaturation values at T_sat = ' + fmt(r.Tsat,2,'T') + ' ' + u.T + ':\n';
+      b += 'h_f = ' + fmt(r.hf,2,'h') + '  |  h_fg = ' + fmt(r.hfg,2,'h') + '  |  h_g = ' + fmt(r.hg,2,'h') + ' ' + u.h + '\n';
+      if (r.sf !== undefined) b += 's_f = ' + fmt(r.sf,5,'s') + '  |  s_fg = ' + fmt(r.sfg,5,'s') + '  |  s_g = ' + fmt(r.sg,5,'s') + ' ' + u.s + '\n';
+      if (r.vf !== undefined) b += 'v_f = ' + fmtV(r.vf,'v') + '  |  v_g = ' + fmtV(r.vg,'v') + ' ' + u.v + '\n';
+    }
+    b += '\nCalculator: ' + SHARE_URL + '\nUse "PDF Report" in the calculator for a formatted printable version.\n';
+  }
+  return b;
+}
+
+function toggleShare(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('shareDD');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) {
+    document.getElementById('shareUrlBox').textContent = SHARE_URL;
+    if (navigator.share) document.getElementById('nativeShareBtn').style.display = 'flex';
+    const hdr = document.getElementById('shareHdr');
+    if (hdr) hdr.textContent = _lastResult ? '📤 Share Calculator + Results' : '📤 Share Calculator';
+  }
+}
+document.addEventListener('click', () => { document.getElementById('shareDD')?.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.getElementById('shareDD')?.classList.remove('open'); });
+
+function shareVia(platform) {
+  const enc = encodeURIComponent, url = SHARE_URL, title = SHARE_TITLE;
+  const richMsg = buildShareMsg(), emailBody = buildEmailBody();
+  const urls = {
+    whatsapp: 'https://wa.me/?text=' + enc(richMsg),
+    twitter:  'https://twitter.com/intent/tweet?text=' + enc(SHARE_TXT) + '&url=' + enc(url),
+    linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + enc(url),
+    facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + enc(url) + '&quote=' + enc(SHARE_TXT),
+    reddit:   'https://www.reddit.com/submit?url=' + enc(url) + '&title=' + enc(title),
+    email:    'mailto:?subject=' + enc(title) + '&body=' + enc(emailBody),
+  };
+  if (platform === 'native') {
+    navigator.share && navigator.share({ title, text: richMsg, url }).then(() => showToast('Shared!')).catch(() => {});
+    return;
+  }
+  window.open(urls[platform], '_blank');
+  if (platform === 'email' && _lastResult) {
+    setTimeout(() => { if (confirm('Also generate a PDF report to attach?')) genPDF(); }, 600);
+  }
+  showToast('Opening ' + platform.charAt(0).toUpperCase() + platform.slice(1) + '…');
+  document.getElementById('shareDD').classList.remove('open');
+}
+
+async function copyShareUrl() {
+  const btn = document.getElementById('copyUrlBtn');
+  const txt = _lastResult ? buildShareMsg() : SHARE_URL;
+  try { await navigator.clipboard.writeText(txt); }
+  catch(e) { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+  btn.textContent = 'Copied!'; btn.classList.add('copied');
+  showToast(_lastResult ? 'Link + results copied!' : 'Link copied!');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toastEl');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+<div class="toast" id="toastEl"></div>
+</body>
+</html>
