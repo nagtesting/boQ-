@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0">
+<title>Cooling Tower Performance Calculator — CTI ATC-105 | multicalci.com</title>
+<meta name="description" content="Free cooling tower performance calculator using CTI ATC-105. Calculate approach temperature, range and Merkel number.">
+<link rel="canonical" href="https://multicalci.com/cooling-tower-performance/">
+<meta property="og:title" content="Cooling Tower Performance Calculator — CTI ATC-105 | multicalci.com">
+<meta property="og:description" content="Free cooling tower performance calculator using CTI ATC-105. Calculate approach temperature, range and Merkel number.">
+<meta property="og:url" content="https://multicalci.com/cooling-tower-performance/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cooling Tower Performance Calculator — CTI ATC-105 | multicalci.com">
+<meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Cooling Tower Performance Calculator","description":"CTI ATC-105 Merkel method cooling tower performance calculator with KaV/L, NTU, approach temperature and degradation assessment.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/cooling-tower-performance/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#080d17;--ink2:#111827;--ink3:#1e2a3a;
+  --mid:#3d5166;--sub:#637d96;--pale:#8fa8bf;--ghost:#b8cad8;
+  --bg:#0d1520;--bg2:#111d2b;--bg3:#162235;
+  --sur:#1a2840;--sur2:#1f3050;--sur3:#243663;
+  --accent:#00d4ff;--accent2:#0096cc;--accent3:#0ef7ff;
+  --teal:#00c9a7;--teal2:#00a88a;
+  --amber:#ffb800;--amber2:#cc9200;--amber3:#fff3cc;
+  --red:#ff4444;--red2:#cc2222;--redp:rgba(255,68,68,.12);
+  --grn:#00e676;--grn2:#00c160;--grnp:rgba(0,230,118,.1);
+  --pur:#b388ff;--purp:rgba(179,136,255,.12);
+  --bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.14);
+  --r:12px;
+  --sh:0 4px 24px rgba(0,0,0,.4),0 1px 4px rgba(0,0,0,.3);
+  --sh2:0 8px 40px rgba(0,0,0,.5);
+  --glow:0 0 24px rgba(0,212,255,.2),0 0 8px rgba(0,212,255,.1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:#c8dce8;min-height:100vh;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)}
+.topbar-in{max-width:1440px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo-ico{width:40px;height:40px;background:linear-gradient(135deg,var(--accent2),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:var(--glow)}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.3px;white-space:nowrap}
+.logo-sub{font-size:.62rem;color:var(--pale);font-weight:500;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;font-family:'JetBrains Mono',monospace}
+.topbar-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tpill{padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.tpill.cyan{border-color:rgba(0,212,255,.4);color:var(--accent);background:rgba(0,212,255,.08)}
+.tpill.ghost{border-color:var(--bd);color:var(--pale);background:rgba(255,255,255,.04)}
+.status-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--sub);box-shadow:0 0 0 2px rgba(255,255,255,.05);transition:all .4s;flex-shrink:0}
+.status-dot.ok{background:var(--grn);box-shadow:0 0 10px var(--grn)}
+.status-dot.warn{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.status-dot.bad{background:var(--red);box-shadow:0 0 10px var(--red)}
+.status-lbl{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;color:var(--pale);transition:color .3s;white-space:nowrap}
+.unit-toggle{display:flex;background:var(--sur);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-left:8px}
+.ut{padding:6px 12px;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:700;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ut.on{background:var(--accent2);color:#fff}
+.hero{background:linear-gradient(160deg,var(--bg2) 0%,var(--bg3) 50%,var(--bg) 100%);padding:32px 20px 28px;position:relative;overflow:hidden;border-bottom:1px solid var(--bd)}
+.hero::before{content:'';position:absolute;top:-60px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.07) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-40px;left:30%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,201,167,.05) 0%,transparent 70%);pointer-events:none}
+.hero-in{max-width:1440px;margin:0 auto;position:relative;z-index:1}
+.hero-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.1;margin-bottom:8px}
+.hero-title em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:.88rem;color:var(--pale);max-width:700px;line-height:1.7;margin-bottom:14px}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.htag{padding:4px 12px;background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:20px;font-size:.68rem;font-weight:600;color:var(--ghost);letter-spacing:.3px}
+.page{max-width:1440px;margin:0 auto;padding:20px}
+.layout{display:grid;grid-template-columns:420px 1fr;gap:18px;align-items:start}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}}
+.panel-tabs{display:flex;background:var(--bg2);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.ptab{flex:1;padding:9px 5px;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;color:var(--sub);cursor:pointer;transition:all .15s;text-align:center;letter-spacing:.2px;border-bottom:2px solid transparent}
+.ptab.on{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.06)}
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.card:last-child{margin-bottom:0}
+.ch{padding:12px 18px;border-bottom:1px solid var(--bd);background:var(--sur2);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ch-left{display:flex;align-items:center;gap:8px}
+.ch-ico{font-size:15px}
+.ch-ttl{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#c8dce8}
+.cb{padding:16px 18px}
+.fg{margin-bottom:12px}
+.fg:last-child{margin-bottom:0}
+.fg label{display:block;font-size:.78rem;font-weight:700;color:#9ab0c4;margin-bottom:4px;letter-spacing:.3px}
+.fg label .uh{font-weight:500;color:var(--sub);font-size:.72rem}
+.fi{width:100%;padding:9px 12px;border:1.5px solid var(--bd2);border-radius:8px;font-size:.92rem;font-weight:600;font-family:'JetBrains Mono',monospace;color:#e8f4ff;background:var(--bg2);transition:border-color .15s,box-shadow .15s;outline:none}
+.fi:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(0,150,204,.15)}
+.fi:hover:not(:focus){border-color:rgba(255,255,255,.22)}
+.fi::placeholder{color:var(--sub);font-size:.82rem}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.calc-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent2),var(--teal2));color:#fff;border:none;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.2px;box-shadow:0 4px 16px rgba(0,150,204,.3)}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,150,204,.45)}
+.calc-btn:active{transform:translateY(0)}
+.calc-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.sec-btn{padding:8px 14px;border:1.5px solid var(--bd2);border-radius:8px;background:transparent;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;color:var(--pale);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.sec-btn:hover{border-color:var(--accent2);color:var(--accent);background:rgba(0,212,255,.06)}
+.sec-btn.red:hover{border-color:var(--red);color:var(--red);background:var(--redp)}
+.sec-btn.green:hover{border-color:var(--grn);color:var(--grn);background:var(--grnp)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.share-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;justify-content:center}
+.share-btn{padding:7px 14px;border-radius:7px;border:none;font-family:'Space Grotesk',sans-serif;font-size:.74rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;text-decoration:none}
+.sb-wa{background:#25D366;color:#fff}.sb-wa:hover{background:#1da852}
+.sb-tw{background:#1D9BF0;color:#fff}.sb-tw:hover{background:#1578c2}
+.sb-li{background:#0A66C2;color:#fff}.sb-li:hover{background:#084e96}
+.sb-em{background:var(--sub);color:#fff}.sb-em:hover{background:var(--mid)}
+.sb-cp{background:var(--sur2);color:var(--pale);border:1px solid var(--bd2)}.sb-cp:hover{background:var(--sur3);color:#fff}
+.warn{padding:10px 14px;border-radius:8px;font-size:.8rem;font-weight:600;margin:8px 0;line-height:1.55;display:none}
+.warn.show{display:block}
+.warn.wr{background:rgba(255,68,68,.1);border-left:3px solid var(--red);color:#ff8888}
+.warn.wa{background:rgba(255,184,0,.1);border-left:3px solid var(--amber);color:#ffcc44}
+.warn.wi{background:rgba(0,212,255,.08);border-left:3px solid var(--accent2);color:var(--accent)}
+.warn.wg{background:var(--grnp);border-left:3px solid var(--grn);color:#44ffaa}
+.ph{padding:70px 24px;text-align:center}
+.ph-ico{font-size:3.5rem;margin-bottom:14px;opacity:.25}
+.ph-txt{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#5a7a96;margin-bottom:8px}
+.ph-sub{font-size:.82rem;color:var(--sub);max-width:400px;margin:0 auto;line-height:1.7}
+.banner{background:linear-gradient(135deg,#0e1e35,#0d2a3f);border:1px solid rgba(0,212,255,.18);border-radius:12px;padding:20px 24px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,212,255,.06)}
+.banner::before{content:'';position:absolute;top:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.08) 0%,transparent 70%)}
+.ban-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ban-item{position:relative;z-index:1;border-right:1px solid var(--bd);padding-right:16px}
+.ban-item:last-child{border-right:none;padding-right:0}
+.ban-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--pale);margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.ban-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:#fff;line-height:1;margin-bottom:4px}
+.ban-val .bmu{font-size:1rem;opacity:.6;margin-left:3px}
+.ban-sub{font-size:.68rem;color:var(--pale);font-weight:500}
+.ban-badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:.66rem;font-weight:700;margin-top:5px;border:1px solid;letter-spacing:.2px;font-family:'JetBrains Mono',monospace}
+.ban-badge.ok{background:rgba(0,230,118,.15);border-color:var(--grn);color:var(--grn)}
+.ban-badge.warn{background:rgba(255,184,0,.15);border-color:var(--amber);color:var(--amber)}
+.ban-badge.bad{background:rgba(255,68,68,.15);border-color:var(--red);color:var(--red)}
+.ban-badge.info{background:rgba(0,212,255,.1);border-color:var(--accent2);color:var(--accent)}
+.ban-badge.neutral{background:rgba(255,255,255,.06);border-color:var(--bd2);color:var(--pale)}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.mg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.mc{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:13px 15px;border-top:2px solid var(--bd);transition:all .2s}
+.mc:hover{border-color:rgba(255,255,255,.14);transform:translateY(-1px)}
+.mc.ac{border-top-color:var(--accent2)}
+.mc.tl{border-top-color:var(--teal)}
+.mc.gn{border-top-color:var(--grn)}
+.mc.am{border-top-color:var(--amber)}
+.mc.rd{border-top-color:var(--red)}
+.mc.pu{border-top-color:var(--pur)}
+.mc-lbl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+.mc-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:#e8f4ff;line-height:1.2}
+.mc-u{font-size:.7rem;color:var(--pale);margin-left:2px;font-weight:600}
+.mc-sub{font-size:.68rem;color:var(--sub);margin-top:4px;line-height:1.4}
+.bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:.7rem;font-weight:700;letter-spacing:.2px;border:1px solid;font-family:'JetBrains Mono',monospace}
+.b-g{background:var(--grnp);color:var(--grn);border-color:rgba(0,230,118,.3)}
+.b-a{background:rgba(255,184,0,.1);color:var(--amber);border-color:rgba(255,184,0,.35)}
+.b-r{background:var(--redp);color:var(--red);border-color:rgba(255,68,68,.3)}
+.b-b{background:rgba(0,212,255,.08);color:var(--accent);border-color:rgba(0,212,255,.3)}
+.b-t{background:rgba(0,201,167,.1);color:var(--teal);border-color:rgba(0,201,167,.3)}
+.b-n{background:rgba(255,255,255,.05);color:var(--pale);border-color:var(--bd2)}
+.prog-wrap{margin-top:10px}
+.prog-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.prog-hdr span{font-size:.7rem;color:var(--sub);font-weight:700;font-family:'JetBrains Mono',monospace}
+.prog-val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:#e8f4ff}
+.prog-track{height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;border:1px solid var(--bd)}
+.prog-fill{height:100%;border-radius:5px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.prog-fill.gn{background:linear-gradient(90deg,var(--teal2),var(--grn))}
+.prog-fill.am{background:linear-gradient(90deg,#cc7700,var(--amber))}
+.prog-fill.rd{background:linear-gradient(90deg,var(--red2),var(--red))}
+.prog-ticks{display:flex;justify-content:space-between;margin-top:3px}
+.prog-tick{font-size:.6rem;color:var(--sub);font-family:'JetBrains Mono',monospace}
+.sec{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--sub);padding:8px 0 6px;border-bottom:1px solid var(--bd);margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.dtbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.dtbl th{background:var(--bg2);color:var(--pale);padding:8px 11px;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.4px;border-bottom:1px solid var(--bd2)}
+.dtbl th:not(:first-child){text-align:right}
+.dtbl td{padding:7px 11px;border-bottom:1px solid var(--bd);color:#9ab0c4;font-weight:600}
+.dtbl td.num{font-family:'JetBrains Mono',monospace;font-weight:700;color:#c8dce8;text-align:right}
+.dtbl td.pos{color:var(--red)!important;font-weight:800}
+.dtbl td.neg{color:var(--grn)!important;font-weight:800}
+.dtbl td.zer{color:var(--sub)!important}
+.dtbl tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.dtbl tr:hover td{background:rgba(0,212,255,.04)}
+.ibox{padding:12px 15px;border-radius:8px;border-left:3px solid;margin-top:10px;font-size:.8rem;line-height:1.6;font-weight:500}
+.ibox.ok{background:rgba(0,230,118,.07);border-color:var(--grn);color:#80f5b8}
+.ibox.warn{background:rgba(255,184,0,.07);border-color:var(--amber);color:#ffd966}
+.ibox.bad{background:var(--redp);border-color:var(--red);color:#ff9999}
+.ibox.info{background:rgba(0,212,255,.06);border-color:var(--accent2);color:#88ddff}
+.ibox-t{font-weight:800;margin-bottom:4px;font-size:.82rem}
+.fbox{background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:14px 16px;margin-top:10px}
+.fbox-t{font-size:.66rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.fbox pre{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#7899aa;line-height:1.95;white-space:pre-wrap;word-break:break-word}
+.fbox pre .hl{color:var(--amber)}
+.fbox pre .gr{color:var(--grn)}
+.fbox pre .cy{color:var(--accent)}
+.fbox pre .rd{color:var(--red)}
+.fbox pre .wh{color:#e8f4ff;font-weight:700}
+.kappa-box{background:linear-gradient(160deg,var(--bg2),var(--bg3));border:1px solid rgba(0,212,255,.18);border-radius:10px;padding:16px 18px;margin-top:12px}
+.kappa-box h4{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px}
+.kappa-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.kappa-cell{background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)}
+.kappa-cell .kc-lbl{font-size:.6rem;color:var(--pale);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.kappa-cell .kc-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--amber)}
+.kappa-cell .kc-sub{font-size:.62rem;color:var(--sub);margin-top:2px}
+.kappa-note{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#7899aa;line-height:1.9;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 13px}
+.kappa-note .gr{color:var(--grn)}
+.kappa-note .cy{color:var(--accent)}
+.kappa-note .rd{color:var(--red)}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ref-card{background:var(--bg2);border:1px solid var(--bd);border-radius:9px;padding:13px 15px;border-left:3px solid var(--accent2)}
+.ref-card .rc-num{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.ref-card .rc-title{font-size:.82rem;font-weight:700;color:#c8dce8;line-height:1.35;margin-bottom:4px}
+.ref-card .rc-auth{font-size:.72rem;color:var(--sub);line-height:1.5}
+.gtbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.gtbl th{background:var(--bg2);color:var(--pale);padding:8px 10px;text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.4px;border-bottom:1px solid var(--bd2)}
+.gtbl td{padding:7px 10px;border-bottom:1px solid var(--bd);color:#9ab0c4;vertical-align:top;line-height:1.5}
+.gtbl td:first-child{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:.75rem;white-space:nowrap}
+.gtbl td:nth-child(2){color:var(--pale);font-size:.72rem;white-space:nowrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--sur3);color:#fff;padding:10px 22px;border-radius:24px;font-size:.82rem;font-weight:700;border:1px solid var(--bd2);box-shadow:var(--sh2);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:9999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.loading-overlay.show{display:flex}
+.loading-box{background:var(--sur2);border:1px solid var(--bd2);border-radius:16px;padding:32px 40px;text-align:center}
+.spinner{width:40px;height:40px;border:3px solid var(--bd2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* API indicator */
+.api-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:20px;font-size:.62rem;font-weight:700;color:var(--grn);font-family:'JetBrains Mono',monospace;letter-spacing:.4px}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--accent);font-weight:700">Computing Merkel NTU…</div>
+    <div style="font-size:.72rem;color:var(--sub);margin-top:4px">CTI ATC-105 κ-correction + Adaptive Chebyshev</div>
+  </div>
+</div>
+
+<!-- ══════════════════ TOPBAR ══════════════════ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <a href="/" class="logo-wrap" style="text-decoration:none">
+      <div class="logo-ico">🌬️</div>
+      <div>
+        <div class="logo-text">multicalci</div>
+        <div class="logo-sub">Engineering Calculators</div>
+      </div>
+    </a>
+    <div class="topbar-pills">
+      <span class="tpill cyan">CTI ATC-105</span>
+      <span class="tpill ghost">Merkel NTU</span>
+      <span class="api-badge"><span class="api-dot"></span>API-Powered</span>
+    </div>
+    <div class="status-wrap">
+      <div id="statusDot" class="status-dot"></div>
+      <span id="statusLbl" class="status-lbl">Awaiting Input</span>
+      <div class="unit-toggle">
+        <button class="ut on" id="btn_SI" onclick="setUnit('SI')">SI</button>
+        <button class="ut" id="btn_IMP" onclick="setUnit('IMP')">IMP</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<div class="hero">
+  <div class="hero-in">
+    <h1 class="hero-title">Cooling Tower <em>Performance Monitor</em></h1>
+    <p class="hero-desc">
+      CTI ATC-105 acceptance test methodology — Merkel NTU integration, κ-corrected WBT sensitivity, L/G ratio, fill efficiency. 
+      Server-side calculation engine, nothing exposed in browser source.
+    </p>
+    <div class="hero-tags">
+      <span class="htag">🏭 CTI ATC-105 Compliant</span>
+      <span class="htag">📐 Merkel Method (NTU)</span>
+      <span class="htag">🔮 κ-Corrected WBT Prediction</span>
+      <span class="htag">📊 Multi-Point WBT Sweep</span>
+      <span class="htag">⚠ Performance Diagnostics</span>
+      <span class="htag">🖨 PDF Report</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE ══════════════════ -->
+<div class="page">
+<div class="layout">
+
+<!-- ═══════════════ LEFT INPUTS ═══════════════ -->
+<div>
+
+  <div class="warn wi show" style="margin-bottom:12px;font-size:.76rem">
+    <strong>⚠ Key Engineering Fact:</strong> When WBT drops X°C, CWT does <em>NOT</em> drop by X°C. 
+    CTI ATC-105 Merkel model gives: <strong>ΔCWT = κ × ΔWBT</strong>, where κ = dCWT/dWBT from the Merkel enthalpy curve (adaptive Chebyshev) — typical range 0.4–0.8 depending on tower design and site pressure.
+  </div>
+
+  <!-- Card: Design Conditions -->
+  <div class="card">
+    <div class="ch">
+      <div class="ch-left"><span class="ch-ico">📐</span><span class="ch-ttl">Design Conditions (Nameplate)</span></div>
+    </div>
+    <div class="cb">
+      <div class="sec">Thermal Design Point</div>
+      <div class="r2">
+        <div class="fg">
+          <label>Design WBT <span class="uh" id="u_d_wb">(°C)</span></label>
+          <input class="fi" id="d_wb" type="number" step="0.1" placeholder="e.g. 28.0">
+        </div>
+        <div class="fg">
+          <label>Design CWT <span class="uh" id="u_d_cwt">(°C)</span></label>
+          <input class="fi" id="d_cwt" type="number" step="0.1" placeholder="e.g. 33.0">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Design HWT <span class="uh" id="u_d_hwt">(°C)</span></label>
+        <input class="fi" id="d_hwt" type="number" step="0.1" placeholder="e.g. 43.0">
+      </div>
+      <div class="sec">Flow Rates</div>
+      <div class="r2">
+        <div class="fg">
+          <label>Water Flow <span class="uh" id="u_d_wr">(m³/h)</span></label>
+          <input class="fi" id="d_wr" type="number" step="1" min="0.01" placeholder="e.g. 500">
+        </div>
+        <div class="fg">
+          <label>Air Flow <span class="uh" id="u_d_ar">(m³/h)</span> <span style="font-size:.65rem;color:var(--teal);font-weight:600">optional</span></label>
+          <input class="fi" id="d_ar" type="number" step="1" min="0.01" placeholder="Leave blank if unknown">
+        </div>
+      </div>
+      <div class="sec">Site Elevation / Barometric Pressure</div>
+      <div class="r2">
+        <div class="fg">
+          <label>Elevation <span class="uh">(m ASL)</span> <span style="font-size:.65rem;color:var(--teal);font-weight:600">optional</span></label>
+          <input class="fi" id="d_elev" type="number" step="10" min="0" max="5000" placeholder="e.g. 0 (sea level)">
+        </div>
+        <div class="fg">
+          <label>Barometric Pressure <span class="uh">(kPa)</span> <span style="font-size:.65rem;color:var(--teal);font-weight:600">auto/override</span></label>
+          <input class="fi" id="d_patm" type="number" step="0.1" min="70" max="110" placeholder="e.g. 101.325">
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:var(--sub);margin-top:-6px;line-height:1.5;padding:0 2px">
+        💡 Enter elevation OR barometric pressure. At 1000 m: ~89.9 kPa (≈10% lower — affects KaV/L and κ significantly). Air flow is only needed for L/G ratio.
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Actual Site Conditions -->
+  <div class="card">
+    <div class="ch">
+      <div class="ch-left"><span class="ch-ico">📡</span><span class="ch-ttl">Actual Site Conditions</span></div>
+      <button class="sec-btn" onclick="matchDesign()">↩ Copy Design</button>
+    </div>
+    <div class="cb">
+      <div class="sec">Site Measured Values</div>
+      <div class="r2">
+        <div class="fg">
+          <label>Actual WBT <span class="uh" id="u_a_wb">(°C)</span></label>
+          <input class="fi" id="a_wb" type="number" step="0.1" placeholder="Measured on-site">
+        </div>
+        <div class="fg">
+          <label>Actual CWT <span class="uh" id="u_a_cwt">(°C)</span></label>
+          <input class="fi" id="a_cwt" type="number" step="0.1" placeholder="Basin outlet">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Actual HWT <span class="uh" id="u_a_hwt">(°C)</span></label>
+        <input class="fi" id="a_hwt" type="number" step="0.1" placeholder="Process return">
+      </div>
+
+      <!-- κ Predict button -->
+      <div style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:9px;padding:12px 14px;margin-top:4px">
+        <div style="font-size:.75rem;font-weight:700;color:var(--accent);margin-bottom:4px">🔮 CTI κ-Method: Auto-predict CWT</div>
+        <div style="font-size:.71rem;color:var(--sub);margin-bottom:9px;line-height:1.55">
+          Fills Actual CWT using: CWT_pred = CWT_d + κ × (WBT_actual − WBT_design)<br>
+          <em>where κ = dCWT/dWBT (Merkel/psychrometric, 4-pt Chebyshev) — NOT a 1:1 ratio</em>
+        </div>
+        <button class="calc-btn" style="font-size:.82rem;padding:9px" onclick="predictCWT()">
+          🔮 Auto-fill Predicted CWT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Alert Thresholds -->
+  <div class="card">
+    <div class="ch"><div class="ch-left"><span class="ch-ico">⚙️</span><span class="ch-ttl">Performance Thresholds</span></div></div>
+    <div class="cb">
+      <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:9px;padding:12px 14px;margin-bottom:12px">
+        <div class="r2">
+          <div class="fg" style="margin:0">
+            <label style="font-size:.7rem;color:var(--sub)">⚠ Warning <span class="uh" id="th_warn_hint">(°C above design approach)</span></label>
+            <input class="fi" id="th_warn" type="number" value="1.5" step="0.1" min="0">
+          </div>
+          <div class="fg" style="margin:0">
+            <label style="font-size:.7rem;color:var(--sub)">🔴 Alert <span class="uh" id="th_bad_hint">(°C above design approach)</span></label>
+            <input class="fi" id="th_bad" type="number" value="3.0" step="0.1" min="0">
+          </div>
+        </div>
+      </div>
+      <div id="alertBox" class="warn"></div>
+      <button class="calc-btn" id="calcBtn" onclick="calculate()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Calculate Performance
+      </button>
+      <div class="btn-row">
+        <button class="sec-btn" onclick="generatePDF()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          PDF Report
+        </button>
+        <button class="sec-btn green" onclick="shareVia('copy')">📋 Copy Link</button>
+        <button class="sec-btn red" onclick="clearAll()">✕ Clear</button>
+      </div>
+      <div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px">
+        <div style="font-size:.68rem;color:var(--sub);text-align:center;margin-bottom:7px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.4px">Share This Tool</div>
+        <div class="share-btn-row">
+          <button class="share-btn sb-wa" onclick="shareVia('whatsapp')">WhatsApp</button>
+          <button class="share-btn sb-tw" onclick="shareVia('twitter')">Twitter/X</button>
+          <button class="share-btn sb-li" onclick="shareVia('linkedin')">LinkedIn</button>
+          <button class="share-btn sb-em" onclick="shareVia('email')">Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Legend -->
+  <div class="card">
+    <div class="ch"><div class="ch-left"><span class="ch-ico">📖</span><span class="ch-ttl">Parameter Reference</span></div></div>
+    <div class="cb">
+      <table class="gtbl">
+        <thead><tr><th>Symbol</th><th>Unit</th><th>Engineering Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>WBT</td><td>[°C/°F]</td><td>Wet Bulb Temperature — psychrometric lower limit for evaporative cooling. CWT cannot reach WBT.</td></tr>
+          <tr><td>CWT</td><td>[°C/°F]</td><td>Cold Water Temperature — basin outlet; primary performance KPI.</td></tr>
+          <tr><td>HWT</td><td>[°C/°F]</td><td>Hot Water Temperature — returning from process/condenser.</td></tr>
+          <tr><td>Approach</td><td>[ΔT]</td><td>CWT − WBT. Lower = better. Cannot be negative. Design anchor.</td></tr>
+          <tr><td>Range</td><td>[ΔT]</td><td>HWT − CWT. Heat rejected per unit water mass. Process load indicator.</td></tr>
+          <tr><td>L/G</td><td>[—]</td><td>Liquid:Gas mass ratio. Typical 0.75–1.50 for counterflow towers.</td></tr>
+          <tr><td>KaV/L</td><td>[—]</td><td>Merkel Number (NTU). Fill health indicator — compare actual vs design.</td></tr>
+          <tr><td>κ (kappa)</td><td>[ΔCWT/ΔWBT]</td><td>WBT sensitivity factor per CTI ATC-105. κ = dCWT/dWBT — computed from the Merkel/psychrometric enthalpy curve. Typical 0.4–0.8. <strong>NOT range/(range+approach).</strong></td></tr>
+          <tr><td>ε (effectiveness)</td><td>[—]</td><td>Tower thermal effectiveness = Range/(HWT−WBT). Approaches 1 for ideal tower.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- end left -->
+
+<!-- ═══════════════ RIGHT RESULTS ═══════════════ -->
+<div id="resultsPanel">
+  <div class="ph">
+    <div class="ph-ico">🌬️</div>
+    <div class="ph-txt">Cooling Tower Performance Monitor Pro</div>
+    <div class="ph-sub">Enter design &amp; actual site conditions, then click <strong>Calculate Performance</strong>.<br><br>
+      This tool applies the CTI ATC-105 κ-correction to properly account for the non-linear relationship between wet-bulb temperature changes and cold water temperature response.</div>
+    <div style="margin-top:20px;padding:14px 18px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:9px;font-size:.82rem;color:var(--accent);max-width:460px;margin-left:auto;margin-right:auto;text-align:left;line-height:1.7">
+      <strong>⚠ Engineering Note:</strong> Site WBT varies 10–15°C from design. This tool shows the <em>correct</em> predicted CWT for any site WBT, not the common incorrect 1:1 assumption.
+    </div>
+  </div>
+</div>
+
+</div><!-- end layout -->
+</div><!-- end page -->
+
+<!-- Toast notification -->
+<div class="toast" id="toastEl"></div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════════════════
+   API ENDPOINT — all calculation logic runs server-side
+══════════════════════════════════════════════════════════ */
+const API_URL = '/api/cooling-tower';
+
+/* ══════════════════════════════════════════════════════════
+   SHARE / SOCIAL
+══════════════════════════════════════════════════════════ */
+const SHARE_URL   = window.location.href;
+const SHARE_TITLE = 'Cooling Tower Performance Monitor Pro | CTI ATC-105 | Free Tool';
+const SHARE_TXT   = '🌬️ Best-in-class Cooling Tower Performance Monitor — CTI ATC-105 κ-correction, Merkel NTU, L/G ratio, WBT sweep. Free for engineers.';
+
+/* ══════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════ */
+let unitSys = 'SI';
+let lastR   = null;   // last API result (always in SI °C internally)
+
+/* ══════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════ */
+const el   = id => document.getElementById(id);
+const gv   = id => parseFloat(el(id).value);
+const isOK = (...vs) => vs.every(x => !isNaN(x) && isFinite(x));
+const f1   = n => n.toFixed(1);
+const f2   = n => n.toFixed(2);
+const f3   = n => n.toFixed(3);
+const f4   = n => n.toFixed(4);
+
+/* ══════════════════════════════════════════════════════════
+   UNIT CONVERSIONS (display only — API always uses SI)
+══════════════════════════════════════════════════════════ */
+const toC   = v => unitSys === 'SI' ? v : (v - 32) * 5 / 9;
+const fromC = v => unitSys === 'SI' ? v : v * 9 / 5 + 32;
+const toW   = v => unitSys === 'SI' ? v : v * 0.2271247;
+const fromW = v => unitSys === 'SI' ? v : v / 0.2271247;
+const toA   = v => unitSys === 'SI' ? v : v * 1.6990108;
+const fromA = v => unitSys === 'SI' ? v : v / 1.6990108;
+const dtScale = () => unitSys === 'SI' ? 1 : 9 / 5;
+const fmtT  = (v_C, d=2) => `${fromC(v_C).toFixed(d)} ${unitSys==='SI'?'°C':'°F'}`;
+const fmtDT = (dt_C, d=2) => { const dt=dt_C*dtScale(); return (dt>=0?'+':'')+dt.toFixed(d)+' Δ'+(unitSys==='SI'?'°C':'°F'); };
+
+function setUnit(sys) {
+  unitSys = sys;
+  el('btn_SI').classList.toggle('on', sys==='SI');
+  el('btn_IMP').classList.toggle('on', sys==='IMP');
+  const T=sys==='SI'?'°C':'°F', W=sys==='SI'?'m³/h':'gpm', A=sys==='SI'?'m³/h':'cfm';
+  ['d_wb','d_cwt','d_hwt','a_wb','a_cwt','a_hwt'].forEach(id=>{ const e=el('u_'+id); if(e) e.textContent='('+T+')'; });
+  el('u_d_wr').textContent='('+W+')';
+  el('u_d_ar').textContent='('+A+')';
+  const hu=sys==='SI'?'°C above design approach':'°F above design approach';
+  el('th_warn_hint').textContent=hu; el('th_bad_hint').textContent=hu;
+  if (lastR) renderResults(lastR);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ALERT / UI HELPERS
+══════════════════════════════════════════════════════════ */
+function showAlert(msg, type='wa') {
+  const b=el('alertBox'); b.innerHTML=msg; b.className='warn show '+type;
+}
+function clearAlert() { el('alertBox').className='warn'; }
+
+function setLoading(on) {
+  el('loadingOverlay').classList.toggle('show', on);
+  el('calcBtn').disabled = on;
+}
+
+function showToast(msg) {
+  const t=el('toastEl');
+  if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MATCH DESIGN → ACTUAL
+══════════════════════════════════════════════════════════ */
+function matchDesign() {
+  ['wb','cwt','hwt'].forEach(f=>{ if(el('d_'+f).value!=='') el('a_'+f).value=el('d_'+f).value; });
+}
+
+/* ══════════════════════════════════════════════════════════
+   CLEAR ALL
+══════════════════════════════════════════════════════════ */
+function clearAll() {
+  ['d_wb','d_cwt','d_hwt','d_wr','d_ar','a_wb','a_cwt','a_hwt'].forEach(id=>el(id).value='');
+  clearAlert(); lastR=null;
+  el('statusDot').className='status-dot';
+  el('statusLbl').textContent='Awaiting Input';
+  el('resultsPanel').innerHTML='<div class="ph"><div class="ph-ico">🌬️</div><div class="ph-txt">Ready for Input</div><div class="ph-sub">Enter design &amp; actual conditions and click Calculate.</div></div>';
+}
+
+/* ══════════════════════════════════════════════════════════
+   COLLECT INPUTS — convert to SI for API call
+══════════════════════════════════════════════════════════ */
+function collectInputs() {
+  const dWB_r=gv('d_wb'), dCWT_r=gv('d_cwt'), dHWT_r=gv('d_hwt');
+  const dWR_r=gv('d_wr'), dAR_r=gv('d_ar');
+  const aWB_r=gv('a_wb'), aCWT_r=gv('a_cwt'), aHWT_r=gv('a_hwt');
+  const thW_r=gv('th_warn'), thB_r=gv('th_bad');
+  const elev_r=gv('d_elev'), patm_r=gv('d_patm');
+
+  return {
+    // temperatures → always send as SI °C
+    dWB_C: toC(dWB_r), dCWT_C: toC(dCWT_r), dHWT_C: toC(dHWT_r),
+    aWB_C: toC(aWB_r), aCWT_C: toC(aCWT_r), aHWT_C: toC(aHWT_r),
+    // flow rates → always SI m³/h
+    dWR: toW(dWR_r), dAR: isOK(dAR_r) ? toA(dAR_r) : NaN,
+    // thresholds → always SI ΔC
+    thW_C: isOK(thW_r) ? thW_r / dtScale() : 1.5,
+    thB_C: isOK(thB_r) ? thB_r / dtScale() : 3.0,
+    // pressure
+    elev: isOK(elev_r) ? elev_r : NaN,
+    patm: isOK(patm_r) ? patm_r : NaN,
+    unitSys
+  };
+}
+
+/* ══════════════════════════════════════════════════════════
+   PREDICT CWT — calls API
+══════════════════════════════════════════════════════════ */
+async function predictCWT() {
+  clearAlert();
+  const dWB_r=gv('d_wb'), dCWT_r=gv('d_cwt'), dHWT_r=gv('d_hwt'), aWB_r=gv('a_wb');
+  if (!isOK(dWB_r,dCWT_r,dHWT_r,aWB_r)) { showAlert('Enter Design WBT, CWT, HWT and Actual WBT first.','wa'); return; }
+
+  const patm_r=gv('d_patm'), elev_r=gv('d_elev');
+  let Patm_kPa = 101.325;
+  if (isOK(patm_r) && patm_r > 70 && patm_r < 110) Patm_kPa = patm_r;
+  else if (isOK(elev_r) && elev_r >= 0) Patm_kPa = 101.325 * Math.pow(1 - 2.25577e-5 * elev_r, 5.25588);
+
+  setLoading(true);
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'predictCWT',
+        params: {
+          dWB_C: toC(dWB_r), dCWT_C: toC(dCWT_r), dHWT_C: toC(dHWT_r), aWB_C: toC(aWB_r),
+          Patm_kPa
+        }
+      })
+    });
+    const data = await resp.json();
+    if (!data.success) { showAlert('⚠ ' + data.error, 'wr'); return; }
+    const d = data.data;
+    const T = unitSys==='SI' ? '°C' : '°F';
+    el('a_cwt').value = fromC(d.pred_C).toFixed(1);
+    showAlert(
+      `🔮 <strong>Predicted CWT = ${fmtT(d.pred_C)}</strong><br>` +
+      `κ = dCWT/dWBT (Merkel/psychrometric, CTI ATC-105) = <strong>${d.kappa.toFixed(3)}</strong><br>` +
+      `ΔWBT = ${fmtDT(d.dWBT_C)} → ΔCWT = ${d.kappa.toFixed(3)} × ${fmtDT(d.dWBT_C)} = <strong>${fmtDT(d.dCWT_delta)}</strong><br>` +
+      `P_atm = ${d.Patm_kPa.toFixed(2)} kPa | <em>CTI κ-corrected — Adaptive Chebyshev Merkel</em>`, 'wi'
+    );
+  } catch(err) {
+    showAlert('⚠ API error: ' + err.message, 'wr');
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CALCULATE — calls API with all inputs
+══════════════════════════════════════════════════════════ */
+async function calculate() {
+  clearAlert();
+  const inputs = collectInputs();
+
+  if (!isOK(inputs.dWB_C, inputs.dCWT_C, inputs.dHWT_C, inputs.dWR, inputs.aWB_C, inputs.aCWT_C, inputs.aHWT_C)) {
+    showAlert('⚠ Fill required inputs: Design (WBT, CWT, HWT, Water Flow) + Actual (WBT, CWT, HWT). Air flow is optional.','wa');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'calculate', params: inputs })
+    });
+    const data = await resp.json();
+
+    if (!data.success) {
+      showAlert('🔴 ' + data.error, 'wr');
+      return;
+    }
+
+    const r = data.data;
+    lastR = r;
+
+    // Update status indicator
+    const pillMap = { ok: 'NORMAL', warn: 'DEGRADED', bad: 'ALERT' };
+    el('statusDot').className = 'status-dot ' + r.worst;
+    el('statusLbl').textContent = pillMap[r.worst];
+
+    if (!r.kappaOK) {
+      showAlert('⚠ κ solver did not converge at these conditions. A fallback κ=0.60 is shown — treat predicted CWT with caution. Check inputs for extreme approach or range.', 'wa');
+    }
+
+    renderResults(r);
+
+  } catch(err) {
+    showAlert('⚠ API error: ' + err.message, 'wr');
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER RESULTS — client-side display only, no calculations
+══════════════════════════════════════════════════════════ */
+function renderResults(r) {
+  if (!r) return;
+  const T=unitSys==='SI'?'°C':'°F', W=unitSys==='SI'?'m³/h':'gpm', A=unitSys==='SI'?'m³/h':'cfm';
+  const sc = dtScale();
+
+  // All values come from API in SI; convert for display only
+  const dWB_d=fromC(r.dWB), dCWT_d=fromC(r.dCWT), dHWT_d=fromC(r.dHWT);
+  const aWB_d=fromC(r.aWB), aCWT_d=fromC(r.aCWT), aHWT_d=fromC(r.aHWT);
+  const app_d_d=r.app_d*sc, app_a_d=r.app_a*sc;
+  const rng_d_d=r.rng_d*sc, rng_a_d=r.rng_a*sc;
+  const dApp_d=r.dApp*sc, dWBT_d=r.dWBT*sc;
+  const pred_app_d=r.pred_app*sc;
+  const dAppVsPred_d=r.dAppVsPred*sc;
+  const pred_d=fromC(r.pred_cwt);
+  const cwtDev_d=r.cwtDev*sc;
+  const dCWT_pred_d=(r.pred_cwt-r.dCWT)*sc;
+  const Patm_r=r.Patm_kPa;
+
+  const kavl_dStr=r.kavl_d!==null?f3(r.kavl_d):'N/A';
+  const kavl_aStr=r.kavl_a!==null?f3(r.kavl_a):'N/A';
+  const kavl_d_normStr=r.kavl_d_norm!==null?f3(r.kavl_d_norm):'N/A';
+  const kavl_a_normStr=r.kavl_a_norm!==null?f3(r.kavl_a_norm):'N/A';
+  const fillStr=r.fillPct!==null?f1(r.fillPct)+'%':'N/A';
+  const dSign=v=>v>=0?'+':'';
+  const {appSt, lgSt: _lgSt, fillSt: _fillSt, kappa, kappaOK, score, sInfo, ts} = r;
+
+  // Sweep table HTML
+  const sweepHTML = buildSweepTable(r.sweepData, aWB_d, T, sc, dCWT_d);
+  // Merkel chart SVG
+  const chartSVG = buildMerkelChartSVG(r.chartData, aCWT_d, aHWT_d, dWB_d, aWB_d, kavl_aStr, kavl_dStr, kappa, T);
+
+  // Performance score gauge (simple SVG arc)
+  function drawGauge(score, color) {
+    const r2=28, cx=40, cy=38, circumference=2*Math.PI*r2;
+    const frac=score/100;
+    const dash=frac*circumference;
+    return `<svg width="80" height="50" viewBox="0 0 80 50">
+      <circle cx="${cx}" cy="${cy}" r="${r2}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/>
+      <circle cx="${cx}" cy="${cy}" r="${r2}" fill="none" stroke="${color}" stroke-width="6"
+        stroke-dasharray="${dash.toFixed(1)} ${circumference.toFixed(1)}"
+        stroke-dashoffset="${(circumference*0.25).toFixed(1)}" stroke-linecap="round"/>
+      <text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="${color}">${score}</text>
+    </svg>`;
+  }
+
+  el('resultsPanel').innerHTML = `<div style="animation:fadeIn .3s ease">
+
+<!-- ── PERFORMANCE SCORE BANNER ─────────────── -->
+<div class="banner">
+  <div class="ban-row">
+    <div class="ban-item">
+      <div class="ban-lbl">Performance Score</div>
+      ${drawGauge(score,sInfo.c)}
+      <span class="ban-badge ${r.worst==='ok'?'ok':r.worst==='warn'?'warn':'bad'}">${sInfo.lbl}</span>
+    </div>
+    <div class="ban-item">
+      <div class="ban-lbl">Design Approach</div>
+      <div class="ban-val">${f1(app_d_d)}<span class="bmu">Δ${T}</span></div>
+      <div class="ban-sub">CWT(d) − WBT(d) — nameplate</div>
+      <span class="ban-badge neutral">BASIS</span>
+    </div>
+    <div class="ban-item">
+      <div class="ban-lbl">Actual Approach</div>
+      <div class="ban-val">${f1(app_a_d)}<span class="bmu">Δ${T}</span></div>
+      <div class="ban-sub">CWT(a) − WBT(a) — measured</div>
+      <span class="ban-badge ${appSt.cls==='ok'?'ok':appSt.cls==='warn'?'warn':'bad'}">${dSign(dAppVsPred_d)}${f2(dAppVsPred_d)} vs pred · ${appSt.lbl}</span>
+    </div>
+    <div class="ban-item">
+      <div class="ban-lbl">Fill Efficiency</div>
+      <div class="ban-val">${fillStr}</div>
+      <div class="ban-sub">KaV/L actual/design ratio</div>
+      <span class="ban-badge ${_fillSt.cls==='ok'?'ok':_fillSt.cls==='warn'?'warn':'bad'}">${_fillSt.lbl}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── CWT & APPROACH COMPARISON ── -->
+<div class="card">
+  <div class="ch">
+    <div class="ch-left"><span class="ch-ico">⚖️</span><span class="ch-ttl">CWT & Approach — Actual vs κ-Predicted vs Design</span></div>
+    <span class="bdg ${appSt.cls==='ok'?'b-g':appSt.cls==='warn'?'b-a':'b-r'}">${appSt.icon} ${appSt.lbl}</span>
+  </div>
+  <div class="cb">
+    <div class="sec" style="margin-top:0">Cold Water Temperature (CWT)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="mc ac" style="border:2px solid rgba(0,150,204,.4)">
+        <div class="mc-lbl">🎯 Design CWT</div>
+        <div class="mc-val">${f2(dCWT_d)}<span class="mc-u">${T}</span></div>
+        <div class="mc-sub">Nameplate / contract basis</div>
+      </div>
+      <div class="mc pu" style="border:2px solid rgba(179,136,255,.4)">
+        <div class="mc-lbl">🔮 κ-Predicted CWT</div>
+        <div class="mc-val">${f2(pred_d)}<span class="mc-u">${T}</span></div>
+        <div class="mc-sub">Expected at site WBT ${f1(aWB_d)}${T} · Δ ${dSign(dCWT_pred_d)}${f2(dCWT_pred_d)}${T} vs design</div>
+      </div>
+      <div class="mc ${Math.abs(cwtDev_d)<=0.5?'gn':Math.abs(cwtDev_d)<=2?'am':'rd'}" style="border:2px solid ${Math.abs(cwtDev_d)<=0.5?'rgba(0,230,118,.4)':Math.abs(cwtDev_d)<=2?'rgba(255,184,0,.4)':'rgba(255,68,68,.4)'}">
+        <div class="mc-lbl">📍 Actual CWT</div>
+        <div class="mc-val">${f2(aCWT_d)}<span class="mc-u">${T}</span></div>
+        <div class="mc-sub">Deviation from predicted: <strong>${dSign(cwtDev_d)}${f2(cwtDev_d)}${T}</strong>
+          ${Math.abs(cwtDev_d)<=0.5?'✅ On prediction':Math.abs(cwtDev_d)<=2?'⚠ Minor deviation':'🔴 Investigate'}</div>
+      </div>
+    </div>
+
+    <div class="sec">Approach Temperature (CWT − WBT)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="mc ac" style="border:2px solid rgba(0,150,204,.4)">
+        <div class="mc-lbl">🎯 Design Approach</div>
+        <div class="mc-val">${f2(app_d_d)}<span class="mc-u">Δ${T}</span></div>
+        <div class="mc-sub">CWT(d) − WBT(d) · Contract basis</div>
+      </div>
+      <div class="mc pu" style="border:2px solid rgba(179,136,255,.4)">
+        <div class="mc-lbl">🔮 κ-Predicted Approach</div>
+        <div class="mc-val">${f2((r.pred_cwt-r.aWB)*sc)}<span class="mc-u">Δ${T}</span></div>
+        <div class="mc-sub">CWT(pred) − WBT(actual) · Expected</div>
+      </div>
+      <div class="mc ${appSt.cls==='ok'?'gn':appSt.cls==='warn'?'am':'rd'}" style="border:2px solid ${appSt.cls==='ok'?'rgba(0,230,118,.4)':appSt.cls==='warn'?'rgba(255,184,0,.4)':'rgba(255,68,68,.4)'}">
+        <div class="mc-lbl">📍 Actual Approach</div>
+        <div class="mc-val">${f2(app_a_d)}<span class="mc-u">Δ${T}</span></div>
+        <div class="mc-sub">vs κ-Predicted: <strong>${dSign(dAppVsPred_d)}${f2(dAppVsPred_d)}${T}</strong> · ${appSt.icon} ${appSt.lbl}</div>
+      </div>
+    </div>
+
+    <div class="ibox ${appSt.cls}">
+      <div class="ibox-t">${appSt.icon} Approach Status: ${appSt.lbl}</div>
+      ${appSt.t}
+    </div>
+
+    <div class="sec" style="margin-top:14px">Range Temperature (HWT − CWT)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mc am">
+        <div class="mc-lbl">🎯 Design Range</div>
+        <div class="mc-val">${f2(rng_d_d)}<span class="mc-u">Δ${T}</span></div>
+        <div class="mc-sub">HWT(d) − CWT(d)</div>
+      </div>
+      <div class="mc am">
+        <div class="mc-lbl">📍 Actual Range</div>
+        <div class="mc-val">${f2(rng_a_d)}<span class="mc-u">Δ${T}</span></div>
+        <div class="mc-sub">Δ vs design: <strong>${dSign((r.rng_a-r.rng_d)*sc)}${f2((r.rng_a-r.rng_d)*sc)} ${T}</strong></div>
+      </div>
+    </div>
+
+    <div class="sec" style="margin-top:14px">Tower Thermal Effectiveness (ε = Range / (HWT − WBT))</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+      <div class="mc tl">
+        <div class="mc-lbl">🎯 Design ε</div>
+        <div class="mc-val">${f3(r.effectiveness_d)}</div>
+        <div class="mc-sub">${(r.effectiveness_d*100).toFixed(1)}% — approaches 1 for ideal tower</div>
+      </div>
+      <div class="mc ${r.effectiveness_a>=r.effectiveness_d*0.95?'tl':r.effectiveness_a>=r.effectiveness_d*0.85?'am':'rd'}">
+        <div class="mc-lbl">📍 Actual ε</div>
+        <div class="mc-val">${f3(r.effectiveness_a)}</div>
+        <div class="mc-sub">${(r.effectiveness_a*100).toFixed(1)}% — Δ vs design: <strong>${dSign(r.effectiveness_a-r.effectiveness_d)}${f3(r.effectiveness_a-r.effectiveness_d)}</strong></div>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--pale)">
+      🌡 Site Conditions: P<sub>atm</sub> = <strong style="color:var(--accent)">${Patm_r.toFixed(2)} kPa</strong>
+      ${Patm_r < 101 ? ` | Altitude correction active — ${(((101.325-Patm_r)/101.325)*100).toFixed(1)}% below ISA sea level.` : ' | Standard sea-level pressure.'}
+      &nbsp;| ρ<sub>water</sub> = ${r.RHO_W_d.toFixed(1)} kg/m³ | ρ<sub>air</sub> = ${r.RHO_A_site.toFixed(3)} kg/m³
+    </div>
+  </div>
+</div>
+
+<!-- ── WBT SENSITIVITY + KAPPA ──────────────── -->
+<div class="card">
+  <div class="ch"><div class="ch-left"><span class="ch-ico">🔮</span><span class="ch-ttl">WBT Sensitivity — CTI κ-Method (Non-Linear Correction)</span></div></div>
+  <div class="cb">
+    <div class="kappa-box">
+      <h4>κ Computation — CTI ATC-105 / Merkel (Psychrometric, Adaptive Chebyshev)${!kappaOK?' &nbsp;<span style="color:var(--amber);font-size:.65rem">⚠ FALLBACK κ=0.60</span>':''}</h4>
+      <div class="kappa-row">
+        <div class="kappa-cell">
+          <div class="kc-lbl">Design KaV/L</div>
+          <div class="kc-val">${kavl_dStr}</div>
+          <div class="kc-sub">Merkel NTU at design point</div>
+        </div>
+        <div class="kappa-cell">
+          <div class="kc-lbl">Design Approach</div>
+          <div class="kc-val">${f2(app_d_d)} <span style="font-size:.8rem;opacity:.7">Δ${T}</span></div>
+          <div class="kc-sub">CWT(d) − WBT(d)</div>
+        </div>
+        <div class="kappa-cell">
+          <div class="kc-lbl">κ = dCWT/dWBT</div>
+          <div class="kc-val">${f3(kappa)}</div>
+          <div class="kc-sub">${kappaOK?'Adaptive Merkel (no artificial clipping)':'⚠ Fallback — solver did not converge'}</div>
+        </div>
+      </div>
+      <div class="kappa-note">
+        κ computed server-side via adaptive ΔT perturbation of WBT, bisect-solve CWT preserving design KaV/L, central finite-difference slope.<br>
+        Integration: ${r.largeRange?'8-point':'4-point'} Chebyshev (${r.largeRange?'large':'standard'} range) | P<sub>atm</sub> = ${Patm_r.toFixed(2)} kPa (psychrometrics corrected)<br>
+        cp(T) = temperature-dependent (4.18–4.22 kJ/kg·K) — not fixed constant<br>
+        ΔWBT = <span class="hl">${f2(aWB_d)}</span> − <span class="hl">${f2(dWB_d)}</span> = <span class="hl">${dSign(dWBT_d)}${f2(dWBT_d)} ${T}</span><br>
+        ΔCWT_pred = κ × ΔWBT = <span class="hl">${f3(kappa)} × (${dSign(dWBT_d)}${f2(dWBT_d)})</span> = <span class="hl">${dSign(dCWT_pred_d)}${f2(dCWT_pred_d)} ${T}</span><br>
+        CWT_pred = CWT_design + ΔCWT = <span class="hl">${f2(dCWT_d)}</span> + <span class="hl">(${dSign(dCWT_pred_d)}${f2(dCWT_pred_d)})</span> = <span class="hl wh">${f2(pred_d)} ${T}</span><br>
+        CWT_actual = <span class="hl">${f2(aCWT_d)} ${T}</span> &nbsp;·&nbsp;
+        Deviation from prediction = <span class="${Math.abs(cwtDev_d)>2?'rd':'gr'}">${dSign(cwtDev_d)}${f2(cwtDev_d)} ${T}</span>
+        ${Math.abs(cwtDev_d)>2?'&nbsp;⚠ Large deviation — verify measurement or investigate tower anomaly':'&nbsp;✅ Within expected tolerance'}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WBT SWEEP TABLE ──────────────────────── -->
+<div class="card">
+  <div class="ch"><div class="ch-left"><span class="ch-ico">📊</span><span class="ch-ttl">Site WBT Sensitivity Sweep (Design ±15°C Range)</span></div></div>
+  <div class="cb">${sweepHTML}</div>
+</div>
+
+<!-- ── MERKEL ENTHALPY CURVE CHART ────────────── -->
+<div class="card">
+  <div class="ch"><div class="ch-left"><span class="ch-ico">📈</span><span class="ch-ttl">Merkel Psychrometric Enthalpy Curve — Operating Line & Integration Points</span></div></div>
+  <div class="cb">
+    <div style="font-size:.75rem;color:var(--sub);margin-bottom:12px;line-height:1.7">
+      The <strong style="color:var(--accent)">blue curve</strong> is the saturation enthalpy h_s(T). The <strong style="color:var(--amber)">amber line</strong> is the operating line. The <strong style="color:var(--pur)">purple dots</strong> are the 4 Chebyshev integration points.
+    </div>
+    ${chartSVG}
+  </div>
+</div>
+
+<!-- ── L/G & FILL PERFORMANCE ── -->
+<div class="mg2" style="margin-bottom:14px">
+  <div class="card" style="margin:0">
+    <div class="ch">
+      <div class="ch-left"><span class="ch-ico">⚖️</span><span class="ch-ttl">L/G Mass Ratio</span></div>
+      <span class="bdg ${_lgSt.cls==='ok'?'b-g':_lgSt.cls==='warn'?'b-a':_lgSt.cls==='bad'?'b-r':'b-n'}">${_lgSt.icon} ${_lgSt.lbl}</span>
+    </div>
+    <div class="cb">
+      ${r.lg !== null ? `
+      <div class="mg2">
+        <div class="mc pu">
+          <div class="mc-lbl">L/G Ratio</div>
+          <div class="mc-val">${f2(r.lg)}</div>
+          <div class="mc-sub">dimensionless</div>
+        </div>
+        <div class="mc ac">
+          <div class="mc-lbl">Water Mass</div>
+          <div class="mc-val" style="font-size:1rem">${(r.Lmass/1000).toFixed(2)}<span class="mc-u">t/h</span></div>
+          <div class="mc-sub">${f1(fromW(r.dWR_r))} ${W}</div>
+        </div>
+      </div>
+      <div class="mc ac" style="margin-bottom:8px">
+        <div class="mc-lbl">Air Mass</div>
+        <div class="mc-val" style="font-size:1rem">${(r.Gmass/1000).toFixed(2)}<span class="mc-u">t/h</span></div>
+        <div class="mc-sub">${f1(fromA(r.dAR_r))} ${A}</div>
+      </div>
+      <div class="ibox ${_lgSt.cls}" style="margin-top:8px">
+        <div class="ibox-t">${_lgSt.icon} L/G — ${_lgSt.lbl}</div>
+        ${_lgSt.t}
+      </div>` : `
+      <div class="ibox info">
+        <div class="ibox-t">— Air Flow Not Provided</div>
+        L/G ratio requires air flow rate. Enter design air flow in Design Conditions to enable this section.
+      </div>`}
+    </div>
+  </div>
+  <div class="card" style="margin:0">
+    <div class="ch">
+      <div class="ch-left"><span class="ch-ico">🔬</span><span class="ch-ttl">Fill Performance (KaV/L)</span></div>
+      <span class="bdg ${_fillSt.cls==='ok'?'b-g':_fillSt.cls==='warn'?'b-a':_fillSt.cls==='bad'?'b-r':'b-n'}">${_fillSt.icon} ${_fillSt.lbl}</span>
+    </div>
+    <div class="cb">
+      <div class="mg2">
+        <div class="mc gn">
+          <div class="mc-lbl">KaV/L Design (@ site WBT)</div>
+          <div class="mc-val">${kavl_d_normStr}</div>
+          <div class="mc-sub">Design temps evaluated at actual WBT</div>
+        </div>
+        <div class="mc ${_fillSt.cls==='ok'?'gn':_fillSt.cls==='warn'?'am':'rd'}">
+          <div class="mc-lbl">KaV/L Actual (@ site WBT)</div>
+          <div class="mc-val">${kavl_a_normStr}</div>
+          <div class="mc-sub">Actual temps evaluated at actual WBT</div>
+        </div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-hdr"><span>Fill Transfer Efficiency</span><span class="prog-val">${fillStr}</span></div>
+        <div class="prog-track"><div class="prog-fill ${_fillSt.bar}" style="width:${Math.min(r.fillPct||0,100)}%"></div></div>
+        <div class="prog-ticks"><span class="prog-tick">0%</span><span class="prog-tick">50%</span><span class="prog-tick">80%</span><span class="prog-tick">95%</span><span class="prog-tick">100%</span></div>
+      </div>
+      <div class="ibox ${_fillSt.cls}" style="margin-top:8px">
+        <div class="ibox-t">${_fillSt.icon} Fill — ${_fillSt.lbl}</div>
+        ${_fillSt.t}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FULL COMPARISON TABLE ────────────────── -->
+<div class="card">
+  <div class="ch">
+    <div class="ch-left"><span class="ch-ico">📊</span><span class="ch-ttl">Full Design vs Actual Comparison</span></div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--sub)">${new Date(ts).toLocaleString()}</span>
+  </div>
+  <div class="cb">
+    <div style="overflow-x:auto">
+    <table class="dtbl">
+      <thead><tr><th>Parameter</th><th>Design / Predicted</th><th>Actual</th><th>Δ</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>WBT</td><td class="num">${f2(dWB_d)} ${T}</td><td class="num">${f2(aWB_d)} ${T}</td><td class="num">${dSign(dWBT_d)}${f2(dWBT_d)} ${T}</td><td>—</td></tr>
+        <tr><td>CWT (basin)</td><td class="num">${f2(dCWT_d)} ${T}</td><td class="num">${f2(aCWT_d)} ${T}</td><td class="num">${dSign((r.aCWT-r.dCWT)*sc)}${f2((r.aCWT-r.dCWT)*sc)} ${T}</td><td>—</td></tr>
+        <tr><td>HWT (return)</td><td class="num">${f2(dHWT_d)} ${T}</td><td class="num">${f2(aHWT_d)} ${T}</td><td class="num">${dSign((r.aHWT-r.dHWT)*sc)}${f2((r.aHWT-r.dHWT)*sc)} ${T}</td><td>—</td></tr>
+        <tr><td>Range</td><td class="num">${f2(rng_d_d)} Δ${T}</td><td class="num">${f2(rng_a_d)} Δ${T}</td><td class="num">${dSign((r.rng_a-r.rng_d)*sc)}${f2((r.rng_a-r.rng_d)*sc)} Δ${T}</td><td>—</td></tr>
+        <tr style="background:rgba(179,136,255,.06)">
+          <td><strong>Approach (vs κ-predicted) ★</strong></td>
+          <td class="num">${f2(pred_app_d)} Δ${T}</td>
+          <td class="num">${f2(app_a_d)} Δ${T}</td>
+          <td class="num ${dAppVsPred_d<=0?'neg':'pos'}">${dSign(dAppVsPred_d)}${f2(dAppVsPred_d)} Δ${T}</td>
+          <td><span class="bdg ${appSt.cls==='ok'?'b-g':appSt.cls==='warn'?'b-a':'b-r'}">${appSt.icon} ${appSt.lbl}</span></td>
+        </tr>
+        <tr style="background:rgba(179,136,255,.06)">
+          <td><strong>Predicted CWT (κ-method) ★</strong></td>
+          <td class="num">${f2(dCWT_d)} ${T}</td>
+          <td class="num"><strong>${f2(pred_d)} ${T}</strong></td>
+          <td class="num ${dCWT_pred_d<0?'neg':'pos'}">${dSign(dCWT_pred_d)}${f2(dCWT_pred_d)} ${T}</td>
+          <td><span class="bdg b-b">κ = ${f3(kappa)}</span></td>
+        </tr>
+        <tr><td>L/G Ratio</td><td class="num">${r.lg!==null?f2(r.lg):'—'}</td><td class="num">${r.lg!==null?f2(r.lg):'—'}</td><td class="num">—</td><td><span class="bdg ${_lgSt.cls==='ok'?'b-g':_lgSt.cls==='warn'?'b-a':'b-r'}">${_lgSt.lbl}</span></td></tr>
+        <tr>
+          <td>KaV/L Fill (@ site WBT) ★</td>
+          <td class="num">${kavl_d_normStr}</td>
+          <td class="num">${kavl_a_normStr}</td>
+          <td class="num">${r.kavl_a_norm&&r.kavl_d_norm?dSign(r.kavl_a_norm-r.kavl_d_norm)+(r.kavl_a_norm-r.kavl_d_norm).toFixed(4):'—'}</td>
+          <td><span class="bdg ${_fillSt.cls==='ok'?'b-g':_fillSt.cls==='warn'?'b-a':'b-r'}">${_fillSt.lbl}</span></td>
+        </tr>
+        <tr>
+          <td>Fill Efficiency ★</td>
+          <td class="num">100.0%</td>
+          <td class="num">${fillStr}</td>
+          <td class="num ${r.fillPct!==null&&r.fillPct>=95?'neg':'pos'}">${r.fillPct!==null?dSign(r.fillPct-100)+(r.fillPct-100).toFixed(1)+'%':'—'}</td>
+          <td><span class="bdg ${_fillSt.cls==='ok'?'b-g':_fillSt.cls==='warn'?'b-a':'b-r'}">${_fillSt.lbl}</span></td>
+        </tr>
+        <tr style="background:rgba(0,212,255,.04)">
+          <td><strong>Performance Score</strong></td>
+          <td class="num">100</td>
+          <td class="num" style="color:${sInfo.c};font-weight:800">${score}</td>
+          <td class="num ${score>=85?'neg':'pos'}">${dSign(score-100)}${(score-100)}</td>
+          <td><span class="bdg ${score>=85?'b-g':score>=55?'b-a':'b-r'}">${sInfo.lbl}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── REFERENCES ────────────────────────────── -->
+<div class="card">
+  <div class="ch"><div class="ch-left"><span class="ch-ico">📚</span><span class="ch-ttl">Literature & Standards References</span></div></div>
+  <div class="cb">
+    <div class="ref-grid">
+      <div class="ref-card"><div class="rc-num">[CTI-01]</div><div class="rc-title">CTI Bulletin ATC-105 — Acceptance Test Code for Water Cooling Towers</div><div class="rc-auth">Cooling Tower Institute, 2000. §4 L/G; Annex B κ-factor methodology.</div></div>
+      <div class="ref-card"><div class="rc-num">[KROG-01]</div><div class="rc-title">Air-Cooled Heat Exchangers and Cooling Towers, Vol. 2</div><div class="rc-auth">Kröger, D.G., Pennwell Books, 2004. §8 rigorous Merkel integral; §9 WBT sensitivity.</div></div>
+      <div class="ref-card"><div class="rc-num">[BERN-94]</div><div class="rc-title">Cooling Tower Performance: Theory and Experiments (ASHRAE Trans. 100-2)</div><div class="rc-auth">Bernier, M.A., 1994. Experimental validation of Merkel model.</div></div>
+      <div class="ref-card"><div class="rc-num">[MERK-25]</div><div class="rc-title">Wärmeübergang und Kühlung</div><div class="rc-auth">Merkel, F., VDI Forschungsarbeiten, Berlin, 1925. Original derivation of the Merkel integral.</div></div>
+    </div>
+  </div>
+</div>
+
+</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BUILD SWEEP TABLE HTML (client-side display from API data)
+══════════════════════════════════════════════════════════ */
+function buildSweepTable(sweepData, aWB_display, T, sc, dCWT_display) {
+  if (!sweepData || sweepData.length === 0) return '<p style="color:var(--sub)">Sweep data unavailable.</p>';
+  const dSign = v => v >= 0 ? '+' : '';
+
+  const rows = sweepData.map(s => {
+    const wb_d = fromC(s.wb);
+    const pred_d = fromC(s.pred);
+    const app_d = s.app * sc;
+    const isActual = s.isActual;
+    return `<tr style="${isActual?'background:rgba(0,212,255,.1)':''}">
+      <td class="num" style="${isActual?'color:var(--accent);font-weight:900':''}">${isActual?'▶':''} ${f2(wb_d)} ${T}</td>
+      <td class="num" style="${isActual?'color:var(--pur)':''}">${f2(pred_d)} ${T}</td>
+      <td class="num">${f2(app_d)} Δ${T}</td>
+      <td class="num">${s.kavlV !== null ? s.kavlV.toFixed(4) : 'N/A'}</td>
+      <td>${isActual?'<span class="bdg b-b">SITE WBT</span>':''}</td>
+    </tr>`;
+  });
+
+  return `<div style="overflow-x:auto">
+  <table class="dtbl">
+    <thead><tr><th>Site WBT</th><th>Predicted CWT</th><th>Predicted Approach</th><th>KaV/L</th><th></th></tr></thead>
+    <tbody>${rows.join('')}</tbody>
+  </table></div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BUILD MERKEL CHART SVG (client-side, uses pre-computed data from API)
+══════════════════════════════════════════════════════════ */
+function buildMerkelChartSVG(chartData, aCWT_d, aHWT_d, dWB_d, aWB_d, kavl_aStr, kavl_dStr, kappa, T) {
+  if (!chartData) return '';
+  const W=400, H=280, ml=52, mr=18, mt=18, mb=42;
+  const pw=W-ml-mr, ph=H-mt-mb;
+
+  const { satCurve, chevPts, hADesign, hAActual, aCWT, aHWT } = chartData;
+  const Tmin=chartData.Tmin, Tmax=chartData.Tmax;
+  const Tspan=Tmax-Tmin;
+
+  const hVals = satCurve.map(p=>p.h).filter(Boolean);
+  const hMin = Math.min(...hVals, hADesign, hAActual) - 5;
+  const hMax = Math.max(...hVals) + 8;
+  const hSpan = hMax - hMin;
+
+  const tx = T_ => ml + ((T_-Tmin)/Tspan)*pw;
+  const ty = h_ => mt + ph - ((h_-hMin)/hSpan)*ph;
+
+  // Build saturation curve path
+  let curvePts = '';
+  satCurve.forEach((p,i) => {
+    if (p.h === null) return;
+    curvePts += (i===0||curvePts===''?'M':'L') + tx(p.T).toFixed(1) + ',' + ty(p.h).toFixed(1);
+  });
+
+  // Operating line
+  const cp=4.184;
+  const opLine = T_ => hAActual + cp*(T_ - aCWT);
+  let shadePts = '';
+  const nS=40;
+  for(let i=0;i<=nS;i++){
+    const t=aCWT+i*(aHWT-aCWT)/nS;
+    const sc=satCurve.find(p=>Math.abs(p.T-t)<(Tspan/nS)*1.5);
+    const hs = sc ? sc.h : opLine(t) + 5;
+    shadePts += (i===0?'M':'L') + tx(t).toFixed(1) + ',' + ty(hs).toFixed(1);
+  }
+  for(let i=nS;i>=0;i--){
+    const t=aCWT+i*(aHWT-aCWT)/nS;
+    shadePts += 'L' + tx(t).toFixed(1) + ',' + ty(opLine(t)).toFixed(1);
+  }
+  shadePts += 'Z';
+
+  // Chevychev points
+  const chevSVG = chevPts.map(p => `
+    <line x1="${tx(p.T).toFixed(1)}" y1="${ty(p.hs).toFixed(1)}" x2="${tx(p.T).toFixed(1)}" y2="${ty(p.ha).toFixed(1)}" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="${tx(p.T).toFixed(1)}" cy="${ty(p.hs).toFixed(1)}" r="4" fill="#b388ff" stroke="#fff" stroke-width="1"/>
+    <circle cx="${tx(p.T).toFixed(1)}" cy="${ty(p.ha).toFixed(1)}" r="3" fill="#ffb800" stroke="#fff" stroke-width="1" opacity="0.8"/>
+  `).join('');
+
+  // X ticks
+  const xTicks=[];
+  for(let t=Math.ceil(Tmin/2)*2;t<=Tmax;t+=2) xTicks.push(t);
+  const yStep = Math.ceil(hSpan/6/10)*10;
+  const yTicks=[];
+  for(let h=Math.ceil(hMin/yStep)*yStep;h<=hMax;h+=yStep) yTicks.push(h);
+
+  const yDesign=ty(hADesign), yActual=ty(hAActual);
+
+  return `<div style="overflow-x:auto">
+  <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="max-width:100%;font-family:'JetBrains Mono',monospace;background:var(--bg);border-radius:8px;border:1px solid var(--bd)">
+    ${xTicks.map(t=>`<line x1="${tx(t).toFixed(1)}" y1="${mt}" x2="${tx(t).toFixed(1)}" y2="${mt+ph}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`).join('')}
+    ${yTicks.map(h=>`<line x1="${ml}" y1="${ty(h).toFixed(1)}" x2="${ml+pw}" y2="${ty(h).toFixed(1)}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`).join('')}
+    <path d="${shadePts}" fill="rgba(0,212,255,.07)" stroke="none"/>
+    <line x1="${tx(aCWT).toFixed(1)}" y1="${ty(opLine(aCWT)).toFixed(1)}" x2="${tx(aHWT).toFixed(1)}" y2="${ty(opLine(aHWT)).toFixed(1)}" stroke="#ffb800" stroke-width="2" stroke-dasharray="5,3"/>
+    <line x1="${ml}" y1="${yDesign.toFixed(1)}" x2="${(ml+pw).toFixed(1)}" y2="${yDesign.toFixed(1)}" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>
+    <line x1="${ml}" y1="${yActual.toFixed(1)}" x2="${(ml+pw).toFixed(1)}" y2="${yActual.toFixed(1)}" stroke="#ffb800" stroke-width="1" stroke-dasharray="2,3" opacity="0.5"/>
+    <path d="${curvePts}" fill="none" stroke="#00d4ff" stroke-width="2.5" stroke-linejoin="round"/>
+    ${chevSVG}
+    <line x1="${tx(aCWT).toFixed(1)}" y1="${mt}" x2="${tx(aCWT).toFixed(1)}" y2="${mt+ph}" stroke="rgba(0,212,255,.4)" stroke-width="1" stroke-dasharray="2,3"/>
+    <line x1="${tx(aHWT).toFixed(1)}" y1="${mt}" x2="${tx(aHWT).toFixed(1)}" y2="${mt+ph}" stroke="rgba(0,212,255,.4)" stroke-width="1" stroke-dasharray="2,3"/>
+    <line x1="${ml}" y1="${mt}" x2="${ml}" y2="${mt+ph}" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+    <line x1="${ml}" y1="${mt+ph}" x2="${ml+pw}" y2="${mt+ph}" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+    ${xTicks.map(t=>`<text x="${tx(t).toFixed(1)}" y="${mt+ph+13}" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.4)">${t}</text>`).join('')}
+    ${yTicks.map(h=>`<text x="${ml-4}" y="${(ty(h)+3).toFixed(1)}" text-anchor="end" font-size="8" fill="rgba(255,255,255,.4)">${Math.round(h)}</text>`).join('')}
+    <text x="${ml+pw/2}" y="${H-4}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.5)">Water Temperature (${T})</text>
+    <text x="10" y="${mt+ph/2}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,.5)" transform="rotate(-90,10,${mt+ph/2})">Enthalpy h (kJ/kg)</text>
+    <text x="${tx(aCWT)+(tx(aHWT)-tx(aCWT))*0.55}" y="${ty(hADesign+hSpan*0.5)-7}" font-size="8.5" fill="#00d4ff" font-weight="bold">h_s(T) saturation curve</text>
+    <text x="${ml+6}" y="${(yDesign-4).toFixed(1)}" font-size="7.5" fill="#00e676">h_a design WBT (${f2(dWB_d)}${T})</text>
+    <text x="${ml+6}" y="${(yActual+10).toFixed(1)}" font-size="7.5" fill="#ffb800">h_a actual WBT (${f2(aWB_d)}${T})</text>
+    <text x="${tx(aCWT).toFixed(1)}" y="${mt-4}" text-anchor="middle" font-size="7.5" fill="rgba(0,212,255,.7)">CWT</text>
+    <text x="${tx(aHWT).toFixed(1)}" y="${mt-4}" text-anchor="middle" font-size="7.5" fill="rgba(0,212,255,.7)">HWT</text>
+    <text x="${ml+pw-4}" y="${mt+12}" text-anchor="end" font-size="8" fill="rgba(179,136,255,.8)">KaV/L(actual) = ${kavl_aStr}</text>
+    <text x="${ml+pw-4}" y="${mt+22}" text-anchor="end" font-size="8" fill="rgba(0,212,255,.7)">KaV/L(design) = ${kavl_dStr}</text>
+    <text x="${ml+pw-4}" y="${mt+32}" text-anchor="end" font-size="8" fill="rgba(0,230,118,.7)">κ = ${f3(kappa)}</text>
+  </svg></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.7rem;font-family:'JetBrains Mono',monospace">
+    <span style="color:var(--accent)">━━ h_s(T) saturation curve</span>
+    <span style="color:var(--amber)">╌╌ Operating line (actual)</span>
+    <span style="color:var(--grn)">╌╌ h_a design WBT</span>
+    <span style="color:var(--pur)">● Chebyshev integration points</span>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PDF REPORT (client-side, uses lastR data from API)
+══════════════════════════════════════════════════════════ */
+function generatePDF() {
+  if (!lastR) { showAlert('Run a calculation first before generating the PDF report.','wa'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const r=lastR;
+  const T=unitSys==='SI'?'°C':'°F', W=unitSys==='SI'?'m³/h':'gpm';
+  const sc=dtScale();
+  const f=(v,d=2)=>v===null||isNaN(v)?'—':parseFloat(v).toFixed(d);
+  const ds=v=>v===null||isNaN(v)?'—':(v>=0?'+':'')+parseFloat(v).toFixed(2);
+
+  const C={
+    dark:[8,15,30],navy:[15,28,52],blue:[0,120,190],cyan:[0,180,220],
+    teal:[0,170,145],green:[0,180,100],amber:[200,145,0],red:[210,50,50],
+    white:[255,255,255],light:[210,225,240],muted:[120,150,175],pale:[160,185,205],
+    bg:[11,18,35],row1:[16,26,48],row2:[12,21,40],
+  };
+  const dWB_d=fromC(r.dWB),dCWT_d=fromC(r.dCWT),dHWT_d=fromC(r.dHWT);
+  const aWB_d=fromC(r.aWB),aCWT_d=fromC(r.aCWT),aHWT_d=fromC(r.aHWT);
+  const app_d_d=r.app_d*sc,app_a_d=r.app_a*sc;
+  const rng_d_d=r.rng_d*sc,rng_a_d=r.rng_a*sc;
+  const pred_d=fromC(r.pred_cwt);
+  const dWBT_d=r.dWBT*sc,dCWT_pred_d=(r.pred_cwt-r.dCWT)*sc;
+  const pred_app_d=r.pred_app*sc;
+  const dAppVsPred_d=r.dAppVsPred*sc;
+  const kavl_dS=r.kavl_d!==null?f(r.kavl_d,3):'N/A';
+  const kavl_aS=r.kavl_a!==null?f(r.kavl_a,3):'N/A';
+  const fillS=r.fillPct!==null?f(r.fillPct,1)+'%':'N/A';
+
+  let y=0;let page=0;
+  function newPage(){
+    if(page>0)doc.addPage();page++;
+    doc.setFillColor(...C.dark);doc.rect(0,0,210,297,'F');
+    doc.setFillColor(...C.navy);doc.rect(0,0,210,2,'F');
+    doc.setFillColor(...C.cyan);doc.rect(0,2,210,1,'F');
+    doc.setFillColor(...C.navy);doc.rect(0,283,210,14,'F');
+    doc.setFillColor(...C.cyan);doc.rect(0,283,210,0.5,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);
+    doc.text('MULTICALCI.COM · CTI ATC-105 Merkel Method · Field assessment only',13,289);
+    doc.text(`Page ${page}`,197,289,{align:'right'});
+    y=10;
+  }
+  function checkY(n=20){if(y+n>278)newPage();}
+  function sH(title){
+    checkY(14);
+    doc.setFillColor(...C.navy);doc.rect(10,y-4,190,10,'F');
+    doc.setFillColor(...C.cyan);doc.rect(10,y-4,2,10,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(...C.cyan);
+    doc.text(title,15,y+2);y+=11;
+  }
+  function row(cols,isH,hi){
+    checkY(8);
+    doc.setFillColor(...(isH?C.navy:hi?[20,40,60]:C.bg));
+    doc.rect(10,y-3.5,190,7,'F');
+    const ws=[65,35,35,30,25];let cx=10;
+    cols.forEach((c,i)=>{
+      doc.setFont('helvetica',isH?'bold':'normal');
+      doc.setFontSize(isH?6.5:7);
+      doc.setTextColor(...(isH?C.cyan:hi?[0,210,200]:C.pale));
+      doc.text(String(c||''),cx+ws[i]-1,y+1,{align:i===0?'left':'right',maxWidth:ws[i]-2});
+      cx+=ws[i];
+    });
+    y+=7.5;
+  }
+
+  // PAGE 1
+  newPage();
+  doc.setFillColor(...C.navy);doc.rect(0,0,210,24,'F');
+  doc.setFillColor(...C.cyan);doc.rect(0,23,210,1,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...C.white);
+  doc.text('COOLING TOWER PERFORMANCE REPORT',13,11);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...C.muted);
+  doc.text('CTI ATC-105 Merkel Method · Adaptive Chebyshev Integration · κ-Corrected WBT Sensitivity',13,17);
+  doc.text(new Date(r.ts).toLocaleString(),197,17,{align:'right'});
+  y=30;
+
+  // Score bar
+  doc.setFillColor(...C.navy);doc.rect(10,y,190,20,'F');
+  const scoreCol=r.score>=85?C.green:r.score>=70?C.teal:r.score>=55?C.amber:C.red;
+  doc.setFillColor(...scoreCol);doc.rect(10,y,r.score*1.9,20,'F');
+  doc.setFillColor(...C.navy);doc.rect(10+r.score*1.9,y,190-r.score*1.9,20,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...C.white);
+  doc.text(`Performance Score: ${r.score}/100 — ${r.sInfo.lbl}`,13,y+12);
+  y+=26;
+
+  sH('DESIGN vs ACTUAL — KEY PARAMETERS');
+  row(['Parameter','Design','Actual','Δ','Status'],true);
+  [
+    ['WBT',f(dWB_d)+' '+T,f(aWB_d)+' '+T,ds(r.dWBT*sc)+' '+T,'—'],
+    ['CWT (basin)',f(dCWT_d)+' '+T,f(aCWT_d)+' '+T,ds((r.aCWT-r.dCWT)*sc)+' '+T,'—'],
+    ['HWT (return)',f(dHWT_d)+' '+T,f(aHWT_d)+' '+T,ds((r.aHWT-r.dHWT)*sc)+' '+T,'—'],
+    ['Range',f(rng_d_d,1)+' Δ'+T,f(rng_a_d,1)+' Δ'+T,ds((r.rng_a-r.rng_d)*sc)+' Δ'+T,'—'],
+    ['Approach vs κ-predicted ★',f(pred_app_d,2)+' Δ'+T,f(app_a_d,2)+' Δ'+T,ds(dAppVsPred_d)+' Δ'+T,r.appSt.lbl],
+    ['Predicted CWT (κ-method) ★','—',f(pred_d,2)+' '+T,ds(dCWT_pred_d)+' '+T,'κ='+f(r.kappa,4)],
+    ['KaV/L Fill (@ site WBT) ★',kavl_dS,kavl_aS,r.kavl_a_norm&&r.kavl_d_norm?ds(r.kavl_a_norm-r.kavl_d_norm):'—',r.fillSt.lbl],
+    ['Fill Efficiency ★','100.0%',fillS,r.fillPct!==null?ds(r.fillPct-100)+'%':'—',r.fillSt.lbl],
+    ['L/G Ratio',r.lg!==null?f(r.lg,3):'N/A',r.lg!==null?f(r.lg,3):'—','—',r.lgSt.lbl],
+  ].forEach((rw,i)=>row(rw,false,i>=4&&i<=6));
+
+  y+=4;sH('ENGINEERING REFERENCES');
+  const refs=['[1] CTI ATC-105, Acceptance Test Code for Water Cooling Towers, 2000','[2] Kröger D.G., Air-Cooled Heat Exchangers and Cooling Towers, §8, Pennwell, 2004','[3] Bernier M.A., ASHRAE Trans. 100(2), 1994','[4] Merkel F., VDI Forschungsarbeiten, 1925','[5] ASHRAE Handbook HVAC Systems, Ch.40, 2022'];
+  refs.forEach(ref=>{doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);doc.text(ref,13,y);y+=5;});
+
+  doc.save(`CoolingTower_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('PDF report downloaded!');
+}
+
+/* ══════════════════════════════════════════════════════════
+   SOCIAL SHARING
+══════════════════════════════════════════════════════════ */
+function buildShareMsg() {
+  let msg=SHARE_TXT+'\n'+SHARE_URL;
+  if(lastR){
+    const r=lastR,T=unitSys==='SI'?'°C':'°F',sc=dtScale();
+    msg+=`\n\nResults — Score: ${r.score}/100 | Approach: ${f2(r.app_a*sc)} Δ${T} | Fill: ${r.fillPct!==null?f1(r.fillPct)+'%':'N/A'} | κ=${f3(r.kappa)}`;
+  }
+  return msg;
+}
+
+function shareVia(platform) {
+  const enc=encodeURIComponent, url=SHARE_URL, title=SHARE_TITLE;
+  const msg=buildShareMsg();
+  const map={
+    whatsapp:'https://wa.me/?text='+enc(msg),
+    twitter:'https://twitter.com/intent/tweet?text='+enc(SHARE_TXT)+'&url='+enc(url),
+    linkedin:'https://www.linkedin.com/sharing/share-offsite/?url='+enc(url),
+    email:'mailto:?subject='+enc(title)+'&body='+enc(msg),
+    copy:null,
+  };
+  if(platform==='copy'){
+    const txt=lastR?buildShareMsg():url;
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).catch(()=>{});}
+    else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+    showToast('Link copied to clipboard!');
+    return;
+  }
+  window.open(map[platform],'_blank');
+  showToast('Opening '+platform+'...');
+}
+
+/* ══════════════════════════════════════════════════════════
+   AUTO-CALCULATE + ELEVATION → Patm (client-side helper only)
+══════════════════════════════════════════════════════════ */
+document.querySelectorAll('.fi').forEach(inp=>{
+  inp.addEventListener('input',()=>{
+    // Auto-compute Patm from elevation (client-side preview only)
+    if(inp.id==='d_elev'){
+      const elev=parseFloat(inp.value);
+      if(!isNaN(elev)&&isFinite(elev)&&elev>=0){
+        el('d_patm').value=(101.325*Math.pow(1-2.25577e-5*elev,5.25588)).toFixed(2);
+      }
+    }
+    const ids=['d_wb','d_cwt','d_hwt','d_wr','a_wb','a_cwt','a_hwt'];
+    if(ids.every(id=>el(id).value.trim()!=='')){
+      clearTimeout(inp._debounce);
+      inp._debounce=setTimeout(calculate,400);
+    }
+  });
+});
+
+/* Init */
+setUnit('SI');
+</script>
+
+</body>
+</html>
