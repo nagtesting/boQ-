@@ -1395,43 +1395,34 @@ function liveHint() {
 /* ═══════════════════════════════════════════════════════════════════
    CALCULATE
 ═══════════════════════════════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════════════════════════════════
-   HYBRID CALCULATE
-   Step 1: Show instant client-side result (⚡ flash speed)
-   Step 2: Silently verify with secure server API in background
-   Step 3: Update display with precise server result (🔐 secure)
-═══════════════════════════════════════════════════════════════════ */
-
-let _apiPending = false; // prevent duplicate API calls
+let _apiPending = false;
 
 async function doCalcClick() {
   if (!_activeType) return;
-
   const pRaw = parseFloat(document.getElementById('fPres')?.value);
   const tRaw = parseFloat(document.getElementById('fTemp')?.value);
   const xRaw = parseFloat(document.getElementById('fQual')?.value);
   const by   = document.getElementById('fBy')?.value || 'P';
 
-  const P_bar = isFinite(pRaw) ? (SYS === 'SI' ? pRaw : pRaw / 14.5038) : NaN;
-  const T_C   = isFinite(tRaw) ? (SYS === 'SI' ? tRaw : (tRaw - 32) * 5/9) : NaN;
+  const P_bar = isFinite(pRaw) ? (SYS==='SI' ? pRaw : pRaw / 14.5038) : NaN;
+  const T_C   = isFinite(tRaw) ? (SYS==='SI' ? tRaw : (tRaw - 32) * 5/9) : NaN;
 
   document.getElementById('results').innerHTML = '';
   document.querySelectorAll('#resultsBody .ph').forEach(el => el.style.display = 'none');
   document.getElementById('spinner').classList.add('on');
 
-  // ── STEP 1: Instant client-side result (⚡ same speed as before) ──
+  // ⚡ STEP 1: Instant client-side result (original speed)
   setTimeout(() => {
     document.getElementById('spinner').classList.remove('on');
-    const quickResult = calcProps(_activeType, P_bar, T_C, xRaw, by);
-    if (quickResult && quickResult.error) {
-      showError(quickResult.error);
+    const r = calcProps(_activeType, P_bar, T_C, xRaw, by);
+    if (r && r.error) {
+      showError(r.error);
       return;
     }
-    _lastResult = quickResult;
-    showResults(quickResult);
+    _lastResult = r;
+    showResults(r);
 
-    // ── STEP 2: Silent background API call for precise result 🔐 ──
+    // 🔐 STEP 2: Silent background API verification
     _verifyWithAPI(_activeType, P_bar, T_C, xRaw, by);
   }, 160);
 }
@@ -1439,7 +1430,6 @@ async function doCalcClick() {
 async function _verifyWithAPI(type, P_bar, T_C, x, specBy) {
   if (_apiPending) return;
   _apiPending = true;
-
   try {
     const response = await fetch('/api/steam', {
       method: 'POST',
@@ -1453,58 +1443,18 @@ async function _verifyWithAPI(type, P_bar, T_C, x, specBy) {
         sys: SYS
       })
     });
-
-    if (!response.ok) return; // silently ignore API errors
-
+    if (!response.ok) return;
     const json = await response.json();
     if (json.success && json.data) {
-      // ── STEP 3: Update with precise server result (smooth, no flicker) ──
+      // ✨ STEP 3: Smooth update with precise server values
       _lastResult = json.data;
-      _smoothUpdateResults(json.data);
+      showResults(json.data);
     }
-  } catch (e) {
+  } catch(e) {
     // Silent — client result already showing, user unaffected
   } finally {
     _apiPending = false;
   }
-}
-
-// Smooth update — replaces values without full re-render (no flicker)
-function _smoothUpdateResults(r) {
-  const u = uu();
-
-  // Update each numeric value smoothly
-  const updates = {
-    'rv-h':   fmt(r.h,   1, 'h'),
-    'rv-s':   fmt(r.s,   5, 's'),
-    'rv-v':   fmtV(r.v,  'v'),
-    'rv-rho': fmt(r.rho, 4, 'rho'),
-    'rv-u':   fmt(r.u,   2, 'u'),
-    'rv-T':   fmt(r.T,   2, 'T'),
-    'rv-P':   fmt(r.P,   4, 'P'),
-    'rv-Tsat':fmt(r.Tsat,2, 'T'),
-  };
-
-  Object.entries(updates).forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && el.textContent !== val) {
-      el.style.transition = 'color 0.3s';
-      el.style.color = '#34d399'; // brief green flash on update
-      el.textContent = val;
-      setTimeout(() => { el.style.color = ''; }, 600);
-    }
-  });
-}
-
-function updateEngineStatus() {
-  const el  = document.getElementById('engBadge');
-  const dot = document.getElementById('engDot');
-  const lbl = document.getElementById('engLbl');
-  if (!el) return;
-  el.style.background  = 'rgba(6,95,70,.35)';
-  el.style.borderColor = 'rgba(6,95,70,.6)';
-  if (dot) { dot.style.background = '#34d399'; dot.className = 'eng-dot'; }
-  if (lbl) lbl.textContent = 'Hybrid: Instant + Secure API ⚡🔐';
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -2202,8 +2152,7 @@ function genPDF() {
    SOCIAL SHARE SYSTEM
 ═══════════════════════════════════════════════════════════════════ */
 // Probe environment then start engine (silently skips if WASM unavailable)
-// Engine: Hybrid mode (client instant + server secure)
-updateEngineStatus();
+loadPyodideEngine();
 
 const SHARE_URL   = window.location.href;
 const SHARE_TITLE = 'Steam & Water Properties Calculator — IAPWS-IF97';

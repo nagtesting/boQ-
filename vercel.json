@@ -1,6 +1,14 @@
 {
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
-    { "source": "/steam-properties-calculator", "destination": "/steam-properties-calculator/index.html" }
+    {
+      "source": "/steam-properties-calculator",
+      "destination": "/steam-properties-calculator/index.html"
+    }
   ],
   "headers": [
     {
@@ -9,8 +17,7 @@
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     }
   ]

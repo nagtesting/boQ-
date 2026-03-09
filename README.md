@@ -1,51 +1,87 @@
-# multicalci-test — Hybrid API 🧪⚡🔐
+# multicalci-test — Hybrid Steam Calculator 🧪
 
-## How the Hybrid Works
+## ⚠️ Answer to Your Question — YES Vercel Needs Setup for API!
 
+Vercel does NOT auto-activate API functions. You must follow these steps:
+
+---
+
+## 🚀 Complete Setup Steps
+
+### Step 1 — Create Test GitHub Account
+1. Open incognito browser window
+2. Go to github.com → Sign Up
+3. Use different email, username like `MulticalciTest`
+
+### Step 2 — Create New Repo
+1. Click New Repository
+2. Name: `multicalci-test`
+3. Set to **Public**
+4. Click Create repository
+
+### Step 3 — Upload These Files to GitHub
+Upload maintaining EXACT folder structure:
 ```
-User clicks Calculate
-        ↓
-⚡ INSTANT — Client-side result shows immediately (same speed as before!)
-        ↓ (silently in background)
-🔐 SECURE — API call to /api/steam on Vercel server
-        ↓
-✨ SMOOTH UPDATE — Values refresh with green flash (no flicker)
-```
-
-## Speed vs Security
-
-| | Speed | Security |
-|---|---|---|
-| Old (client only) | ⚡ Instant | ❌ Exposed |
-| API only | 🟡 100-200ms | ✅ Secure |
-| **Hybrid (this)** | **⚡ Instant** | **✅ Secure** |
-
-## Files
-
-```
-multicalci-test/
-├── index.html                         ← Test homepage
-├── vercel.json                        ← Vercel config
-├── sitemap.xml                        ← Sitemap
-├── robots.txt                         ← Robots
+multicalci-test/          ← repo root
+├── index.html
+├── vercel.json           ← ⚠️ CRITICAL — tells Vercel about API
 ├── api/
-│   └── steam.js                       ← 🔐 Server calculations
+│   └── steam.js          ← 🔐 API file
 └── steam-properties-calculator/
-    └── index.html                     ← ⚡🔐 Hybrid calculator
+    └── index.html
 ```
 
-## Upload Steps
+### Step 4 — Create Test Vercel Account
+1. Go to vercel.com → Sign Up
+2. Choose **"Continue with GitHub"**
+3. Select your **TEST GitHub account**
+4. Click Authorize
 
-1. Create test GitHub account + repo named `multicalci-test`
-2. Upload ALL files maintaining folder structure
-3. Create test Vercel account → connect GitHub → Deploy
-4. Test at: `multicalci-test.vercel.app/steam-properties-calculator/`
+### Step 5 — Deploy on Vercel
+1. Click **"Add New Project"**
+2. Import `multicalci-test` repo
+3. **IMPORTANT** — In Framework Preset: select **"Other"**
+4. Root Directory: leave as `./`
+5. Click **Deploy**
 
-## Verify It's Working
+### Step 6 — Verify API is Active ✅
+After deploy, go to your Vercel dashboard:
+1. Click your project
+2. Click **"Functions"** tab in top menu
+3. You should see `/api/steam` listed there
+4. If you see it → API is active! ✅
+5. If empty → Check vercel.json was uploaded correctly
 
-1. Open calculator → Press **F12** → **Network** tab
-2. Enter values → Click Calculate
-3. You'll see TWO things:
-   - Instant result appears ⚡
-   - POST request to `/api/steam` in Network tab 🔐
-   - Values do a brief green flash when server confirms ✨
+---
+
+## 🔍 How to Test API is Working
+
+1. Open: `multicalci-test.vercel.app/steam-properties-calculator/`
+2. Press **F12** → click **Network** tab
+3. Enter temperature & pressure → Click Calculate
+4. You will see TWO things happen:
+   - ⚡ Result appears instantly (client-side)
+   - 🔐 POST request to `/api/steam` in Network tab
+
+If you see the POST request → Hybrid is working! 🎉
+
+---
+
+## ❌ Common Issues & Fixes
+
+| Problem | Fix |
+|---|---|
+| API 404 error | Check `api/steam.js` is in repo root `/api/` folder |
+| Functions tab empty | Re-check `vercel.json` was uploaded |
+| Results not updating | Check browser console for CORS errors |
+| All functions broken | Make sure you uploaded the correct `index.html` |
+
+---
+
+## 📊 What Changed vs Original
+
+Only ONE function was changed in the HTML:
+- `doCalcClick()` → now async with API verification
+- `_verifyWithAPI()` → new background API caller
+
+Everything else is 100% identical to your original!
