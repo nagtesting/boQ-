@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<title>Gas Equation of State Calculator — Peng-Robinson, SRK | multicalci.com</title>
+<meta name="description" content="Free gas EOS calculator supporting Peng-Robinson, SRK and Van der Waals equations. Calculate Z-factor and density.">
+<link rel="canonical" href="https://multicalci.com/gas-equation-of-state/">
+<meta property="og:title" content="Gas Equation of State Calculator — Peng-Robinson, SRK | multicalci.com">
+<meta property="og:description" content="Free gas EOS calculator supporting Peng-Robinson, SRK and Van der Waals equations. Calculate Z-factor and density.">
+<meta property="og:url" content="https://multicalci.com/gas-equation-of-state/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gas Equation of State Calculator — Peng-Robinson, SRK | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Gas Equation of State Calculator","description":"Peng-Robinson and SRK equation of state calculator for real gas properties, Z-factor and fugacity.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/gas-equation-of-state/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Code+Pro:wght@400;500;600&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   ROOT — BIGGER FONTS, DARK COLORS
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#0d7d6a;--teal2:#12a88e;--teal3:#16c9aa;--teal-pale:#d6f0eb;
+  --navy:#0d1b2a;--navy2:#1a2f45;--navy3:#243d56;
+  --amber:#b06800;--amber2:#d4820a;--amber-pale:#fdefd0;
+  --ink:#060e16;--ink2:#111e2d;--ink3:#1e3045;
+  --mid:#304050;--light:#4a5e70;
+  --paper:#fff;--paper2:#f0f4f8;--paper3:#e4eaf0;
+  --rule:#b8c8d8;--rule2:#a0b4c4;
+  --red:#a01820;--red-pale:#fde0e0;
+  --green:#0a6a3a;--green-pale:#d8f4e8;
+  --gold:#8a6800;--gold-pale:#fdf0c0;
+  --mono:'Source Code Pro',monospace;
+  --head:'Cormorant Garamond',serif;
+  --body:'Lato',sans-serif;
+  --shadow:0 2px 12px rgba(13,27,42,0.10);
+  --shadow-lg:0 6px 28px rgba(13,27,42,0.15);
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.65;min-height:100vh;font-size:16px;}
+
+/* ─── TOPBAR ─── */
+.topbar{position:sticky;top:0;z-index:300;background:var(--navy);border-bottom:3px solid var(--teal);box-shadow:0 3px 20px rgba(0,0,0,0.3);min-height:64px;display:flex;align-items:center;padding:0 20px;gap:0;flex-wrap:nowrap;}
+.brand{display:flex;align-items:center;gap:13px;padding-right:20px;border-right:1px solid rgba(255,255,255,0.12);flex-shrink:0;}
+.brand-mark{width:40px;height:40px;background:var(--teal);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:1rem;font-weight:700;color:#fff;letter-spacing:0.5px;}
+.brand-name{font-family:var(--head);font-size:1.15rem;font-weight:700;color:#fff;line-height:1.15;}
+.brand-sub{font-family:var(--mono);font-size:0.62rem;color:rgba(255,255,255,0.45);letter-spacing:1.8px;text-transform:uppercase;}
+.nav{display:flex;flex:1;align-items:center;padding:0 10px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;min-width:0;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{padding:8px 12px;border:none;background:transparent;border-radius:4px;font-family:var(--body);font-size:0.84rem;font-weight:700;color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.18s;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.nav-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-btn.active{background:var(--teal);color:#fff;}
+.nb{font-family:var(--mono);font-size:0.6rem;background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.7);border-radius:2px;padding:2px 5px;}
+.nav-btn.active .nb{background:rgba(0,0,0,0.2);color:#fff;}
+.topbar-r{display:flex;align-items:center;gap:8px;padding-left:12px;border-left:1px solid rgba(255,255,255,0.12);flex-shrink:0;}
+.pdf-btn{display:flex;align-items:center;gap:7px;padding:9px 20px;border:none;border-radius:4px;background:var(--teal);color:#fff;font-family:var(--body);font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.pdf-btn:hover{background:var(--teal2);box-shadow:0 4px 14px rgba(13,125,106,0.4);}
+
+/* Unit toggle button */
+.unit-toggle{display:flex;align-items:center;gap:0;border-radius:4px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.2);}
+.ut-btn{padding:7px 14px;border:none;background:transparent;color:rgba(255,255,255,0.6);font-family:var(--mono);font-size:0.76rem;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px;}
+.ut-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.ut-btn.active{background:var(--teal3);color:var(--navy);font-weight:900;}
+.ut-sep{width:1px;background:rgba(255,255,255,0.2);}
+
+/* ─── SECTIONS ─── */
+.section{display:none;animation:rise 0.25s ease;}
+.section.active{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page{max-width:1440px;margin:0 auto;padding:28px 24px 64px;}
+
+/* ─── HERO ─── */
+.hero{position:relative;overflow:hidden;background:var(--navy);border-radius:10px;padding:30px 36px;margin-bottom:24px;box-shadow:var(--shadow-lg);}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--teal),var(--teal3),var(--amber2));}
+.hero-tag{font-family:var(--mono);font-size:0.7rem;color:var(--teal3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.hero h1{font-family:var(--head);font-size:2.2rem;font-weight:700;color:#fff;line-height:1.15;margin-bottom:8px;}
+.hero h1 em{color:var(--teal3);font-style:italic;}
+.hero-desc{font-size:1rem;color:rgba(255,255,255,0.65);max-width:700px;line-height:1.65;}
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.hpill{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.8px;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.75);padding:4px 12px;border-radius:2px;}
+
+/* ─── EOS SELECTOR TABS ─── */
+.eos-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.eos-tab{border:2.5px solid var(--rule);border-radius:8px;padding:16px 18px;background:var(--paper);cursor:pointer;transition:all 0.2s;text-align:left;}
+.eos-tab:hover{border-color:var(--teal);box-shadow:var(--shadow);}
+.eos-tab.active{border-color:var(--teal);background:var(--teal-pale);box-shadow:0 0 0 3px rgba(13,125,106,0.14);}
+.eos-tab-label{font-family:var(--mono);font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:5px;font-weight:600;}
+.eos-tab-name{font-family:var(--head);font-size:1.25rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:4px;}
+.eos-tab-eq{font-family:var(--mono);font-size:0.78rem;color:var(--mid);line-height:1.7;font-weight:500;}
+.eos-tab.active .eos-tab-name{color:var(--teal);}
+.eos-tab.active .eos-tab-eq{color:var(--ink3);}
+
+/* ─── LAYOUT ─── */
+.layout{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start;}
+@media(max-width:1100px){.layout{grid-template-columns:1fr;}}
+
+/* ─── CARDS ─── */
+.card{background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.card+.card{margin-top:18px;}
+.ch{display:flex;align-items:center;gap:11px;padding:13px 20px;background:var(--paper2);border-bottom:1.5px solid var(--rule);}
+.ch-icon{font-size:1.1rem;}
+.ch-title{font-family:var(--body);font-size:0.92rem;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:0.5px;}
+.ch-sub{font-family:var(--mono);font-size:0.68rem;color:var(--mid);margin-left:auto;font-weight:600;}
+.cb{padding:20px;}
+
+/* ─── FORM ─── */
+.fsec{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--rule);}
+.fsec:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.fsec-lbl{font-family:var(--mono);font-size:0.68rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.fsec-lbl::after{content:'';flex:1;height:1px;background:var(--teal-pale);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.fg:last-child{margin-bottom:0;}
+.fl{font-size:0.84rem;font-weight:700;color:var(--ink2);letter-spacing:0.2px;}
+.ir{display:flex;}
+.ir input{flex:1;border-radius:4px 0 0 4px!important;border-right:none!important;min-width:0;}
+.iu{padding:0 10px;background:var(--paper3);border:1.5px solid var(--rule2);border-left:none;border-radius:0 4px 4px 0;font-family:var(--mono);font-size:0.72rem;font-weight:700;color:var(--teal);display:flex;align-items:center;white-space:nowrap;min-width:46px;justify-content:center;flex-shrink:0;}
+input[type=number],input[type=text],select{
+  width:100%;padding:10px 12px;background:var(--paper);border:1.5px solid var(--rule2);
+  border-radius:5px;color:var(--ink);font-family:var(--mono);font-size:0.92rem;font-weight:600;
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+}
+input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,125,106,0.12);}
+select{cursor:pointer;appearance:none;padding-right:28px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 5 4-5' stroke='%23304050' stroke-width='1.8' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;}
+.calc-btn{
+  width:100%;padding:14px;border:none;border-radius:6px;
+  background:var(--navy);color:#fff;
+  font-family:var(--body);font-size:1rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:9px;
+  border-top:3px solid var(--teal);margin-top:10px;
+}
+.calc-btn:hover{background:var(--navy2);box-shadow:0 6px 20px rgba(13,27,42,0.28);transform:translateY(-1px);}
+
+/* ─── PLACEHOLDER ─── */
+.placeholder{text-align:center;padding:60px 20px;}
+.ph-icon{font-size:3.5rem;opacity:0.2;margin-bottom:12px;}
+.ph h3{font-family:var(--head);font-size:1.4rem;font-weight:700;color:var(--mid);margin-bottom:6px;}
+.ph p{font-size:0.95rem;color:var(--light);max-width:360px;margin:0 auto;font-family:var(--head);font-style:italic;}
+
+/* ─── RESULTS ─── */
+.z-headline{display:flex;align-items:stretch;overflow:hidden;border-radius:8px;margin-bottom:18px;border:1.5px solid var(--rule);box-shadow:var(--shadow);}
+.zh-bar{width:8px;background:var(--teal);flex-shrink:0;}
+.zh-main{flex:1;padding:20px 24px;background:var(--navy);}
+.zh-tag{font-family:var(--mono);font-size:0.68rem;letter-spacing:2px;color:var(--teal3);text-transform:uppercase;margin-bottom:4px;font-weight:600;}
+.zh-z{font-family:var(--mono);font-size:3.2rem;font-weight:700;color:#fff;line-height:1;}
+.zh-unit{font-size:1.1rem;color:rgba(255,255,255,0.55);margin-left:8px;}
+.zh-sub{font-size:0.9rem;color:rgba(255,255,255,0.55);margin-top:6px;font-family:var(--head);font-style:italic;}
+.zh-aside{background:var(--navy2);border-left:1px solid rgba(255,255,255,0.08);padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:240px;align-content:center;}
+.zs{text-align:center;}
+.zs-val{font-family:var(--mono);font-size:1.05rem;font-weight:700;color:#fff;}
+.zs-lbl{font-family:var(--mono);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:2px;}
+
+.res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;}
+.rc{background:var(--paper2);border:1.5px solid var(--rule);border-radius:5px;padding:13px 15px;border-top:3px solid var(--navy3);transition:border-top-color 0.2s;}
+.rc:hover{border-top-color:var(--teal);}
+.rc-lbl{font-family:var(--mono);font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:5px;font-weight:600;}
+.rc-val{font-family:var(--mono);font-size:1.15rem;font-weight:700;color:var(--ink);}
+.rc-unit{font-size:0.78rem;color:var(--teal);margin-left:3px;font-weight:600;}
+
+/* Two-phase roots */
+.roots-box{background:var(--gold-pale);border:2px solid #d4a000;border-radius:7px;padding:14px 18px;margin-bottom:16px;}
+.roots-title{font-family:var(--mono);font-size:0.7rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:700;}
+.roots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.root-card{background:#fff;border:1.5px solid #d4a000;border-radius:5px;padding:12px;text-align:center;}
+.root-label{font-family:var(--mono);font-size:0.66rem;color:var(--mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.root-val{font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--ink);}
+.root-sub{font-size:0.78rem;color:var(--mid);margin-top:3px;font-weight:600;}
+
+/* EOS equation box */
+.eq-box{background:var(--navy);border-radius:7px;padding:18px 22px;margin-bottom:16px;font-family:var(--mono);font-size:0.92rem;color:rgba(255,255,255,0.9);line-height:2.2;}
+.eq-title{font-family:var(--body);font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal3);margin-bottom:10px;font-weight:700;}
+.eq-h{color:var(--teal3);font-weight:700;}
+.eq-v{color:var(--amber-pale);font-weight:600;}
+
+/* Summary strip */
+.sum-strip{border:1.5px solid var(--rule);border-radius:5px;overflow:hidden;margin-bottom:14px;}
+.sum-head{background:var(--paper3);border-bottom:1.5px solid var(--rule);padding:9px 16px;font-family:var(--mono);font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink2);font-weight:700;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid var(--rule);}
+.sum-row:last-child{border-bottom:none;}
+.sum-key{font-size:0.88rem;color:var(--mid);font-family:var(--head);font-style:italic;font-weight:600;}
+.sum-val{font-family:var(--mono);font-size:0.88rem;font-weight:700;color:var(--ink);}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-family:var(--mono);font-size:0.66rem;font-weight:700;margin-left:5px;}
+.b-g{background:var(--green-pale);color:var(--green);border:1px solid #70d090;}
+.b-a{background:var(--amber-pale);color:var(--amber);border:1px solid #d4a000;}
+.b-r{background:var(--red-pale);color:var(--red);border:1px solid #d08080;}
+
+/* Warn strip */
+.warn-box{display:flex;gap:12px;align-items:flex-start;background:var(--amber-pale);border:2px solid #d4a000;border-radius:6px;padding:12px 16px;font-size:0.88rem;line-height:1.6;margin-bottom:14px;color:var(--ink2);}
+
+/* ─── EOS ACTIVE INDICATOR ─── */
+.eos-active-banner{
+  display:flex;align-items:center;gap:12px;
+  background:var(--teal);color:#fff;
+  padding:10px 18px;border-radius:6px;margin-bottom:18px;
+  font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.5px;
+}
+.eos-active-banner span{font-size:0.7rem;opacity:0.75;font-weight:400;margin-left:auto;}
+
+/* ─── CHARTS ─── */
+.chart-wrap{background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.chart-head{display:flex;align-items:center;gap:12px;padding:13px 20px;background:var(--paper2);border-bottom:1.5px solid var(--rule);}
+.chart-head-title{font-family:var(--body);font-size:0.92rem;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:0.4px;}
+.chart-body{padding:12px 16px;}
+
+/* ─── COMPARISON TABLE ─── */
+.cmp-table{width:100%;border-collapse:collapse;font-size:0.9rem;}
+.cmp-table th{padding:10px 14px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:0.72rem;letter-spacing:1px;text-align:left;font-weight:700;text-transform:uppercase;}
+.cmp-table td{padding:10px 14px;border-bottom:1.5px solid var(--rule);color:var(--ink);font-family:var(--mono);font-size:0.88rem;font-weight:600;}
+.cmp-table tbody tr:nth-child(even) td{background:var(--paper2);}
+.cmp-table tbody tr.best-row td{background:var(--teal-pale)!important;color:var(--teal)!important;}
+.best-badge{background:var(--teal);color:#fff;border-radius:2px;padding:1px 7px;font-size:0.65rem;margin-left:6px;}
+
+/* ─── THEORY ─── */
+.theory-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:700px){.theory-grid{grid-template-columns:1fr;}}
+@media(max-width:900px){.theory-grid{grid-template-columns:1fr;}}
+.theory-card{border:1.5px solid var(--rule);border-radius:8px;overflow:hidden;}
+.tc-head{padding:16px 20px;background:var(--navy);border-bottom:1.5px solid var(--rule);}
+.tc-head-tag{font-family:var(--mono);font-size:0.66rem;letter-spacing:2px;color:var(--teal3);text-transform:uppercase;margin-bottom:4px;font-weight:600;}
+.tc-head-name{font-family:var(--head);font-size:1.35rem;font-weight:700;color:#fff;line-height:1.2;}
+.tc-head-year{font-family:var(--mono);font-size:0.74rem;color:rgba(255,255,255,0.45);margin-top:3px;}
+.tc-body{padding:18px 20px;}
+.tc-eq{background:var(--paper3);border-radius:5px;padding:14px 16px;font-family:var(--mono);font-size:0.88rem;color:var(--ink);line-height:2.2;margin:12px 0;border-left:4px solid var(--teal);font-weight:600;}
+.tc-eq span{color:var(--teal);font-weight:700;}
+.tc-desc{font-size:0.92rem;color:var(--mid);line-height:1.7;font-family:var(--head);font-style:italic;}
+dl.tc-params dt{font-family:var(--mono);font-size:0.78rem;font-weight:700;color:var(--ink2);margin-top:10px;}
+dl.tc-params dd{font-size:0.88rem;color:var(--mid);line-height:1.6;margin-left:0;font-weight:500;}
+
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:var(--rule2);border-radius:3px;}
+
+/* ─── DISCLAIMER BANNER ─── */
+.disclaimer-bar{background:#fff8e1;border-bottom:2px solid #f9a825;padding:6px 24px;font-family:var(--mono);font-size:0.7rem;color:#5d4037;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.disclaimer-bar b{color:#e65100;}
+.disclaimer-bottom{background:#fff8e1;border-top:2px solid #f9a825;padding:12px 24px;font-family:var(--mono);font-size:0.72rem;color:#5d4037;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;line-height:1.6;}
+
+/* ─── APPLICABILITY WARNING ─── */
+.eos-warn{display:flex;gap:10px;align-items:flex-start;background:#fff3e0;border:1.5px solid #fb8c00;border-radius:6px;padding:10px 14px;font-size:0.82rem;line-height:1.6;margin-bottom:12px;color:#4e342e;font-weight:600;}
+.eos-warn-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+
+/* ═══════════════════════════════════════════
+   SHARE BUTTON + DROPDOWN
+═══════════════════════════════════════════ */
+.share-wrap{position:relative;flex-shrink:0;}
+.share-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid rgba(255,255,255,0.22);border-radius:4px;background:rgba(255,255,255,0.1);color:#fff;font-family:var(--body);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all .16s;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.share-btn:hover{background:rgba(255,255,255,0.18);}
+.share-dd{display:none;position:fixed;top:72px;right:10px;background:#fff;border:1.5px solid var(--rule2);border-radius:10px;box-shadow:0 8px 40px rgba(13,27,42,0.22);min-width:230px;z-index:9000;overflow:hidden;animation:ddPop .15s ease;}
+.share-dd.open{display:block;}
+@keyframes ddPop{from{opacity:0;transform:scale(.97) translateY(-4px)}to{opacity:1;transform:none}}
+.shdr{padding:8px 14px 5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mid);border-bottom:1px solid var(--rule);}
+.sitm{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--body);-webkit-tap-highlight-color:transparent;transition:background .1s;}
+.sitm:hover{background:var(--paper2);}
+.sico{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:#fff;}
+.si-wa{background:#25D366;}.si-tw{background:#1D9BF0;}.si-li{background:#0A66C2;}
+.si-fb{background:#1877F2;}.si-rd{background:#FF4500;}.si-em{background:#475569;}.si-nat{background:var(--teal);}
+.sname{font-size:0.82rem;font-weight:700;color:var(--ink);text-align:left;}
+.sdesc{font-size:0.68rem;color:var(--light);}
+.sdiv{height:1px;background:var(--rule);margin:3px 0;}
+.scopy-row{padding:7px 12px 10px;display:flex;gap:6px;align-items:center;}
+.surl-box{flex:1;padding:6px 8px;border:1px solid var(--rule);border-radius:5px;font-family:var(--mono);font-size:0.6rem;color:var(--light);background:var(--paper2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.bcopy{padding:6px 11px;border:none;border-radius:5px;background:var(--teal);color:#fff;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.bcopy.copied{background:var(--green);}
+/* Toast notification */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:#fff;padding:10px 22px;border-radius:8px;font-size:0.85rem;font-weight:700;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 4px 24px rgba(13,27,42,0.3);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .topbar{flex-wrap:wrap;padding:10px 14px;gap:6px;min-height:auto;}
+  .brand{padding-right:14px;}
+  .nav{order:3;width:100%;padding:4px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
+  .nav::-webkit-scrollbar{display:none;}
+  .topbar-r{padding-left:0;border-left:none;margin-left:auto;}
+  .share-lbl{display:none;}
+}
+@media(max-width:700px){
+  .page{padding:16px 12px 60px;}
+  .eos-tabs{grid-template-columns:1fr 1fr;}
+  .hero h1{font-size:1.6rem;}
+  .hero{padding:20px 18px;}
+  .layout{grid-template-columns:1fr;}
+  .res-grid{grid-template-columns:1fr 1fr;}
+  .z-headline{flex-direction:column;}
+  .zh-aside{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;min-width:0;width:100%;border-left:none;border-top:1px solid rgba(255,255,255,0.08);}
+  .r3{grid-template-columns:1fr 1fr;}
+  .hero-pills{display:none;}
+  .roots-grid{grid-template-columns:1fr;}
+  .sum-row{flex-direction:column;gap:2px;align-items:flex-start;}
+  .brand-name{font-size:1rem;}
+  .theory-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .eos-tabs{grid-template-columns:1fr;}
+  .res-grid{grid-template-columns:1fr;}
+  .r2{grid-template-columns:1fr;}
+  .topbar{padding:8px 10px;}
+  .brand-sub{display:none;}
+  .pdf-lbl{display:none;}
+  .zh-aside{grid-template-columns:1fr 1fr;}
+  .share-dd{right:6px;}
+}
+@media(max-width:760px){
+  #sec-charts .page > .card .cb > div,
+  #sec-compare .page > .card .cb > div{
+    grid-template-columns:1fr 1fr !important;gap:10px !important;
+  }
+  #sec-charts .page > .card .cb > div .calc-btn,
+  #sec-compare .page > .card .cb > div .calc-btn{grid-column:1/-1;}
+}
+@media(max-width:480px){
+  #sec-charts .page > .card .cb > div,
+  #sec-compare .page > .card .cb > div{grid-template-columns:1fr !important;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOPBAR ═══════════ -->
+<header class="topbar">
+<a class="brand" href="https://multicalci.com/" style="text-decoration:none">
+    <div class="brand-mark">EOS</div>
+    <div>
+      <div class="brand-name">multicalci.com</div>
+      <div class="brand-sub">Gas EOS Calculator</div>
+    </div>
+  </a>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="goTo('calc',this)"><span class="nb">01</span>Calculator</button>
+    <button class="nav-btn" onclick="goTo('charts',this)"><span class="nb">02</span>P–V–T Charts</button>
+    <button class="nav-btn" onclick="goTo('compare',this)"><span class="nb">03</span>All-EOS Compare</button>
+    <button class="nav-btn" onclick="goTo('theory',this)"><span class="nb">04</span>Theory & Equations</button>
+    <button class="nav-btn" onclick="goTo('edu',this)"><span class="nb">05</span>Education</button>
+  </nav>
+  <div class="topbar-r">
+    <a href="https://multicalci.com"
+       style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+              background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.88);
+              border:1.5px solid rgba(255,255,255,0.18);border-radius:4px;
+              font-family:var(--body);font-size:0.82rem;font-weight:700;
+              text-decoration:none;letter-spacing:0.3px;transition:all .18s;
+              white-space:nowrap;flex-shrink:0;"
+       onmouseover="this.style.background='rgba(255,255,255,0.18)'"
+       onmouseout="this.style.background='rgba(255,255,255,0.09)'">🏠 Home</a>
+    <!-- SI / Imperial Toggle -->
+    <div class="unit-toggle">
+      <button class="ut-btn active" id="btn-si"  onclick="setUnits('SI')">SI</button>
+      <div class="ut-sep"></div>
+      <button class="ut-btn"        id="btn-imp" onclick="setUnits('IMP')">Imperial</button>
+    </div>
+    <button class="pdf-btn" onclick="makePDF()">🖨 <span class="pdf-lbl">PDF Report</span></button>
+    <div class="share-wrap" id="shareWrap">
+      <button class="share-btn" onclick="toggleShare(event)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span class="share-lbl">Share</span>
+      </button>
+      <div class="share-dd" id="shareDD">
+        <div class="shdr" id="shareHdr">Share Calculator</div>
+        <button class="sitm" onclick="shareVia('whatsapp')"><div class="sico si-wa"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a6.2 6.2 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.126 1.523 5.868L0 24l6.302-1.498A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.597-.503-5.1-1.378L2 22l1.418-4.787A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg></div><div><div class="sname">WhatsApp</div><div class="sdesc">Share with contacts</div></div></button>
+        <button class="sitm" onclick="shareVia('twitter')"><div class="sico si-tw"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div><div><div class="sname">X (Twitter)</div><div class="sdesc">Post to timeline</div></div></button>
+        <button class="sitm" onclick="shareVia('linkedin')"><div class="sico si-li"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div><div><div class="sname">LinkedIn</div><div class="sdesc">Share professionally</div></div></button>
+        <button class="sitm" onclick="shareVia('facebook')"><div class="sico si-fb"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div><div><div class="sname">Facebook</div><div class="sdesc">Share on timeline</div></div></button>
+        <button class="sitm" onclick="shareVia('reddit')"><div class="sico si-rd"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614.027.17.042.345.042.52 0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 014.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 01.14-.197.35.35 0 01.238-.042l2.906.617a1.214 1.214 0 011.108-.701z"/></svg></div><div><div class="sname">Reddit</div><div class="sdesc">Post to community</div></div></button>
+        <button class="sitm" onclick="shareVia('email')"><div class="sico si-em"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></div><div><div class="sname">Email</div><div class="sdesc">Send full report</div></div></button>
+        <button class="sitm" id="nativeShareBtn" style="display:none" onclick="shareVia('native')"><div class="sico si-nat"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div><div><div class="sname">More Options</div><div class="sdesc">System share sheet</div></div></button>
+        <div class="sdiv"></div>
+        <div class="scopy-row"><div class="surl-box" id="shareUrlBox"></div><button class="bcopy" id="copyUrlBtn" onclick="copyShareUrl()">Copy</button></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1: CALCULATOR
+══════════════════════════════════════════════ -->
+<div class="section active" id="sec-calc">
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-tag">Thermodynamics — Equations of State</div>
+    <h1>Gas Laws &amp; <em>EOS Calculator</em></h1>
+    <p class="hero-desc">Compute compressibility factor Z, molar volume, density and fugacity using 4 equations of state. Automatically detects two-phase regions and returns all cubic roots.</p>
+    <div class="hero-pills">
+      <span class="hpill">IDEAL GAS</span><span class="hpill">VAN DER WAALS</span>
+      <span class="hpill">PENG-ROBINSON</span><span class="hpill">SRK</span>
+      <span class="hpill">SI &amp; IMPERIAL UNITS</span>
+      <span class="hpill">TWO-PHASE ROOTS</span>
+    </div>
+  </div>
+
+  <!-- EOS SELECTOR — always visible, shows which is active -->
+  <div class="eos-tabs" id="eos-tabs">
+    <div class="eos-tab" onclick="selectEOS('ideal',this)" id="tab-ideal">
+      <div class="eos-tab-label">Ideal Gas Law</div>
+      <div class="eos-tab-name">Ideal Gas</div>
+      <div class="eos-tab-eq">PV = nRT<br>Z = 1 (always)</div>
+    </div>
+    <div class="eos-tab" onclick="selectEOS('vdw',this)" id="tab-vdw">
+      <div class="eos-tab-label">van der Waals · 1873</div>
+      <div class="eos-tab-name">van der Waals</div>
+      <div class="eos-tab-eq">(P + a/V²)(V−b) = RT<br>First cubic EOS</div>
+    </div>
+    <div class="eos-tab" onclick="selectEOS('srk',this)" id="tab-srk">
+      <div class="eos-tab-label">Soave-Redlich-Kwong · 1972</div>
+      <div class="eos-tab-name">SRK</div>
+      <div class="eos-tab-eq">Cubic · acentric factor ω<br>Good for vapour phase</div>
+    </div>
+    <div class="eos-tab active" onclick="selectEOS('pr',this)" id="tab-pr">
+      <div class="eos-tab-label">Peng-Robinson · 1976 ★</div>
+      <div class="eos-tab-name">Peng-Robinson</div>
+      <div class="eos-tab-eq">Cubic · most accurate<br>Best for hydrocarbons</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- ═══ INPUTS ═══ -->
+    <div>
+      <div class="card">
+        <div class="ch"><span class="ch-icon">⚗️</span><span class="ch-title">Gas &amp; Conditions</span><span class="ch-sub" id="unit_label_ch">SI Units</span></div>
+        <div class="cb">
+
+          <!-- Gas select -->
+          <div class="fsec">
+            <div class="fsec-lbl">Select Gas</div>
+            <div class="fg">
+              <label class="fl">Gas Species</label>
+              <select id="gas_sel" onchange="fillGasProps()">
+                <option value="custom">── Custom Gas ──</option>
+                <optgroup label="🔵 Permanent / Inorganic Gases">
+                  <option value="N2">Nitrogen (N₂)</option>
+                  <option value="O2">Oxygen (O₂)</option>
+                  <option value="H2">Hydrogen (H₂)</option>
+                  <option value="CO2" selected>Carbon Dioxide (CO₂)</option>
+                  <option value="CO">Carbon Monoxide (CO)</option>
+                  <option value="H2O">Water / Steam (H₂O)</option>
+                  <option value="NH3">Ammonia (NH₃)</option>
+                  <option value="H2S">Hydrogen Sulfide (H₂S)</option>
+                  <option value="SO2">Sulfur Dioxide (SO₂)</option>
+                  <option value="SO3">Sulfur Trioxide (SO₃)</option>
+                  <option value="NO">Nitric Oxide (NO)</option>
+                  <option value="NO2">Nitrogen Dioxide (NO₂)</option>
+                  <option value="N2O">Nitrous Oxide (N₂O)</option>
+                  <option value="HCl">Hydrogen Chloride (HCl)</option>
+                  <option value="HBr">Hydrogen Bromide (HBr)</option>
+                  <option value="HF">Hydrogen Fluoride (HF)</option>
+                  <option value="HCN">Hydrogen Cyanide (HCN)</option>
+                  <option value="Cl2">Chlorine (Cl₂)</option>
+                  <option value="F2">Fluorine (F₂)</option>
+                  <option value="Br2">Bromine (Br₂)</option>
+                  <option value="PH3">Phosphine (PH₃)</option>
+                  <option value="SiH4">Silane (SiH₄)</option>
+                  <option value="BF3">Boron Trifluoride (BF₃)</option>
+                  <option value="COCl2">Phosgene (COCl₂)</option>
+                  <option value="CS2">Carbon Disulfide (CS₂)</option>
+                  <option value="COS">Carbonyl Sulfide (COS)</option>
+                </optgroup>
+                <optgroup label="⚪ Noble Gases">
+                  <option value="He">Helium (He)</option>
+                  <option value="Ne">Neon (Ne)</option>
+                  <option value="Ar">Argon (Ar)</option>
+                  <option value="Kr">Krypton (Kr)</option>
+                  <option value="Xe">Xenon (Xe)</option>
+                </optgroup>
+                <optgroup label="🟠 Alkanes — Paraffins">
+                  <option value="CH4">Methane (CH₄)</option>
+                  <option value="C2H6">Ethane (C₂H₆)</option>
+                  <option value="C3H8">Propane (C₃H₈)</option>
+                  <option value="nC4">n-Butane (n-C₄H₁₀)</option>
+                  <option value="iC4">i-Butane (i-C₄H₁₀)</option>
+                  <option value="nC5">n-Pentane (n-C₅H₁₂)</option>
+                  <option value="iC5">i-Pentane (i-C₅H₁₂)</option>
+                  <option value="neoC5">Neopentane (C₅H₁₂)</option>
+                  <option value="nC6">n-Hexane (n-C₆H₁₄)</option>
+                  <option value="nC7">n-Heptane (n-C₇H₁₆)</option>
+                  <option value="nC8">n-Octane (n-C₈H₁₈)</option>
+                  <option value="nC9">n-Nonane (n-C₉H₂₀)</option>
+                  <option value="nC10">n-Decane (n-C₁₀H₂₂)</option>
+                  <option value="nC12">n-Dodecane (n-C₁₂H₂₆)</option>
+                  <option value="nC16">n-Hexadecane (C₁₆H₃₄)</option>
+                  <option value="cC6">Cyclohexane (c-C₆H₁₂)</option>
+                  <option value="cC5">Cyclopentane (c-C₅H₁₀)</option>
+                  <option value="MC6">Methylcyclohexane (C₇H₁₄)</option>
+                </optgroup>
+                <optgroup label="🟡 Alkenes / Alkynes — Olefins">
+                  <option value="C2H4">Ethylene (C₂H₄)</option>
+                  <option value="C3H6">Propylene (C₃H₆)</option>
+                  <option value="1C4">1-Butene (1-C₄H₈)</option>
+                  <option value="iC4e">i-Butylene (i-C₄H₈)</option>
+                  <option value="1C5">1-Pentene (1-C₅H₁₀)</option>
+                  <option value="C2H2">Acetylene (C₂H₂)</option>
+                  <option value="propadiene">Propadiene (C₃H₄)</option>
+                  <option value="butadiene">1,3-Butadiene (C₄H₆)</option>
+                  <option value="isoprene">Isoprene (C₅H₈)</option>
+                </optgroup>
+                <optgroup label="🟤 Aromatics">
+                  <option value="Benz">Benzene (C₆H₆)</option>
+                  <option value="Tol">Toluene (C₇H₈)</option>
+                  <option value="oXyl">o-Xylene (C₈H₁₀)</option>
+                  <option value="mXyl">m-Xylene (C₈H₁₀)</option>
+                  <option value="pXyl">p-Xylene (C₈H₁₀)</option>
+                  <option value="EB">Ethylbenzene (C₈H₁₀)</option>
+                  <option value="Styr">Styrene (C₈H₈)</option>
+                  <option value="Naph">Naphthalene (C₁₀H₈)</option>
+                  <option value="Cumen">Cumene (C₉H₁₂)</option>
+                </optgroup>
+                <optgroup label="🟢 Oxygenates / Alcohols / Ethers">
+                  <option value="MeOH">Methanol (CH₃OH)</option>
+                  <option value="EtOH">Ethanol (C₂H₅OH)</option>
+                  <option value="iPrOH">i-Propanol (C₃H₇OH)</option>
+                  <option value="nBuOH">n-Butanol (C₄H₉OH)</option>
+                  <option value="Acet">Acetone (C₃H₆O)</option>
+                  <option value="MEK">Methyl Ethyl Ketone (C₄H₈O)</option>
+                  <option value="MIBK">Methyl Isobutyl Ketone (C₆H₁₂O)</option>
+                  <option value="THF">Tetrahydrofuran (C₄H₈O)</option>
+                  <option value="DME">Dimethyl Ether (C₂H₆O)</option>
+                  <option value="DEE">Diethyl Ether (C₄H₁₀O)</option>
+                  <option value="MTBE">MTBE (C₅H₁₂O)</option>
+                  <option value="EO">Ethylene Oxide (C₂H₄O)</option>
+                  <option value="PO">Propylene Oxide (C₃H₆O)</option>
+                  <option value="Furan">Furan (C₄H₄O)</option>
+                  <option value="DXN">1,4-Dioxane (C₄H₈O₂)</option>
+                </optgroup>
+                <optgroup label="🔴 Acids / Aldehydes / Esters">
+                  <option value="HCHO">Formaldehyde (HCHO)</option>
+                  <option value="AcAld">Acetaldehyde (C₂H₄O)</option>
+                  <option value="AcAcid">Acetic Acid (C₂H₄O₂)</option>
+                  <option value="FormAcid">Formic Acid (CH₂O₂)</option>
+                  <option value="EtAc">Ethyl Acetate (C₄H₈O₂)</option>
+                  <option value="MeAc">Methyl Acetate (C₃H₆O₂)</option>
+                  <option value="AcAN">Acrylonitrile (C₃H₃N)</option>
+                  <option value="AN">Acetonitrile (C₂H₃N)</option>
+                </optgroup>
+                <optgroup label="🔵 Chlorinated / Halogenated">
+                  <option value="CH3Cl">Methyl Chloride (CH₃Cl)</option>
+                  <option value="CH2Cl2">Methylene Chloride (CH₂Cl₂)</option>
+                  <option value="CHCl3">Chloroform (CHCl₃)</option>
+                  <option value="CCl4">Carbon Tetrachloride (CCl₄)</option>
+                  <option value="C2H4Cl2">1,2-Dichloroethane (C₂H₄Cl₂)</option>
+                  <option value="VCM">Vinyl Chloride (C₂H₃Cl)</option>
+                  <option value="TCE">Trichloroethylene (C₂HCl₃)</option>
+                  <option value="PCE">Perchloroethylene (C₂Cl₄)</option>
+                  <option value="CH3F">Methyl Fluoride (CH₃F)</option>
+                </optgroup>
+                <optgroup label="❄️ Refrigerants (HFC / HCFC / HFO)">
+                  <option value="R11">R-11 (CCl₃F)</option>
+                  <option value="R12">R-12 (CCl₂F₂)</option>
+                  <option value="R22">R-22 (CHClF₂)</option>
+                  <option value="R32">R-32 (CH₂F₂)</option>
+                  <option value="R41">R-41 (CH₃F)</option>
+                  <option value="R123">R-123 (C₂HCl₂F₃)</option>
+                  <option value="R124">R-124 (C₂HClF₄)</option>
+                  <option value="R125">R-125 (C₂HF₅)</option>
+                  <option value="R134a">R-134a (C₂H₂F₄)</option>
+                  <option value="R141b">R-141b (C₂H₃Cl₂F)</option>
+                  <option value="R143a">R-143a (C₂H₃F₃)</option>
+                  <option value="R152a">R-152a (C₂H₄F₂)</option>
+                  <option value="R161">R-161 (C₂H₅F)</option>
+                  <option value="R404A_sim">R-404A ⚠ mixture — pseudo-pure only</option>
+                  <option value="R407C_sim">R-407C ⚠ mixture — pseudo-pure only</option>
+                  <option value="R410A_sim">R-410A ⚠ mixture — pseudo-pure only</option>
+                  <option value="R507A_sim">R-507A ⚠ mixture — pseudo-pure only</option>
+                  <option value="R1234yf">R-1234yf (HFO, C₃H₂F₄)</option>
+                  <option value="R1234ze">R-1234ze (HFO, C₃H₂F₄)</option>
+                  <option value="R245fa">R-245fa (C₃H₃F₅)</option>
+                  <option value="R600a">R-600a / i-Butane</option>
+                  <option value="R717">R-717 / Ammonia</option>
+                  <option value="R744">R-744 / CO₂</option>
+                </optgroup>
+                <optgroup label="⛽ Natural Gas Components">
+                  <option value="CH4">Methane (CH₄)</option>
+                  <option value="C2H6">Ethane (C₂H₆)</option>
+                  <option value="C3H8">Propane (C₃H₈)</option>
+                  <option value="nC4">n-Butane</option>
+                  <option value="iC4">i-Butane</option>
+                  <option value="N2">Nitrogen (N₂)</option>
+                  <option value="CO2">Carbon Dioxide (CO₂)</option>
+                  <option value="H2S">Hydrogen Sulfide (H₂S)</option>
+                  <option value="He">Helium (He)</option>
+                  <option value="H2">Hydrogen (H₂)</option>
+                </optgroup>
+                <optgroup label="⚗️ Chemical Process Gases">
+                  <option value="HF">Hydrogen Fluoride (HF)</option>
+                  <option value="HCl">Hydrogen Chloride (HCl)</option>
+                  <option value="Cl2">Chlorine (Cl₂)</option>
+                  <option value="SO3">Sulfur Trioxide (SO₃)</option>
+                  <option value="N2O4">Dinitrogen Tetroxide (N₂O₄)</option>
+                  <option value="NF3">Nitrogen Trifluoride (NF₃)</option>
+                  <option value="SF6">Sulfur Hexafluoride (SF₆)</option>
+                  <option value="WF6">Tungsten Hexafluoride (WF₆)</option>
+                  <option value="UF6">Uranium Hexafluoride (UF₆)</option>
+                  <option value="NH3">Ammonia (NH₃)</option>
+                  <option value="EO">Ethylene Oxide (C₂H₄O)</option>
+                  <option value="PO">Propylene Oxide (C₃H₆O)</option>
+                  <option value="COCl2">Phosgene (COCl₂)</option>
+                </optgroup>
+                <optgroup label="🌿 Bio / Renewable Fuels">
+                  <option value="MeOH">Methanol (CH₃OH)</option>
+                  <option value="EtOH">Ethanol (C₂H₅OH)</option>
+                  <option value="DME">Dimethyl Ether (C₂H₆O)</option>
+                  <option value="NH3">Ammonia (NH₃)</option>
+                  <option value="H2">Hydrogen (H₂)</option>
+                  <option value="CH4">Biomethane (CH₄)</option>
+                </optgroup>
+              </select>
+            </div>
+            <!-- Critical properties — shown in °C/°F; converted dynamically -->
+            <div class="r2">
+              <div class="fg">
+                <label class="fl" id="lbl-Tc">Tc (°C)</label>
+                <div class="ir"><input type="number" id="Tc" value="31.05" step="0.1"><div class="iu" id="iu-Tc">°C</div></div>
+              </div>
+              <div class="fg">
+                <label class="fl" id="lbl-Pc">Pc (bar)</label>
+                <div class="ir"><input type="number" id="Pc" value="73.83" step="0.01"><div class="iu" id="iu-Pc">bar</div></div>
+              </div>
+            </div>
+            <div class="fg" style="max-width:200px;">
+              <label class="fl">ω (acentric factor)</label>
+              <div class="ir"><input type="number" id="omega" value="0.2239" step="0.0001"><div class="iu">—</div></div>
+            </div>
+          </div>
+
+          <!-- Operating conditions -->
+          <div class="fsec">
+            <div class="fsec-lbl">Operating Conditions</div>
+            <div class="r2">
+              <div class="fg">
+                <label class="fl" id="lbl-T">Temperature (°C)</label>
+                <div class="ir"><input type="number" id="T_op" value="76.85" step="1" min="-273.14"><div class="iu" id="iu-T">°C</div></div>
+              </div>
+              <div class="fg">
+                <label class="fl" id="lbl-P">Pressure (bar)</label>
+                <div class="ir"><input type="number" id="P_op" value="100" step="0.5" min="0.001"><div class="iu" id="iu-P">bar</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg">
+                <label class="fl">Molar Mass M</label>
+                <div class="ir"><input type="number" id="M_mol" value="44.01" step="0.01" min="1"><div class="iu">g/mol</div></div>
+              </div>
+              <div class="fg">
+                <label class="fl">Moles n</label>
+                <div class="ir"><input type="number" id="n_moles" value="1" step="0.1" min="0.001"><div class="iu">mol</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- vdW params (shown only for vdW EOS) -->
+          <div class="fsec" id="vdw_sec" style="display:none;">
+            <div class="fsec-lbl">van der Waals Parameters (auto-calculated)</div>
+            <div class="r2">
+              <div class="fg">
+                <label class="fl">a</label>
+                <div class="ir"><input type="text" id="vdw_a" readonly style="background:var(--paper3);"><div class="iu">Pa·m⁶/mol²</div></div>
+              </div>
+              <div class="fg">
+                <label class="fl">b</label>
+                <div class="ir"><input type="text" id="vdw_b" readonly style="background:var(--paper3);"><div class="iu">m³/mol</div></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="calc-btn" onclick="calculate()">▶ CALCULATE EOS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RESULTS ═══ -->
+    <div>
+      <div class="card">
+        <div class="ch"><span class="ch-icon">📊</span><span class="ch-title">Results</span><span class="ch-sub" id="res_eos_label">Select EOS above then click Calculate</span></div>
+        <div class="cb" id="results_panel">
+          <div class="placeholder">
+            <div class="ph-icon">⚗️</div>
+            <h3>Awaiting Calculation</h3>
+            <p>Peng-Robinson is selected by default. Choose gas, set T &amp; P, then click Calculate.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /layout -->
+</div>
+</div><!-- /sec-calc -->
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2: P-V-T CHARTS
+══════════════════════════════════════════════ -->
+<div class="section" id="sec-charts">
+<div class="page">
+  <div class="hero" style="padding:18px 28px;margin-bottom:16px;">
+    <div class="hero-tag">Visualisation</div>
+    <h1 style="font-size:1.7rem;">P–V–T <em>Isotherm Charts</em></h1>
+    <p class="hero-desc" style="font-size:0.92rem;">Plot all four EOS on the same chart. Compare pressure–volume isotherms or Z-factor vs pressure across ideal and non-ideal models.</p>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ch"><span class="ch-icon">🎛️</span><span class="ch-title">Chart Settings</span></div>
+    <div class="cb" style="padding:14px 18px;">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 0.8fr;gap:12px;align-items:end;">
+        <div class="fg">
+          <label class="fl">Gas</label>
+          <select id="chart_gas" onchange="chartGasChange()">
+            <optgroup label="Inorganic">
+              <option value="CO2" selected>CO₂</option>
+              <option value="N2">Nitrogen</option><option value="O2">Oxygen</option>
+              <option value="H2">Hydrogen</option><option value="H2O">Water/Steam</option>
+              <option value="NH3">Ammonia</option><option value="H2S">H₂S</option>
+              <option value="SO2">SO₂</option><option value="CO">CO</option>
+              <option value="Cl2">Chlorine</option><option value="HCl">HCl</option>
+              <option value="SF6">SF₆</option>
+            </optgroup>
+            <optgroup label="Noble Gases">
+              <option value="He">Helium</option><option value="Ne">Neon</option>
+              <option value="Ar">Argon</option><option value="Kr">Krypton</option>
+              <option value="Xe">Xenon</option>
+            </optgroup>
+            <optgroup label="Alkanes">
+              <option value="CH4">Methane</option><option value="C2H6">Ethane</option>
+              <option value="C3H8">Propane</option><option value="nC4">n-Butane</option>
+              <option value="nC5">n-Pentane</option><option value="nC6">n-Hexane</option>
+              <option value="nC7">n-Heptane</option><option value="nC8">n-Octane</option>
+              <option value="nC10">n-Decane</option>
+            </optgroup>
+            <optgroup label="Alkenes / Aromatics">
+              <option value="C2H4">Ethylene</option><option value="C3H6">Propylene</option>
+              <option value="C2H2">Acetylene</option><option value="butadiene">1,3-Butadiene</option>
+              <option value="Benz">Benzene</option><option value="Tol">Toluene</option>
+              <option value="pXyl">p-Xylene</option><option value="Styr">Styrene</option>
+            </optgroup>
+            <optgroup label="Oxygenates">
+              <option value="MeOH">Methanol</option><option value="EtOH">Ethanol</option>
+              <option value="Acet">Acetone</option><option value="DME">DME</option>
+              <option value="EO">Ethylene Oxide</option><option value="AcAcid">Acetic Acid</option>
+            </optgroup>
+            <optgroup label="Refrigerants">
+              <option value="R22">R-22</option><option value="R32">R-32</option>
+              <option value="R134a">R-134a</option><option value="R125">R-125</option>
+              <option value="R1234yf">R-1234yf</option><option value="R1234ze">R-1234ze</option>
+              <option value="R245fa">R-245fa</option><option value="R717">R-717/NH₃</option>
+              <option value="R744">R-744/CO₂</option>
+            </optgroup>
+            <optgroup label="Chlorinated">
+              <option value="CH3Cl">CH₃Cl</option><option value="CH2Cl2">CH₂Cl₂</option>
+              <option value="CHCl3">CHCl₃</option><option value="CCl4">CCl₄</option>
+              <option value="VCM">Vinyl Chloride</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl" id="chart_T_lbl">Temperature (°C)</label>
+          <input type="number" id="chart_T" value="76.85" step="5">
+        </div>
+        <div class="fg">
+          <label class="fl" id="chart_Pmax_lbl">Max Pressure (bar)</label>
+          <input type="number" id="chart_Pmax" value="300" step="10">
+        </div>
+        <div class="fg">
+          <label class="fl">Chart Type</label>
+          <select id="chart_type">
+            <option value="ZP" selected>Z vs P (Compressibility)</option>
+            <option value="PV">P vs Vm (Isotherm)</option>
+          </select>
+        </div>
+        <button class="calc-btn" onclick="drawCharts()" style="margin-top:0;">▶ PLOT</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-head">
+      <span class="chart-head-title" id="chart-title-label">Z vs Pressure — Select gas and click Plot</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="eos_chart" height="300"></canvas>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3: ALL-EOS COMPARISON
+══════════════════════════════════════════════ -->
+<div class="section" id="sec-compare">
+<div class="page">
+  <div class="hero">
+    <div class="hero-tag">Side-by-Side</div>
+    <h1>All EOS — <em>Same Conditions, Four Results</em></h1>
+    <p class="hero-desc">Run all four equations simultaneously. See Z-factor, molar volume, density and fugacity side-by-side. Highlights how EOS accuracy diverges at high pressure or near the critical point.</p>
+  </div>
+  <div class="card" style="margin-bottom:22px;">
+    <div class="ch"><span class="ch-icon">🎛️</span><span class="ch-title">Conditions</span></div>
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:14px;align-items:end;">
+        <div class="fg">
+          <label class="fl">Gas</label>
+          <select id="cmp_gas" onchange="cmpGasChange()">
+            <optgroup label="Inorganic">
+              <option value="CO2" selected>CO₂</option><option value="N2">Nitrogen</option>
+              <option value="O2">Oxygen</option><option value="H2">Hydrogen</option>
+              <option value="H2O">Water/Steam</option><option value="NH3">Ammonia</option>
+              <option value="H2S">H₂S</option><option value="SO2">SO₂</option>
+              <option value="CO">CO</option><option value="SF6">SF₆</option>
+            </optgroup>
+            <optgroup label="Noble">
+              <option value="He">Helium</option><option value="Ne">Neon</option>
+              <option value="Ar">Argon</option><option value="Kr">Krypton</option><option value="Xe">Xenon</option>
+            </optgroup>
+            <optgroup label="Alkanes">
+              <option value="CH4">Methane</option><option value="C2H6">Ethane</option>
+              <option value="C3H8">Propane</option><option value="nC4">n-Butane</option>
+              <option value="iC4">i-Butane</option><option value="nC5">n-Pentane</option>
+              <option value="nC6">n-Hexane</option><option value="nC7">n-Heptane</option>
+              <option value="nC8">n-Octane</option><option value="nC10">n-Decane</option>
+            </optgroup>
+            <optgroup label="Alkenes / Aromatics">
+              <option value="C2H4">Ethylene</option><option value="C3H6">Propylene</option>
+              <option value="butadiene">1,3-Butadiene</option><option value="C2H2">Acetylene</option>
+              <option value="Benz">Benzene</option><option value="Tol">Toluene</option>
+              <option value="pXyl">p-Xylene</option><option value="Styr">Styrene</option>
+            </optgroup>
+            <optgroup label="Oxygenates">
+              <option value="MeOH">Methanol</option><option value="EtOH">Ethanol</option>
+              <option value="Acet">Acetone</option><option value="DME">DME</option>
+              <option value="THF">THF</option><option value="AcAcid">Acetic Acid</option>
+            </optgroup>
+            <optgroup label="Refrigerants">
+              <option value="R22">R-22</option><option value="R32">R-32</option>
+              <option value="R134a">R-134a</option><option value="R1234yf">R-1234yf</option>
+              <option value="R717">R-717/NH₃</option><option value="R744">R-744/CO₂</option>
+            </optgroup>
+            <optgroup label="Chlorinated">
+              <option value="CH2Cl2">Methylene Chloride</option><option value="CHCl3">Chloroform</option>
+              <option value="CCl4">CCl₄</option><option value="VCM">Vinyl Chloride</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl" id="cmp_T_lbl">Temperature (°C)</label>
+          <input type="number" id="cmp_T" value="76.85" step="1">
+        </div>
+        <div class="fg">
+          <label class="fl" id="cmp_P_lbl">Pressure (bar)</label>
+          <input type="number" id="cmp_P" value="100" step="1">
+        </div>
+        <div class="fg">
+          <label class="fl">Tr = T / Tc</label>
+          <input type="text" id="cmp_Tr" readonly style="background:var(--paper3);color:var(--teal);font-weight:700;">
+        </div>
+        <button class="calc-btn" onclick="runComparison()" style="margin-top:0;">▶ COMPARE ALL</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ch-icon">📋</span><span class="ch-title">EOS Comparison Results</span></div>
+    <div class="cb" id="comparison_results">
+      <div class="placeholder">
+        <div class="ph-icon">📊</div>
+        <h3>Click Compare All</h3>
+        <p>Results from all four EOS will appear here side-by-side.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4: THEORY
+══════════════════════════════════════════════ -->
+<div class="section" id="sec-theory">
+<div class="page">
+  <div class="hero">
+    <div class="hero-tag">Reference</div>
+    <h1>Theory, Equations &amp; <em>Derivations</em></h1>
+    <p class="hero-desc">Full mathematical framework — parameters, cubic form, fugacity expressions and applicability range for all four equations of state.</p>
+  </div>
+  <div class="theory-grid" id="theory_grid"></div>
+</div>
+</div>
+
+<script>
+'use strict';
+
+// ================================================================
+// CLIENT-SIDE ONLY: Unit display, UI state, API calls
+// ALL EOS calculation logic runs server-side via /api/eos
+// ================================================================
+
+const R = 8.314462; // used for chart computations only (direct P from Vm)
+let unitSys   = 'SI';
+let activeEOS = 'pr';
+let lastCalc  = null;
+let eosChart  = null;
+let _apiPending = false;
+
+// ── Unit helpers ──────────────────────────────────────────────────
+function toSI_T(val)  { return unitSys==='SI' ? val + 273.15 : (val - 32) * 5/9 + 273.15; }
+function toSI_P(val)  { return unitSys==='SI' ? val * 1e5 : val * 6894.76; }
+function fromSI_T(K)  { return unitSys==='SI' ? K - 273.15 : (K - 273.15) * 9/5 + 32; }
+function fromSI_P(Pa) { return unitSys==='SI' ? Pa/1e5 : Pa/6894.76; }
+function fromSI_Vm(m3_per_mol) {
+  return unitSys==='SI' ? m3_per_mol * 1000 : m3_per_mol * 35.3147 * 453.592;
+}
+function fromSI_rho(kg_m3) {
+  return unitSys==='SI' ? kg_m3 : kg_m3 * 0.062428;
+}
+function uT()   { return unitSys==='SI' ? '°C'       : '°F'; }
+function uP()   { return unitSys==='SI' ? 'bar'      : 'psia'; }
+function uVm()  { return unitSys==='SI' ? 'L/mol'    : 'ft³/lbmol'; }
+function uRho() { return unitSys==='SI' ? 'kg/m³'    : 'lb/ft³'; }
+
+function getTcK()  {
+  const v = parseFloat(document.getElementById('Tc').value);
+  return unitSys==='SI' ? v : (v - 32)*5/9 + 273.15;
+}
+function getPcPa() {
+  return toSI_P(parseFloat(document.getElementById('Pc').value));
+}
+function getTopK() {
+  return toSI_T(parseFloat(document.getElementById('T_op').value));
+}
+function getPoPa() {
+  return toSI_P(parseFloat(document.getElementById('P_op').value));
+}
+
+function setUnits(sys) {
+  if (sys === unitSys) return;
+
+  // Read current displayed values BEFORE changing unitSys
+  const T_old      = parseFloat(document.getElementById('T_op').value);
+  const P_old      = parseFloat(document.getElementById('P_op').value) || 100;
+  const Tc_old     = parseFloat(document.getElementById('Tc').value);
+  const Pc_old     = parseFloat(document.getElementById('Pc').value) || 73.83;
+  const chartT_old = parseFloat(document.getElementById('chart_T').value);
+  const chartP_old = parseFloat(document.getElementById('chart_Pmax').value) || 300;
+  const cmpT_old   = parseFloat(document.getElementById('cmp_T').value);
+  const cmpP_old   = parseFloat(document.getElementById('cmp_P').value) || 100;
+
+  unitSys = sys;  // switch AFTER reading old values
+
+  // ── Convert main inputs ──
+  if (sys === 'IMP') {
+    if (isFinite(T_old))  document.getElementById('T_op').value = (T_old  * 9/5 + 32).toFixed(1);
+    if (isFinite(Tc_old)) document.getElementById('Tc').value   = (Tc_old * 9/5 + 32).toFixed(2);
+    document.getElementById('P_op').value = (P_old  * 14.5038).toFixed(2);
+    document.getElementById('Pc').value   = (Pc_old * 14.5038).toFixed(3);
+  } else {
+    if (isFinite(T_old))  document.getElementById('T_op').value = ((T_old  - 32) * 5/9).toFixed(1);
+    if (isFinite(Tc_old)) document.getElementById('Tc').value   = ((Tc_old - 32) * 5/9).toFixed(2);
+    document.getElementById('P_op').value = (P_old  / 14.5038).toFixed(3);
+    document.getElementById('Pc').value   = (Pc_old / 14.5038).toFixed(3);
+  }
+
+  // ── Convert chart inputs ──
+  if (sys === 'IMP') {
+    if (isFinite(chartT_old)) document.getElementById('chart_T').value    = (chartT_old * 9/5 + 32).toFixed(0);
+    document.getElementById('chart_Pmax').value = (chartP_old * 14.5038).toFixed(0);
+    if (isFinite(cmpT_old))   document.getElementById('cmp_T').value      = (cmpT_old * 9/5 + 32).toFixed(1);
+    document.getElementById('cmp_P').value      = (cmpP_old * 14.5038).toFixed(2);
+  } else {
+    if (isFinite(chartT_old)) document.getElementById('chart_T').value    = ((chartT_old - 32) * 5/9).toFixed(0);
+    document.getElementById('chart_Pmax').value = (chartP_old / 14.5038).toFixed(0);
+    if (isFinite(cmpT_old))   document.getElementById('cmp_T').value      = ((cmpT_old - 32) * 5/9).toFixed(1);
+    document.getElementById('cmp_P').value      = (cmpP_old / 14.5038).toFixed(2);
+  }
+
+  // ── Update unit labels (using original HTML element IDs) ──
+  const elT  = document.getElementById('iu-T'),  elP  = document.getElementById('iu-P');
+  const elTc = document.getElementById('iu-Tc'), elPc = document.getElementById('iu-Pc');
+  if (elT)  elT.textContent  = uT();
+  if (elP)  elP.textContent  = uP();
+  if (elTc) elTc.textContent = uT();
+  if (elPc) elPc.textContent = uP();
+
+  const lblT  = document.getElementById('lbl-T'),  lblP  = document.getElementById('lbl-P');
+  const lblTc = document.getElementById('lbl-Tc'), lblPc = document.getElementById('lbl-Pc');
+  if (lblT)  lblT.textContent  = `Temperature (${uT()})`;
+  if (lblP)  lblP.textContent  = `Pressure (${uP()})`;
+  if (lblTc) lblTc.textContent = `Tc (${uT()})`;
+  if (lblPc) lblPc.textContent = `Pc (${uP()})`;
+
+  const chartTlbl  = document.getElementById('chart_T_lbl');
+  const chartPlbl  = document.getElementById('chart_Pmax_lbl');
+  const cmpTlbl    = document.getElementById('cmp_T_lbl');
+  const cmpPlbl    = document.getElementById('cmp_P_lbl');
+  const unitLblCh  = document.getElementById('unit_label_ch');
+  if (chartTlbl)  chartTlbl.textContent  = `Temperature (${uT()})`;
+  if (chartPlbl)  chartPlbl.textContent  = `Max Pressure (${uP()})`;
+  if (cmpTlbl)    cmpTlbl.textContent    = `Temperature (${uT()})`;
+  if (cmpPlbl)    cmpPlbl.textContent    = `Pressure (${uP()})`;
+  if (unitLblCh)  unitLblCh.textContent  = sys==='SI' ? 'SI (°C, bar)' : 'Imperial (°F, psia)';
+
+  // ── Toggle button states ──
+  document.querySelectorAll('.ut-btn').forEach(b => b.classList.toggle('active', b.dataset.sys === sys));
+  const btnSI  = document.getElementById('btn-si'),  btnIMP = document.getElementById('btn-imp');
+  if (btnSI)  btnSI.classList.toggle('active',  sys==='SI');
+  if (btnIMP) btnIMP.classList.toggle('active', sys==='IMP');
+
+  cmpGasChange();
+  if (lastCalc) calculate();
+}
+
+// ── Navigation ────────────────────────────────────────────────────
+function goTo(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'theory') buildTheory();
+}
+
+// ── EOS selector ──────────────────────────────────────────────────
+function selectEOS(eos, el) {
+  activeEOS = eos;
+  document.querySelectorAll('.eos-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Gas DB (critical properties – client-side for UI only) ────────
+const GAS_DB = {
+  N2:{name:'Nitrogen (N₂)',Tc:126.19,Pc:33.96,omega:0.0372,M:28.014},O2:{name:'Oxygen (O₂)',Tc:154.58,Pc:50.43,omega:0.0222,M:31.999},H2:{name:'Hydrogen (H₂)',Tc:33.19,Pc:13.13,omega:-0.216,M:2.016},CO2:{name:'Carbon Dioxide (CO₂)',Tc:304.21,Pc:73.83,omega:0.2239,M:44.010},CO:{name:'Carbon Monoxide (CO)',Tc:132.85,Pc:34.94,omega:0.0481,M:28.010},H2O:{name:'Water / Steam (H₂O)',Tc:647.10,Pc:220.64,omega:0.3449,M:18.015},NH3:{name:'Ammonia (NH₃)',Tc:405.65,Pc:113.53,omega:0.2530,M:17.031},H2S:{name:'Hydrogen Sulfide (H₂S)',Tc:373.53,Pc:89.63,omega:0.0942,M:34.082},SO2:{name:'Sulfur Dioxide (SO₂)',Tc:430.75,Pc:78.84,omega:0.2450,M:64.065},SO3:{name:'Sulfur Trioxide (SO₃)',Tc:490.85,Pc:82.07,omega:0.4220,M:80.064},NO:{name:'Nitric Oxide (NO)',Tc:180.15,Pc:64.80,omega:0.5870,M:30.006},NO2:{name:'Nitrogen Dioxide (NO₂)',Tc:431.35,Pc:101.33,omega:0.8500,M:46.006},N2O:{name:'Nitrous Oxide (N₂O)',Tc:309.52,Pc:72.45,omega:0.1613,M:44.013},HCl:{name:'Hydrogen Chloride (HCl)',Tc:324.65,Pc:83.09,omega:0.1320,M:36.461},HBr:{name:'Hydrogen Bromide (HBr)',Tc:363.15,Pc:85.50,omega:0.0710,M:80.912},HF:{name:'Hydrogen Fluoride (HF)',Tc:461.15,Pc:64.85,omega:0.3720,M:20.006},HCN:{name:'Hydrogen Cyanide (HCN)',Tc:456.65,Pc:53.90,omega:0.4100,M:27.026},Cl2:{name:'Chlorine (Cl₂)',Tc:417.15,Pc:77.10,omega:0.0690,M:70.906},Ar:{name:'Argon (Ar)',Tc:150.86,Pc:48.98,omega:-0.0022,M:39.948},He:{name:'Helium (He)',Tc:5.19,Pc:2.27,omega:-0.39,M:4.003},Ne:{name:'Neon (Ne)',Tc:44.49,Pc:26.79,omega:-0.039,M:20.180},Kr:{name:'Krypton (Kr)',Tc:209.41,Pc:55.02,omega:0.0050,M:83.798},Xe:{name:'Xenon (Xe)',Tc:289.74,Pc:58.40,omega:0.0120,M:131.293},CH4:{name:'Methane (CH₄)',Tc:190.56,Pc:46.10,omega:0.0115,M:16.043},C2H6:{name:'Ethane (C₂H₆)',Tc:305.32,Pc:48.72,omega:0.0995,M:30.070},C3H8:{name:'Propane (C₃H₈)',Tc:369.83,Pc:42.48,omega:0.1523,M:44.097},nC4:{name:'n-Butane',Tc:425.12,Pc:37.96,omega:0.2002,M:58.124},iC4:{name:'i-Butane',Tc:408.14,Pc:36.48,omega:0.1808,M:58.124},nC5:{name:'n-Pentane',Tc:469.70,Pc:33.70,omega:0.2515,M:72.151},nC6:{name:'n-Hexane',Tc:507.60,Pc:30.25,omega:0.3013,M:86.178},nC7:{name:'n-Heptane',Tc:540.20,Pc:27.40,omega:0.3495,M:100.205},nC8:{name:'n-Octane',Tc:568.70,Pc:24.90,omega:0.3996,M:114.232},C2H4:{name:'Ethylene (C₂H₄)',Tc:282.34,Pc:50.41,omega:0.0866,M:28.053},C3H6:{name:'Propylene (C₃H₆)',Tc:365.57,Pc:46.65,omega:0.1411,M:42.081},Benz:{name:'Benzene (C₆H₆)',Tc:562.16,Pc:48.95,omega:0.2103,M:78.114},Tol:{name:'Toluene (C₇H₈)',Tc:591.75,Pc:41.06,omega:0.2657,M:92.141},MeOH:{name:'Methanol (CH₃OH)',Tc:512.64,Pc:80.97,omega:0.5625,M:32.042},EtOH:{name:'Ethanol (C₂H₅OH)',Tc:513.91,Pc:61.48,omega:0.6450,M:46.069},Acet:{name:'Acetone (C₃H₆O)',Tc:508.20,Pc:47.01,omega:0.3065,M:58.080},R134a:{name:'R-134a (C₂H₂F₄)',Tc:374.21,Pc:40.59,omega:0.3268,M:102.031},R22:{name:'R-22 (CHClF₂)',Tc:369.30,Pc:49.90,omega:0.2208,M:86.468},R744:{name:'R-744 / CO₂',Tc:304.21,Pc:73.83,omega:0.2239,M:44.010},R717:{name:'R-717 / Ammonia',Tc:405.65,Pc:113.53,omega:0.2530,M:17.031},SF6:{name:'Sulfur Hexafluoride (SF₆)',Tc:318.69,Pc:37.60,omega:0.2140,M:146.055},
+};
+
+function fillGasProps() {
+  const key = document.getElementById('gas_sel').value;
+  const g = GAS_DB[key];
+  if (!g) return;
+  const Tc_disp = unitSys==='SI' ? (g.Tc - 273.15).toFixed(2) : ((g.Tc - 273.15)*9/5 + 32).toFixed(2);
+  const Pc_disp = unitSys==='SI' ? g.Pc.toFixed(3) : (g.Pc * 14.5038).toFixed(2);
+  document.getElementById('Tc').value    = Tc_disp;
+  document.getElementById('Pc').value    = Pc_disp;
+  document.getElementById('omega').value = g.omega;
+  document.getElementById('M_mol').value = g.M;
+}
+
+// ── MAIN CALCULATE (sends to server API) ─────────────────────────
+async function calculate() {
+  if (_apiPending) return;
+
+  const T_K   = getTopK();
+  const P_Pa  = getPoPa();
+  const Tc_K  = getTcK();
+  const Pc_Pa = getPcPa();
+  const omega = parseFloat(document.getElementById('omega').value) || 0;
+  const M     = parseFloat(document.getElementById('M_mol').value) || 44;
+  const n     = parseFloat(document.getElementById('n_moles').value) || 1;
+  const gasKey  = document.getElementById('gas_sel').value;
+  const gasName = GAS_DB[gasKey]?.name || 'Custom Gas';
+
+  // Basic client-side checks before hitting server
+  if (!isFinite(T_K) || T_K <= 0) { showError('Temperature must be positive and finite.'); return; }
+  if (!isFinite(P_Pa)|| P_Pa<= 0) { showError('Pressure must be positive and finite.'); return; }
+  if (!isFinite(Tc_K)|| Tc_K<= 0) { showError('Critical temperature Tc must be positive.'); return; }
+  if (!isFinite(Pc_Pa)||Pc_Pa<=0) { showError('Critical pressure Pc must be positive.'); return; }
+  if (!isFinite(M)   || M < 1)    { showError('Molar mass must be ≥ 1 g/mol.'); return; }
+  if (!isFinite(n)   || n <= 0)   { showError('Number of moles must be positive.'); return; }
+
+  const btn = document.querySelector('button[onclick="calculate()"]');
+  if (btn) { btn.textContent = '⏳ Calculating…'; btn.disabled = true; }
+  _apiPending = true;
+
+  try {
+    const resp = await fetch('/api/eos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eos: activeEOS, T_K, P_Pa, Tc_K, Pc_Pa, omega, M, n })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      showError(err.error || `Server error (${resp.status}).`);
+      return;
+    }
+    const json = await resp.json();
+    if (!json.success) { showError(json.error || 'Calculation failed.'); return; }
+
+    const d = json.data;
+    const Tr = d.Tr, Pr = d.Pr;
+    const Z = d.Z, phi = d.phi;
+    const Vm_SI    = d.Vm_SI;
+    const rho_mass = d.rho_mass;
+    const f_Pa     = d.f_Pa;
+    const roots    = d.roots;
+
+    lastCalc = { T_K, P_Pa, Tc_K, Pc_Pa, omega, M, n, Z, Vm_SI, rho_mass, phi, f_Pa,
+                 gasName, gasKey, eos: activeEOS, Tr, Pr, roots, P_bar: P_Pa/1e5,
+                 eosParams: d.eosParams };
+
+    renderResults(d, T_K, P_Pa, Tc_K, Pc_Pa, omega, M, n, gasName);
+
+  } catch(e) {
+    showError('Could not reach calculation server. Check your connection and try again.');
+  } finally {
+    _apiPending = false;
+    if (btn) { btn.textContent = '▶ Calculate'; btn.disabled = false; }
+  }
+}
+
+function renderResults(d, T_K, P_Pa, Tc_K, Pc_Pa, omega, M, n, gasName) {
+  const { Z, phi, Vm_SI, rho_mass, f_Pa, Tr, Pr, roots, eosParams, warnings } = d;
+  const EOS_NAMES  = {ideal:'Ideal Gas Law',vdw:'van der Waals',srk:'Soave-Redlich-Kwong (SRK)',pr:'Peng-Robinson (PR)'};
+  const EOS_COLORS = {ideal:'#304050',vdw:'#b06800',srk:'#1268c8',pr:'#0d7d6a'};
+
+  const T_disp   = fromSI_T(T_K);
+  const P_disp   = fromSI_P(P_Pa);
+  const Vm_disp  = fromSI_Vm(Vm_SI);
+  const rho_disp = fromSI_rho(rho_mass);
+  const f_disp   = fromSI_P(f_Pa);
+
+  const Z_dev_pct = Math.abs(Z - 1) * 100;
+  const devClass  = Z_dev_pct < 2 ? 'b-g' : Z_dev_pct < 10 ? 'b-a' : 'b-r';
+  const devLabel  = Z_dev_pct < 2 ? 'Near Ideal' : Z_dev_pct < 10 ? 'Moderate Non-Ideal' : 'Strong Non-Ideal Behaviour';
+
+  // Warnings HTML
+  const warnHTML = (warnings||[]).map(w =>
+    `<div class="eos-warn"><span class="eos-warn-icon">⚠</span><span>${w.msg}</span></div>`
+  ).join('');
+
+  // Multi-root HTML
+  let rootsHTML = '';
+  if (roots.length === 3) {
+    const rootCards = roots.map((r, i) => `
+      <div class="root-card">
+        <div class="root-label">${r.label}</div>
+        <div class="root-val">Z = ${r.Z.toFixed(5)}</div>
+        <div class="root-sub">Vm = ${fromSI_Vm(r.Vm).toFixed(4)} ${uVm()}</div>
+        <div class="root-sub">φ = ${r.phi.toFixed(5)}</div>
+      </div>`).join('');
+    rootsHTML = `<div class="roots-box">
+      <div class="roots-title">⚠ Three Real Roots — Two-Phase Region  (Tr=${Tr.toFixed(3)}, Pr=${Pr.toFixed(3)})</div>
+      <div class="roots-grid">${rootCards}</div>
+      <div style="margin-top:10px;font-size:0.84rem;color:var(--gold);font-weight:600;">
+        Largest Z → vapour phase &nbsp;|&nbsp; Smallest Z → liquid phase &nbsp;|&nbsp; Middle root is thermodynamically unstable.
+      </div></div>`;
+  }
+
+  // EOS equation display (server-returned params)
+  const ep = eosParams || {};
+  const eqHTML = buildEqDisplay(activeEOS, ep, Z, T_K, P_Pa, Tc_K, Pc_Pa, omega);
+
+  document.getElementById('results_panel').innerHTML = `
+    ${warnHTML}
+    ${rootsHTML}
+    <div class="eos-active-banner" style="background:${EOS_COLORS[activeEOS]};">
+      ★ EOS: ${EOS_NAMES[activeEOS]}
+      <span>Change EOS by clicking the 4 tabs above</span>
+    </div>
+    ${eqHTML}
+    <div class="z-headline">
+      <div class="zh-bar"></div>
+      <div class="zh-main">
+        <div class="zh-tag">Compressibility Factor Z  [${EOS_NAMES[activeEOS]}]</div>
+        <div class="zh-z">${Z.toFixed(6)}<span class="zh-unit">—</span></div>
+        <div class="zh-sub">${gasName} · T = ${T_disp.toFixed(1)} ${uT()} · P = ${P_disp.toFixed(3)} ${uP()}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge ${devClass}">${devLabel}</span>
+          <span class="badge b-a">Tr = ${Tr.toFixed(4)}</span>
+          <span class="badge b-a">Pr = ${Pr.toFixed(4)}</span>
+          ${Z<1?'<span class="badge b-r">Z&lt;1 — attractive forces dominate</span>':''}
+          ${Z>1?'<span class="badge b-a">Z&gt;1 — repulsive forces dominate</span>':''}
+        </div>
+      </div>
+      <div class="zh-aside">
+        <div class="zs"><div class="zs-val">${Z.toFixed(5)}</div><div class="zs-lbl">Z-factor</div></div>
+        <div class="zs"><div class="zs-val">${rho_disp.toFixed(4)}</div><div class="zs-lbl">ρ (${uRho()})</div></div>
+        <div class="zs"><div class="zs-val">${Vm_disp.toFixed(4)}</div><div class="zs-lbl">Vm (${uVm()})</div></div>
+        <div class="zs"><div class="zs-val">${phi.toFixed(5)}</div><div class="zs-lbl">φ (fugacity coeff)</div></div>
+      </div>
+    </div>
+    <div class="res-grid">
+      <div class="rc"><div class="rc-lbl">Molar Volume Vm</div>
+        <div class="rc-val">${Vm_disp.toFixed(5)}<span class="rc-unit">${uVm()}</span></div></div>
+      <div class="rc"><div class="rc-lbl">Mass Density ρ</div>
+        <div class="rc-val">${rho_disp.toFixed(5)}<span class="rc-unit">${uRho()}</span></div></div>
+      <div class="rc"><div class="rc-lbl">Fugacity Coeff φ</div>
+        <div class="rc-val">${phi.toFixed(6)}</div></div>
+      <div class="rc"><div class="rc-lbl">Fugacity f = φP</div>
+        <div class="rc-val">${f_disp.toFixed(4)}<span class="rc-unit">${uP()}</span></div></div>
+      <div class="rc"><div class="rc-lbl">No. of Roots</div>
+        <div class="rc-val">${roots.length}<span class="rc-unit">${roots.length===3?'— 2-phase!':''}</span></div></div>
+      <div class="rc"><div class="rc-lbl">|Z − 1| deviation</div>
+        <div class="rc-val">${Z_dev_pct.toFixed(3)}<span class="rc-unit">%</span></div></div>
+    </div>
+    <div class="sum-strip">
+      <div class="sum-head">Full Summary — ${EOS_NAMES[activeEOS]} — ${gasName}</div>
+      <div class="sum-row"><span class="sum-key">Temperature T</span><span class="sum-val">${T_disp.toFixed(2)} ${uT()} (${T_K.toFixed(2)} K)</span></div>
+      <div class="sum-row"><span class="sum-key">Pressure P</span><span class="sum-val">${P_disp.toFixed(3)} ${uP()} = ${(P_Pa/1e5).toFixed(4)} bar</span></div>
+      <div class="sum-row"><span class="sum-key">Critical Temp Tc</span><span class="sum-val">${fromSI_T(Tc_K).toFixed(2)} ${uT()} (${Tc_K.toFixed(2)} K)</span></div>
+      <div class="sum-row"><span class="sum-key">Critical Pres Pc</span><span class="sum-val">${fromSI_P(Pc_Pa).toFixed(3)} ${uP()} (${(Pc_Pa/1e5).toFixed(3)} bar)</span></div>
+      <div class="sum-row"><span class="sum-key">Acentric Factor ω</span><span class="sum-val">${omega}</span></div>
+      <div class="sum-row"><span class="sum-key">Tr = T/Tc</span><span class="sum-val">${Tr.toFixed(6)}</span></div>
+      <div class="sum-row"><span class="sum-key">Pr = P/Pc</span><span class="sum-val">${Pr.toFixed(6)}</span></div>
+      <div class="sum-row"><span class="sum-key">Z-Factor</span><span class="sum-val">${Z.toFixed(7)} <span class="badge ${devClass}">${devLabel}</span></span></div>
+      <div class="sum-row"><span class="sum-key">Deviation |Z − 1|</span><span class="sum-val">${Z_dev_pct.toFixed(4)} %</span></div>
+      <div class="sum-row"><span class="sum-key">Molar Volume Vm</span><span class="sum-val">${Vm_disp.toFixed(6)} ${uVm()} = ${(Vm_SI*1e6).toFixed(3)} cm³/mol</span></div>
+      <div class="sum-row"><span class="sum-key">Mass Density ρ</span><span class="sum-val">${rho_disp.toFixed(6)} ${uRho()} (${rho_mass.toFixed(5)} kg/m³)</span></div>
+      <div class="sum-row"><span class="sum-key">Fugacity Coefficient φ</span><span class="sum-val">${phi.toFixed(7)}</span></div>
+      <div class="sum-row"><span class="sum-key">Fugacity f = φ·P</span><span class="sum-val">${f_disp.toFixed(5)} ${uP()}</span></div>
+      <div class="sum-row"><span class="sum-key">Number of cubic roots</span><span class="sum-val">${roots.length} <span class="badge ${roots.length===3?'b-r':'b-g'}">${roots.length===3?'Two-phase region possible':'Single phase'}</span></span></div>
+    </div>`;
+}
+
+function showError(msg) {
+  document.getElementById('results_panel').innerHTML =
+    `<div class="warn-box"><span style="font-size:1.4rem;">⚠️</span><div><strong>Calculation Error</strong><br>${msg}</div></div>`;
+}
+
+// ── EOS Equation Display (uses server-returned params) ────────────
+function buildEqDisplay(eos, ep, Z, T_K, P_Pa, Tc_K, Pc_Pa, omega) {
+  const Tr = T_K / Tc_K;
+  const lines = {
+    ideal:['PV = nRT  →  PVm = RT','Z = PVm / RT = 1  (always — ideal gas)','Ideal gas: zero molecular volume, zero intermolecular forces'],
+    vdw:[
+      '(P + a/Vm²)(Vm − b) = RT',
+      `a = 27R²Tc²/(64Pc) = ${ep.a ? ep.a.toExponential(5) : '—'} Pa·m⁶/mol²`,
+      `b = RTc/(8Pc)       = ${ep.b ? ep.b.toExponential(5) : '—'} m³/mol`,
+      `Z = ${Z.toFixed(7)}`,
+    ],
+    srk:[
+      'P = RT/(Vm−b) − aα(T) / [Vm(Vm+b)]',
+      `m = 0.480+1.574ω−0.176ω²  = ${ep.m ? ep.m.toFixed(6) : '—'}`,
+      `Tr = ${Tr.toFixed(6)}   α = [1+m(1−√Tr)]²  = ${ep.alpha ? ep.alpha.toFixed(6) : '—'}`,
+      `A = ${ep.A ? ep.A.toFixed(6) : '—'}     B = ${ep.B ? ep.B.toFixed(6) : '—'}`,
+      `Cubic:  Z³ − Z² + (A−B−B²)Z − AB = 0   →  Z = ${Z.toFixed(7)}`,
+    ],
+    pr:[
+      'P = RT/(Vm−b) − aα(T) / [Vm(Vm+b)+b(Vm−b)]',
+      `κ = 0.37464+1.54226ω−0.26992ω²  = ${ep.kappa ? ep.kappa.toFixed(6) : '—'}`,
+      `Tr = ${Tr.toFixed(6)}   α = [1+κ(1−√Tr)]²  = ${ep.alpha ? ep.alpha.toFixed(6) : '—'}`,
+      `A = ${ep.A ? ep.A.toFixed(6) : '—'}     B = ${ep.B ? ep.B.toFixed(6) : '—'}`,
+      `Cubic:  Z³−(1−B)Z²+(A−3B²−2B)Z−(AB−B²−B³)=0   →  Z = ${Z.toFixed(7)}`,
+    ],
+  };
+  const EOS_NAMES = {ideal:'Ideal Gas Law',vdw:'van der Waals',srk:'SRK',pr:'Peng-Robinson (PR)'};
+  return `<div class="eq-box">
+    <div class="eq-title">${EOS_NAMES[eos]} — Working Equation &amp; Parameters at This State</div>
+    ${(lines[eos]||[]).map(l=>`<div>${l}</div>`).join('')}
+  </div>`;
+}
+
+// ── Comparison table (client-side via API for each EOS) ───────────
+function cmpGasChange() {
+  const g = GAS_DB[document.getElementById('cmp_gas').value];
+  if (!g) { document.getElementById('cmp_Tr').value = '—'; return; }
+  const T_disp = parseFloat(document.getElementById('cmp_T').value);
+  if (!isFinite(T_disp)) { document.getElementById('cmp_Tr').value = '—'; return; }
+  const T_K = Math.max(1, toSI_T(T_disp));
+  document.getElementById('cmp_Tr').value = (T_K / g.Tc).toFixed(4);
+}
+
+async function runComparison() {
+  const gasKey = document.getElementById('cmp_gas').value;
+  const g = GAS_DB[gasKey];
+  if (!g) return;
+
+  const T_disp = parseFloat(document.getElementById('cmp_T').value) || 350;
+  const P_disp = parseFloat(document.getElementById('cmp_P').value) || 100;
+  const T_K    = Math.max(10, toSI_T(T_disp));
+  const P_Pa   = Math.max(1, toSI_P(P_disp));
+  const Tc_K   = g.Tc, Pc_Pa = g.Pc * 1e5;
+  const Tr = T_K/Tc_K, Pr = P_Pa/Pc_Pa;
+  document.getElementById('cmp_Tr').value = Tr.toFixed(4);
+
+  const EOS_LIST  = ['ideal','vdw','srk','pr'];
+  const EOS_NAMES = {ideal:'Ideal Gas',vdw:'van der Waals',srk:'SRK',pr:'Peng-Robinson (PR)'};
+
+  document.getElementById('comparison_results').innerHTML = '<div style="padding:20px;color:var(--mid);">⏳ Computing all 4 EOS via server…</div>';
+
+  const allResults = await Promise.all(EOS_LIST.map(async eos => {
+    try {
+      const resp = await fetch('/api/eos', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({eos, T_K, P_Pa, Tc_K, Pc_Pa, omega:g.omega, M:g.M, n:1})
+      });
+      const json = await resp.json();
+      if (json.success) return {eos, name:EOS_NAMES[eos], ...json.data};
+      return {eos, name:EOS_NAMES[eos], error: json.error};
+    } catch(e) { return {eos, name:EOS_NAMES[eos], error:'Server error'}; }
+  }));
+
+  const Z_PR = allResults.find(r => r.eos==='pr')?.Z ?? 1;
+  const rows = allResults.map(r => {
+    if (r.error) return `<tr><td>${r.name}</td><td colspan="7" style="color:var(--red);">${r.error}</td></tr>`;
+    const Vm_d  = fromSI_Vm(r.Vm_SI), rho_d = fromSI_rho(r.rho_mass), f_d = fromSI_P(r.f_Pa);
+    const devPct = ((r.Z - Z_PR) / Z_PR * 100);
+    const isRef  = r.eos === 'pr';
+    return `<tr class="${isRef?'best-row':''}">
+      <td>${r.name}${isRef?'<span class="best-badge">REFERENCE</span>':''}</td>
+      <td>${r.Z.toFixed(6)}</td>
+      <td>${Vm_d.toFixed(5)} ${uVm()}</td>
+      <td>${rho_d.toFixed(4)} ${uRho()}</td>
+      <td>${r.phi.toFixed(6)}</td>
+      <td>${f_d.toFixed(4)} ${uP()}</td>
+      <td>${isRef?'—':`${devPct>0?'+':''}${devPct.toFixed(3)}%`}</td>
+      <td><span class="badge ${r.rootCount===3?'b-r':'b-g'}">${r.rootCount} root${r.rootCount!==1?'s':''}</span></td>
+    </tr>`;
+  }).join('');
+
+  const note_Tr = Tr < 1.0 ? `<span class="badge b-r">Below Tc — condensation possible.</span>` :
+                  Tr < 1.3 ? `<span class="badge b-a">Near critical region.</span>` :
+                               `<span class="badge b-g">Supercritical T — more ideal behaviour.</span>`;
+
+  document.getElementById('comparison_results').innerHTML = `
+    <div style="background:var(--paper2);border:1.5px solid var(--rule);border-radius:6px;padding:12px 18px;margin-bottom:18px;font-family:var(--mono);font-size:0.88rem;color:var(--ink2);font-weight:600;line-height:1.9;">
+      ${g.name} &nbsp;|&nbsp; T = ${T_disp.toFixed(1)} ${uT()} (${T_K.toFixed(2)} K) &nbsp;|&nbsp; P = ${P_disp.toFixed(2)} ${uP()}
+      &nbsp;|&nbsp; Tc = ${g.Tc} K &nbsp;|&nbsp; Pc = ${g.Pc} bar &nbsp;|&nbsp; ω = ${g.omega}
+      &nbsp;|&nbsp; Tr = ${Tr.toFixed(4)} &nbsp;|&nbsp; Pr = ${Pr.toFixed(4)}
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="cmp-table">
+        <thead><tr>
+          <th>EOS</th><th>Z-Factor</th><th>Vm</th><th>ρ</th>
+          <th>φ (fugacity coeff)</th><th>f = φP</th><th>Δ vs PR</th><th>Roots</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="sum-strip" style="margin-top:18px;">
+      <div class="sum-head">Interpretation</div>
+      <div class="sum-row"><span class="sum-key">Reduced Temperature Tr</span><span class="sum-val">${Tr.toFixed(5)} ${note_Tr}</span></div>
+      <div class="sum-row"><span class="sum-key">Reduced Pressure Pr</span><span class="sum-val">${Pr.toFixed(5)}</span></div>
+      <div class="sum-row"><span class="sum-key">PR Z-factor</span><span class="sum-val">${Z_PR.toFixed(7)}</span></div>
+      <div class="sum-row"><span class="sum-key">Recommended EOS</span><span class="sum-val">${Tr<1.3||Pr>2?'Peng-Robinson (most accurate near critical point)':'SRK or PR both suitable'}</span></div>
+    </div>`;
+}
+
+// ── Charts (client-side: P from Vm using direct formulas for plotting) ────
+function chartGasChange() {
+  const g = GAS_DB[document.getElementById('chart_gas').value];
+  if (!g) return;
+  const T_default_K = g.Tc * 1.15;
+  const T_default_disp = unitSys==='SI' ? (T_default_K - 273.15).toFixed(0) : ((T_default_K-273.15)*9/5+32).toFixed(0);
+  document.getElementById('chart_T').value    = T_default_disp;
+  document.getElementById('chart_Pmax').value = unitSys==='SI' ? '300' : (300*14.5038).toFixed(0);
+}
+
+function drawCharts() {
+  const gasKey = document.getElementById('chart_gas').value;
+  const g = GAS_DB[gasKey];
+  if (!g) return;
+
+  const T_disp  = parseFloat(document.getElementById('chart_T').value) || 77;
+  const Pmax_d  = parseFloat(document.getElementById('chart_Pmax').value) || 300;
+  const ctype   = document.getElementById('chart_type').value;
+  const T_K     = toSI_T(T_disp);
+  const Pmax_Pa = toSI_P(Pmax_d);
+  const Tc_K    = g.Tc, Pc_Pa = g.Pc * 1e5, omega = g.omega;
+
+  const EOS_LIST   = ['ideal','vdw','srk','pr'];
+  const EOS_COLORS = ['#304050','#b06800','#1268c8','#0d7d6a'];
+  const EOS_LABELS = ['Ideal Gas','van der Waals','SRK','Peng-Robinson'];
+  const DASH       = [[],[8,4],[],[4,4]];
+  const N = 120;
+  let datasets = [];
+  const xLabel = ctype==='ZP' ? `Pressure (${uP()})` : `Molar Volume Vm (${uVm()})`;
+  const yLabel = ctype==='ZP' ? 'Compressibility Factor Z' : `Pressure (${uP()})`;
+
+  // For charts, use direct analytical formula (display only, not shown to user as "the calc")
+  // This avoids 120×4 API calls which would be slow. Chart is illustrative.
+  if (ctype === 'ZP') {
+    const Ps_Pa = Array.from({length:N}, (_,i) => Pmax_Pa*(i+1)/N);
+    EOS_LIST.forEach((eos,ei) => {
+      const data = [];
+      Ps_Pa.forEach(P_Pa => {
+        const Z = clientSolveZ(eos, T_K, P_Pa, Tc_K, Pc_Pa, omega);
+        if (isFinite(Z) && Z > 0) data.push({x: fromSI_P(P_Pa), y: Z});
+      });
+      datasets.push({label:EOS_LABELS[ei], data, borderColor:EOS_COLORS[ei], backgroundColor:'transparent', borderWidth:2.5, borderDash:DASH[ei], pointRadius:0, tension:0.2});
+    });
+    document.getElementById('chart-title-label').textContent = `Z vs Pressure — ${g.name} at T = ${T_disp.toFixed(0)} ${uT()} (Tr = ${(T_K/Tc_K).toFixed(3)})`;
+    renderChart(datasets, xLabel, yLabel, null);
+  } else {
+    const b_srk = 0.08664 * R * Tc_K / Pc_Pa;
+    const Vm_min = b_srk * 2.5, Vm_max = R * T_K / (0.2e5);
+    const Vms_SI = Array.from({length:N}, (_,i) => Vm_min + (Vm_max-Vm_min)*i/(N-1));
+    EOS_LIST.forEach((eos,ei) => {
+      const data = [];
+      Vms_SI.forEach(Vm => {
+        const P = clientPfromVm(eos, T_K, Vm, Tc_K, Pc_Pa, omega);
+        if (!isFinite(P) || P <= 0) return;
+        const Pd = fromSI_P(P);
+        if (Pd > 0 && Pd < fromSI_P(Pmax_Pa)*1.3) data.push({x: fromSI_Vm(Vm), y: Pd});
+      });
+      datasets.push({label:EOS_LABELS[ei], data, borderColor:EOS_COLORS[ei], backgroundColor:'transparent', borderWidth:2.5, borderDash:DASH[ei], pointRadius:0, tension:0.2});
+    });
+    document.getElementById('chart-title-label').textContent = `P vs Molar Volume — ${g.name} Isotherm at T = ${T_disp.toFixed(0)} ${uT()}`;
+    renderChart(datasets, xLabel, yLabel, null);
+  }
+}
+
+// Lightweight cubic solver for chart rendering only
+function clientSolveZ(eos, T_K, P_Pa, Tc_K, Pc_Pa, omega) {
+  if (eos === 'ideal') return 1;
+  const a0_srk = 0.42748*R*R*Tc_K*Tc_K/Pc_Pa, b_srk = 0.08664*R*Tc_K/Pc_Pa;
+  const a0_pr  = 0.45724*R*R*Tc_K*Tc_K/Pc_Pa, b_pr  = 0.07780*R*Tc_K/Pc_Pa;
+  let A, B;
+  if (eos === 'vdw') {
+    const a = 27*R*R*Tc_K*Tc_K/(64*Pc_Pa), b = R*Tc_K/(8*Pc_Pa);
+    const Vm0 = R*T_K/P_Pa;
+    return P_Pa*Vm0/(R*T_K); // approximate
+  } else if (eos === 'srk') {
+    const m = 0.480+1.574*omega-0.176*omega*omega;
+    const al = Math.pow(Math.max(1e-6, 1+m*(1-Math.sqrt(T_K/Tc_K))), 2);
+    A = a0_srk*al*P_Pa/(R*R*T_K*T_K); B = b_srk*P_Pa/(R*T_K);
+    const roots = solveCubicSimple(-1, A-B-B*B, -A*B);
+    return roots.length ? Math.max(...roots) : 1;
+  } else {
+    const kappa = 0.37464+1.54226*omega-0.26992*omega*omega;
+    const al = Math.pow(Math.max(1e-6, 1+kappa*(1-Math.sqrt(T_K/Tc_K))), 2);
+    A = a0_pr*al*P_Pa/(R*R*T_K*T_K); B = b_pr*P_Pa/(R*T_K);
+    const roots = solveCubicSimple(-(1-B), A-3*B*B-2*B, -(A*B-B*B-B*B*B));
+    return roots.length ? Math.max(...roots) : 1;
+  }
+}
+
+function solveCubicSimple(c1, c0_coeff, c_const) {
+  const shift = -c1/3, p = c0_coeff - c1*c1/3, q = 2*c1*c1*c1/27 - c0_coeff*c1/3 + c_const;
+  const D = q*q/4 + p*p*p/27;
+  let roots = [];
+  if (D > 1e-10) { const sd=Math.sqrt(D); roots=[Math.cbrt(-q/2+sd)+Math.cbrt(-q/2-sd)+shift]; }
+  else if (D < -1e-10) { const r=Math.sqrt(-p*p*p/27),ca=Math.acos(Math.max(-1,Math.min(1,-q/(2*r)))),m=2*Math.cbrt(r); roots=[m*Math.cos(ca/3)+shift,m*Math.cos((ca+2*Math.PI)/3)+shift,m*Math.cos((ca+4*Math.PI)/3)+shift]; }
+  else { const u=Math.cbrt(-q/2); roots=[2*u+shift,-u+shift]; }
+  return roots.filter(z=>z>1e-6&&isFinite(z));
+}
+
+function clientPfromVm(eos, T_K, Vm, Tc_K, Pc_Pa, omega) {
+  if (eos === 'ideal') return R*T_K/Vm;
+  if (eos === 'vdw') {
+    const a = 27*R*R*Tc_K*Tc_K/(64*Pc_Pa), b = R*Tc_K/(8*Pc_Pa);
+    if (Vm <= b) return NaN;
+    return R*T_K/(Vm-b) - a/(Vm*Vm);
+  }
+  if (eos === 'srk') {
+    const a0=0.42748*R*R*Tc_K*Tc_K/Pc_Pa, b=0.08664*R*Tc_K/Pc_Pa;
+    const m=0.480+1.574*omega-0.176*omega*omega, al=Math.pow(1+m*(1-Math.sqrt(T_K/Tc_K)),2);
+    if (Vm<=b) return NaN;
+    return R*T_K/(Vm-b) - a0*al/(Vm*(Vm+b));
+  }
+  // PR
+  const a0=0.45724*R*R*Tc_K*Tc_K/Pc_Pa, b=0.07780*R*Tc_K/Pc_Pa;
+  const kappa=0.37464+1.54226*omega-0.26992*omega*omega, al=Math.pow(1+kappa*(1-Math.sqrt(T_K/Tc_K)),2);
+  if (Vm<=b) return NaN;
+  return R*T_K/(Vm-b) - a0*al/(Vm*(Vm+b)+b*(Vm-b));
+}
+
+function renderChart(datasets, xLabel, yLabel, scaleRange) {
+  const ctx = document.getElementById('eos_chart').getContext('2d');
+  if (eosChart) eosChart.destroy();
+  eosChart = new Chart(ctx, {
+    type:'line', data:{datasets},
+    options:{
+      responsive:true, maintainAspectRatio:true, animation:{duration:400},
+      scales:{
+        x:{type:'linear',title:{display:true,text:xLabel,font:{size:12}},grid:{color:'rgba(0,0,0,0.06)'}},
+        y:{title:{display:true,text:yLabel,font:{size:12}},grid:{color:'rgba(0,0,0,0.06)'}}
+      },
+      plugins:{legend:{position:'bottom'},tooltip:{mode:'index',intersect:false}}
+    }
+  });
+}
+
+// ── Theory panel ──────────────────────────────────────────────────
+const THEORY_DATA = [
+  {tag:'Ideal Gas Law · 1834',name:'Ideal Gas Law',year:'Clapeyron (1834) · Clausius (1857)',color:'#304050',
+   eqs:['PV = nRT','Z = 1 (always)'],
+   desc:'Point-mass molecules, zero interactions. Valid only at P→0 and T≫Tc.',
+   params:[{k:'Z = 1',v:'Always — no gas-phase non-ideality'}],
+   fugacity:'φ = 1, f = P',range:'P < 5 bar, Tr > 3',accuracy:'Error >10% above 20 bar'},
+  {tag:'van der Waals · 1873',name:'van der Waals EOS',year:'Johannes Diderik van der Waals (1873) · Nobel 1910',color:'#b06800',
+   eqs:['(P + a/Vm²)(Vm − b) = RT','a = 27R²Tc²/(64Pc)','b = RTc/(8Pc)'],
+   desc:'First EOS to predict liquid-gas transition. Zc=3/8=0.375 (real ≈0.27). Historical only.',
+   params:[{k:'a',v:'Attraction parameter'},{k:'b',v:'Co-volume (molecular size)'}],
+   fugacity:'ln φ = b/(Vm−b) − ln[P(Vm−b)/RT] − 2a/(RTVm)',range:'Qualitative only',accuracy:'±10–30%'},
+  {tag:'SRK · 1972',name:'Soave-Redlich-Kwong',year:'Redlich & Kwong (1949) · Soave (1972)',color:'#1268c8',
+   eqs:['P = RT/(Vm−b) − aα(T)/[Vm(Vm+b)]','m = 0.480+1.574ω−0.176ω²','α = [1+m(1−√Tr)]²'],
+   desc:'Key innovation: α(T,ω) function dramatically improved vapour pressure predictions. Zc=0.333.',
+   params:[{k:'ω',v:'Acentric factor'},{k:'α(T)',v:'Temperature correction — key innovation'}],
+   fugacity:'ln φ = Z−1 − ln(Z−B) − (A/B)·ln(1+B/Z)',range:'Vapour: Tr 0.5–1.5, Pr up to 10',accuracy:'<2% vapour Z; poor liquid density'},
+  {tag:'Peng-Robinson · 1976',name:'Peng-Robinson (PR)',year:'Peng & Robinson, University of Alberta (1976)',color:'#0d7d6a',
+   eqs:['P = RT/(Vm−b) − aα(T)/[Vm(Vm+b)+b(Vm−b)]','κ = 0.37464+1.54226ω−0.26992ω²','α = [1+κ(1−√Tr)]²'],
+   desc:'Modified attractive term for Zc=0.307, closer to experimental ~0.27. Industry standard for natural gas, LNG, condensate.',
+   params:[{k:'κ',v:'PR kappa — analogous to m in SRK'},{k:'Zc=0.307',v:'Better than SRK\'s 0.333'}],
+   fugacity:'ln φ = Z−1 − ln(Z−B) − A/(2√2·B)·ln[(Z+(1+√2)B)/(Z+(1−√2)B)]',range:'Best for gas/hydrocarbon: Tr≥0.5, Pr≤15',accuracy:'<1% gas Z; <5% liquid density'},
+];
+
+function buildTheory() {
+  document.getElementById('theory_grid').innerHTML = THEORY_DATA.map(td => `
+    <div class="theory-card">
+      <div class="tc-head" style="border-left:6px solid ${td.color};">
+        <div class="tc-head-tag">${td.tag}</div>
+        <div class="tc-head-name">${td.name}</div>
+        <div class="tc-head-year">${td.year}</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-eq">${td.eqs.map(e=>`<span style="display:block;">${e}</span>`).join('')}</div>
+        <p class="tc-desc">${td.desc}</p>
+        <dl class="tc-params" style="margin-top:12px;">${td.params.map(p=>`<dt>${p.k}</dt><dd>${p.v}</dd>`).join('')}</dl>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);">
+          <div style="font-family:var(--mono);font-size:0.68rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--mid);margin-bottom:5px;font-weight:700;">Fugacity Expression</div>
+          <div style="font-family:var(--mono);font-size:0.82rem;color:var(--ink2);background:var(--paper3);padding:9px 12px;border-radius:4px;line-height:1.9;font-weight:600;">${td.fugacity}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+          <div style="background:var(--teal-pale);border-radius:4px;padding:9px 12px;">
+            <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;font-weight:700;">Range of Validity</div>
+            <div style="font-size:0.86rem;color:var(--ink2);font-weight:600;">${td.range}</div>
+          </div>
+          <div style="background:var(--paper3);border-radius:4px;padding:9px 12px;">
+            <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;font-weight:700;">Typical Accuracy</div>
+            <div style="font-size:0.86rem;color:var(--ink2);font-weight:600;">${td.accuracy}</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── PDF generator ──────────────────────────────────────────────────
+function makePDF() {
+  if (!lastCalc) { alert('Run a calculation first, then click PDF Report.'); return; }
+  const r = lastCalc;
+  const now = new Date();
+  const ds = now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const ts = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const EOS_NAMES = {ideal:'Ideal Gas Law',vdw:'van der Waals EOS',srk:'Soave-Redlich-Kwong (SRK)',pr:'Peng-Robinson (PR)'};
+  const T_d  = fromSI_T(r.T_K),   P_d   = fromSI_P(r.P_Pa);
+  const Vm_d = fromSI_Vm(r.Vm_SI),rho_d = fromSI_rho(r.rho_mass), f_d = fromSI_P(r.f_Pa);
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+@page{size:A4 portrait;margin:13mm 15mm 12mm 15mm;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#060e16;font-size:12px;line-height:1.65;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:10px;border-bottom:4px solid #0d7d6a;margin-bottom:14px;}
+.logo{font-family:Georgia,serif;font-size:20px;font-weight:700;color:#0d1b2a;}
+.logo-sub{font-size:9.5px;color:#304050;letter-spacing:2px;text-transform:uppercase;margin-top:2px;font-weight:700;}
+.badge-top{display:inline-block;background:#0d7d6a;color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:2px;margin-top:5px;letter-spacing:1px;}
+.meta{text-align:right;font-size:10.5px;color:#304050;line-height:1.9;font-weight:600;}.meta b{color:#060e16;}
+.sec{font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#0d7d6a;border-bottom:1.5px solid #d6f0eb;padding-bottom:3px;margin:13px 0 9px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px;}
+.box{background:#f0f4f8;border:1px solid #b8c8d8;border-radius:4px;padding:10px 13px;}
+.row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e4eaf0;font-size:10.5px;}.row:last-child{border-bottom:none;}
+.rk{color:#304050;font-weight:600;}.rv{font-family:'Courier New',monospace;font-weight:700;color:#060e16;}
+.z-box{display:flex;background:#0d1b2a;border-radius:5px;overflow:hidden;margin-bottom:13px;}
+.zb-bar{width:7px;background:#0d7d6a;flex-shrink:0;}.zb-main{padding:13px 17px;flex:1;}
+.zb-tag{font-size:8.5px;letter-spacing:2px;color:#16c9aa;text-transform:uppercase;margin-bottom:3px;font-weight:700;}
+.zb-val{font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#fff;line-height:1;}
+.zb-sub{font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px;font-weight:600;}
+.zb-side{background:rgba(255,255,255,0.06);padding:11px 15px;display:grid;grid-template-columns:1fr 1fr;gap:9px;min-width:170px;}
+.zs{text-align:center;}.zs-v{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:#fff;}
+.zs-l{font-size:7.5px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;}
+.footer{position:fixed;bottom:7mm;left:15mm;right:15mm;display:flex;justify-content:space-between;font-size:8.5px;color:#4a5e70;border-top:1px solid #b8c8d8;padding-top:5px;font-weight:600;}
+</style></head><body>
+<div class="hdr">
+  <div><div class="logo">MULTICALCI.COM — Gas Laws &amp; EOS</div><div class="logo-sub">Equations of State Calculator</div><div class="badge-top">EOS CALCULATION REPORT</div></div>
+  <div class="meta">Report date: <b>${ds}</b> &nbsp; Time: <b>${ts}</b><br>EOS: <b>${EOS_NAMES[r.eos]}</b> &nbsp;|&nbsp; Gas: <b>${r.gasName}</b><br>Unit system: <b>${unitSys==='SI'?'SI (°C, bar, kg/m³)':'Imperial (°F, psia, lb/ft³)'}</b></div>
+</div>
+<div class="sec">Input Conditions</div>
+<div class="two">
+  <div class="box">
+    <div class="row"><span class="rk">Gas Species</span><span class="rv">${r.gasName}</span></div>
+    <div class="row"><span class="rk">EOS Used</span><span class="rv">${EOS_NAMES[r.eos]}</span></div>
+    <div class="row"><span class="rk">Critical Temp Tc</span><span class="rv">${r.Tc_K.toFixed(3)} K</span></div>
+    <div class="row"><span class="rk">Critical Press Pc</span><span class="rv">${(r.Pc_Pa/1e5).toFixed(4)} bar</span></div>
+    <div class="row"><span class="rk">Acentric Factor ω</span><span class="rv">${r.omega}</span></div>
+    <div class="row"><span class="rk">Molar Mass M</span><span class="rv">${r.M} g/mol</span></div>
+  </div>
+  <div class="box">
+    <div class="row"><span class="rk">Temperature T</span><span class="rv">${T_d.toFixed(2)} ${uT()} (${r.T_K.toFixed(3)} K)</span></div>
+    <div class="row"><span class="rk">Pressure P</span><span class="rv">${P_d.toFixed(3)} ${uP()} = ${(r.P_Pa/1e5).toFixed(4)} bar</span></div>
+    <div class="row"><span class="rk">Reduced Temp Tr</span><span class="rv">${r.Tr.toFixed(6)}</span></div>
+    <div class="row"><span class="rk">Reduced Pres Pr</span><span class="rv">${r.Pr.toFixed(6)}</span></div>
+    <div class="row"><span class="rk">No. of Cubic Roots</span><span class="rv">${r.roots.length} ${r.roots.length===3?'(two-phase region)':''}</span></div>
+  </div>
+</div>
+<div class="sec">Primary Result</div>
+<div class="z-box">
+  <div class="zb-bar"></div>
+  <div class="zb-main">
+    <div class="zb-tag">Compressibility Factor Z — ${EOS_NAMES[r.eos]}</div>
+    <div class="zb-val">Z = ${r.Z.toFixed(7)}</div>
+    <div class="zb-sub">${r.gasName} · T = ${r.T_K.toFixed(2)} K · P = ${(r.P_Pa/1e5).toFixed(3)} bar · |Z−1| = ${(Math.abs(r.Z-1)*100).toFixed(4)}%</div>
+  </div>
+  <div class="zb-side">
+    <div class="zs"><div class="zs-v">${Vm_d.toFixed(5)}</div><div class="zs-l">Vm (${uVm()})</div></div>
+    <div class="zs"><div class="zs-v">${rho_d.toFixed(5)}</div><div class="zs-l">ρ (${uRho()})</div></div>
+    <div class="zs"><div class="zs-v">${r.phi.toFixed(6)}</div><div class="zs-l">φ coeff</div></div>
+    <div class="zs"><div class="zs-v">${f_d.toFixed(5)}</div><div class="zs-l">f (${uP()})</div></div>
+  </div>
+</div>
+<div class="sec">Interpretation &amp; Notes</div>
+<ul style="padding-left:18px;font-size:10.5px;color:#304050;line-height:2.2;font-weight:600;">
+  <li>Z &gt; 1: Repulsive forces dominate — gas less compressible than ideal</li>
+  <li>Z &lt; 1: Attractive forces dominate — gas more compressible than ideal</li>
+  <li>Three roots: Largest Z = vapour; Smallest Z = liquid; Middle root unstable</li>
+  <li>Fugacity coefficient φ = 1 (ideal); φ &lt; 1 = attractive; φ &gt; 1 = repulsive</li>
+  <li>PR EOS most accurate for liquid-containing systems and near the critical point</li>
+</ul>
+<div class="footer">
+  <span>MULTICALCI.COM — Gas Laws &amp; EOS Calculator</span>
+  <span>${EOS_NAMES[r.eos]} · ${r.gasName} · T=${r.T_K.toFixed(1)}K · P=${(r.P_Pa/1e5).toFixed(2)}bar</span>
+  <span>Rev A — ${ds} ${ts}</span>
+</div>
+</body></html>`;
+
+  const pw = window.open('','_blank','width=940,height=780');
+  if (!pw) { alert('Pop-up blocked — please allow pop-ups for this site.'); return; }
+  pw.document.open(); pw.document.write(html); pw.document.close();
+  pw.onload = () => setTimeout(()=>{ try { pw.focus(); pw.print(); } catch(e) {} }, 600);
+}
+
+// ── Share ─────────────────────────────────────────────────────────
+function toggleShare(e) {
+  e.stopPropagation();
+  document.getElementById('shareDD').classList.toggle('open');
+}
+document.addEventListener('click', function() {
+  const dd = document.getElementById('shareDD'); if (dd) dd.classList.remove('open');
+});
+
+function shareVia(platform) {
+  if (!lastCalc) { alert('Run a calculation first.'); return; }
+  const r = lastCalc;
+  const EOS_NAMES = {ideal:'Ideal Gas',vdw:'van der Waals',srk:'SRK',pr:'Peng-Robinson'};
+  const url   = 'https://multicalci.com/gas-equation-of-state/';
+  const title = `Gas EOS Calc — ${EOS_NAMES[r.eos]} — ${r.gasName}`;
+  const msg   = `${title}\nZ = ${r.Z.toFixed(5)}, ρ = ${fromSI_rho(r.rho_mass).toFixed(3)} ${uRho()}\n${url}`;
+  if (platform === 'native' && navigator.share) navigator.share({title, text:msg, url});
+  else if (platform === 'copy') { navigator.clipboard.writeText(url).then(()=>showToast('URL copied!')); }
+}
+
+function copyShareUrl() {
+  navigator.clipboard.writeText('https://multicalci.com/gas-equation-of-state/').then(()=>showToast('URL copied!'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toastEl') || document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ── Initialisation ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  fillGasProps();    // populate CO2 defaults
+  buildTheory();     // render theory cards
+  cmpGasChange();    // set Tr display
+  chartGasChange();  // set chart default T
+  document.getElementById('cmp_T')?.addEventListener('input', cmpGasChange);
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 5 — EDUCATION (DEEP DIVE)
+═══════════════════════════════════════════════════ -->
+<div class="section" id="sec-edu">
+<div class="page">
+
+<div class="hero">
+  <div class="hero-tag">Education — Comprehensive Reference</div>
+  <h1>Gas Laws &amp; EOS — <em>Theory, Physics &amp; Engineering Science</em></h1>
+  <p class="hero-desc">In-depth educational content for undergraduate students, practising engineers, and research scholars. Covers the kinetic theory foundations, full mathematical derivations, thermodynamic consistency, phase equilibria, industrial applications, and known failure modes of real-gas equations of state.</p>
+  <div class="hero-pills">
+    <span class="hpill">KINETIC THEORY</span><span class="hpill">STATISTICAL MECHANICS</span>
+    <span class="hpill">CUBIC EOS DERIVATION</span><span class="hpill">FUGACITY &amp; CHEMICAL POTENTIAL</span>
+    <span class="hpill">CORRESPONDING STATES</span><span class="hpill">VLE &amp; FLASH</span>
+    <span class="hpill">DEPARTURE FUNCTIONS</span><span class="hpill">INDUSTRIAL APPLICATIONS</span>
+  </div>
+</div>
+
+<style>
+/* ── Education styles ─────────────────── */
+.edu-tabs{display:flex;gap:2px;border-bottom:2px solid var(--rule);margin-bottom:30px;overflow-x:auto;scrollbar-width:none;}
+.edu-tabs::-webkit-scrollbar{display:none;}
+.edu-tab{background:none;border:none;padding:11px 22px;font-family:var(--body);font-size:0.86rem;font-weight:700;color:var(--light);cursor:pointer;white-space:nowrap;position:relative;transition:color .18s;letter-spacing:.2px;}
+.edu-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--teal);transform:scaleX(0);transition:transform .2s;border-radius:2px 2px 0 0;}
+.edu-tab:hover{color:var(--ink);}
+.edu-tab.on{color:var(--teal);}
+.edu-tab.on::after{transform:scaleX(1);}
+.edu-panel{display:none;}
+.edu-panel.on{display:block;}
+
+.ec{background:var(--paper);border:1.5px solid var(--rule);border-radius:10px;padding:26px 28px;margin-bottom:22px;box-shadow:var(--shadow);}
+.ec--teal{border-left:5px solid var(--teal);}
+.ec--navy{border-left:5px solid var(--navy);}
+.ec--amber{border-left:5px solid var(--amber2);}
+.ec--red{border-left:5px solid var(--red);}
+.ec--green{border-left:5px solid var(--green);}
+.ec--gold{border-left:5px solid var(--gold);}
+.ec--mid{border-left:5px solid var(--mid);}
+
+.ec-tag{font-family:var(--mono);font-size:0.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0 0 5px;}
+.ec-h{font-family:var(--head);font-size:1.38rem;font-weight:700;color:var(--ink);margin:0 0 18px;line-height:1.2;}
+.ec-p{margin:0 0 14px;color:var(--mid);font-size:0.93rem;line-height:1.76;}
+.ec-p:last-child{margin:0;}
+.ec-p strong{color:var(--ink2);}
+
+.eg2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.eg3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+@media(max-width:800px){.eg2,.eg3{grid-template-columns:1fr;}}
+
+.efm{background:var(--navy);border-radius:8px;padding:18px 20px;margin:12px 0 18px;font-family:var(--mono);font-size:0.80rem;color:#dde8f0;overflow-x:auto;white-space:pre;line-height:2.1;}
+.efm .c{color:#3d5a72;font-size:0.73rem;}
+.efm .k{color:var(--teal3);font-weight:700;}
+.efm .v{color:#fcd34d;font-weight:700;}
+.efm .g{color:#6ee7b7;font-weight:700;}
+.efm .r{color:#fca5a5;font-weight:700;}
+
+.estat{background:var(--paper2);border:1.5px solid var(--rule);border-radius:8px;padding:16px;text-align:center;}
+.estat-v{display:block;font-family:var(--mono);font-size:1.15rem;font-weight:700;color:var(--teal);margin-bottom:4px;}
+.estat-l{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--light);}
+
+.etbl-w{overflow-x:auto;margin:12px 0 18px;border-radius:8px;border:1.5px solid var(--rule);}
+.etbl{width:100%;border-collapse:collapse;font-size:0.83rem;}
+.etbl thead tr{background:var(--navy);}
+.etbl th{padding:9px 13px;text-align:left;font-size:0.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;white-space:nowrap;}
+.etbl td{padding:8px 13px;border-bottom:1px solid var(--rule);color:var(--mid);font-family:var(--mono);font-size:0.79rem;}
+.etbl tr:last-child td{border-bottom:none;}
+.etbl tbody tr:nth-child(even) td{background:var(--paper2);}
+.etbl tbody tr:hover td{background:var(--teal-pale);}
+.etbl td:first-child{color:var(--ink);font-weight:700;font-family:var(--body);}
+
+.etip{display:flex;gap:11px;background:var(--teal-pale);border:1px solid var(--teal2);border-radius:7px;padding:13px 15px;margin:12px 0;font-size:0.84rem;color:var(--teal);line-height:1.65;}
+.ewarn{display:flex;gap:11px;background:var(--amber-pale);border:1px solid var(--amber2);border-radius:7px;padding:13px 15px;margin:12px 0;font-size:0.84rem;color:var(--amber);line-height:1.65;}
+.edgr{display:flex;gap:11px;background:var(--red-pale);border:1px solid #c06060;border-radius:7px;padding:13px 15px;margin:12px 0;font-size:0.84rem;color:var(--red);line-height:1.65;}
+
+.egloss{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+@media(max-width:640px){.egloss{grid-template-columns:1fr;}}
+.egloss-item{background:var(--paper);border:1.5px solid var(--rule);border-radius:7px;padding:14px 16px;}
+.egloss-term{font-weight:700;color:var(--ink);font-size:0.91rem;margin-bottom:3px;}
+.egloss-sym{display:inline-block;font-family:var(--mono);font-size:0.69rem;font-weight:700;color:var(--teal);background:var(--teal-pale);border-radius:3px;padding:2px 8px;margin-bottom:7px;}
+.egloss-def{font-size:0.81rem;color:var(--light);line-height:1.62;}
+</style>
+
+<!-- Sub-tabs -->
+<div class="edu-tabs">
+  <button class="edu-tab on"  data-p="ep1">⚛️ Foundations &amp; Kinetic Theory</button>
+  <button class="edu-tab"     data-p="ep2">📐 Cubic EOS — Full Mathematics</button>
+  <button class="edu-tab"     data-p="ep3">🔗 Fugacity &amp; Phase Equilibria</button>
+  <button class="edu-tab"     data-p="ep4">🏭 Engineering Applications</button>
+  <button class="edu-tab"     data-p="ep5">📘 Glossary</button>
+</div>
+
+<!-- ══════════ PANEL 1: FOUNDATIONS ══════════ -->
+<div class="edu-panel on" id="ep1">
+
+  <div class="ec ec--navy">
+    <div class="ec-tag">Kinetic Theory of Gases</div>
+    <div class="ec-h">Where the Ideal Gas Law Comes From — First Principles</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">The ideal gas law PV = nRT is not merely an empirical observation — it is a rigorous consequence of classical statistical mechanics applied to an idealised assembly of non-interacting point particles. Three foundational assumptions underpin it: <strong>(1)</strong> gas molecules occupy zero volume themselves, <strong>(2)</strong> there are no intermolecular forces between molecules except during perfectly elastic collisions, and <strong>(3)</strong> molecular kinetic energy is entirely translational and proportional to absolute temperature.</p>
+        <p class="ec-p">From these assumptions, the Maxwell-Boltzmann speed distribution follows directly, describing the probability that a molecule has a speed between v and v+dv. Integrating over this distribution gives measurable macroscopic quantities — the pressure, average kinetic energy, and heat capacity:</p>
+        <div class="efm"><span class="c">── Maxwell-Boltzmann speed distribution ──────────</span>
+<span class="k">f(v)</span> = 4π (M/2πRT)^(3/2) · v² · exp(−Mv²/2RT)
+
+Mean speed:     v̄    = √(8RT/πM)     [m/s]
+Most probable:  v_p   = √(2RT/M)
+RMS speed:      v_rms = √(3RT/M)
+
+<span class="c">── Pressure from momentum transfer to walls ────────</span>
+P = (1/3) · ρ · v_rms²  =  nRT/V     ✓ ideal gas law
+
+<span class="c">── Internal energy (translational only) ───────────</span>
+U = (3/2)nRT     (monatomic — 3 translational DoF)
+U = (5/2)nRT     (diatomic — 3 trans + 2 rotational)
+U = (6/2)nRT     (polyatomic — 3 trans + 3 rot)</div>
+      </div>
+      <div>
+        <p class="ec-p">The idealised assumptions break down when molecules are close together — at <strong>high pressure</strong> and <strong>low temperature</strong>. Two physical effects cause real-gas deviations that the ideal law cannot capture:</p>
+        <ul style="font-size:.90rem;color:var(--mid);padding-left:18px;line-height:2.0;margin-bottom:14px;">
+          <li><strong>Intermolecular attractions</strong> (van der Waals forces): at moderate separation, molecules attract each other. This pulls molecules slightly toward each other, <em>reducing the effective pressure</em> below the ideal prediction. Correction term: −a/V².</li>
+          <li><strong>Finite molecular volume</strong> (excluded volume): molecules occupy real physical space, so the free volume available for motion is less than the total container volume V. Correction term: V → V−nb.</li>
+        </ul>
+        <div class="efm"><span class="c">── When is ideal gas accurate? ─────────────────────</span>
+<span class="g">SAFE</span>  Pr &lt; 0.1  AND  Tr &gt; 2.0  → |Z−1| &lt; 1%
+
+Air at 25°C, 1 bar:        Z = 0.9994   <span class="g">(&lt;0.1% error)</span>
+Air at 25°C, 100 bar:      Z = 0.9950   <span class="g">(0.5% error)</span>
+CO₂ at 25°C, 50 bar:      Z = 0.908    <span class="r">(9.2% error)</span>
+CH₄ at −100°C, 100 bar:   Z = 0.814    <span class="r">(19% error)</span>
+NH₃ at 100°C, 100 bar:    Z = 0.731    <span class="r">(27% error)</span>
+<span class="c">→ Never use ideal gas for refrigerants, LPG, or</span>
+<span class="c">  high-pressure process streams above ~20 bar.</span></div>
+        <div class="etip">💡 <strong>Van der Waals (1873)</strong> correctly identified both physical causes of deviation before quantum mechanics or intermolecular potential theory existed. His two-correction model is the conceptual ancestor of every cubic EOS in use today.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--teal">
+    <div class="ec-tag">Corresponding States Principle</div>
+    <div class="ec-h">Why Tr and Pr Are Universal — The Pitzer Extension</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">Van der Waals showed in 1881 that if his EOS is written in reduced coordinates (Tr = T/Tc, Pr = P/Pc, Vr = V/Vc), the equation becomes the same for all substances — the law of corresponding states. This means that two gases with the same Tr and Pr will have the same compressibility factor Z, regardless of what the gases actually are. This universal chart was the primary engineering tool for gas property estimation until the 1970s.</p>
+        <p class="ec-p">Pitzer (1955) extended the principle by observing that simple spherical molecules (noble gases) obeyed van der Waals' law very accurately, but elongated and polar molecules deviated systematically. He introduced the <strong>acentric factor ω</strong> to quantify this non-sphericity — defined so that ω = 0 for perfectly spherical molecules:</p>
+        <div class="efm"><span class="c">── Pitzer acentric factor definition ───────────────</span>
+<span class="k">ω</span> ≡ −log₁₀(Psat/Pc)|_{Tr=0.7} − 1
+
+<span class="c">── Physical meaning: departure from simple-fluid ───</span>
+Noble gases (Ar, Kr, Xe):   ω ≈ 0.000   (perfectly spherical)
+Nitrogen N₂:                 ω = 0.037
+Methane CH₄:                 ω = 0.011
+Carbon dioxide CO₂:          ω = 0.225
+Ammonia NH₃:                 ω = 0.253
+Water H₂O:                   ω = 0.345
+n-Decane C₁₀H₂₂:             ω = 0.492   (long chain)
+
+<span class="c">Higher ω → more elongated or polar molecule →</span>
+<span class="c">stronger departure from simple-fluid behaviour.</span></div>
+      </div>
+      <div>
+        <p class="ec-p">The three parameters (Tc, Pc, ω) fully characterise a pure component in all cubic EOS. Tc and Pc locate the molecule on the universal reduced phase diagram; ω corrects the shape of the vapour-pressure curve. This is why every EOS input form asks for exactly these three parameters:</p>
+        <div class="etbl-w">
+          <table class="etbl">
+            <thead><tr><th>Gas</th><th>Tc (K)</th><th>Pc (bar)</th><th>ω</th><th>Experimental Zc</th></tr></thead>
+            <tbody>
+              <tr><td>Helium He</td><td>5.20</td><td>2.27</td><td>−0.390</td><td>0.301</td></tr>
+              <tr><td>Hydrogen H₂</td><td>33.15</td><td>13.00</td><td>−0.219</td><td>0.305</td></tr>
+              <tr><td>Nitrogen N₂</td><td>126.2</td><td>33.98</td><td>0.037</td><td>0.290</td></tr>
+              <tr><td>CO₂</td><td>304.2</td><td>73.83</td><td>0.225</td><td>0.274</td></tr>
+              <tr><td>Water H₂O</td><td>647.1</td><td>220.6</td><td>0.345</td><td>0.229</td></tr>
+              <tr><td>Methane CH₄</td><td>190.6</td><td>46.10</td><td>0.011</td><td>0.286</td></tr>
+              <tr><td>Propane C₃H₈</td><td>369.8</td><td>42.48</td><td>0.152</td><td>0.281</td></tr>
+              <tr><td>Ammonia NH₃</td><td>405.6</td><td>113.5</td><td>0.253</td><td>0.242</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ewarn">⚠️ <strong>Helium and H₂ have negative ω</strong> — they are quantum fluids where zero-point energy is significant even at room temperature. Standard cubic EOS fail for He and cryogenic H₂. Special quantum-corrected critical parameters (Tc,eff, Pc,eff) must be used.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--amber">
+    <div class="ec-tag">Historical Development</div>
+    <div class="ec-h">150 Years of Equations of State — Key Milestones</div>
+    <div class="etbl-w">
+      <table class="etbl">
+        <thead><tr><th>Year</th><th>EOS / Author</th><th>Key Innovation</th><th>Zc</th><th>Status today</th></tr></thead>
+        <tbody>
+          <tr><td>1662–1834</td><td>Boyle, Charles, Gay-Lussac → Ideal Gas PV=nRT</td><td>First systematic gas laws; combined into ideal gas law by Clapeyron (1834)</td><td>—</td><td>Universal for dilute gases</td></tr>
+          <tr><td>1873</td><td>van der Waals</td><td>First cubic EOS. Introduced molecular volume (b) and attraction (a/V²). First to predict liquid-vapour phase transition and critical point from a single equation.</td><td>0.375</td><td>Teaching / historical</td></tr>
+          <tr><td>1901</td><td>Kammerlingh Onnes — Virial EOS</td><td>Rigorous statistical-mechanics expansion Z = 1 + B/V + C/V²… Second virial coefficient B has direct molecular interpretation.</td><td>—</td><td>Research / low density</td></tr>
+          <tr><td>1949</td><td>Redlich-Kwong (RK)</td><td>Replaced vdW T-independent attraction with T^(−0.5) dependence. Improved vapour phase accuracy significantly.</td><td>0.333</td><td>Superseded by SRK</td></tr>
+          <tr><td>1955</td><td>Pitzer — Acentric Factor</td><td>Introduced ω enabling 3-parameter corresponding states. Foundation of all modern cubic EOS.</td><td>—</td><td>Universal parameter</td></tr>
+          <tr><td>1972</td><td>Soave (SRK)</td><td>Replaced RK T^(−0.5) with α(Tr,ω) from vapour pressure data. Transformed accuracy of vapour-phase predictions. Industry standard for gas.</td><td>0.333</td><td>Industry standard</td></tr>
+          <tr><td>1976</td><td>Peng-Robinson (PR) ★</td><td>Modified denominator to Vm(Vm+b)+b(Vm−b) → Zc=0.307, dramatically improved liquid density. Gold standard for oil and gas.</td><td>0.307</td><td>Default EOS worldwide</td></tr>
+          <tr><td>1982</td><td>Peneloux Volume Correction</td><td>Additive volume translation c to correct PR/SRK liquid density without affecting VLE. Standard in LNG calculations.</td><td>—</td><td>Widely used extension</td></tr>
+          <tr><td>1996–2008</td><td>GERG-2004 / GERG-2008</td><td>Multifluid Helmholtz energy EOS for natural gas. ISO 20765 standard. Accuracy ±0.03–0.05%.</td><td>—</td><td>Custody transfer / metering</td></tr>
+          <tr><td>Ongoing</td><td>PC-SAFT, CPA, SAFT-VR</td><td>Molecular chain length and association terms. Required for polymers, water, HF, glycols, asphaltenes.</td><td>—</td><td>Specialised process simulation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="etip">💡 The 1976 Peng-Robinson paper is one of the most cited engineering papers ever written (10,000+ citations). It remains the default thermodynamic model in ASPEN Plus, HYSYS, PRO/II, and virtually every commercial process simulator.</div>
+  </div>
+
+</div><!-- /ep1 -->
+
+<!-- ══════════ PANEL 2: CUBIC EOS MATH ══════════ -->
+<div class="edu-panel" id="ep2">
+
+  <div class="ec ec--teal">
+    <div class="ec-tag">Full Derivation — Peng-Robinson</div>
+    <div class="ec-h">From Physical Assumptions to the Cubic Polynomial in Z</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">All cubic EOS follow an identical structural template: a repulsion term describing excluded volume pressure, and an attraction term. The Peng-Robinson form differs from SRK only in the denominator of the attraction term — a seemingly small change that improves critical compressibility from Zc = 0.333 (SRK) to Zc = 0.307 (PR), matching experimental values of 0.23–0.29 far better.</p>
+        <div class="efm"><span class="c">── PR EOS: pressure-explicit form ─────────────────</span>
+<span class="k">P</span> = RT/(Vm−b) − a·α(T) / [Vm(Vm+b) + b(Vm−b)]
+     ↑ repulsion       ↑ attraction (PR denominator)
+
+<span class="c">── PR parameters (from critical constraints) ────────</span>
+a₀ = 0.45724 · R²Tc²/Pc    [Pa·m⁶/mol² — energy scale]
+b  = 0.07780 · RTc/Pc      [m³/mol — excluded volume]
+
+<span class="c">── Soave α temperature correction ──────────────────</span>
+κ   = 0.37464 + 1.54226ω − 0.26992ω²
+α(T) = [1 + κ(1 − √Tr)]²          α → 1 at T = Tc
+                                    α → κ² as T → ∞
+<span class="c">── SRK for comparison ──────────────────────────────</span>
+P_SRK = RT/(Vm−b) − a·α / [Vm(Vm+b)]
+m_SRK = 0.480 + 1.574ω − 0.176ω²</div>
+      </div>
+      <div>
+        <p class="ec-p">To convert the pressure-explicit EOS into a cubic polynomial solvable for molar volume, introduce the dimensionless compressibility factor Z = PVm/RT and dimensionless groups A and B:</p>
+        <div class="efm"><span class="c">── Dimensionless groups A and B ────────────────────</span>
+<span class="k">A</span> = a·α·P / (R·T)²       [dimensionless]
+<span class="k">B</span> = b·P / (R·T)          [dimensionless]
+
+Substitution: Vm = Z·RT/P  into PR pressure form →
+
+<span class="c">── PR cubic polynomial in Z ──────────────────────</span>
+<span class="g">Z³ − (1−B)Z² + (A−3B²−2B)Z − (AB−B²−B³) = 0</span>
+
+<span class="c">── SRK cubic polynomial in Z ─────────────────────</span>
+Z³ − Z² + (A−B−B²)Z − AB = 0
+
+<span class="c">── van der Waals cubic in Z ──────────────────────</span>
+Z³ − (1+B_vdw)Z² + A_vdw·Z − A_vdw·B_vdw = 0
+A_vdw = aP/(RT)²,  B_vdw = bP/RT</div>
+        <p class="ec-p" style="margin-top:12px;">The three different polynomials show why EOS choice matters: the coefficients of Z² and Z are different for each EOS. Even at the same A and B values, the roots will differ — PR gives a lower Zc because its Z² coefficient is (1−B), not 1 as in SRK.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--navy">
+    <div class="ec-tag">Critical-Point Constraints — Where a₀ and b Come From</div>
+    <div class="ec-h">Deriving the Universal EOS Constants Analytically</div>
+    <p class="ec-p">The constants 0.45724 and 0.07780 in the PR EOS are not empirical — they are derived by imposing two thermodynamic constraints that define the critical point on any P-V isotherm: both the first and second partial derivatives of pressure with respect to volume vanish simultaneously:</p>
+    <div class="efm"><span class="c">── Critical point constraints ───────────────────────</span>
+(∂P/∂Vm)_{T_c} = 0     [P-V isotherm has inflection at Tc]
+(∂²P/∂Vm²)_{T_c} = 0   [critical isotherm curvature = 0]
+
+<span class="c">── Solving for PR at T = Tc (α = 1) ────────────────</span>
+Two equations in two unknowns (a₀, b):
+
+From constraint 1:  a₀ = b·RTc·(1+2√2·B_c − B_c²)/B_c
+From constraint 2:  b = 0.07780·RTc/Pc
+
+Combined result:    <span class="k">a₀ = 0.45724·R²Tc²/Pc</span>
+
+<span class="c">── Critical compressibility predicted ──────────────</span>
+Z_c (PR)  = P_c·V_c/(R·T_c) = <span class="v">0.3074</span>   ← PR prediction
+Z_c (SRK) = P_c·V_c/(R·T_c) = <span class="r">0.3333</span>   ← SRK prediction
+Z_c (exp) ≈ 0.23 – 0.29                ← experimental range
+
+<span class="c">PR is 3× closer to experiment → better liquid density,</span>
+<span class="c">better near-critical behaviour, better two-phase results.</span></div>
+    <div class="etip">💡 The improvement in Zc from SRK (0.333) to PR (0.307) is the entire reason Peng and Robinson modified the denominator. The mathematical change is tiny — replacing Vm(Vm+b) with Vm(Vm+b)+b(Vm−b) — but the thermodynamic consequence is a 20% improvement in liquid density accuracy across most industrially relevant conditions.</div>
+  </div>
+
+  <div class="ec ec--amber">
+    <div class="ec-tag">Solving the Cubic — Roots and Phase State</div>
+    <div class="ec-h">Three Roots, Thermodynamic Stability, and the Equal-Area Rule</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">A cubic polynomial has either one or three real roots. For an EOS, the number and physical meaning of the roots depends entirely on where (T,P) falls relative to the two-phase envelope:</p>
+        <div class="efm"><span class="c">── Root count and physical meaning ──────────────</span>
+<span class="g">1 real root:</span>   single-phase fluid
+              (Tr &gt; 1, or superheated gas, compressed liquid)
+
+<span class="r">3 real roots:</span>  inside two-phase region
+              (Tr &lt; 1, P between bubble/dew pressures)
+
+<span class="v">2 real roots:</span>  near critical point (repeated root)
+              results are sensitive to input precision
+
+<span class="c">── When 3 roots exist ────────────────────────────</span>
+Largest  Z → vapour-phase root       <span class="g">(physical)</span>
+Middle   Z → thermodynamically UNSTABLE <span class="r">(discard)</span>
+Smallest Z → liquid-phase root       <span class="g">(physical)</span>
+
+<span class="c">Middle root has (∂P/∂V)_T &gt; 0 which violates the</span>
+<span class="c">thermodynamic stability criterion. It is a mathematical</span>
+<span class="c">artefact — it has no physical meaning whatsoever.</span></div>
+      </div>
+      <div>
+        <p class="ec-p">To determine which physical root applies (vapour, liquid, or a two-phase mixture), compute the fugacity coefficient φ for both vapour and liquid roots. At vapour-liquid equilibrium, the fugacities must be equal — this is the Maxwell equal-area construction expressed algebraically:</p>
+        <div class="efm"><span class="c">── VLE condition (Maxwell / fugacity) ───────────</span>
+<span class="k">f_vapour = f_liquid</span>
+φ_V · P  = φ_L · P
+→  φ_V   = φ_L
+
+<span class="c">── Phase stability test ─────────────────────────</span>
+If φ_V &lt; φ_L: vapour root is stable  → gas phase
+If φ_V &gt; φ_L: liquid root is stable  → liquid phase
+If φ_V = φ_L: two phases coexist     → saturation
+
+<span class="c">── Cardano discriminant ─────────────────────────</span>
+Δ = 18pq − 4p³ + p²q² − 4q³ − 27r²
+Δ &gt; 0 → three distinct real roots (two-phase region)
+Δ = 0 → repeated root (critical point)
+Δ &lt; 0 → one real root (single phase)</div>
+        <div class="ewarn">⚠️ <strong>Never use the middle root</strong> — the (∂P/∂V)_T &gt; 0 region is mechanically unstable and physically unrealisable. Selecting it will produce wrong density, wrong fugacity, wrong enthalpy, and wrong VLE predictions throughout your calculation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--green">
+    <div class="ec-tag">Numerical Root-Finding</div>
+    <div class="ec-h">How the Calculator Actually Solves Z — Cardano &amp; Newton-Raphson</div>
+    <div class="eg2">
+      <div>
+        <div class="efm"><span class="c">── Cardano's method for 3-root case (Δ&gt;0) ────────</span>
+Depress: Z = t − (1−B)/3
+
+Reduced cubic:  t³ + pt + q = 0
+p = A − 3B² − 2B − (1−B)²/3
+q = 2(1−B)³/27 − (1−B)(A−3B²−2B)/3 + (AB−B²−B³)
+
+For Δ&gt;0, three real roots via trigonometric form:
+t_k = 2√(−p/3) · cos[⅓·arccos(3q/(2p)·√(−3/p)) − 2πk/3]
+k = 0, 1, 2  →  gives all three roots analytically</div>
+      </div>
+      <div>
+        <div class="efm"><span class="c">── Newton-Raphson iteration (1 real root) ──────────</span>
+Start:  Z₀ = 1.0   (gas guess)  or  Z₀ = B  (liquid)
+
+f(Z)  = Z³ − (1−B)Z² + (A−3B²−2B)Z − (AB−B²−B³)
+f'(Z) = 3Z² − 2(1−B)Z + (A−3B²−2B)
+
+Z_{n+1} = Z_n − f(Z_n)/f'(Z_n)
+
+Convergence: typically 3–6 iterations to |ΔZ| &lt; 1×10⁻¹²
+
+<span class="c">── Eigenvalue method (most general) ───────────────</span>
+Companion matrix of polynomial → all eigenvalues
+= all roots simultaneously, no starting-guess needed
+Used in production EOS libraries (REFPROP, TREND)</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /ep2 -->
+
+<!-- ══════════ PANEL 3: FUGACITY & PHASE EQ ══════════ -->
+<div class="edu-panel" id="ep3">
+
+  <div class="ec ec--teal">
+    <div class="ec-tag">Chemical Potential and Fugacity</div>
+    <div class="ec-h">The Engineer's Thermodynamic Driving Force for Mass Transfer</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">The condition for equilibrium between any two phases is equal <strong>chemical potential</strong> μ in each phase. But chemical potential diverges logarithmically as pressure approaches zero, making it inconvenient for practical calculations. G.N. Lewis introduced <strong>fugacity</strong> f in 1901 as a "corrected pressure" with the same units as pressure that behaves identically to P for ideal gases but correctly captures non-ideal behaviour:</p>
+        <div class="efm"><span class="c">── Chemical potential definition ────────────────────</span>
+μ_i = μ°_i + RT·ln(f_i)
+
+<span class="c">── Fugacity defined via departure from ideal ────────</span>
+ln(f/P) = ∫₀ᴾ (Z−1)/P dP    [at constant T]
+
+<span class="k">f</span> = φ · P            [fugacity = coefficient × pressure]
+
+lim_{P→0} φ = 1        [ideal gas limit: f → P]
+
+<span class="c">── Physical meaning of φ ──────────────────────────</span>
+φ &lt; 1  →  attractive forces dominate  →  f &lt; P
+φ &gt; 1  →  repulsive forces dominate   →  f &gt; P
+φ = 1  →  ideal gas                    →  f = P</div>
+      </div>
+      <div>
+        <p class="ec-p">For cubic EOS, the fugacity integral ∫(Z−1)/P dP has a closed-form analytical result — different for each EOS based on the structure of the attractive-term denominator. The square-root factor √2 in the PR expression comes directly from the quadratic denominator Vm(Vm+b)+b(Vm−b), which requires completing the square during integration:</p>
+        <div class="efm"><span class="c">── PR fugacity coefficient (analytical) ─────────────</span>
+<span class="k">ln φ</span> = (Z−1) − ln(Z−B)
+       − A/(2√2·B)·ln[(Z+(1+√2)B)/(Z+(1−√2)B)]
+
+<span class="c">── SRK fugacity coefficient ──────────────────────</span>
+ln φ = (Z−1) − ln(Z−B) − (A/B)·ln(1 + B/Z)
+
+<span class="c">── Why √2 appears in PR ──────────────────────────</span>
+∫dV/[V(V+b)+b(V−b)] = ∫dV/[(V+b·(1−√2))(V+b·(1+√2))]
+↑ partial fractions introduce √2 factors naturally</div>
+        <div class="etip">💡 The fugacity coefficient φ is the single most important quantity output from an EOS for engineering use. It governs VLE (phase splitting), absorption, extraction, reaction equilibrium, and membrane separations. The entire edifice of process simulation rests on computing φ accurately from an EOS.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--navy">
+    <div class="ec-tag">Vapour-Liquid Equilibrium (VLE)</div>
+    <div class="ec-h">Flash Calculations, K-Ratios, and the Rachford-Rice Equation</div>
+    <p class="ec-p">A flash calculation determines how a feed mixture of composition z_i splits into vapour (mole fraction y_i) and liquid (mole fraction x_i) at specified temperature and pressure. The K-ratio Ki = yi/xi is the key variable, computed directly from the EOS fugacity coefficients for each phase:</p>
+    <div class="efm"><span class="c">── Equilibrium K-ratio from EOS ────────────────────</span>
+<span class="k">K_i</span> = y_i / x_i = φ_L,i / φ_V,i
+
+<span class="c">── Rachford-Rice equation (isothermal flash) ────────</span>
+g(ψ) = Σ_i  z_i(K_i − 1) / [1 + ψ(K_i − 1)] = 0
+
+z_i = feed mole fraction,  ψ = vapour mole fraction
+Solution: ψ ∈ (0,1) for two-phase flash
+
+<span class="c">── Successive substitution algorithm ───────────────</span>
+ 1. Initialise K_i from Wilson equation (fast estimate):
+    K_i = (Pc_i/P)·exp[5.373(1+ω_i)(1 − Tc_i/T)]
+
+ 2. Solve Rachford-Rice for ψ  (Brent / Regula Falsi)
+
+ 3. Compute phase compositions:
+    x_i = z_i / [1 + ψ(K_i − 1)]   ;   y_i = K_i · x_i
+
+ 4. Call EOS  →  compute φ_L,i(x) and φ_V,i(y)
+
+ 5. Update:  K_i_new = φ_L,i / φ_V,i
+
+ 6. Check: Σ_i (ln K_i_new − ln K_i_old)² &lt; 1×10⁻¹⁰ ?
+           YES → converged,  NO → go to step 2</div>
+    <div class="eg3" style="margin-top:14px;">
+      <div class="estat"><span class="estat-v">3–15</span><span class="estat-l">Successive-substitution iterations (typical)</span></div>
+      <div class="estat"><span class="estat-v">2–5</span><span class="estat-l">Newton-Raphson iterations (near convergence)</span></div>
+      <div class="estat"><span class="estat-v">1×10⁻¹⁰</span><span class="estat-l">Convergence tolerance on K-ratio sum of squares</span></div>
+    </div>
+  </div>
+
+  <div class="ec ec--amber">
+    <div class="ec-tag">Departure Functions</div>
+    <div class="ec-h">Computing Enthalpy, Entropy, and Cp from a Single EOS</div>
+    <p class="ec-p">The real power of a cubic EOS is that it allows computation of all thermodynamic properties — not just Z and density — through the concept of departure functions. A departure function is the difference between the real-gas value of a property and its ideal-gas value at the same T and P. The departure is computed analytically from the EOS, then added to the ideal-gas contribution (from heat capacity data) to give the total property. This is how ASPEN, HYSYS, and REFPROP compute everything from one model:</p>
+    <div class="efm"><span class="c">── Enthalpy departure (PR EOS) ─────────────────────</span>
+<span class="k">H − H^ig</span> = RT(Z−1)
+           + [a·α − T·d(a·α)/dT]/(2√2·b)
+           · ln[(Z+(1+√2)B)/(Z+(1−√2)B)]
+
+where: d(a·α)/dT = a₀·κ·α / (Tc·√Tr)   (analytical)
+
+<span class="c">── Entropy departure (PR EOS) ───────────────────────</span>
+S − S^ig = R·ln(Z−B)
+          − [d(a·α)/dT]/(2√2·b)
+          · ln[(Z+(1+√2)B)/(Z+(1−√2)B)]
+          − R·ln(P/P°)
+
+<span class="c">── Heat capacity departure ──────────────────────────</span>
+Cp − Cp^ig = Cv_dep + T·(∂P/∂T)²_V / (−(∂P/∂V)_T) − R
+<span class="c">             (involves second derivatives of EOS)</span>
+
+<span class="c">── Joule-Thomson coefficient ────────────────────────</span>
+μ_JT = (∂T/∂P)_H = −(1/Cp)·(∂H/∂P)_T
+<span class="c">     = −V·(T·(∂V/∂T)_P − V) / Cp  [sign determines cooling/heating on throttle]</span></div>
+    <div class="etip">💡 Departure functions are why a single EOS can consistently predict Z, density, enthalpy, entropy, heat capacity, speed of sound, Joule-Thomson coefficient, and phase envelopes. Thermodynamic consistency is guaranteed because all properties are derived from the same Helmholtz energy function A(T,V).</div>
+  </div>
+
+</div><!-- /ep3 -->
+
+<!-- ══════════ PANEL 4: APPLICATIONS ══════════ -->
+<div class="edu-panel" id="ep4">
+
+  <div class="ec ec--red">
+    <div class="ec-tag">Oil &amp; Gas — Pipeline and Metering</div>
+    <div class="ec-h">Z-Factor in Custody Transfer, Compression, and Gas Processing</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">The natural gas industry is the single largest user of EOS calculations in the world. Every custody transfer metering station continuously computes Z-factor to convert measured volumetric flow at operating conditions to standard conditions. Regulatory frameworks (ISO 20765 / AGA-8) mandate use of GERG-2008 for high-accuracy applications, but Peng-Robinson remains standard for wellsite, pipeline, and separator calculations.</p>
+        <div class="efm"><span class="c">── Standard volume conversion via Z ────────────────</span>
+<span class="k">Q_sc</span> = Q_act · (P_act/P_sc) · (T_sc/T_act) · (Z_sc/Z_act)
+
+Standard conditions:  15°C (288.15 K), 1.01325 bar
+Z_sc ≈ 1.000 (standard conditions)
+Z_act from PR or GERG-2008 at pipeline T and P
+
+<span class="c">── Compressor polytropic head ───────────────────────</span>
+H_poly = Z_avg·R·T₁/(M) · n/(n−1) · [(P₂/P₁)^((n−1)/n) − 1]
+
+Z_avg directly scales required compressor power.
+1% error in Z → ~1% error in motor sizing.
+At 10 MW compressor: 1% = 100 kW = significant cost.</div>
+      </div>
+      <div>
+        <p class="ec-p"><strong>Dew-point calculations</strong> are critical in gas gathering and processing — liquid dropout in pipelines causes slugging, corrosion, and metering errors. The hydrocarbon dew point is computed entirely from EOS-based VLE at operating P and T:</p>
+        <div class="efm"><span class="c">── Dew-point condition ──────────────────────────────</span>
+At dew point:  Σ_i (y_i / K_i) = 1.0
+               where K_i from PR EOS fugacity
+
+<span class="c">── Phase envelope key points ────────────────────────</span>
+Bubble curve: Σ_i (x_i·K_i) = 1.0  (first vapour appears)
+Dew curve:    Σ_i (y_i/K_i) = 1.0  (first liquid appears)
+Cricondentherm: max T where two phases exist
+Cricondenbar:   max P where two phases exist
+
+<span class="c">── Hydrate and water dew-point ──────────────────────</span>
+Hydrate risk T from Hammerschmidt:  T_h = f(P, gas composition)
+MEG / methanol injection shifts T_h below pipeline T.
+EOS models water content of gas for dehydrator design.</div>
+        <div class="ewarn">⚠️ For <strong>LNG and cryogenic processing</strong> (T &lt; −100°C), standard PR with classical mixing rules is insufficiently accurate. Use PR with Peneloux volume correction or GERG-2008. For H₂S-rich or CO₂-rich acid gas, BIP (kij) tuning is mandatory.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--teal">
+    <div class="ec-tag">Chemical Process Design</div>
+    <div class="ec-h">EOS in Distillation, Reactors, Heat Exchangers &amp; Separations</div>
+    <div class="eg2">
+      <div>
+        <p class="ec-p">Process simulation platforms (Aspen Plus, HYSYS, PRO/II, gPROMS, UniSim) use EOS as the thermodynamic backbone for every unit operation. Every distillation tray equilibrium, every heat exchanger Q-T curve, every reactor energy balance depends on EOS-computed H, S, Cp, and fugacities. The single most consequential modelling decision in process simulation is the choice of thermodynamic model:</p>
+        <ul style="font-size:.88rem;color:var(--mid);padding-left:18px;line-height:2.0;">
+          <li><strong>PR or SRK:</strong> Non-polar hydrocarbons and light gases. Gas processing, refinery, cracker, olefin plants. Pressures to 200 bar.</li>
+          <li><strong>PR with Peneloux correction:</strong> LNG, NGL fractionation, dense-phase CO₂ transport. Better liquid density.</li>
+          <li><strong>CPA (Cubic Plus Association):</strong> Water, methanol, glycols (MEG, TEG), amines. Hydrogen bonding dominates — plain PR fails badly.</li>
+          <li><strong>PC-SAFT:</strong> Polymers, heavy oils, asphaltenes, wax appearance. Chain-length effects are dominant.</li>
+          <li><strong>eNRTL / MSA-EOS:</strong> Electrolyte systems (acid gas scrubbing, MEA amine treating, caustic wash).</li>
+          <li><strong>GERG-2008:</strong> Custody transfer, pipeline simulations where ±0.05% accuracy on Z is required.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="etbl-w">
+          <table class="etbl">
+            <thead><tr><th>Application</th><th>Recommended EOS</th><th>Key concern</th></tr></thead>
+            <tbody>
+              <tr><td>Dry natural gas pipeline</td><td>PR or GERG-2008</td><td>Z-factor accuracy</td></tr>
+              <tr><td>NGL fractionation</td><td>PR + Peneloux</td><td>Liquid density</td></tr>
+              <tr><td>LNG liquefaction</td><td>PR or GERG-2008</td><td>Liquid enthalpy / MHX design</td></tr>
+              <tr><td>Ammonia synthesis loop</td><td>PR or SRK</td><td>H₂, N₂ at 150–300 bar</td></tr>
+              <tr><td>CO₂ capture &amp; compression</td><td>PR + kij tuning</td><td>CO₂–water interaction</td></tr>
+              <tr><td>Acid gas injection</td><td>PR with CO₂-H₂S kij</td><td>Dense-phase miscibility</td></tr>
+              <tr><td>Glycol dehydration (TEG)</td><td>CPA or NRTL-RK</td><td>Water activity</td></tr>
+              <tr><td>Amine gas treating (MEA)</td><td>eNRTL or Kent-Eisenberg</td><td>Electrolyte chemistry</td></tr>
+              <tr><td>Refrigeration cycle</td><td>PR or NIST REFPROP</td><td>Refrigerant Cp, enthalpy</td></tr>
+              <tr><td>Supercritical CO₂ EOR</td><td>PR with kij regression</td><td>MMP prediction</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ec ec--amber">
+    <div class="ec-tag">Mixing Rules and Binary Interaction Parameters</div>
+    <div class="ec-h">The Critical Importance of kij — Extending EOS to Mixtures</div>
+    <p class="ec-p">Pure-component EOS parameters must be combined for mixtures using mixing rules. The classical van der Waals one-fluid mixing rules are used by default, but the binary interaction parameter kij is an empirical correction for unlike-pair cross-attractions that differ from the geometric mean. Wrong kij values are the most common source of large EOS errors in industrial applications:</p>
+    <div class="efm"><span class="c">── van der Waals one-fluid mixing rules ────────────</span>
+<span class="k">a_mix</span> = Σ_i Σ_j  x_i·x_j·√(a_i·a_j)·(1 − k_ij)
+<span class="k">b_mix</span> = Σ_i  x_i·b_i
+
+k_ij = binary interaction parameter
+k_ij = 0   : identical-type non-polar pairs  (CH₄-C₂H₆)
+k_ij = 0.10–0.15: CO₂-hydrocarbon (important!)
+k_ij = 0.05–0.10: H₂S-hydrocarbon
+k_ij = 0.10–0.20: N₂-hydrocarbon
+
+<span class="c">── Wong-Sandler mixing rules (advanced) ─────────────</span>
+Combines cubic EOS with Gibbs energy model (NRTL, UNIQUAC)
+Required for: water+organics, alcohols+hydrocarbons, acids
+a_WS/(b·RT) = Σ_i Σ_j x_i·x_j·(a_ij/(b_ij·RT)) / (1 − Gex/(RT·CW))
+
+<span class="c">── kij regression from VLE data ─────────────────────</span>
+Minimise: F = Σ_k [(P_calc,k − P_exp,k)/P_exp,k]²
+Sources: DECHEMA VLE Databank, NIST ThermoData Engine,
+         in-house lab measurements</div>
+    <div class="etip">💡 For CO₂-CH₄ systems at pipeline conditions, using kij=0 instead of kij=0.10 can introduce 3–8% error in the equilibrium K-ratio — meaning the dew-point temperature prediction is off by 5–15°C. This is operationally significant for pipeline design and condensate separation.</div>
+  </div>
+
+  <div class="ec ec--mid">
+    <div class="ec-tag">Limitations — Where Cubic EOS Fail</div>
+    <div class="ec-h">Critical Failure Modes Every Engineer Must Know</div>
+    <div class="eg2">
+      <div>
+        <div class="efm"><span class="c">── Problematic fluid types ──────────────────────────</span>
+<span class="r">Water H₂O:</span>     Strong H-bonding → up to 30% liquid
+               density error, 10–20% VLE error with PR/SRK.
+               Use CPA or PC-SAFT.
+
+<span class="r">Alcohols:</span>      Self-associating → similar errors to water.
+               Methanol in gas streams needs CPA.
+
+<span class="r">HF acid:</span>       Extreme association (forms hexamers in vapour).
+               Plain cubic EOS fundamentally fails.
+
+<span class="r">Amines (MEA/DEA):</span> Association + ionisation → use eNRTL.
+
+<span class="r">Electrolytes:</span>  Ions present → Debye-Hückel or MSA needed.
+
+<span class="r">Polymers:</span>      Very high MW, chain effects → PC-SAFT.
+
+<span class="r">Helium / H₂:</span>   Quantum effects at cryogenic T → use
+               quantum-corrected Tc_eff, Pc_eff.</div>
+      </div>
+      <div>
+        <div class="efm"><span class="c">── Problematic conditions ───────────────────────────</span>
+<span class="r">Near critical point</span> (|Tr−1| &lt; 0.05, |Pr−1| &lt; 0.1):
+  → All cubic EOS give divergent Cp, incorrect density.
+  → Use crossover EOS (Kiselev) or scaled equations.
+
+<span class="r">Very low Tr</span> (&lt; 0.5):
+  → Standard Soave-type α function becomes unreliable.
+  → Use Mathias-Copeman or Twu α function.
+
+<span class="r">Very high Pr</span> (&gt; 20–30):
+  → Excluded volume b underestimates molecular repulsion.
+  → BACK, SAFT-VR, or PC-SAFT perform better.
+
+<span class="r">Solid phases:</span>
+  → Cubic EOS model gas + liquid only.
+  → Solid-fluid equilibrium needs separate triple-point model.
+
+<span class="r">Strong association / solvation:</span>
+  → CPA (1 EOS parameter per associating site) or
+  → PC-SAFT (chain + dispersion + association terms).</div>
+        <div class="edgr">⚠️ <strong>Never use the ideal gas law for:</strong> pipeline gas above 20 bar, any refrigerant, liquefied gases, supercritical fluids, or any application where density accuracy better than ±5% is needed. Z can deviate from 1.0 by 5–30% in normal industrial conditions.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /ep4 -->
+
+<!-- ══════════ PANEL 5: GLOSSARY ══════════ -->
+<div class="edu-panel" id="ep5">
+
+  <div class="ec ec--navy" style="margin-bottom:22px;">
+    <div class="ec-tag">Complete Reference</div>
+    <div class="ec-h">Symbols, Terms, and Definitions — Gas EOS Engineering</div>
+  </div>
+
+  <div class="egloss">
+    <div class="egloss-item">
+      <div class="egloss-term">Compressibility Factor Z</div>
+      <div class="egloss-sym">Z = PVm/RT [—]</div>
+      <div class="egloss-def">Dimensionless measure of deviation from ideal-gas behaviour. Z=1 for ideal gas. Z&lt;1 when attractive forces dominate (most gases at moderate conditions). Z&gt;1 when repulsive forces dominate (high-pressure gases, H₂, He). The primary output of all EOS calculations; used to correct all flow and volume calculations for real-gas behaviour.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Critical Temperature Tc</div>
+      <div class="egloss-sym">K or °C</div>
+      <div class="egloss-def">Temperature above which no amount of pressure can liquefy a gas. At T &gt; Tc the fluid is supercritical — gas and liquid phases merge into a single fluid phase. The critical point (Tc, Pc) is the unique state where the densities of coexisting vapour and liquid become equal. All cubic EOS parameters are derived from Tc and Pc.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Critical Pressure Pc</div>
+      <div class="egloss-sym">bar or Pa</div>
+      <div class="egloss-def">Minimum pressure needed to liquefy a gas at exactly Tc. With Tc, it defines reduced coordinates (Tr, Pr) for corresponding-states correlations. High-Pc fluids (H₂O: 220.6 bar; NH₃: 113.5 bar; CO₂: 73.8 bar) require much higher pressure to reach the critical point than low-Pc gases (N₂: 34.0 bar; CH₄: 46.1 bar).</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Reduced Temperature Tr</div>
+      <div class="egloss-sym">Tr = T/Tc [—]</div>
+      <div class="egloss-def">Dimensionless temperature normalised to Tc. The foundation of corresponding-states correlations — fluids at the same Tr and Pr have the same Z (for simple fluids). Tr &lt; 1: subcritical (vapour and liquid can coexist). Tr &gt; 1: supercritical (single fluid phase, no phase boundary). Most accurate EOS behaviour occurs for Tr = 0.8–2.0.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Acentric Factor ω</div>
+      <div class="egloss-sym">ω = −log₁₀(Psat/Pc)−1 at Tr=0.7</div>
+      <div class="egloss-def">Pitzer's non-sphericity parameter. Defined so that ω = 0 for perfectly spherical monatomic molecules (Ar, Kr, Xe). Increases with molecular chain length and polarity. Enters SRK as m, enters PR as κ — controls the temperature dependence of the α function. Higher ω → stronger Tr-dependence of the attraction parameter a·α.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Fugacity f</div>
+      <div class="egloss-sym">f = φ·P [Pa or bar]</div>
+      <div class="egloss-def">Lewis's "corrected pressure" — the thermodynamic driving force for mass transfer between phases and across membranes. At equilibrium, fugacity is equal in all coexisting phases for each component: f_i^V = f_i^L. Reduces to pressure for ideal gas (φ=1). Computed analytically from any cubic EOS via the departure integral. The basis for all VLE and reaction equilibrium calculations.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Fugacity Coefficient φ</div>
+      <div class="egloss-sym">φ = f/P [—]</div>
+      <div class="egloss-def">Ratio of fugacity to pressure. φ=1 for ideal gas. φ&lt;1 when attractive forces dominate (most gases below ~50 bar, Z&lt;1). φ&gt;1 when repulsive forces dominate (high-pressure gases). The VLE equilibrium criterion is φ_V = φ_L. Each cubic EOS has a unique closed-form analytical expression for φ derived from the departure integral.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Molar Volume Vm</div>
+      <div class="egloss-sym">m³/mol or L/mol</div>
+      <div class="egloss-def">Volume per mole of substance: Vm = ZRT/P. Ideal gas at 25°C, 1 bar: Vm = 24.79 L/mol. Liquid propane at −40°C, 1 bar: Vm ≈ 0.088 L/mol (282× denser). The primary root of the cubic EOS polynomial. Three roots can exist in the two-phase region; the largest is the vapour root, the smallest is the liquid root.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">EOS Parameters a and b</div>
+      <div class="egloss-sym">a [Pa·m⁶/mol²], b [m³/mol]</div>
+      <div class="egloss-def">Van der Waals attraction (a) and excluded-volume (b) parameters. In all cubic EOS, a₀ ∝ R²Tc²/Pc (energy scale) and b ∝ RTc/Pc (size scale). Numerically different between EOS: PR uses a₀=0.45724·R²Tc²/Pc vs SRK's 0.42748; b=0.07780·RTc/Pc vs SRK's 0.08664. Both differences follow from enforcing the critical-point constraints for each specific EOS form.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Soave α Function α(Tr,ω)</div>
+      <div class="egloss-sym">α = [1 + κ(1−√Tr)]²</div>
+      <div class="egloss-def">Temperature-correction function introduced by Soave (1972) to improve vapour-pressure predictions. Fitted to experimental vapour pressures via the acentric factor. α=1 at T=Tc; α increases as T decreases (stronger attraction at lower T). The key innovation over the original Redlich-Kwong EOS, transforming it from a research curiosity into an industrial standard. Mathias-Copeman and Twu α functions provide better accuracy at very low Tr.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Binary Interaction Parameter kij</div>
+      <div class="egloss-sym">kij ∈ [0, 0.2] typical</div>
+      <div class="egloss-def">Empirical correction to the geometric-mean combining rule for unlike-pair cross-attraction a_ij = √(a_i·a_j)·(1−kij). kij=0 for similar non-polar pairs (CH₄-C₂H₆). kij=0.10–0.15 for CO₂-hydrocarbon; 0.05–0.10 for H₂S-hydrocarbon. Must be regressed from VLE data. The dominant source of EOS mixture error when improperly set. Not physically derivable from pure-component parameters alone.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Departure Function</div>
+      <div class="egloss-sym">(Property)_real − (Property)^ig</div>
+      <div class="egloss-def">Difference between a real-gas property (H, S, Cp, etc.) and its ideal-gas value at the same T and P. Computed analytically from EOS integral expressions involving ∂P/∂T and ∂P/∂V. Added to ideal-gas contribution (from Cp° heat-capacity data) to give the total real-gas property. Guarantees thermodynamic consistency — all properties derived from the same Helmholtz energy A(T,V).</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Phase Envelope (P-T diagram)</div>
+      <div class="egloss-sym">Bubble + dew loci</div>
+      <div class="egloss-def">The locus of all bubble points (first vapour appears from liquid) and dew points (first liquid appears from vapour) on a P-T diagram, enclosing the two-phase region. Critical point is at the apex. Cricondentherm is the maximum temperature at which two phases can coexist; cricondenbar is the maximum pressure. Essential for separator design, pipeline sizing, and gas processing plant design.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Virial EOS</div>
+      <div class="egloss-sym">Z = 1 + B/Vm + C/Vm² + …</div>
+      <div class="egloss-def">Series expansion in molar density derived rigorously from statistical mechanics. Second virial coefficient B represents two-body molecular interactions; C represents three-body interactions. Theoretically exact at low density. Truncated at B: excellent below ~10 bar for most gases. B can be calculated from intermolecular potential theory (Lennard-Jones), providing a direct link between molecular physics and thermodynamic properties.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">GERG-2008 / ISO 20765</div>
+      <div class="egloss-sym">Multifluid Helmholtz EOS</div>
+      <div class="egloss-def">Groupe Européen de Recherches Gazières multifluid EOS for natural gas. Uses residual Helmholtz energy formulation with 21 natural gas components. Accuracy: ±0.03–0.05% for Z-factor in pipeline range (270–450 K, 0–300 bar). ISO 20765 standard for custody transfer metering. Far more complex than PR or SRK but required where ±0.1% Z accuracy is legally specified for billing purposes.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Peneloux Volume Correction</div>
+      <div class="egloss-sym">Vm,corr = Vm,EOS − c</div>
+      <div class="egloss-def">Simple additive volume translation (Peneloux, 1982) to correct the systematic liquid-density overprediction of SRK and PR. c is a component-specific constant regressed from saturated liquid density data. Does not affect vapour-liquid equilibrium (K-ratios, dew and bubble points) because fugacity expressions are invariant to volume translation. Standard in LNG and NGL calculations where liquid density accuracy to ±1% is required.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">CPA — Cubic Plus Association</div>
+      <div class="egloss-sym">A = A_cubic + A_assoc</div>
+      <div class="egloss-def">EOS combining a cubic (SRK) term with an association term from Wertheim's theory (1984). The association term explicitly models hydrogen-bonding between molecules such as water, alcohols, glycols (MEG, DEG, TEG), and amines. Each associating site is characterised by energy ε^A and volume κ^A. Required for glycol dehydration, amine treating, CO₂-water systems, and any application where hydrogen bonding significantly affects phase behaviour.</div>
+    </div>
+    <div class="egloss-item">
+      <div class="egloss-term">Corresponding States Principle</div>
+      <div class="egloss-sym">Z = Z(Tr, Pr, ω)</div>
+      <div class="egloss-def">Van der Waals' 1881 theorem that all pure fluids obey the same EOS when expressed in reduced coordinates (Tr, Pr). Extended by Pitzer to three-parameter form using ω. Foundation of all generalised correlations (Lee-Kesler, Pitzer-Curl, AGA-8) and all modern cubic EOS. Fails for quantum fluids (H₂, He) and strongly associating fluids (water, HF) where molecule-specific interactions are dominant.</div>
+    </div>
+  </div>
+
+</div><!-- /ep5 -->
+
+</div><!-- /page -->
+</div><!-- /sec-edu -->
+
+<script>
+(function(){
+  // Education sub-tab switching
+  document.querySelectorAll('.edu-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.edu-tab').forEach(function(b){ b.classList.remove('on'); });
+      document.querySelectorAll('.edu-panel').forEach(function(p){ p.classList.remove('on'); });
+      btn.classList.add('on');
+      var panel = document.getElementById(btn.dataset.p);
+      if(panel) panel.classList.add('on');
+    });
+  });
+})();
+</script>
+<div class="toast" id="toastEl"></div>
+
+<!-- ═══════════ ENGINEERING DISCLAIMER — BOTTOM ═══════════ -->
+<div class="disclaimer-bottom">
+  <span>⚠️</span>
+  <span><b>NOT FOR DESIGN USE:</b> This tool is for educational and preliminary estimation purposes only. Results are based on pure-component cubic EOS. Do not use for safety-critical, regulatory, or final engineering design without validation against experimental data or process simulation software. Accuracy degrades near the critical point, for polar / associating fluids (water, alcohols, HF, acids), and for quantum fluids (H₂, He). Critical properties sourced from standard literature — verify against NIST Chemistry WebBook for final applications.</span>
+</div>
+</body>
+</html>
