@@ -11,6 +11,10 @@
     {
       "source": "/gas-equation-of-state",
       "destination": "/gas-equation-of-state/index.html"
+    },
+    {
+      "source": "/control-valve-sizing",
+      "destination": "/control-valve-sizing/index.html"
     }
   ],
   "headers": [
