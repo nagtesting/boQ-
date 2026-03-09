@@ -7,6 +7,10 @@
     {
       "source": "/cooling-tower-performance",
       "destination": "/cooling-tower-performance/index.html"
+    },
+    {
+      "source": "/gas-equation-of-state",
+      "destination": "/gas-equation-of-state/index.html"
     }
   ],
   "headers": [
