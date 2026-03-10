@@ -41,7 +41,7 @@
       "maxDuration": 10,
       "memory": 256
     },
-    "api/pressure-drop.js": {
+    "api/pressure-drop-calculator.js": {
       "maxDuration": 10,
       "memory": 256
     }
