@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychrometric Calculator — Dew Point, Wet Bulb, Humidity | multicalci.com</title>
+<meta name="description" content="Free psychrometric calculator for dew point, wet bulb temperature, relative humidity and moist air enthalpy.">
+<link rel="canonical" href="https://multicalci.com/psychrometric-calculator/">
+<meta property="og:title" content="Psychrometric Calculator — Dew Point, Wet Bulb, Humidity | multicalci.com">
+<meta property="og:description" content="Free psychrometric calculator for dew point, wet bulb temperature, relative humidity and moist air enthalpy.">
+<meta property="og:url" content="https://multicalci.com/psychrometric-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Psychrometric Calculator — Dew Point, Wet Bulb, Humidity | multicalci.com">
+<meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Psychrometric Calculator","description":"Free psychrometric calculator for dew point, wet bulb temperature, relative humidity, enthalpy and humidity ratio.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/psychrometric-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<style>
+    :root { --p: #0f172a; --a: #8b5cf6; --b: #f1f5f9; --g: #10b981; --r: #ef4444; --o: #f59e0b; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--b); margin: 0; overflow-x: hidden; }
+
+    /* ── NAV ── */
+    .nav {
+        background: var(--p); padding: 0 16px;
+        display: flex; align-items: center; justify-content: space-between;
+        position: sticky; top: 0; z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3); min-height: 52px; gap: 12px;
+    }
+    .nav-brand { color: white; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; white-space: nowrap; }
+    .nav-brand span { color: var(--a); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .nav-share-btn {
+        display: flex; align-items: center; gap: 6px;
+        padding: 7px 14px; background: rgba(139,92,246,.2); border: 1px solid rgba(139,92,246,.4);
+        border-radius: 20px; color: #c4b5fd; font-size: 0.75rem; font-weight: 700;
+        cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .nav-share-btn:hover { background: var(--a); border-color: var(--a); color: white; }
+    .nav-pdf-btn {
+        display: flex; align-items: center; gap: 6px;
+        padding: 7px 14px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+        border-radius: 20px; color: #e2e8f0; font-size: 0.75rem; font-weight: 700;
+        cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .nav-pdf-btn:hover { background: var(--a); border-color: var(--a); color: white; }
+    .nav-home-btn {
+        display: flex; align-items: center; gap: 6px;
+        padding: 7px 14px; background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.35);
+        border-radius: 20px; color: #6ee7b7; font-size: 0.75rem; font-weight: 700;
+        cursor: pointer; transition: all .2s; white-space: nowrap; text-decoration: none;
+    }
+    .nav-home-btn:hover { background: #10b981; border-color: #10b981; color: white; }
+
+    /* ── API STATUS INDICATOR ── */
+    .api-status {
+        position: fixed; bottom: 14px; right: 14px; z-index: 300;
+        padding: 6px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+        display: none; gap: 6px; align-items: center;
+        box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    }
+    .api-status.loading { display: flex; background: #1e293b; color: #94a3b8; }
+    .api-status.error   { display: flex; background: #fee2e2; color: #991b1b; }
+    .api-spin { width: 10px; height: 10px; border: 2px solid rgba(255,255,255,.2); border-top-color: var(--a); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── UNIT BAR ── */
+    .unit-bar {
+        background: #1e293b; padding: 8px 16px;
+        display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .unit-bar span { color: #94a3b8; font-size: 0.75rem; font-weight: 700; }
+    .toggle-wrap { display: flex; background: #0f172a; border-radius: 20px; padding: 3px; gap: 2px; }
+    .tog-btn { padding: 5px 16px; border-radius: 16px; font-size: 0.78rem; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #64748b; transition: all 0.2s; }
+    .tog-btn.active-u { background: var(--a); color: white; }
+
+    .page { max-width: 1100px; margin: 20px auto; padding: 0 14px 60px; }
+
+    /* ── TABS ── */
+    .tab-bar {
+        display: flex; gap: 6px; margin-bottom: 18px;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; padding-bottom: 2px;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+        padding: 8px 16px; border-radius: 8px; border: 2px solid #e2e8f0;
+        background: white; font-size: 0.78rem; font-weight: 700; color: #64748b;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .tab-btn:hover { border-color: var(--a); color: var(--a); }
+    .tab-btn.active-tab { background: var(--p); color: white; border-color: var(--p); }
+    .tab-section { display: none; }
+    .tab-section.active-sec { display: block; animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
+
+    /* ── LAYOUT GRIDS ── */
+    .grid-main { display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; }
+    @media (max-width: 768px) { .grid-main { grid-template-columns: 1fr; } }
+    .grid-2f { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .grid-2f { grid-template-columns: 1fr; } }
+
+    /* ── CARDS ── */
+    .card {
+        background: white; padding: 20px; border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07); border: 1px solid #e2e8f0; margin-bottom: 18px;
+    }
+    @media (max-width: 480px) { .card { padding: 14px; } }
+    h2 { margin: 0 0 16px 0; font-size: 0.83rem; color: var(--p); text-transform: uppercase; border-left: 4px solid var(--a); padding-left: 12px; letter-spacing: 0.5px; }
+    h3 { margin: 14px 0 10px 0; font-size: 0.76rem; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+
+    /* ── FORM ── */
+    .field { margin-bottom: 12px; }
+    label { display: block; margin-bottom: 4px; font-weight: 700; color: #64748b; font-size: 0.7rem; text-transform: uppercase; }
+    input, select {
+        width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0;
+        border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #1e293b;
+        transition: border-color 0.2s; -webkit-appearance: none; appearance: none;
+        background: white;
+    }
+    input:focus, select:focus { border-color: var(--a); outline: none; box-shadow: 0 0 0 3px rgba(139,92,246,.12); }
+    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { opacity: 0.5; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    /* ── RESULT GRID ── */
+    .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .res-item { background: #f8fafc; padding: 11px 13px; border-radius: 10px; border: 1px solid #e2e8f0; transition: background 0.3s; }
+    .res-lbl { font-size: 0.58rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .res-val { display: block; font-size: 1rem; font-weight: 800; color: #1e293b; margin-top: 3px; word-break: break-word; }
+    .res-alt { font-size: 0.65rem; color: #94a3b8; font-weight: 600; }
+    .span2 { grid-column: span 2; }
+    .highlight { background: #f5f3ff; border-color: #c4b5fd; }
+    .highlight .res-val { color: var(--a); font-size: 1.25rem; }
+    .highlight-g { background: #f0fdf4; border-color: #86efac; }
+    .highlight-g .res-val { color: #16a34a; font-size: 1.1rem; }
+    .highlight-o { background: #fffbeb; border-color: #fcd34d; }
+    .highlight-o .res-val { color: #d97706; }
+
+    /* ── COMFORT BADGE ── */
+    .comfort-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-top: 8px; }
+    .cb-ok   { background: #d1fae5; color: #065f46; }
+    .cb-hot  { background: #fee2e2; color: #991b1b; }
+    .cb-cold { background: #dbeafe; color: #1e40af; }
+    .cb-hum  { background: #fef9c3; color: #854d0e; }
+    .cb-dry  { background: #ede9fe; color: #5b21b6; }
+
+    /* ── CHART ── */
+    .chart-wrap { position: relative; overflow: hidden; }
+    canvas { width: 100% !important; border-radius: 8px; display: block; touch-action: none; }
+
+    /* ── PROCESS TABLE ── */
+    .proc-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .proc-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; min-width: 480px; }
+    .proc-table th { background: var(--p); color: white; padding: 7px 10px; text-align: left; font-size: 0.7rem; }
+    .proc-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; }
+    .proc-table tr:nth-child(even) td { background: #f8fafc; }
+    .proc-table tr.total td { background: #f5f3ff; font-weight: 700; color: var(--a); }
+
+    /* ── CONDITION CHIPS ── */
+    .cond-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .cond-chip { padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+
+    /* ── ACTION BUTTONS ── */
+    .btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .pdf-btn {
+        flex: 1; min-width: 160px; padding: 12px; background: #7c3aed; color: white;
+        border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
+        cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s; display: flex;
+        align-items: center; justify-content: center; gap: 7px;
+    }
+    .pdf-btn:hover { background: #6d28d9; }
+    .share-inline-btn {
+        flex: 1; min-width: 140px; padding: 12px; background: rgba(139,92,246,.1); color: var(--a);
+        border: 2px solid rgba(139,92,246,.3); border-radius: 10px; font-size: 0.88rem; font-weight: 700;
+        cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; display: flex;
+        align-items: center; justify-content: center; gap: 7px;
+    }
+    .share-inline-btn:hover { background: var(--a); color: white; border-color: var(--a); }
+
+    /* ── CALCULATE BUTTON ── */
+    .calc-btn {
+        width: 100%; padding: 13px 20px; margin-top: 16px;
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        color: white; border: none; border-radius: 10px;
+        font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
+        cursor: pointer; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        box-shadow: 0 4px 14px rgba(109,40,217,0.35);
+    }
+    .calc-btn:hover { background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%); box-shadow: 0 6px 20px rgba(109,40,217,0.5); transform: translateY(-1px); }
+    .calc-btn:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(109,40,217,0.3); }
+    .calc-btn:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; transform: none; }
+    .calc-btn .cb-spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    .calc-btn.loading .cb-spin { display: block; }
+    .calc-btn.loading .cb-label { opacity: 0.7; }
+    .calc-btn-sub { width: 100%; padding: 11px 16px; margin-top: 12px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        color: white; border: none; border-radius: 9px;
+        font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 3px 10px rgba(2,132,199,0.3);
+    }
+    .calc-btn-sub:hover { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); transform: translateY(-1px); }
+    .calc-btn-sub:active { transform: translateY(0); }
+    .calc-btn-sub .cb-spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    .calc-btn-sub.loading .cb-spin { display: block; }
+
+    /* ── FORMULA BOX ── */
+    .formula-box { background: #f8fafc; border-left: 3px solid var(--a); padding: 10px 14px; font-size: 0.7rem; color: #475569; font-style: italic; line-height: 1.7; border-radius: 0 6px 6px 0; margin-top: 14px; word-break: break-word; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 14px 0; }
+
+    /* ── LEARN TAB ── */
+    .learn-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); border-radius: 14px; padding: 32px 28px; margin-bottom: 20px; text-align: center; }
+    .learn-hero h1 { color: white; font-size: 1.5rem; margin: 0 0 8px 0; font-weight: 900; letter-spacing: -0.5px; }
+    .learn-hero p { color: #94a3b8; font-size: 0.85rem; margin: 0 auto; line-height: 1.6; max-width: 600px; }
+    .learn-hero .hero-badge { display: inline-block; background: rgba(139,92,246,.25); border: 1px solid rgba(139,92,246,.5); color: #c4b5fd; font-size: 0.65rem; font-weight: 800; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; }
+    .learn-section { margin-bottom: 24px; }
+    .learn-section-title { font-size: 1rem; font-weight: 900; color: #0f172a; margin: 0 0 14px 0; display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
+    .learn-section-title .sec-icon { font-size: 1.3rem; }
+    .learn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px; }
+    .term-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: box-shadow 0.2s, transform 0.2s; }
+    .term-card:hover { box-shadow: 0 6px 20px rgba(139,92,246,0.12); transform: translateY(-2px); }
+    .term-card .tc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .term-card .tc-name { font-size: 0.85rem; font-weight: 800; color: #1e293b; }
+    .term-card .tc-sym { background: #f5f3ff; color: var(--a); font-size: 0.7rem; font-weight: 800; padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; font-family: 'Courier New', monospace; }
+    .term-card .tc-unit { font-size: 0.65rem; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .term-card .tc-def { font-size: 0.78rem; color: #475569; line-height: 1.55; }
+    .term-card .tc-formula { background: #f8fafc; border-left: 3px solid var(--a); padding: 7px 10px; font-size: 0.68rem; color: #475569; font-style: italic; border-radius: 0 6px 6px 0; margin-top: 8px; line-height: 1.6; }
+    .term-card .tc-example { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 7px 10px; font-size: 0.7rem; color: #166534; border-radius: 6px; margin-top: 8px; line-height: 1.5; }
+    .learn-prose { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; font-size: 0.82rem; color: #475569; line-height: 1.7; margin-bottom: 14px; }
+    .learn-prose strong { color: #1e293b; }
+    .learn-prose h4 { color: #0f172a; font-size: 0.85rem; margin: 16px 0 6px 0; font-weight: 800; }
+    .process-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; gap: 14px; align-items: flex-start; }
+    .process-card .pc-icon { font-size: 2rem; flex-shrink: 0; }
+    .process-card .pc-title { font-size: 0.85rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
+    .process-card .pc-desc { font-size: 0.77rem; color: #475569; line-height: 1.55; }
+    .process-card .pc-tag { display: inline-block; font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tag-cool { background: #dbeafe; color: #1e40af; }
+    .tag-heat { background: #fee2e2; color: #991b1b; }
+    .tag-hum  { background: #d1fae5; color: #065f46; }
+    .tag-dehum{ background: #fef9c3; color: #854d0e; }
+    .tag-mix  { background: #ede9fe; color: #5b21b6; }
+
+    /* ── MOBILE EXTRAS ── */
+    @media (max-width: 480px) {
+        .res-val { font-size: 0.92rem; }
+        .highlight .res-val { font-size: 1.1rem; }
+        .highlight-g .res-val { font-size: 1rem; }
+        .proc-table { font-size: 0.72rem; }
+        .proc-table th, .proc-table td { padding: 6px 8px; }
+    }
+    @media (max-width: 360px) {
+        .nav-brand { font-size: 0.8rem; }
+        .nav-pdf-btn span, .nav-share-btn span, .nav-home-btn span { display: none; }
+    }
+
+    /* ── SHARE MODAL ── */
+    .share-overlay {
+        display: none; position: fixed; inset: 0; z-index: 1000;
+        background: rgba(10,18,40,.75); backdrop-filter: blur(4px);
+        align-items: center; justify-content: center; padding: 16px;
+    }
+    .share-overlay.open { display: flex; animation: fadeIn .2s ease; }
+    .share-modal { background: white; border-radius: 14px; box-shadow: 0 20px 60px rgba(10,18,40,.35); width: 100%; max-width: 460px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .share-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--p); }
+    .share-title { color: white; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; }
+    .share-close { background: none; border: none; color: rgba(255,255,255,.5); font-size: 1.3rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: color .15s; line-height: 1; }
+    .share-close:hover { color: white; background: rgba(255,255,255,.1); }
+    .share-body { padding: 20px; }
+    .share-lbl { font-size: 0.62rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .share-url-row { display: flex; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 18px; }
+    .share-url-input { flex: 1; padding: 9px 12px; border: none; outline: none; font-size: 0.78rem; color: #475569; background: #f8fafc; min-width: 0; }
+    .share-copy-btn { padding: 9px 16px; border: none; background: var(--p); color: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .share-copy-btn:hover { background: var(--a); }
+    .share-copy-btn.copied { background: #10b981; }
+    .share-divider { display: flex; align-items: center; gap: 10px; font-size: 0.6rem; font-weight: 700; color: #cbd5e1; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+    .share-divider::before, .share-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+    .share-socials { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+    .soc-btn { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 2px solid #e2e8f0; border-radius: 9px; background: #f8fafc; cursor: pointer; transition: all .2s; text-decoration: none; }
+    .soc-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+    .soc-btn .si { font-size: 1.1rem; }
+    .soc-btn .sn { font-size: 0.76rem; font-weight: 700; color: #1e293b; }
+    .soc-btn .ss { font-size: 0.6rem; color: #94a3b8; }
+    .soc-btn.tw:hover { border-color: #1d9bf0; background: #e8f5ff; }
+    .soc-btn.li:hover { border-color: #0a66c2; background: #e8f3fc; }
+    .soc-btn.wa:hover { border-color: #25d366; background: #e8fdf1; }
+    .soc-btn.em:hover { border-color: var(--a); background: #f5f3ff; }
+    .share-pdf-strip { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; background: var(--p); border-radius: 9px; gap: 12px; }
+    .share-pdf-strip .spt { color: white; font-weight: 700; font-size: 0.82rem; }
+    .share-pdf-strip .sps { color: rgba(255,255,255,.45); font-size: 0.65rem; margin-top: 2px; }
+    .share-pdf-go { padding: 8px 16px; background: var(--a); border: none; border-radius: 7px; color: white; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .share-pdf-go:hover { background: #7c3aed; }
+    @media (max-width: 480px) {
+        .share-socials { grid-template-columns: 1fr; }
+        .share-modal { border-radius: 12px 12px 0 0; position: fixed; bottom: 0; left: 0; right: 0; max-width: 100%; }
+        .share-overlay { align-items: flex-end; padding: 0; }
+    }
+</style>
+</head>
+<body>
+
+<!-- API STATUS INDICATOR -->
+<div class="api-status" id="apiStatus">
+    <div class="api-spin" id="apiSpin"></div>
+    <span id="apiStatusText">Calculating…</span>
+</div>
+
+<nav class="nav">
+    <div class="nav-brand">🌡️ <span>PSYCHRO</span>CALC</div>
+    <div class="nav-actions">
+        <a class="nav-home-btn" href="https://multicalci.com/">🏠 <span>Home</span></a>
+        <button class="nav-share-btn" onclick="openShare()">🔗 <span>Share</span></button>
+        <button class="nav-pdf-btn" onclick="generatePDF()">📄 <span>PDF</span></button>
+    </div>
+</nav>
+
+<div class="unit-bar">
+    <span>Unit System:</span>
+    <div class="toggle-wrap">
+        <button class="tog-btn active-u" id="btnSI" onclick="setUnits('SI')">SI (Metric)</button>
+        <button class="tog-btn" id="btnIMP" onclick="setUnits('IMP')">Imperial (US)</button>
+    </div>
+</div>
+
+<div class="page">
+
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+        <button class="tab-btn active-tab" onclick="showTab('t1',this)">🌡️ State Point</button>
+        <button class="tab-btn" onclick="showTab('t2',this)">🔄 HVAC Process</button>
+        <button class="tab-btn" onclick="showTab('t3',this)">📐 Duct &amp; Fan</button>
+        <button class="tab-btn" onclick="showTab('t4',this)">📊 Chart</button>
+        <button class="tab-btn" onclick="showTab('t5',this)">📚 Learn</button>
+    </div>
+
+    <!-- TAB 1 — STATE POINT -->
+    <div class="tab-section active-sec" id="t1">
+        <div class="grid-main">
+            <div>
+                <div class="card">
+                    <h2>Process Inputs</h2>
+                    <div class="grid-2f">
+                        <div class="field">
+                            <label id="lbl_z">Altitude (m)</label>
+                            <input type="number" id="z" value="0" step="10">
+                        </div>
+                        <div class="field">
+                            <label id="lbl_pAtm">Atm. Pressure (kPa) <span style="color:#8b5cf6;font-size:0.6rem;">AUTO</span></label>
+                            <input type="number" id="pAtm" value="101.325" step="0.1">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label id="lbl_t">Dry Bulb Temperature (°C)</label>
+                        <input type="number" id="tdb" value="30.0" step="0.1">
+                    </div>
+                    <div class="field">
+                        <label>Input Mode</label>
+                        <select id="mode" onchange="toggleInp();">
+                            <option value="rh">Relative Humidity (%)</option>
+                            <option value="wb">Wet Bulb Temperature</option>
+                            <option value="dp">Dew Point Temperature</option>
+                            <option value="w">Humidity Ratio (kg/kg)</option>
+                        </select>
+                    </div>
+                    <div class="field" id="d_rh">
+                        <label>Relative Humidity (%)</label>
+                        <input type="number" id="rh" value="50" min="0" max="100" step="0.5">
+                    </div>
+                    <div class="field" id="d_wb" style="display:none">
+                        <label id="lbl_wb">Wet Bulb Temperature (°C)</label>
+                        <input type="number" id="wb" value="22.0" step="0.1">
+                    </div>
+                    <div class="field" id="d_dp" style="display:none">
+                        <label id="lbl_dp">Dew Point Temperature (°C)</label>
+                        <input type="number" id="dp_in" value="18.0" step="0.1">
+                    </div>
+                    <div class="field" id="d_w" style="display:none">
+                        <label id="lbl_w">Humidity Ratio (kg/kg dry air)</label>
+                        <input type="number" id="w_in" value="0.0107" step="0.0001">
+                    </div>
+                    <hr>
+                    <h3>🏢 Application</h3>
+                    <div class="field">
+                        <label>Application Type</label>
+                        <select id="appType">
+                            <option value="comfort">Human Comfort (ASHRAE)</option>
+                            <option value="industrial">Industrial (40–60% RH, 18–27°C)</option>
+                            <option value="pharma">Pharma / Cleanroom (45–55% RH, 20–25°C)</option>
+                            <option value="server">Server Room (40–55% RH, 18–27°C)</option>
+                            <option value="food">Food Processing (35–50% RH, 5–15°C)</option>
+                        </select>
+                    </div>
+                    <button class="calc-btn" id="calcBtn1" onclick="run()">
+                        <div class="cb-spin"></div>
+                        <span class="cb-label">⚡ Calculate State Point</span>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="card">
+                    <h2>Psychrometric Properties</h2>
+                    <div class="res-grid">
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_p">Atm. Pressure</span><span class="res-val" id="o_p">--</span></div>
+                        <div class="res-item highlight-o"><span class="res-lbl">Dry Bulb Temp</span><span class="res-val" id="o_tdb">--</span></div>
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_wb">Wet Bulb Temp</span><span class="res-val" id="o_wb">--</span></div>
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_dp">Dew Point</span><span class="res-val" id="o_dp">--</span></div>
+                        <div class="res-item"><span class="res-lbl">Relative Humidity</span><span class="res-val" id="o_rh">--</span></div>
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_w">Humidity Ratio W</span><span class="res-val" id="o_w">--</span></div>
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_v">Specific Volume</span><span class="res-val" id="o_v">--</span></div>
+                        <div class="res-item"><span class="res-lbl" id="lbl_o_rho">Air Density</span><span class="res-val" id="o_rho">--</span></div>
+                        <div class="res-item"><span class="res-lbl">Saturation Pressure</span><span class="res-val" id="o_ps">--</span></div>
+                        <div class="res-item"><span class="res-lbl">Vapour Pressure</span><span class="res-val" id="o_pv">--</span></div>
+                        <div class="res-item span2 highlight"><span class="res-lbl">Specific Enthalpy (h)</span><span class="res-val" id="o_h">--</span></div>
+                    </div>
+                    <div id="comfortBox" style="margin-top:14px;">
+                        <div class="res-lbl" style="margin-bottom:6px;">COMFORT / APPLICATION STATUS</div>
+                        <div id="comfortBadge"></div>
+                        <div class="cond-row" id="condRow"></div>
+                    </div>
+                    <div class="formula-box">
+                        Formulae (ASHRAE 2009): p = 101.325×(1−0.0065z/288.15)^5.255 | pₛ = Wexler-Hyland | W = 0.621945×pᵥ/(p−pᵥ) | h = 1.006T + W×(2501+1.86T) | v = 0.287058×(T+273.15)×(1+1.6078W)/p | ρ = (1+W)/v | Twb: ASHRAE thermodynamic (Stull 2011 init) | Tdp: ARM (Alduchov &amp; Eskridge 1996)
+                    </div>
+                    <div class="btn-row">
+                        <button class="pdf-btn" onclick="generatePDF()">📄 Generate PDF Report</button>
+                        <button class="share-inline-btn" onclick="openShare()">🔗 Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2 — HVAC PROCESS -->
+    <div class="tab-section" id="t2">
+        <div class="card">
+            <h2>🔄 HVAC Air Process Calculator</h2>
+            <p style="font-size:0.78rem;color:#64748b;margin-bottom:16px;">Calculate cooling, heating, humidification &amp; dehumidification loads for a given air flow.</p>
+            <div class="grid-2f">
+                <div>
+                    <h3>State 1 — Inlet Air</h3>
+                    <div class="field"><label id="lbl_t1p">Dry Bulb T₁ (°C)</label><input type="number" id="t1p" value="35" step="0.5"></div>
+                    <div class="field"><label>Relative Humidity RH₁ (%)</label><input type="number" id="rh1p" value="65" step="1"></div>
+                </div>
+                <div>
+                    <h3>State 2 — Outlet Air</h3>
+                    <div class="field"><label id="lbl_t2p">Dry Bulb T₂ (°C)</label><input type="number" id="t2p" value="22" step="0.5"></div>
+                    <div class="field"><label>Relative Humidity RH₂ (%)</label><input type="number" id="rh2p" value="50" step="1"></div>
+                </div>
+            </div>
+            <div class="grid-2f">
+                <div class="field"><label id="lbl_flowP">Air Flow Rate (m³/h)</label><input type="number" id="flowP" value="5000" step="100"></div>
+                <div class="field"><label id="lbl_zP">Altitude (m)</label><input type="number" id="zP" value="0" step="50"></div>
+            </div>
+            <button class="calc-btn-sub" id="calcBtn2" onclick="runProcess()">
+                <div class="cb-spin"></div>
+                <span class="cb-label">⚡ Calculate HVAC Process Loads</span>
+            </button>
+            <div id="processResults" style="margin-top:16px;"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3 — DUCT & FAN -->
+    <div class="tab-section" id="t3">
+        <div class="grid-main">
+            <div class="card">
+                <h2>🔧 Duct &amp; Fan Calculator</h2>
+                <h3>Air Properties</h3>
+                <div class="field"><label id="lbl_tD">Dry Bulb Temp (°C)</label><input type="number" id="tD" value="25" step="1"></div>
+                <div class="field"><label>Relative Humidity (%)</label><input type="number" id="rhD" value="50" step="1"></div>
+                <div class="field"><label>Altitude (m)</label><input type="number" id="zD" value="0" step="50"></div>
+                <h3>Duct Geometry</h3>
+                <div class="field">
+                    <label>Duct Shape</label>
+                    <select id="ductShape" onchange="toggleDuct();">
+                        <option value="rect">Rectangular</option>
+                        <option value="round">Circular / Round</option>
+                    </select>
+                </div>
+                <div id="d_rect">
+                    <div class="grid-2f">
+                        <div class="field"><label id="lbl_dW">Width (mm)</label><input type="number" id="dW" value="600" step="50"></div>
+                        <div class="field"><label id="lbl_dH">Height (mm)</label><input type="number" id="dH" value="400" step="50"></div>
+                    </div>
+                </div>
+                <div id="d_round" style="display:none">
+                    <div class="field"><label id="lbl_dDia">Diameter (mm)</label><input type="number" id="dDia" value="500" step="25"></div>
+                </div>
+                <div class="field"><label id="lbl_dFlow">Volume Flow Rate (m³/h)</label><input type="number" id="dFlow" value="5000" step="100"></div>
+                <div class="field"><label>Duct Length (m)</label><input type="number" id="dLen" value="50" step="5"></div>
+                <div class="field"><label>Roughness (mm) <span style="color:#94a3b8;font-size:0.6rem;">Galv. steel=0.15 | Concrete=1.5</span></label><input type="number" id="dRough" value="0.15" step="0.05"></div>
+                <button class="calc-btn-sub" id="calcBtn3" onclick="runDuct()">
+                    <div class="cb-spin"></div>
+                    <span class="cb-label">⚡ Calculate Duct &amp; Fan</span>
+                </button>
+            </div>
+            <div class="card">
+                <h2>Duct Results</h2>
+                <div id="ductResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4 — CHART -->
+    <div class="tab-section" id="t4">
+        <div class="card">
+            <h2>📊 Psychrometric Chart — Current State Point</h2>
+            <p style="font-size:0.78rem;color:#64748b;margin-bottom:12px;">State point auto-updates from Tab 1 inputs. Comfort zone shown in green.</p>
+            <canvas id="psychChart" height="480"></canvas>
+        </div>
+    </div>
+
+    <!-- TAB 5 — LEARN -->
+    <div class="tab-section" id="t5">
+        <div class="learn-hero">
+            <div class="hero-badge">Educational Reference</div>
+            <h1>📚 Psychrometrics — Complete Guide</h1>
+            <p>A comprehensive reference for students and engineers covering all key terms, how to read the psychrometric chart, and how to use every feature of this calculator.</p>
+        </div>
+        <div class="card learn-section">
+            <div class="learn-section-title"><span class="sec-icon">🔬</span> What is Psychrometrics?</div>
+            <div class="learn-prose">
+                <strong>Psychrometrics</strong> is the branch of engineering science studying the physical and thermodynamic properties of moist air — a mixture of dry air and water vapour.
+                Understanding moist air is fundamental to <strong>HVAC engineering</strong>, building science, meteorology, industrial drying, food processing, and pharmaceutical manufacturing.
+                <h4>Governing standard</h4>
+                This calculator is based on <strong>ASHRAE Fundamentals 2009</strong>, using the Wexler-Hyland saturation pressure equations, ARM dew point coefficients, and ASHRAE thermodynamic wet bulb definition.
+            </div>
+        </div>
+        <div class="card learn-section">
+            <div class="learn-section-title"><span class="sec-icon">🧩</span> Core Terms</div>
+            <div class="learn-grid">
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Dry Bulb Temperature</div><div class="tc-sym">T<sub>db</sub></div></div>
+                    <div class="tc-unit">°C (SI) · °F (Imperial)</div>
+                    <div class="tc-def">Standard air temperature measured by a thermometer shielded from radiation and moisture. The horizontal axis of the psychrometric chart.</div>
+                </div>
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Relative Humidity</div><div class="tc-sym">RH</div></div>
+                    <div class="tc-unit">% (ratio × 100)</div>
+                    <div class="tc-def">Ratio of actual water vapour pressure to saturation pressure at the same temperature. RH = 100% means fully saturated air.</div>
+                    <div class="tc-formula">RH = (pᵥ / pₛ) × 100 %</div>
+                </div>
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Humidity Ratio</div><div class="tc-sym">W</div></div>
+                    <div class="tc-unit">kg/kg dry air</div>
+                    <div class="tc-def">Mass of water vapour per unit mass of dry air. Absolute moisture measure — does not change during sensible heating/cooling.</div>
+                    <div class="tc-formula">W = 0.621945 × pᵥ / (p − pᵥ)</div>
+                </div>
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Dew Point</div><div class="tc-sym">T<sub>dp</sub></div></div>
+                    <div class="tc-unit">°C · °F</div>
+                    <div class="tc-def">Temperature at which air must be cooled before condensation begins. Surfaces cooler than dew point collect moisture.</div>
+                    <div class="tc-formula">ARM (Alduchov &amp; Eskridge 1996): a=17.625, b=243.04</div>
+                </div>
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Wet Bulb Temperature</div><div class="tc-sym">T<sub>wb</sub></div></div>
+                    <div class="tc-unit">°C · °F</div>
+                    <div class="tc-def">Temperature of a wet-wick thermometer in airflow. Always ≤ dry bulb. Equals dry bulb only at 100% RH. Solved via ASHRAE thermodynamic Newton-Raphson iteration.</div>
+                </div>
+                <div class="term-card">
+                    <div class="tc-header"><div class="tc-name">Specific Enthalpy</div><div class="tc-sym">h</div></div>
+                    <div class="tc-unit">kJ/kg · BTU/lb</div>
+                    <div class="tc-def">Total energy content of moist air per kg of dry air. Used directly in HVAC load calculations: Q = ṁ × |h₂ − h₁| kW.</div>
+                    <div class="tc-formula">h = 1.006·T + W·(2501 + 1.86·T) kJ/kg</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end page -->
+
+<!-- SHARE MODAL -->
+<div class="share-overlay" id="shareOverlay" onclick="closeShareBg(event)">
+    <div class="share-modal">
+        <div class="share-head">
+            <div class="share-title">🔗 Share This Calculator</div>
+            <button class="share-close" onclick="closeShare()">✕</button>
+        </div>
+        <div class="share-body">
+            <div class="share-lbl">Calculator Link</div>
+            <div class="share-url-row">
+                <input class="share-url-input" id="shareUrlInput" type="text" readonly value="">
+                <button class="share-copy-btn" id="shareCopyBtn" onclick="copyShareUrl()">Copy</button>
+            </div>
+            <div class="share-divider">Share on</div>
+            <div class="share-socials">
+                <a class="soc-btn tw" id="shareTw" href="#" target="_blank" rel="noopener"><span class="si">𝕏</span><div><div class="sn">Twitter / X</div><div class="ss">Post to followers</div></div></a>
+                <a class="soc-btn li" id="shareLi" href="#" target="_blank" rel="noopener"><span class="si">💼</span><div><div class="sn">LinkedIn</div><div class="ss">Share professionally</div></div></a>
+                <a class="soc-btn wa" id="shareWa" href="#" target="_blank" rel="noopener"><span class="si">💬</span><div><div class="sn">WhatsApp</div><div class="ss">Send to contacts</div></div></a>
+                <a class="soc-btn em" id="shareEm" href="#" target="_blank" rel="noopener"><span class="si">✉️</span><div><div class="sn">Email</div><div class="ss">Send via email</div></div></a>
+            </div>
+            <div class="share-pdf-strip">
+                <div><div class="spt">📄 Export PDF Report</div><div class="sps">Full analysis — state point, HVAC loads &amp; formulae</div></div>
+                <button class="share-pdf-go" onclick="closeShare(); generatePDF();">Export PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CLIENT-SIDE: Unit display, UI, Chart drawing, PDF layout
+// All calculations are performed server-side via /api/calculate
+// ════════════════════════════════════════════════════════════
+
+// ── API ENDPOINT ─────────────────────────────────────────────
+const API = '/api/calculate';
+
+// ── GLOBAL STATE (returned by API, stored here for chart/PDF) ─
+let STATE  = {};    // current state point (SI units, from API)
+let PROC   = {};    // last process result
+let DUCT_R = {};    // last duct result
+let CHART_DATA = null; // cached chart curves from API
+
+// ── COMFORT ZONES (display only — evaluated server-side too) ──
+const COMFORT_ZONES = {
+    comfort:    { tMin:20, tMax:26, rhMin:30, rhMax:60, label:'Human Comfort (ASHRAE 55)' },
+    industrial: { tMin:18, tMax:27, rhMin:40, rhMax:60, label:'Industrial' },
+    pharma:     { tMin:20, tMax:25, rhMin:45, rhMax:55, label:'Pharma / Cleanroom' },
+    server:     { tMin:18, tMax:27, rhMin:40, rhMax:55, label:'Server Room (ASHRAE A2)' },
+    food:       { tMin: 5, tMax:15, rhMin:35, rhMax:50, label:'Food Processing' },
+};
+
+// ── UNIT SYSTEM ───────────────────────────────────────────────
+let unitSys = 'SI';
+let pressureManualOverride = false;
+
+const UL = {
+    SI:  { temp:'°C', pressure:'kPa', enthalpy:'kJ/kg', specVol:'m³/kg', density:'kg/m³', W:'kg/kg', flow:'m³/h', dim:'mm', alt:'m', pStr:'kPa' },
+    IMP: { temp:'°F', pressure:'psia', enthalpy:'BTU/lb', specVol:'ft³/lb', density:'lb/ft³', W:'lb/lb', flow:'cfm', dim:'in', alt:'ft', pStr:'psia' }
+};
+
+// ── UNIT CONVERTERS (display only — internal calc is always SI) ─
+const C = {
+    F_to_C: f => (f-32)*5/9,
+    C_to_F: c => c*9/5+32,
+    kPa_to_psia: p => p * 0.14504,
+    psia_to_kPa: p => p / 0.14504,
+    m_to_ft: m => m * 3.281,
+    ft_to_m: f => f / 3.281,
+    kJkg_to_BTUlb: k => k * 0.429923,
+    m3kg_to_ft3lb: v => v * 16.018,
+    kgm3_to_lbft3: d => d * 0.06243,
+    m3h_to_cfm: q => q * 0.58858,
+    cfm_to_m3h: q => q / 0.58858,
+    mm_to_in: m => m * 0.03937,
+    in_to_mm: i => i / 0.03937,
+};
+
+// ── INPUT READERS (convert to SI for API call) ────────────────
+function inp_T(id)    { const v = parseFloat(document.getElementById(id).value)||0; return unitSys==='SI' ? v : C.F_to_C(v); }
+function inp_alt(id)  { const v = parseFloat(document.getElementById(id).value)||0; return unitSys==='SI' ? v : C.ft_to_m(v); }
+function inp_flow(id) { const v = parseFloat(document.getElementById(id).value)||0; return unitSys==='SI' ? v : C.cfm_to_m3h(v); }
+function inp_dim(id)  { const v = parseFloat(document.getElementById(id).value)||0; return unitSys==='SI' ? v : C.in_to_mm(v); }
+
+// ── DISPLAY FORMATTERS (SI → display unit) ───────────────────
+function disp_T(v_C)  { return unitSys==='SI' ? v_C.toFixed(1)+' °C' : C.C_to_F(v_C).toFixed(1)+' °F'; }
+function disp_P(v_kPa){ return unitSys==='SI' ? v_kPa.toFixed(3)+' kPa' : C.kPa_to_psia(v_kPa).toFixed(4)+' psia'; }
+function disp_H(v_kJ) { return unitSys==='SI' ? v_kJ.toFixed(2)+' kJ/kg' : C.kJkg_to_BTUlb(v_kJ).toFixed(3)+' BTU/lb'; }
+function disp_V(v_m3) { return unitSys==='SI' ? v_m3.toFixed(4)+' m³/kg' : (v_m3*16.018).toFixed(4)+' ft³/lb'; }
+function disp_rho(v)  { return unitSys==='SI' ? v.toFixed(4)+' kg/m³'  : (v*0.06243).toFixed(4)+' lb/ft³'; }
+function disp_W(v)    { return unitSys==='SI' ? v.toFixed(5)+' kg/kg'  : v.toFixed(5)+' lb/lb'; }
+function disp_flow(v) { return unitSys==='SI' ? v.toFixed(0)+' m³/h'   : (v*0.58858).toFixed(0)+' cfm'; }
+function disp_kW(v)   { return unitSys==='SI' ? v.toFixed(2)+' kW' : (v*0.28434).toFixed(2)+' ton'+` | ${(v*3412/1000).toFixed(2)} kBTU/hr`; }
+
+// ── API STATUS INDICATOR ──────────────────────────────────────
+let _apiTimer;
+function apiLoading() {
+    clearTimeout(_apiTimer);
+    const el = document.getElementById('apiStatus');
+    const spin = document.getElementById('apiSpin');
+    const txt = document.getElementById('apiStatusText');
+    el.className = 'api-status loading';
+    spin.style.display = 'block';
+    txt.textContent = 'Calculating…';
+}
+function apiDone() {
+    clearTimeout(_apiTimer);
+    _apiTimer = setTimeout(() => {
+        document.getElementById('apiStatus').className = 'api-status';
+    }, 600);
+}
+function apiError(msg) {
+    clearTimeout(_apiTimer);
+    const el = document.getElementById('apiStatus');
+    const spin = document.getElementById('apiSpin');
+    const txt = document.getElementById('apiStatusText');
+    el.className = 'api-status error';
+    spin.style.display = 'none';
+    txt.textContent = '⚠ ' + (msg || 'Calculation error');
+    _apiTimer = setTimeout(() => { el.className = 'api-status'; }, 4000);
+}
+
+// ── API CALL HELPER ───────────────────────────────────────────
+async function apiCall(action, payload) {
+    apiLoading();
+    const resp = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, payload })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Server error');
+    apiDone();
+    return data;
+}
+
+// ── BUTTON LOADING STATE HELPERS ─────────────────────────────
+function btnLoading(id) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.add('loading');
+    btn.disabled = true;
+}
+function btnDone(id) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.classList.remove('loading');
+    btn.disabled = false;
+}
+
+// ════════════════════════════════════════════════════════════
+// TAB 1: STATE POINT — calls /api/calculate (action: statePoint)
+// ════════════════════════════════════════════════════════════
+async function run() {
+    btnLoading('calcBtn1');
+    const z = inp_alt('z');
+    let p_override = 0;
+    const pManual = parseFloat(document.getElementById('pAtm').value);
+    if (pressureManualOverride && !isNaN(pManual) && pManual > 0) {
+        p_override = unitSys==='SI' ? pManual : C.psia_to_kPa(pManual);
+    }
+    const T = inp_T('tdb');
+    const mode = document.getElementById('mode').value;
+    const payload = { T, mode, z, p_override };
+
+    if (mode === 'rh')      payload.rh   = parseFloat(document.getElementById('rh').value);
+    else if (mode === 'wb') payload.wb   = inp_T('wb');
+    else if (mode === 'dp') payload.dp   = inp_T('dp_in');
+    else if (mode === 'w')  payload.W_in = parseFloat(document.getElementById('w_in').value);
+
+    try {
+        const s = await apiCall('statePoint', payload);
+        STATE = s;
+
+        // Update pressure display (auto)
+        if (!pressureManualOverride) {
+            document.getElementById('pAtm').value = unitSys==='SI' ? s.p.toFixed(3) : C.kPa_to_psia(s.p).toFixed(4);
+        }
+
+        document.getElementById('o_p').textContent   = disp_P(s.p);
+        document.getElementById('o_tdb').textContent = disp_T(s.T);
+        document.getElementById('o_wb').textContent  = disp_T(s.wb);
+        document.getElementById('o_dp').textContent  = disp_T(s.dp);
+        document.getElementById('o_rh').textContent  = (s.rh*100).toFixed(1) + ' %';
+        document.getElementById('o_w').textContent   = disp_W(s.W);
+        document.getElementById('o_v').textContent   = disp_V(s.v);
+        document.getElementById('o_rho').textContent = disp_rho(s.rho);
+        document.getElementById('o_ps').textContent  = disp_P(s.ps);
+        document.getElementById('o_pv').textContent  = disp_P(s.pv);
+        document.getElementById('o_h').textContent   = disp_H(s.h);
+
+        renderComfort(s.T, s.rh, s.W, s.dp);
+        if (document.getElementById('t4').classList.contains('active-sec')) drawChart();
+    } catch (err) {
+        showValidationError(err.message);
+    } finally {
+        btnDone('calcBtn1');
+    }
+}
+
+// ── COMFORT ASSESSMENT (client-side display, uses server data) ─
+function setUnits(sys) {
+    unitSys = sys;
+    document.getElementById('btnSI').classList.toggle('active-u', sys==='SI');
+    document.getElementById('btnIMP').classList.toggle('active-u', sys==='IMP');
+    updateLabels();
+    const setv = (id, v) => { const el=document.getElementById(id); if(el) el.value=v; };
+    if (sys === 'IMP') {
+        setv('tdb',86); setv('rh',50); setv('z',0);
+        setv('wb',72); setv('dp_in',65); setv('w_in',0.0107);
+        setv('t1p',95); setv('t2p',72); setv('flowP',2943);
+        setv('tD',77); setv('dFlow',2943); setv('dW',24); setv('dH',16); setv('dDia',20);
+    } else {
+        setv('tdb',30); setv('rh',50); setv('z',0);
+        setv('wb',22); setv('dp_in',18); setv('w_in',0.0107);
+        setv('t1p',35); setv('t2p',22); setv('flowP',5000);
+        setv('tD',25); setv('dFlow',5000); setv('dW',600); setv('dH',400); setv('dDia',500);
+    }
+    CHART_DATA = null; // force chart re-fetch on next calculate
+    // Note: user clicks Calculate buttons to re-run after unit switch
+}
+
+function updateLabels() {
+    const U = UL[unitSys];
+    document.getElementById('lbl_z').textContent    = `Altitude (${U.alt})`;
+    document.getElementById('lbl_pAtm').innerHTML   = `Atm. Pressure (${U.pStr}) <span style="color:#8b5cf6;font-size:0.6rem;">AUTO</span>`;
+    document.getElementById('lbl_t').textContent    = `Dry Bulb Temperature (${U.temp})`;
+    document.getElementById('lbl_wb').textContent   = `Wet Bulb Temperature (${U.temp})`;
+    document.getElementById('lbl_dp').textContent   = `Dew Point Temperature (${U.temp})`;
+    document.getElementById('lbl_w').textContent    = `Humidity Ratio (${U.W})`;
+    document.getElementById('lbl_o_wb').textContent = `Wet Bulb (${U.temp})`;
+    document.getElementById('lbl_o_dp').textContent = `Dew Point (${U.temp})`;
+    document.getElementById('lbl_o_w').textContent  = `Humidity Ratio W (${U.W})`;
+    document.getElementById('lbl_o_v').textContent  = `Specific Volume (${U.specVol})`;
+    document.getElementById('lbl_o_rho').textContent= `Air Density (${U.density})`;
+    document.getElementById('lbl_o_p').textContent  = `Atm. Pressure (${U.pStr})`;
+    document.getElementById('lbl_t1p').textContent  = `Dry Bulb T₁ (${U.temp})`;
+    document.getElementById('lbl_t2p').textContent  = `Dry Bulb T₂ (${U.temp})`;
+    document.getElementById('lbl_flowP').textContent= `Air Flow Rate (${U.flow})`;
+    document.getElementById('lbl_zP').textContent   = `Altitude (${U.alt})`;
+    document.getElementById('lbl_tD').textContent   = `Dry Bulb Temp (${U.temp})`;
+    document.getElementById('lbl_dFlow').textContent= `Volume Flow Rate (${U.flow})`;
+    document.getElementById('lbl_dW').textContent   = `Width (${U.dim})`;
+    document.getElementById('lbl_dH').textContent   = `Height (${U.dim})`;
+    document.getElementById('lbl_dDia').textContent = `Diameter (${U.dim})`;
+}
+
+// ── TOGGLE INPUT MODE ─────────────────────────────────────────
+function toggleInp() {
+    const mode = document.getElementById('mode').value;
+    document.getElementById('d_rh').style.display = mode==='rh' ? 'block' : 'none';
+    document.getElementById('d_wb').style.display = mode==='wb' ? 'block' : 'none';
+    document.getElementById('d_dp').style.display = mode==='dp' ? 'block' : 'none';
+    document.getElementById('d_w').style.display  = mode==='w'  ? 'block' : 'none';
+}
+function toggleDuct() {
+    const s = document.getElementById('ductShape').value;
+    document.getElementById('d_rect').style.display  = s==='rect'  ? 'block' : 'none';
+    document.getElementById('d_round').style.display = s==='round' ? 'block' : 'none';
+}
+function showTab(id, btn) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active-sec'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+    document.getElementById(id).classList.add('active-sec');
+    btn.classList.add('active-tab');
+    if (id === 't4') drawChart();
+}
+
+// ── VALIDATION ERROR DISPLAY ──────────────────────────────────
+function showValidationError(msg) {
+    document.querySelectorAll('.res-val').forEach(el => el.textContent = '—');
+    const badge = document.getElementById('comfortBadge');
+    if (badge) badge.innerHTML = `<span class="comfort-badge cb-hot">⚠️ Input Error: ${msg}</span>`;
+    const condRow = document.getElementById('condRow');
+    if (condRow) condRow.innerHTML = '';
+    apiError(msg);
+}
+
+// ── COMFORT ASSESSMENT (client-side display, uses server data) ─
+function renderComfort(T, rh, W, dp) {
+    const app  = document.getElementById('appType').value;
+    const zone = COMFORT_ZONES[app];
+    const rh100 = rh * 100;
+    const issues = [];
+    let status = '✅ Within Acceptable Range', cls = 'cb-ok';
+
+    if (T > zone.tMax) { issues.push(`🌡️ Too hot — ${disp_T(T)} exceeds limit of ${zone.tMax}°C / ${C.C_to_F(zone.tMax).toFixed(0)}°F`); status='⚠️ Outside Range'; cls='cb-hot'; }
+    if (T < zone.tMin) { issues.push(`❄️ Too cold — ${disp_T(T)} below limit of ${zone.tMin}°C / ${C.C_to_F(zone.tMin).toFixed(0)}°F`); status='⚠️ Outside Range'; cls='cb-cold'; }
+    if (rh100 > zone.rhMax) { issues.push(`💧 Too humid (${rh100.toFixed(0)}% > ${zone.rhMax}%)`); status='⚠️ Outside Range'; cls='cb-hum'; }
+    if (rh100 < zone.rhMin) { issues.push(`🏜️ Too dry (${rh100.toFixed(0)}% < ${zone.rhMin}%)`);   status='⚠️ Outside Range'; cls='cb-dry'; }
+    if (dp > T - 3 && rh > 0.7) issues.push('⚠️ Mould risk — high dew point relative to dry bulb');
+    if (T > 27 && rh > 0.6)     issues.push('🔥 Heat stress risk — high T + RH combination');
+
+    document.getElementById('comfortBadge').innerHTML =
+        `<span class="comfort-badge ${cls}">${status} — ${zone.label}</span>`;
+    document.getElementById('condRow').innerHTML = issues.length
+        ? issues.map(i=>`<span class="cond-chip" style="background:#fff3cd;color:#854d0e">${i}</span>`).join('')
+        : `<span class="cond-chip" style="background:#d1fae5;color:#065f46">✅ All parameters within acceptable limits</span>`;
+}
+
+// ════════════════════════════════════════════════════════════
+// TAB 2: HVAC PROCESS — calls /api/calculate (action: process)
+// ════════════════════════════════════════════════════════════
+async function runProcess() {
+    btnLoading('calcBtn2');
+    const T1 = inp_T('t1p'), T2 = inp_T('t2p');
+    const rh1 = parseFloat(document.getElementById('rh1p').value);
+    const rh2 = parseFloat(document.getElementById('rh2p').value);
+    const Q_m3h = inp_flow('flowP');
+    const z = inp_alt('zP');
+
+    try {
+        const r = await apiCall('process', { T1, rh1, T2, rh2, Q_m3h, z });
+        PROC = r;
+        const { S1, S2, Q_kgs, dh, dW, Q_total, Q_sensible, Q_latent, m_water, SHR, procType } = r;
+
+        const coolOrHeat = Q_total < 0 ? 'Cooling Load' : 'Heating Load';
+        const waterAction = dW < 0 ? 'Water Removed (condensate)' : 'Water Added (humidifier)';
+
+        document.getElementById('processResults').innerHTML = `
+        <div class="proc-table-wrap"><table class="proc-table">
+            <tr><th>Parameter</th><th>State 1 (Inlet)</th><th>State 2 (Outlet)</th><th>Change</th></tr>
+            <tr><td>Dry Bulb Temp</td><td>${disp_T(T1)}</td><td>${disp_T(T2)}</td><td>${unitSys==='SI'?(T2-T1).toFixed(1)+' Δ°C':((T2-T1)*9/5).toFixed(1)+' Δ°F'}</td></tr>
+            <tr><td>Relative Humidity</td><td>${rh1.toFixed(1)}%</td><td>${rh2.toFixed(1)}%</td><td>${(rh2-rh1).toFixed(1)}%</td></tr>
+            <tr><td>Humidity Ratio W</td><td>${disp_W(S1.W)}</td><td>${disp_W(S2.W)}</td><td>${(dW*1000).toFixed(2)} g/kg</td></tr>
+            <tr><td>Enthalpy h</td><td>${disp_H(S1.h)}</td><td>${disp_H(S2.h)}</td><td>${disp_H(dh)}</td></tr>
+            <tr><td>Air Density</td><td>${disp_rho(S1.rho)}</td><td>${disp_rho(S2.rho)}</td><td>—</td></tr>
+            <tr class="total"><td colspan="3">Process Type</td><td>${procType}</td></tr>
+        </table></div>
+        <div class="res-grid" style="margin-top:14px;">
+            <div class="res-item"><span class="res-lbl">Air Mass Flow</span><span class="res-val">${(Q_kgs*3600).toFixed(0)} kg/h<br><span class="res-alt">${Q_kgs.toFixed(3)} kg/s</span></span></div>
+            <div class="res-item span2 highlight"><span class="res-lbl">${coolOrHeat} (Total)</span><span class="res-val">${disp_kW(Math.abs(Q_total))}</span></div>
+            <div class="res-item ${Q_sensible<0?'highlight-o':'highlight-g'}"><span class="res-lbl">Sensible ${Q_sensible<0?'Cooling':'Heating'}</span><span class="res-val">${disp_kW(Math.abs(Q_sensible))}</span></div>
+            <div class="res-item ${Q_latent<0?'highlight-o':'highlight-g'}"><span class="res-lbl">Latent Load</span><span class="res-val">${disp_kW(Math.abs(Q_latent))}</span></div>
+            <div class="res-item"><span class="res-lbl">Sensible Heat Ratio</span><span class="res-val">${SHR.toFixed(3)}</span></div>
+            <div class="res-item"><span class="res-lbl">${waterAction}</span><span class="res-val">${m_water.toFixed(2)} kg/h</span></div>
+        </div>`;
+    } catch (err) {
+        document.getElementById('processResults').innerHTML = `<div style="color:#ef4444;font-size:0.8rem;">⚠ ${err.message}</div>`;
+        apiError(err.message);
+    } finally {
+        btnDone('calcBtn2');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// TAB 3: DUCT — calls /api/calculate (action: duct)
+// ════════════════════════════════════════════════════════════
+async function runDuct() {
+    btnLoading('calcBtn3');
+    const T = inp_T('tD');
+    const rh = parseFloat(document.getElementById('rhD').value);
+    const z  = inp_alt('zD');
+    const shape = document.getElementById('ductShape').value;
+    const dims = shape === 'round'
+        ? { diameter: inp_dim('dDia') }
+        : { width: inp_dim('dW'), height: inp_dim('dH') };
+    const Q_m3h = inp_flow('dFlow');
+    const L = parseFloat(document.getElementById('dLen').value);
+    const rough_mm = parseFloat(document.getElementById('dRough').value);
+
+    try {
+        const r = await apiCall('duct', { T, rh, z, shape, dims, Q_m3h, L, rough_mm });
+        DUCT_R = r;
+        const { S, A_m2, Dh_m, vel_ms, Re, f, dP_Pa, dP_mmWg, Pstatic_Pa, fanPower_kW, regimeNote } = r;
+
+        const vel_fpm = vel_ms * 196.850;
+        const disp_vel = unitSys==='SI' ? `${vel_ms.toFixed(2)} m/s` : `${vel_fpm.toFixed(0)} fpm`;
+        const vStr = unitSys==='SI' ? `${vel_ms.toFixed(1)} m/s` : `${vel_fpm.toFixed(0)} fpm`;
+        let velClass = '', velNote = '';
+        if (vel_ms < 3)       { velClass='highlight-g'; velNote=`✅ Low velocity — ${vStr} (supply, residential ≤ 3 m/s)`; }
+        else if (vel_ms < 6)  { velClass='highlight-g'; velNote=`✅ Medium velocity — ${vStr} (commercial ≤ 6 m/s)`; }
+        else if (vel_ms < 10) { velClass='highlight-o'; velNote=`⚠️ High velocity — ${vStr} — check for noise`; }
+        else                  { velClass='highlight';   velNote=`🔴 Very high — ${vStr} — exceeds recommended limit`; }
+
+        const disp_dP  = unitSys==='SI' ? `${dP_Pa.toFixed(1)} Pa  (${dP_mmWg.toFixed(2)} mmWg)` : `${(dP_Pa*0.004014).toFixed(4)} in WG`;
+        const disp_A   = unitSys==='SI' ? `${(A_m2*1e4).toFixed(0)} cm²` : `${(A_m2*1550.003).toFixed(1)} in²`;
+        const disp_Dh  = unitSys==='SI' ? `${(Dh_m*1000).toFixed(0)} mm` : `${(Dh_m*39.37).toFixed(1)} in`;
+
+        document.getElementById('ductResults').innerHTML = `
+        <div class="res-grid">
+            <div class="res-item"><span class="res-lbl">Duct Cross-Section Area</span><span class="res-val">${disp_A}</span></div>
+            <div class="res-item"><span class="res-lbl">Hydraulic Diameter Dh</span><span class="res-val">${disp_Dh}</span></div>
+            <div class="res-item ${velClass} span2"><span class="res-lbl">Air Velocity</span><span class="res-val">${disp_vel}</span><br><small style="font-size:0.7rem;color:#64748b">${velNote}</small></div>
+            <div class="res-item"><span class="res-lbl">Reynolds Number</span><span class="res-val">${Re.toFixed(0)}</span><span class="res-alt">${Re>4000?'Turbulent':Re>2300?'⚠️ Transition':'Laminar'}</span>${regimeNote?`<br><small style="font-size:0.68rem;color:#d97706">⚠️ ${regimeNote}</small>`:''}</div>
+            <div class="res-item"><span class="res-lbl">Darcy Friction Factor f</span><span class="res-val">${f.toFixed(5)}</span></div>
+            <div class="res-item span2 highlight"><span class="res-lbl">Pressure Drop ΔP (${L} m duct)</span><span class="res-val">${disp_dP}</span></div>
+            <div class="res-item"><span class="res-lbl">Dynamic Pressure</span><span class="res-val">${unitSys==='SI'?Pstatic_Pa.toFixed(2)+' Pa':(Pstatic_Pa*0.004014).toFixed(4)+' in WG'}</span></div>
+            <div class="res-item highlight-g"><span class="res-lbl">Est. Fan Power (η=70%)</span><span class="res-val">${fanPower_kW.toFixed(3)} kW</span></div>
+            <div class="res-item"><span class="res-lbl">Air Density</span><span class="res-val">${disp_rho(S.rho)}</span></div>
+            <div class="res-item"><span class="res-lbl">Air Mass Flow</span><span class="res-val">${(S.rho*(Q_m3h/3600)*3600).toFixed(0)} kg/h</span></div>
+        </div>
+        <div class="formula-box" style="margin-top:12px;">
+            Darcy-Weisbach: ΔP = f·(L/Dh)·(ρ·v²/2) | Swamee-Jain: f = 0.25/[log(ε/(3.7·Dh)+5.74/Re⁰·⁹)]² | Re = ρ·v·Dh/μ | Sutherland viscosity
+        </div>`;
+    } catch (err) {
+        document.getElementById('ductResults').innerHTML = `<div style="color:#ef4444;font-size:0.8rem;">⚠ ${err.message}</div>`;
+        apiError(err.message);
+    } finally {
+        btnDone('calcBtn3');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// TAB 4: CHART — curve data from API, rendering client-side
+// ════════════════════════════════════════════════════════════
+async function drawChart() {
+    const canvas = document.getElementById('psychChart');
+    if (!canvas) return;
+
+    // Fetch chart curve data if not cached (or pressure changed)
+    const p_current = STATE.p || 101.325;
+    if (!CHART_DATA || Math.abs((CHART_DATA._p||0) - p_current) > 0.05) {
+        try {
+            CHART_DATA = await apiCall('chartData', { p: p_current });
+            CHART_DATA._p = p_current;
+        } catch(e) { return; }
+    }
+
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr  = window.devicePixelRatio || 1;
+    const displayW = Math.max(rect.width || 700, 400);
+    const displayH = 480;
+    canvas.width  = displayW * dpr;
+    canvas.height = displayH * dpr;
+    canvas.style.width  = displayW + 'px';
+    canvas.style.height = displayH + 'px';
+    ctx.scale(dpr, dpr);
+    const W = displayW, H = displayH;
+    ctx.clearRect(0, 0, W, H);
+
+    const Tmin = -10, Tmax = 50, Wmin = 0, Wmax = 0.030;
+    const pad = { l:55, r:20, t:30, b:45 };
+    const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+    const tX = t => pad.l + (t - Tmin) / (Tmax - Tmin) * cW;
+    const wY = w => pad.t + (1 - (w - Wmin) / (Wmax - Wmin)) * cH;
+
+    // Background
+    ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff'; ctx.fillRect(pad.l, pad.t, cW, cH);
+
+    // Grid
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 0.8;
+    for (let t = Tmin; t <= Tmax; t += 5) { ctx.beginPath(); ctx.moveTo(tX(t), pad.t); ctx.lineTo(tX(t), pad.t+cH); ctx.stroke(); }
+    for (let w = 0; w <= Wmax; w += 0.005) { ctx.beginPath(); ctx.moveTo(pad.l, wY(w)); ctx.lineTo(pad.l+cW, wY(w)); ctx.stroke(); }
+
+    // Saturation curve
+    const { satCurve, rhCurves, enthalpyLines } = CHART_DATA;
+    ctx.beginPath(); ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2.5;
+    satCurve.forEach((pt, i) => { const x=tX(pt.t), y=wY(pt.W); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+    ctx.stroke();
+
+    // RH curves
+    const rhColors = ['#bfdbfe','#93c5fd','#60a5fa','#3b82f6','#2563eb','#1d4ed8','#1e40af'];
+    rhCurves.forEach(({ rh, pts }, idx) => {
+        if (!pts.length) return;
+        ctx.beginPath(); ctx.strokeStyle = rhColors[idx]; ctx.lineWidth = 1;
+        pts.forEach((pt, i) => { const x=tX(pt.t), y=wY(pt.W); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+        ctx.stroke();
+        const last = pts[pts.length-1];
+        if (last) { ctx.fillStyle='#64748b'; ctx.font='9px Segoe UI'; ctx.textAlign='center'; ctx.fillText(`${rh}%`, tX(last.t)-5, wY(last.W)-4); }
+    });
+
+    // Comfort zone
+    const app = document.getElementById('appType').value;
+    const zone = COMFORT_ZONES[app];
+    // Use API chart data pressure for comfort zone curves
+    // Rebuild comfort polygon client-side using pre-fetched curve data (same p)
+    // We'll approximate it with simple coordinate corners
+    ctx.save();
+    ctx.fillStyle = 'rgba(16,185,129,0.12)';
+    ctx.beginPath();
+    // Simple bounding box approach using rhCurves data ranges is complex;
+    // use the same polygon algorithm but with server curve data interpolation:
+    const interpW = (t, rh_pct) => {
+        const pts = rhCurves.find(c => c.rh === rh_pct)?.pts;
+        if (!pts) return null;
+        const idx = pts.findIndex(p => p.t >= t);
+        if (idx <= 0 || idx >= pts.length) return pts[idx]?.W ?? null;
+        const p0 = pts[idx-1], p1 = pts[idx];
+        const frac = (t - p0.t) / (p1.t - p0.t);
+        return p0.W + frac * (p1.W - p0.W);
+    };
+    let firstPt = true;
+    for (let t = zone.tMin; t <= zone.tMax; t += 0.5) {
+        const ww = Math.max(Wmin, Math.min(interpW(t, zone.rhMin) ?? 0, Wmax));
+        firstPt ? ctx.moveTo(tX(t), wY(ww)) : ctx.lineTo(tX(t), wY(ww)); firstPt = false;
+    }
+    for (let rh = zone.rhMin; rh <= zone.rhMax; rh += 1) {
+        const ww = Math.min(interpW(zone.tMax, rh) ?? Wmax, Wmax);
+        ctx.lineTo(tX(zone.tMax), wY(ww));
+    }
+    for (let t = zone.tMax; t >= zone.tMin; t -= 0.5) {
+        const ww = Math.min(interpW(t, zone.rhMax) ?? Wmax, Wmax);
+        ctx.lineTo(tX(t), wY(ww));
+    }
+    for (let rh = zone.rhMax; rh >= zone.rhMin; rh -= 1) {
+        const ww = Math.max(Wmin, Math.min(interpW(zone.tMin, rh) ?? 0, Wmax));
+        ctx.lineTo(tX(zone.tMin), wY(ww));
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#10b981'; ctx.lineWidth = 1.5; ctx.setLineDash([4,3]);
+    ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+
+    // Enthalpy lines
+    ctx.strokeStyle = '#fcd34d'; ctx.lineWidth = 0.8;
+    enthalpyLines.forEach(({ h, pts }) => {
+        if (!pts.length) return;
+        ctx.beginPath();
+        pts.forEach((pt, i) => { const x=tX(pt.t), y=wY(pt.W); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+        ctx.stroke();
+        const p0 = pts[0];
+        if (p0) { ctx.fillStyle='#d97706'; ctx.font='8px Segoe UI'; ctx.textAlign='left'; ctx.fillText(`${h}`, tX(p0.t), wY(p0.W)+3); }
+    });
+
+    // Axes
+    ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t+cH); ctx.lineTo(pad.l+cW, pad.t+cH); ctx.stroke();
+
+    // X labels
+    ctx.fillStyle = '#475569'; ctx.font = '10px Segoe UI'; ctx.textAlign = 'center';
+    for (let t = Tmin; t <= Tmax; t += 10) {
+        const lbl = unitSys==='SI' ? `${t}°C` : `${(t*9/5+32).toFixed(0)}°F`;
+        ctx.fillText(lbl, tX(t), pad.t+cH+14);
+    }
+    // Y labels
+    ctx.textAlign = 'right';
+    for (let w = 0; w <= Wmax; w += 0.005) { ctx.fillText(w.toFixed(3), pad.l-5, wY(w)+3); }
+
+    // Axis titles
+    ctx.save();
+    ctx.font = 'bold 11px Segoe UI'; ctx.fillStyle = '#0f172a'; ctx.textAlign = 'center';
+    ctx.fillText(`Dry Bulb Temperature (${UL[unitSys].temp})`, pad.l+cW/2, H-8);
+    ctx.translate(14, pad.t+cH/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText(`Humidity Ratio W (${UL[unitSys].W})`, 0, 0);
+    ctx.restore();
+
+    // Legend
+    ctx.font = '9px Segoe UI'; ctx.textAlign = 'left';
+    [['#3b82f6','— Saturation (100% RH)'],['#10b981','▒ Comfort/App Zone'],['#fcd34d','— Enthalpy Lines (kJ/kg)'],['#64748b','— % RH Lines']].forEach(([col,lbl],i) => {
+        ctx.fillStyle=col; ctx.fillRect(pad.l+8, pad.t+8+i*14, 16, 2);
+        ctx.fillStyle='#475569'; ctx.fillText(lbl, pad.l+28, pad.t+11+i*14);
+    });
+
+    // State point
+    if (STATE.T !== undefined) {
+        const x = tX(STATE.T), y = wY(Math.min(STATE.W, Wmax));
+        ctx.strokeStyle='rgba(239,68,68,0.4)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+        ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t+cH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l+cW, y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.arc(x, y, 7, 0, 2*Math.PI);
+        ctx.fillStyle='#ef4444'; ctx.fill();
+        ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.stroke();
+        ctx.fillStyle='#1e293b'; ctx.font='bold 10px Segoe UI'; ctx.textAlign='left';
+        const lx = x+12 < pad.l+cW-80 ? x+12 : x-90;
+        ctx.fillText(`T=${disp_T(STATE.T)}`, lx, y-4);
+        ctx.fillText(`W=${STATE.W.toFixed(4)} | h=${STATE.h.toFixed(1)} kJ/kg`, lx, y+10);
+        ctx.fillText(`RH=${(STATE.rh*100).toFixed(0)}%`, lx, y+22);
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+// PDF REPORT — uses STATE / PROC already computed by API
+// ════════════════════════════════════════════════════════════
+function generatePDF() {
+    const S = STATE;
+    if (S.T === undefined) { alert('Please wait for the calculator to initialise, then try again.'); return; }
+    const dt = new Date().toLocaleString();
+    const app = document.getElementById('appType').value;
+    const zone = COMFORT_ZONES[app];
+    const T1p = inp_T('t1p'), T2p = inp_T('t2p');
+    const rh1p = parseFloat(document.getElementById('rh1p').value);
+    const rh2p = parseFloat(document.getElementById('rh2p').value);
+    const P = PROC;
+
+    const w = window.open('', '_blank', 'width=860,height=750');
+    if (!w) { alert('Pop-up blocked — please allow pop-ups for this page and try again.'); return; }
+    w.document.write(`<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>Psychrometric Report — multicalci.com</title>
+<style>
+    @page { size: A4 portrait; margin: 13mm 14mm 11mm 14mm; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; font-size: 11.5px; background: white; line-height: 1.5; }
+    .hdr { background: #0f172a; color: white; padding: 22px 28px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 4px solid #8b5cf6; }
+    .hdr-left h1 { font-size: 17px; font-weight: 900; margin-bottom: 4px; }
+    .hdr-left .sub { font-size: 9px; color: rgba(255,255,255,.5); letter-spacing: 1.5px; text-transform: uppercase; }
+    .hdr-badge { background: #8b5cf6; color: white; font-size: 8px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-top: 8px; display: inline-block; letter-spacing: 1px; }
+    .hdr-right { text-align: right; font-size: 9px; color: rgba(255,255,255,.55); line-height: 1.8; }
+    .hdr-right .brand { color: #c4b5fd; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+    .watermark-bar { background: linear-gradient(90deg, #f5f3ff 0%, #ede9fe 50%, #f5f3ff 100%); padding: 7px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd6fe; }
+    .watermark-bar .wm-brand { font-size: 10px; font-weight: 800; color: #7c3aed; letter-spacing: 0.5px; }
+    .watermark-bar .wm-desc { font-size: 8.5px; color: #64748b; }
+    .body { padding: 20px 28px; }
+    h2 { color: #0f172a; font-size: 11px; font-weight: 800; border-left: 4px solid #8b5cf6; padding-left: 10px; margin: 18px 0 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+    table { width: 100%; border-collapse: collapse; font-size: 10.5px; margin-bottom: 6px; }
+    th { background: #0f172a; color: white; padding: 6px 10px; text-align: left; font-size: 9px; text-transform: uppercase; }
+    td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    tr.hl td { background: #f5f3ff; color: #7c3aed; font-weight: 700; }
+    .formula { background: #f8fafc; border-left: 3px solid #8b5cf6; padding: 10px 14px; font-style: italic; font-size: 9.5px; color: #475569; margin-top: 10px; border-radius: 0 6px 6px 0; line-height: 1.8; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+    .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-top: 3px solid #0f172a; border-radius: 6px; padding: 8px 10px; }
+    .stat-lbl { font-size: 8px; color: #94a3b8; text-transform: uppercase; }
+    .stat-val { font-size: 12px; font-weight: 800; color: #1e293b; margin-top: 3px; }
+    .stat-card.a { border-top-color: #8b5cf6; } .stat-card.a .stat-val { color: #7c3aed; }
+    .stat-card.g { border-top-color: #10b981; } .stat-card.g .stat-val { color: #059669; }
+    .promo-box { margin-top: 18px; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .promo-box .pb-left h3 { color: white; font-size: 12px; font-weight: 900; margin-bottom: 4px; }
+    .promo-box .pb-left p { color: rgba(255,255,255,.55); font-size: 8.5px; line-height: 1.6; max-width: 360px; }
+    .promo-box .pb-right { text-align: right; flex-shrink: 0; }
+    .promo-box .pb-url { color: #c4b5fd; font-size: 13px; font-weight: 900; letter-spacing: 0.5px; display: block; }
+    .promo-box .pb-tagline { color: rgba(255,255,255,.4); font-size: 8px; margin-top: 3px; }
+    .promo-tools { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .promo-tools span { background: rgba(139,92,246,.25); border: 1px solid rgba(139,92,246,.4); color: #c4b5fd; font-size: 7.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .footer { margin-top: 14px; padding-top: 10px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: #94a3b8; }
+    .footer .ft-brand { font-weight: 800; color: #7c3aed; font-size: 9px; }
+    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+</style>
+</head><body>
+<div class="hdr">
+    <div class="hdr-left">
+        <h1>🌡️ Psychrometric Calculator Report</h1>
+        <div class="sub">ASHRAE Fundamentals 2009 · Secure Server-Side Calculations</div>
+        <div class="hdr-badge">SERVER-COMPUTED · ASHRAE VERIFIED · multicalci.com</div>
+    </div>
+    <div class="hdr-right">
+        <div class="brand">multicalci.com</div>
+        Generated: ${dt}<br>
+        Unit System: ${unitSys === 'SI' ? 'SI (Metric)' : 'Imperial (US)'}<br>
+        Application: ${zone.label}<br>
+        Atm. Pressure: ${disp_P(S.p)}
+    </div>
+</div>
+<div class="watermark-bar">
+    <div class="wm-brand">🔢 multicalci.com — Free Engineering Calculators</div>
+    <div class="wm-desc">Psychrometric · HVAC · Structural · Electrical · Thermal · Fluid Mechanics</div>
+</div>
+<div class="body">
+    <h2>State Point Properties</h2>
+    <div class="stat-grid">
+        <div class="stat-card a"><div class="stat-lbl">Dry Bulb</div><div class="stat-val">${disp_T(S.T)}</div></div>
+        <div class="stat-card a"><div class="stat-lbl">Wet Bulb</div><div class="stat-val">${disp_T(S.wb)}</div></div>
+        <div class="stat-card a"><div class="stat-lbl">Dew Point</div><div class="stat-val">${disp_T(S.dp)}</div></div>
+        <div class="stat-card g"><div class="stat-lbl">Enthalpy h</div><div class="stat-val">${disp_H(S.h)}</div></div>
+    </div>
+    <table>
+        <tr><th>Parameter</th><th>Value (${unitSys})</th><th>Notes</th></tr>
+        <tr><td>Relative Humidity</td><td>${(S.rh*100).toFixed(1)} %</td><td>Input or derived</td></tr>
+        <tr><td>Humidity Ratio W</td><td>${disp_W(S.W)}</td><td>ASHRAE 2009 Eq.</td></tr>
+        <tr><td>Specific Volume</td><td>${disp_V(S.v)}</td><td>0.287058·(T+273.15)·(1+1.6078W)/p</td></tr>
+        <tr><td>Air Density ρ</td><td>${disp_rho(S.rho)}</td><td>(1+W)/v — ASHRAE</td></tr>
+        <tr><td>Saturation Pressure pₛ</td><td>${disp_P(S.ps)}</td><td>Wexler-Hyland (2009)</td></tr>
+        <tr><td>Vapour Pressure pᵥ</td><td>${disp_P(S.pv)}</td><td>pₛ × RH</td></tr>
+        <tr class="hl"><td>Specific Enthalpy h</td><td>${disp_H(S.h)}</td><td>1.006T + W·(2501+1.86T)</td></tr>
+    </table>
+
+    ${P.Q_total !== undefined ? `
+    <h2>HVAC Process Summary</h2>
+    <table>
+        <tr><th>Parameter</th><th>State 1 (Inlet)</th><th>State 2 (Outlet)</th></tr>
+        <tr><td>Dry Bulb Temp</td><td>${disp_T(T1p)}</td><td>${disp_T(T2p)}</td></tr>
+        <tr><td>Relative Humidity</td><td>${rh1p.toFixed(1)}%</td><td>${rh2p.toFixed(1)}%</td></tr>
+        <tr><td>Humidity Ratio</td><td>${disp_W(P.S1.W)}</td><td>${disp_W(P.S2.W)}</td></tr>
+        <tr><td>Enthalpy</td><td>${disp_H(P.S1.h)}</td><td>${disp_H(P.S2.h)}</td></tr>
+        <tr class="hl"><td>Process</td><td colspan="2">${P.procType}</td></tr>
+        <tr><td>Total ${P.Q_total<0?'Cooling':'Heating'} Load</td><td colspan="2">${disp_kW(Math.abs(P.Q_total))}</td></tr>
+        <tr><td>Sensible Load</td><td colspan="2">${disp_kW(Math.abs(P.Q_sensible))}</td></tr>
+        <tr><td>Latent Load</td><td colspan="2">${disp_kW(Math.abs(P.Q_latent))}</td></tr>
+        <tr><td>SHR</td><td colspan="2">${P.SHR.toFixed(3)}</td></tr>
+        <tr><td>Water ${P.dW<0?'Removed':'Added'}</td><td colspan="2">${P.m_water.toFixed(2)} kg/h</td></tr>
+    </table>` : ''}
+
+    <div class="formula">
+        Reference Equations (ASHRAE 2009) — Calculations performed server-side at multicalci.com:<br>
+        Saturation Pressure: Wexler-Hyland (ice &lt; 0°C, liquid ≥ 0°C)<br>
+        Altitude Pressure: p = 101.325×(1−0.0065z/288.15)^5.255 kPa<br>
+        Humidity Ratio: W = 0.621945 × pᵥ/(p−pᵥ) kg/kg<br>
+        Specific Enthalpy: h = 1.006T + W×(2501+1.86T) kJ/kg<br>
+        Specific Volume: v = 0.287058×(T+273.15)×(1+1.6078W)/p m³/kg<br>
+        Moist Air Density: ρ = (1+W)/v kg/m³ (ASHRAE)<br>
+        Dew Point: ARM coefficients Alduchov &amp; Eskridge 1996 (a=17.625, b=243.04)<br>
+        Wet Bulb: Stull (2011) initial + ASHRAE thermodynamic Newton-Raphson
+    </div>
+
+    <div class="promo-box">
+        <div class="pb-left">
+            <h3>🔢 More Free Engineering Calculators at multicalci.com</h3>
+            <p>Explore our full suite of precision engineering tools — HVAC, structural, electrical, fluid mechanics, thermodynamics and more. All calculators are free, web-based and ASHRAE / ISO compliant.</p>
+            <div class="promo-tools">
+                <span>🌡️ Psychrometrics</span>
+                <span>⚡ Electrical</span>
+                <span>🏗️ Structural</span>
+                <span>💧 Fluid Mechanics</span>
+                <span>🔥 Thermodynamics</span>
+                <span>📐 HVAC Sizing</span>
+            </div>
+        </div>
+        <div class="pb-right">
+            <span class="pb-url">multicalci.com</span>
+            <div class="pb-tagline">Free · Accurate · Professional</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div><span class="ft-brand">multicalci.com</span> — Psychrometric Calculator</div>
+        <div>${dt}</div>
+        <div>Server-secured ASHRAE 2009 calculations</div>
+    </div>
+</div>
+<script>window.onload=()=>{ setTimeout(()=>{ window.print(); }, 600); }<\/script>
+</body></html>`);
+    w.document.close();
+}
+
+// ── SHARE MODAL ───────────────────────────────────────────────
+const SHARE_TEXT = 'Free Psychrometric Calculator — state points, HVAC loads, duct sizing & interactive chart!';
+function openShare() {
+    const url = window.location.href;
+    document.getElementById('shareUrlInput').value = url;
+    const enc = encodeURIComponent(url), etxt = encodeURIComponent(SHARE_TEXT);
+    document.getElementById('shareTw').href = `https://twitter.com/intent/tweet?text=${etxt}&url=${enc}`;
+    document.getElementById('shareLi').href = `https://www.linkedin.com/sharing/share-offsite/?url=${enc}`;
+    document.getElementById('shareWa').href = `https://wa.me/?text=${etxt}%20${enc}`;
+    document.getElementById('shareEm').href = `mailto:?subject=Psychrometric%20Calculator&body=${etxt}%0A%0A${enc}`;
+    document.getElementById('shareOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeShare() { document.getElementById('shareOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+function closeShareBg(e) { if (e.target === document.getElementById('shareOverlay')) closeShare(); }
+function copyShareUrl() {
+    const input = document.getElementById('shareUrlInput');
+    const btn = document.getElementById('shareCopyBtn');
+    navigator.clipboard.writeText(input.value).catch(() => { input.select(); document.execCommand('copy'); });
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeShare(); });
+
+// ── PRESSURE OVERRIDE ─────────────────────────────────────────
+function attachPressureListeners() {
+    const pEl = document.getElementById('pAtm');
+    const zEl = document.getElementById('z');
+    if (pEl) pEl.addEventListener('input', () => { pressureManualOverride = true; });
+    if (zEl) zEl.addEventListener('input', () => { pressureManualOverride = false; });
+}
+
+// ── CHART RESIZE ──────────────────────────────────────────────
+function initChartResize() {
+    const canvas = document.getElementById('psychChart');
+    if (!canvas || !window.ResizeObserver) return;
+    new ResizeObserver(() => {
+        if (document.getElementById('t4').classList.contains('active-sec')) drawChart();
+    }).observe(canvas.parentElement);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    attachPressureListeners();
+    initChartResize();
+    toggleInp();
+    toggleDuct();
+    updateLabels();
+    // No auto API calls on load — user clicks Calculate buttons
+    // Show a hint in results area
+    document.getElementById('comfortBadge').innerHTML =
+        `<span class="comfort-badge cb-ok" style="background:#e0e7ff;color:#3730a3;">👆 Enter values and click Calculate State Point</span>`;
+});
+</script>
+</body>
+</html>
