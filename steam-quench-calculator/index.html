@@ -398,11 +398,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 
 /* ══════════════════════════════════════════════════
    CLIENT STATE — no physics here
-   All calculations happen on the server via /api/calculate
+   All calculations happen on the server via /api/steam-quench
 ══════════════════════════════════════════════════ */
 
 // API endpoint — auto-detects same origin (works on Vercel + local dev)
-const API_URL = '/api/calculate';
+const API_URL = '/api/steam-quench';
 
 const CALC_VERSION = 'v4.0-api';
 const CALC_ID = 'SQC-' + Date.now().toString(36).toUpperCase();
@@ -512,7 +512,7 @@ function loadPreset(k, btn) {
 }
 
 /* ══════════════════════════════════════════════════
-   MAIN CALCULATE  — calls /api/calculate
+   MAIN CALCULATE  — calls /api/steam-quench
    All inputs are converted to SI before sending.
    API returns SI results; display layer re-applies unit formatting.
 ══════════════════════════════════════════════════ */
