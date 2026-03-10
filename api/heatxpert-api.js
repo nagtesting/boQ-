@@ -1,6 +1,8 @@
 // ─── VERCEL DEPLOYMENT: place this file at /api/heatxpert.js in your repo root ───
 // Route auto-created at /api/heatxpert by Vercel
 
+export const config = { api: { bodyParser: true } };
+
 export default function handler(req, res) {
   // CORS
   const origin = req.headers.origin || '';
@@ -13,7 +15,11 @@ export default function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
   try {
-    const body = req.body || {};
+    // Safely parse body — Vercel may deliver it as a string or object
+    let body = req.body || {};
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON body' }); }
+    }
     const { calcType } = body;
     if (!calcType) return res.status(400).json({ error: 'calcType required' });
 
@@ -95,6 +101,9 @@ const FP = {
 
 const KMAT = {cs:50, ss304:16, ss316:14, copper:385, titanium:21, inconel:10, nickel:12};
 
+// Normalize fluid key lookup (case-insensitive)
+function getFluid(key) { return FP[(key||"").toLowerCase().trim()] || FP.water; }
+
 // ─── FLUID PROPERTY FUNCTIONS ─────────────────────────────────────────────────
 function calcZ(fluid, T_K, P_bar) {
   if (!fluid.Tc || !fluid.Pc) return 1.0;
@@ -151,17 +160,22 @@ function fluidKActual(fluid, T_degC) {
 }
 
 function fluidAtConditions(fluidKey, T_mean_degC, P_bar_abs) {
-  const f = FP[fluidKey] || FP.water;
-  const isGas = f.rho < GAS_RHO_THRESHOLD;
+  const normalizedKey = (fluidKey || '').toLowerCase().trim();
+  const f = FP[normalizedKey];
+  if (!f) {
+    console.warn(`[HeatXpert] Unknown fluid key: "${fluidKey}" — falling back to water`);
+  }
+  const fluid = f || FP.water;
+  const isGas = fluid.rho < GAS_RHO_THRESHOLD;
   const T_K = T_mean_degC + 273.15;
   const P = Math.max(P_bar_abs||P_REF_DB, 0.001);
   let Z_val=1.0, method='liquid';
   if (isGas) {
-    Z_val = calcZ(f, T_K, P);
-    method = (f.MW && f.Tc && f.Pc) ? (P/(f.Pc||1)>1.0?'Peng-Robinson':'Pitzer virial') : 'ideal gas (no crit. props)';
+    Z_val = calcZ(fluid, T_K, P);
+    method = (fluid.MW && fluid.Tc && fluid.Pc) ? (P/(fluid.Pc||1)>1.0?'Peng-Robinson':'Pitzer virial') : 'ideal gas (no crit. props)';
   }
-  return { rho:fluidRhoActual(f,T_mean_degC,P_bar_abs), mu:fluidMuActual(f,T_mean_degC),
-    cp:f.cp, k:fluidKActual(f,T_mean_degC), name:f.name, Z:Z_val, zMethod:method, _isGas:isGas };
+  return { rho:fluidRhoActual(fluid,T_mean_degC,P_bar_abs), mu:fluidMuActual(fluid,T_mean_degC),
+    cp:fluid.cp, k:fluidKActual(fluid,T_mean_degC), name:fluid.name, Z:Z_val, zMethod:method, _isGas:isGas };
 }
 
 // ─── LMTD CALCULATION ─────────────────────────────────────────────────────────
@@ -223,7 +237,7 @@ function calcHtube(fluid, massFlowKgS, Di_m, L_m) {
     const Gz = Re*Pr*Di_m/Math.max(L_m,0.01);
     Nu = Math.max(3.66, 1.86*Math.pow(Gz,0.333));
   } else if (Re < 10000) {
-    Nu = 0.116*(Math.pow(Re,0.667)-125)*Pr*0.333*(1+Math.pow(Di_m/L_m,0.667));
+    Nu = 0.116*(Math.pow(Re,0.667)-125)*Math.pow(Pr,0.333)*(1+Math.pow(Di_m/L_m,0.667));
   } else {
     Nu = 0.023*Math.pow(Re,0.8)*Math.pow(Pr,0.333);
   }
@@ -285,7 +299,7 @@ function requireFinite(val, name) {
 // ─── SHELL & TUBE ─────────────────────────────────────────────────────────────
 function calcShellTube(b) {
   const hFlKey=b.hFlKey||'water', cFlKey=b.cFlKey||'water';
-  const hFluidDB=FP[hFlKey]||FP.water, cFluidDB=FP[cFlKey]||FP.water;
+  const hFluidDB=getFluid(hFlKey), cFluidDB=getFluid(cFlKey);
   const hPop=parseFloat(b.hPop)||P_REF_DB, cPop=parseFloat(b.cPop)||P_REF_DB;
   const hTi=requireFinite(b.hTi,'hTi'), hTo=requireFinite(b.hTo,'hTo'), cTi=requireFinite(b.cTi,'cTi');
   const hF=requireFinite(b.hF,'hF');  // kg/h
@@ -373,7 +387,10 @@ function calcShellTube(b) {
   const Cmin=Math.min(Wh,Wc), Qmax=Cmin*(hTi-cTi);
   const eff=Qmax>0?Q/Qmax:0;
   const tubeDp=calcPressDropTube(cFluid,massC/nTubesPerPass,Di,L_eff,nPasses);
-  const shellDP=bdRes.shellVel*bdRes.shellVel*hFluid.rho*bdRes.nBaffles*0.5*1e-5;
+  // Shell ΔP: use Eu × nBaffles × rho × v² / 2 with Re-dependent Eu factor, convert Pa→bar
+  const Re_s_dp = bdRes.shellRe;
+  const Eu = Re_s_dp < 300 ? 2.0 : Re_s_dp < 1000 ? 1.2 : 0.8; // Euler number (Kern approximation)
+  const shellDP = Eu * bdRes.nBaffles * hFluid.rho * bdRes.shellVel * bdRes.shellVel / 2 / 1e5;
   const warns=[];
   if(tubeVel<0.5) warns.push('Tube velocity below 0.5 m/s — fouling risk');
   if(tubeVel>4) warns.push('Tube velocity above 4 m/s — erosion risk');
@@ -395,7 +412,7 @@ function calcShellTube(b) {
 // ─── PLATE HX ────────────────────────────────────────────────────────────────
 function calcPlate(b) {
   const hFlKey=b.hFlKey||'water', cFlKey=b.cFlKey||'water';
-  const hFluidDB=FP[hFlKey]||FP.water, cFluidDB=FP[cFlKey]||FP.water;
+  const hFluidDB=getFluid(hFlKey), cFluidDB=getFluid(cFlKey);
   const hPop=parseFloat(b.hPop)||P_REF_DB, cPop=parseFloat(b.cPop)||P_REF_DB;
   const hTi=requireFinite(b.hTi,'hTi'), hTo=requireFinite(b.hTo,'hTo'), cTi=requireFinite(b.cTi,'cTi');
   const hF=requireFinite(b.hF,'hF');
@@ -406,7 +423,7 @@ function calcPlate(b) {
   const hFluid=fluidAtConditions(hFlKey,hTmean,hPop);
   const Qhot=(hF/3600)*hFluidDB.cp*(hTi-hTo);
   let cF=parseFloat(b.cF)||0, cTo=parseFloat(b.cTo)||0;
-  const coldMode=b.coldMode||'temp';
+  const coldMode=b.coldMode||'flow';
   if (coldMode==='temp') {
     if (cTo<=cTi) throw new Error('Cold outlet must be > cold inlet');
     if (cTo>=hTi) throw new Error('Cold outlet cannot exceed hot inlet');
@@ -480,7 +497,7 @@ function calcPlate(b) {
 
 // ─── AIR COOLED (SIMPLE) ──────────────────────────────────────────────────────
 function calcAirCooled(b) {
-  const flKey=b.flKey||'water', fluid=FP[flKey]||FP.water;
+  const flKey=b.flKey||'water', fluid=getFluid(flKey);
   const Ti=requireFinite(b.Ti,'Ti'), To=requireFinite(b.To,'To');
   const F_kgh=requireFinite(b.F,'F'), Tamb=requireFinite(b.Tamb,'Tamb');
   const dTa=requireFinite(b.dTa,'dTa');
@@ -515,7 +532,7 @@ function calcAirCooled(b) {
 // ─── DOUBLE PIPE ─────────────────────────────────────────────────────────────
 function calcDoublePipe(b) {
   const hFlKey=b.hFlKey||'water', cFlKey=b.cFlKey||'water';
-  const hFluidDB=FP[hFlKey]||FP.water, cFluidDB=FP[cFlKey]||FP.water;
+  const hFluidDB=getFluid(hFlKey), cFluidDB=getFluid(cFlKey);
   const hPop=parseFloat(b.hPop)||P_REF_DB, cPop=parseFloat(b.cPop)||P_REF_DB;
   const hTi=requireFinite(b.hTi,'hTi'), hTo=requireFinite(b.hTo,'hTo'), cTi=requireFinite(b.cTi,'cTi');
   const hF=requireFinite(b.hF,'hF');
@@ -592,7 +609,7 @@ function calcDoublePipe(b) {
 // ─── FIN-FAN (DETAILED API 661) ───────────────────────────────────────────────
 function calcFinFan(b) {
   const tFlKey=b.tFlKey||'water';
-  const tFlDB=FP[tFlKey]||FP.water;
+  const tFlDB=getFluid(tFlKey);
   const tPop=parseFloat(b.tPop)||4.0;
   const tTi=requireFinite(b.tTi,'tTi'), tTo=requireFinite(b.tTo,'tTo');
   const tF_kgh=requireFinite(b.tF_kgh,'tF_kgh');
@@ -773,8 +790,13 @@ function calcLmtdNtu(b) {
     const Cr=Cmin_kW/Cmax_kW;
     if(arr==='counter'&&Cr<0.999&&eff!=null)
       NTU=Math.log((1-Cr*Math.max(eff,0.001))/Math.max(1-eff,0.001))/(1-Cr);
+    else if(arr==='parallel'&&eff!=null)
+      NTU=-Math.log(1-eff*(1+Cr))/(1+Cr);
+    else if(arr==='cross1'&&eff!=null)
+      // Crossflow (both unmixed) — iterative inversion of NTU-effectiveness
+      NTU=(function(){let n=1.0;for(let i=0;i<30;i++){const e=1-Math.exp((Math.exp(-Cr*Math.pow(n,0.22))-1)*Math.pow(n,0.78)/Cr);const de=(e-eff);if(Math.abs(de)<1e-6)break;n-=de/0.5;n=Math.max(0.01,n);}return n;})();
     else if(eff!=null)
-      NTU=-Math.log(1-eff*(1+Math.min(Cr,1)))/(1+Math.min(Cr,1));
+      NTU=Math.log((1-Cr*Math.max(eff,0.001))/Math.max(1-eff,0.001))/(1-Math.max(Cr,0.001));
     UA=NTU*Cmin_kW*1000;
   }
   return {lmtd,F,FLMTD,dT1,dT2,NTU,eff,UA,Cmin_kW,hTi,hTo,cTi,cTo,arr};
