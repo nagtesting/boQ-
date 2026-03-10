@@ -1,5 +1,5 @@
 // ============================================================
-// /api/calculate.js — Vercel Serverless Function
+// /api/pressure-drop-calculator.js — Vercel Serverless Function
 // Protected calculation engine for Pressure Drop Calculator
 // Darcy-Weisbach · Colebrook-White · Churchill · NPSH · Pump Power
 // Fluid Library (138 fluids) · Andrade viscosity · Sutherland gas
