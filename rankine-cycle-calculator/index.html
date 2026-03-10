@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Rankine Cycle Calculator — Steam Power Plant Efficiency | multicalci.com</title>
+<meta name="description" content="Free Rankine cycle calculator for steam power plant thermal efficiency using IAPWS-IF97 steam tables.">
+<link rel="canonical" href="https://multicalci.com/rankine-cycle-calculator/">
+<meta property="og:title" content="Rankine Cycle Calculator — Steam Power Plant Efficiency | multicalci.com">
+<meta property="og:description" content="Free Rankine cycle calculator for steam power plant thermal efficiency using IAPWS-IF97 steam tables.">
+<meta property="og:url" content="https://multicalci.com/rankine-cycle-calculator/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rankine Cycle Calculator — Steam Power Plant Efficiency | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Rankine Cycle Calculator","description":"Steam power plant Rankine cycle efficiency calculator with NIST IF97 steam tables, reheat and regenerative cycles.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/rankine-cycle-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* White / off-white palette — no glare, warm whites */
+  --bg:#f5f5f0;
+  --bg2:#ffffff;
+  --bg3:#f0efe9;
+  --surface:#ffffff;
+  --border:#d8d6cf;
+  --border2:#c4c2ba;
+  --text:#1a1917;
+  --text2:#2c2b28;
+  --text3:#5a5852;
+  --text4:#8a8880;
+
+  /* Accent: deep teal-blue (not harsh, not neon) */
+  --blue:#1e4d8c;
+  --blue-lt:#eef2f9;
+  --blue-bdr:#b8cce8;
+  --blue-mid:#2e6db4;
+
+  /* Warm orange — muted, not fluorescent */
+  --orange:#c25e0a;
+  --orange-lt:#fdf4ec;
+  --orange-bdr:#f0c090;
+
+  /* Muted teal */
+  --teal:#0b6860;
+  --teal-lt:#eef7f6;
+  --teal-bdr:#9fd0cc;
+
+  /* Muted green */
+  --green:#1a6632;
+  --green-lt:#edf6f0;
+  --green-bdr:#90d0a8;
+
+  /* Muted amber */
+  --amber:#8a5a00;
+  --amber-lt:#fdf6e8;
+  --amber-bdr:#e8c87a;
+
+  /* Red — not neon */
+  --red:#b52a2a;
+  --red-lt:#fdf0f0;
+  --red-bdr:#e8a8a8;
+
+  /* Violet */
+  --violet:#5040a0;
+  --violet-lt:#f2f0fb;
+  --violet-bdr:#c4b8f0;
+
+  --sans:'Outfit',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:8px;--r-lg:12px;--r-xl:16px;--r-2xl:20px;
+  --sh:0 1px 4px rgba(0,0,0,.08),0 2px 12px rgba(0,0,0,.05);
+  --sh-lg:0 2px 8px rgba(0,0,0,.07),0 4px 24px rgba(0,0,0,.06);
+}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  font-size:16px;
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.65;
+  min-height:100vh;
+}
+
+.wrap{max-width:1440px;margin:0 auto;padding:24px 20px}
+
+/* ── HEADER ── */
+.hdr{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r-2xl);
+  padding:28px 32px;
+  margin-bottom:20px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  box-shadow:var(--sh-lg);
+}
+.hdr::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--teal),var(--orange));
+}
+.hdr-icon{
+  width:58px;height:58px;border-radius:14px;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--teal) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;color:#fff;
+  box-shadow:0 3px 16px rgba(30,77,140,.25);
+}
+.hdr-text{flex:1;min-width:180px}
+.hdr-title{
+  font-size:clamp(1.6rem,3.5vw,2.4rem);
+  font-weight:800;color:var(--text);line-height:1.1;
+  letter-spacing:-.5px;
+}
+.hdr-title span{color:var(--blue)}
+.hdr-sub{
+  font-size:clamp(.88rem,2vw,1rem);
+  color:var(--text3);font-weight:500;
+  margin-top:4px;
+}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-left:auto;flex-shrink:0}
+
+/* ── UNITS TOGGLE ── */
+.units-toggle{
+  display:flex;align-items:center;gap:0;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:3px;
+  font-size:.88rem;font-weight:700;
+}
+.ut-btn{
+  padding:7px 18px;
+  border:none;
+  border-radius:20px;
+  font-family:var(--sans);font-size:.88rem;font-weight:700;
+  cursor:pointer;
+  transition:all .18s;
+  color:var(--text3);
+  background:transparent;
+  letter-spacing:.2px;
+  -webkit-tap-highlight-color:transparent;
+}
+.ut-btn.active{
+  background:var(--blue);
+  color:#fff;
+  box-shadow:0 2px 8px rgba(30,77,140,.28);
+}
+.units-label{
+  font-size:.72rem;font-weight:600;
+  color:var(--text4);text-transform:uppercase;letter-spacing:.8px;
+  text-align:right;
+  padding-right:4px;
+}
+
+.hdr-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{
+  font-size:.78rem;font-weight:600;padding:5px 13px;border-radius:20px;
+  letter-spacing:.3px;white-space:nowrap;
+}
+.chip-green{background:var(--green-lt);color:var(--green);border:1px solid var(--green-bdr)}
+.chip-blue{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-bdr)}
+
+/* ── CURRENT UNITS DISPLAY BAR ── */
+.units-bar{
+  background:var(--blue-lt);
+  border:1px solid var(--blue-bdr);
+  border-radius:var(--r-lg);
+  padding:10px 18px;
+  margin-bottom:20px;
+  font-size:.88rem;
+  color:var(--blue);font-weight:600;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.units-bar strong{color:var(--text)}
+.units-bar .us-only{display:none}
+.units-bar .si-only{display:inline}
+body.us-units .units-bar .us-only{display:inline}
+body.us-units .units-bar .si-only{display:none}
+
+/* ── NAV ── */
+.nav-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:6px;margin-bottom:20px;
+  display:flex;gap:4px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  box-shadow:var(--sh);
+  scroll-snap-type:x mandatory;
+}
+.nav-wrap::-webkit-scrollbar{height:3px}
+.nav-wrap::-webkit-scrollbar-track{background:transparent}
+.nav-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.tab-btn{
+  flex-shrink:0;
+  padding:11px 20px;
+  background:transparent;border:1px solid transparent;
+  border-radius:var(--r);
+  font-family:var(--sans);font-size:.94rem;font-weight:600;
+  color:var(--text3);cursor:pointer;transition:all .18s;
+  white-space:nowrap;display:flex;align-items:center;gap:7px;
+  scroll-snap-align:start;
+  -webkit-tap-highlight-color:transparent;
+}
+.tab-btn:hover{color:var(--text);background:var(--bg3);border-color:var(--border)}
+.tab-btn.active{
+  background:var(--blue);color:#fff;
+  border-color:transparent;
+  box-shadow:0 2px 10px rgba(30,77,140,.25);
+}
+.tab-pane{display:none}
+.tab-pane.active{display:block;animation:fadeup .25s ease}
+@keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── LAYOUT ── */
+.two-col{display:grid;grid-template-columns:minmax(360px,480px) 1fr;gap:18px;align-items:start}
+@media(max-width:1040px){.two-col{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh);
+}
+.card-head{
+  padding:18px 24px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg3);
+}
+.card-ico{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+}
+.ico-blue{background:var(--blue-lt);border:1px solid var(--blue-bdr)}
+.ico-teal{background:var(--teal-lt);border:1px solid var(--teal-bdr)}
+.ico-amber{background:var(--amber-lt);border:1px solid var(--amber-bdr)}
+.ico-green{background:var(--green-lt);border:1px solid var(--green-bdr)}
+.ico-violet{background:var(--violet-lt);border:1px solid var(--violet-bdr)}
+.card-title{font-size:1.1rem;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.card-body{padding:24px}
+
+/* ── SECTION LABELS ── */
+.slabel{
+  font-size:.78rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--blue);
+  padding-bottom:8px;margin:22px 0 14px;
+  border-bottom:1.5px solid var(--blue-bdr);
+  display:flex;align-items:center;gap:6px;
+}
+.slabel.teal{color:var(--teal);border-bottom-color:var(--teal-bdr)}
+.slabel.amber{color:var(--amber);border-bottom-color:var(--amber-bdr)}
+.slabel.green{color:var(--green);border-bottom-color:var(--green-bdr)}
+.slabel.violet{color:var(--violet);border-bottom-color:var(--violet-bdr)}
+.slabel:first-child{margin-top:0}
+
+/* ── PRESETS ── */
+.preset-strip{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.pchip{
+  padding:7px 16px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:20px;font-size:.88rem;font-weight:600;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+  font-family:var(--sans);
+  -webkit-tap-highlight-color:transparent;
+}
+.pchip:hover,.pchip:active{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.pchip.on{background:var(--blue-lt);color:var(--blue);border-color:var(--blue)}
+
+/* ── FORM FIELDS ── */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.fg label{
+  display:block;
+  font-size:.86rem;font-weight:600;
+  color:var(--text3);margin-bottom:6px;letter-spacing:.1px;
+}
+.irow{display:flex;gap:0}
+.irow input{flex:1;min-width:0;border-radius:var(--r) 0 0 var(--r)!important;border-right:none!important}
+input[type=number],input[type=text],select{
+  width:100%;
+  padding:11px 14px;
+  background:var(--bg3);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  color:var(--text);font-family:var(--mono);
+  font-size:.96rem;font-weight:500;
+  transition:all .15s;-webkit-appearance:none;appearance:none;
+  -webkit-tap-highlight-color:transparent;
+}
+input:focus,select:focus{
+  outline:none;border-color:var(--blue);
+  background:var(--bg2);box-shadow:0 0 0 3px rgba(30,77,140,.1);
+}
+input[readonly]{
+  color:var(--teal);background:var(--teal-lt);
+  border-color:var(--teal-bdr);cursor:default;
+}
+.ulab{
+  padding:11px 13px;
+  background:var(--bg3);
+  border:1.5px solid var(--border);border-left:none;
+  border-radius:0 var(--r) var(--r) 0;
+  color:var(--text3);font-family:var(--mono);
+  font-size:.82rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  white-space:nowrap;flex-shrink:0;min-width:54px;
+}
+.u-blue{background:var(--blue-lt);border-color:var(--blue-bdr);color:var(--blue)}
+.u-teal{background:var(--teal-lt);border-color:var(--teal-bdr);color:var(--teal)}
+.u-amber{background:var(--amber-lt);border-color:var(--amber-bdr);color:var(--amber)}
+.u-green{background:var(--green-lt);border-color:var(--green-bdr);color:var(--green)}
+.u-violet{background:var(--violet-lt);border-color:var(--violet-bdr);color:var(--violet)}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn-calc{
+  flex:1;min-width:160px;
+  padding:13px 24px;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--r);
+  font-family:var(--sans);font-size:.98rem;font-weight:700;
+  letter-spacing:.3px;cursor:pointer;transition:all .18s;
+  box-shadow:0 2px 10px rgba(30,77,140,.22);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn-calc:hover{background:var(--blue-mid);box-shadow:0 4px 18px rgba(30,77,140,.3);transform:translateY(-1px)}
+.btn-calc:active{transform:none;box-shadow:0 1px 4px rgba(30,77,140,.2)}
+.btn-reset{
+  padding:13px 20px;background:transparent;
+  color:var(--text3);border:1.5px solid var(--border2);
+  border-radius:var(--r);font-family:var(--sans);
+  font-size:.92rem;font-weight:600;cursor:pointer;transition:all .15s;
+  touch-action:manipulation;
+}
+.btn-reset:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt)}
+
+/* ── ERROR ── */
+.err-box{
+  display:none;background:var(--red-lt);border:1px solid var(--red-bdr);
+  border-left:3px solid var(--red);border-radius:var(--r);
+  padding:12px 16px;margin-top:12px;
+  font-size:.92rem;font-weight:600;color:var(--red);
+}
+.err-box.show{display:flex;align-items:center;gap:8px}
+
+/* ── PLACEHOLDER / SPINNER ── */
+.ph{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:64px 24px;text-align:center;min-height:360px;
+}
+.ph-ico{font-size:3.5rem;opacity:.13;margin-bottom:16px}
+.ph h3{font-size:1.1rem;font-weight:700;color:var(--text3);margin-bottom:6px}
+.ph p{font-size:.94rem;color:var(--text4)}
+.spinner-wrap{display:none;flex-direction:column;align-items:center;justify-content:center;padding:64px 24px;min-height:360px}
+.spinner-wrap.show{display:flex}
+.spin{
+  width:48px;height:48px;
+  border:3px solid var(--border);border-top-color:var(--blue);
+  border-radius:50%;animation:rot .7s linear infinite;margin-bottom:16px;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+.spin-txt{color:var(--text4);font-size:.94rem}
+.res-pane{display:none;padding:24px}
+.res-pane.show{display:block;animation:fadeup .25s ease}
+
+/* ── RESULT BANNER ── */
+.res-banner{
+  background:var(--blue-lt);border:1px solid var(--blue-bdr);
+  border-left:3px solid var(--blue);
+  border-radius:var(--r-lg);
+  padding:16px 20px;margin-bottom:18px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
+.res-banner h3{font-size:1rem;font-weight:700;color:var(--blue);margin-bottom:3px;letter-spacing:-.1px}
+.res-meta{font-size:.86rem;color:var(--text3);font-weight:500;line-height:1.5}
+
+/* ── BADGES ── */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 11px;border-radius:20px;
+  font-size:.74rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  white-space:nowrap;
+}
+.b-ok{background:var(--green-lt);color:var(--green);border:1px solid var(--green-bdr)}
+.b-warn{background:var(--amber-lt);color:var(--amber);border:1px solid var(--amber-bdr)}
+.b-info{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-bdr)}
+.b-err{background:var(--red-lt);color:var(--red);border:1px solid var(--red-bdr)}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
+.kpi{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:14px 16px;
+  position:relative;overflow:hidden;
+  transition:box-shadow .15s;
+}
+.kpi:hover{box-shadow:var(--sh)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--acc,var(--blue))}
+.kpi.k-blue{--acc:var(--blue)}
+.kpi.k-teal{--acc:var(--teal)}
+.kpi.k-orange{--acc:var(--orange)}
+.kpi.k-green{--acc:var(--green)}
+.kpi.k-amber{--acc:var(--amber)}
+.kpi.k-violet{--acc:var(--violet)}
+.kpi.k-red{--acc:var(--red)}
+.kpi-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text4);margin-bottom:7px}
+.kpi-val{font-size:1.5rem;font-weight:800;color:var(--text);font-family:var(--mono);line-height:1}
+.kpi-unit{font-size:.78rem;font-weight:600;color:var(--acc,var(--blue));margin-left:2px}
+.kpi-sub{font-size:.74rem;color:var(--text4);margin-top:5px}
+
+/* ── EFFICIENCY BARS ── */
+.eff-section{margin:16px 0}
+.eff-row{display:flex;align-items:center;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.eff-lbl{font-size:.88rem;font-weight:600;color:var(--text3);min-width:168px;flex-shrink:0}
+.eff-track{flex:1;min-width:100px;height:10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.eff-fill{height:100%;border-radius:6px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.ef-blue{background:linear-gradient(90deg,var(--blue),#4280c0)}
+.ef-teal{background:linear-gradient(90deg,var(--teal),#20a098)}
+.ef-green{background:linear-gradient(90deg,var(--green),#30a060)}
+.ef-orange{background:linear-gradient(90deg,var(--orange),#e07828)}
+.ef-amber{background:linear-gradient(90deg,var(--amber),#c08828)}
+.eff-pct{font-size:.88rem;font-weight:700;color:var(--text2);min-width:48px;text-align:right;font-family:var(--mono)}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r-lg);border:1px solid var(--border);margin-top:14px;-webkit-overflow-scrolling:touch}
+.dtbl{width:100%;border-collapse:collapse;font-size:.9rem;min-width:400px}
+.dtbl th{
+  background:var(--bg3);color:var(--text3);padding:10px 14px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:.73rem;
+  text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+.dtbl td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:.88rem;color:var(--text2);font-weight:500;
+}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl tr:hover td{background:var(--bg3)}
+.dtbl .lc{font-family:var(--sans);font-weight:600;color:var(--text3);font-size:.9rem}
+.dtbl .hi{color:var(--orange);font-weight:700}
+.dtbl .lo{color:var(--teal);font-weight:700}
+
+/* ── NOTES ── */
+.note{border-radius:var(--r-lg);padding:14px 17px;margin-top:12px}
+.note .nt{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+.note .nb{font-size:.9rem;line-height:1.7}
+.note .nb ul{padding-left:17px}
+.note .nb li{margin-bottom:3px}
+.n-amber{background:var(--amber-lt);border:1px solid var(--amber-bdr)}
+.n-amber .nt{color:var(--amber)}
+.n-teal{background:var(--teal-lt);border:1px solid var(--teal-bdr)}
+.n-teal .nt{color:var(--teal)}
+.n-green{background:var(--green-lt);border:1px solid var(--green-bdr)}
+.n-green .nt{color:var(--green)}
+.n-red{background:var(--red-lt);border:1px solid var(--red-bdr)}
+.n-red .nt{color:var(--red)}
+.n-blue{background:var(--blue-lt);border:1px solid var(--blue-bdr)}
+.n-blue .nt{color:var(--blue)}
+.warn-inline{
+  background:var(--amber-lt);border:1px solid var(--amber-bdr);border-left:3px solid var(--amber);
+  border-radius:var(--r);padding:11px 15px;margin:10px 0;
+  font-size:.92rem;color:var(--amber);font-weight:600;
+}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* ── FOOTER ── */
+.footer{
+  text-align:center;padding:28px 16px 10px;
+  color:var(--text4);font-size:.84rem;
+  border-top:1px solid var(--border);
+  margin-top:24px;
+}
+
+/* ── ACTION BAR (PDF + Social) ── */
+.action-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r-xl);
+  padding:14px 20px;
+  margin-bottom:20px;
+  box-shadow:var(--sh);
+}
+.action-label{
+  font-size:.78rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text4);margin-right:4px;flex-shrink:0;
+}
+.action-divider{width:1px;height:28px;background:var(--border);margin:0 6px;flex-shrink:0}
+.btn-pdf{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--r);
+  font-family:var(--sans);font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .18s;
+  box-shadow:0 2px 8px rgba(30,77,140,.22);
+  text-decoration:none;
+  white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-pdf:hover{background:var(--blue-mid);transform:translateY(-1px);box-shadow:0 4px 14px rgba(30,77,140,.3)}
+.btn-pdf:active{transform:none}
+.btn-pdf svg{width:16px;height:16px;flex-shrink:0}
+
+.social-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.soc-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 15px;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  font-family:var(--sans);font-size:.86rem;font-weight:600;
+  color:var(--text3);
+  cursor:pointer;transition:all .15s;
+  text-decoration:none;
+  white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.soc-btn svg{width:15px;height:15px;flex-shrink:0}
+.soc-btn.tw:hover{border-color:#1DA1F2;color:#1DA1F2;background:#f0f8ff}
+.soc-btn.li:hover{border-color:#0A66C2;color:#0A66C2;background:#f0f5ff}
+.soc-btn.wa:hover{border-color:#25D366;color:#25D366;background:#f0fff4}
+.soc-btn.em:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-lt)}
+.soc-btn.cp:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt)}
+
+/* ── PDF PRINT STYLES ── */
+@media print{
+  body::after {
+    content: "multicalci.com — Free Engineering Calculators";
+    display: block;
+    text-align: center;
+    font-size: 8pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+    margin-top: 20px;
+  }
+
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;font-size:12pt}
+  .action-bar,.nav-wrap,.units-toggle,.units-bar,.btn-row,.preset-strip,.hdr-chips,.btn-pdf,.soc-btn,.action-divider,.action-label{display:none!important}
+  .wrap{padding:10px!important;max-width:100%}
+  .hdr{border-radius:8px!important;padding:16px 20px!important;margin-bottom:12px!important;box-shadow:none!important;border:1.5px solid #c8c8c0!important}
+  .hdr::before{display:none}
+  .hdr-title{font-size:22pt!important;-webkit-text-fill-color:#1a1917!important;background:none!important}
+  .tab-pane{display:block!important}
+  .tab-pane:not(.active){display:none!important}
+  .two-col{grid-template-columns:1fr 1fr!important;gap:10px!important}
+  .card{box-shadow:none!important;border:1px solid #d0cfc8!important;break-inside:avoid}
+  .card-body{padding:14px!important}
+  .card-head{padding:10px 14px!important;background:#f5f5f0!important}
+  .res-pane{padding:14px!important}
+  .ph,.spinner-wrap{min-height:60px!important;padding:16px!important}
+  .kpi{break-inside:avoid}
+  .kpi-grid{gap:6px!important}
+  .tbl-wrap{overflow:visible!important}
+  .dtbl{min-width:0!important}
+  .footer{margin-top:16px!important;padding:12px!important}
+  .print-timestamp{display:block!important}
+}
+.print-timestamp{display:none;font-size:.78rem;color:var(--text4);margin-top:4px}
+
+@media(max-width:600px){
+  .action-bar{padding:12px 14px;gap:8px}
+  .soc-btn span{display:none}
+  .soc-btn{padding:8px 10px}
+  .btn-pdf span{display:none}
+  .btn-pdf{padding:9px 12px}
+}
+
+/* ── MOBILE ── */
+@media(max-width:720px){
+  .wrap{padding:14px 12px}
+  .hdr{padding:20px 18px;gap:14px}
+  .hdr-icon{width:48px;height:48px;font-size:22px}
+  .hdr-title{font-size:1.55rem}
+  .hdr-sub{font-size:.86rem}
+  .hdr-right{margin-left:0;width:100%;align-items:flex-start}
+  .units-toggle{align-self:flex-start}
+  .card-body{padding:16px}
+  .card-head{padding:14px 16px}
+  .card-title{font-size:1rem}
+  .fgrid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .kpi-val{font-size:1.3rem}
+  .tab-btn{padding:10px 15px;font-size:.88rem}
+  .btn-calc{font-size:.94rem;padding:13px 18px}
+  .btn-reset{padding:12px 16px;font-size:.88rem}
+  .eff-lbl{min-width:130px;font-size:.84rem}
+  .dtbl{font-size:.82rem}
+  .dtbl td,.dtbl th{padding:9px 11px}
+  .res-pane{padding:16px}
+  input[type=number],input[type=text],select{font-size:16px}
+}
+@media(max-width:440px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .hdr-chips{display:none}
+  .eff-row{flex-direction:column;align-items:flex-start;gap:5px}
+  .eff-track{width:100%}
+  .eff-lbl{min-width:0}
+}
+
+/* ── EFFICIENCY GUIDE STYLES ── */
+.guide-wrap{max-width:900px;margin:0 auto}
+.guide-hero{
+  background:linear-gradient(135deg,var(--blue-lt) 0%,var(--teal-lt) 100%);
+  border:1px solid var(--blue-bdr);border-radius:var(--r-xl);
+  padding:32px 36px;margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.guide-hero::before{
+  content:'η';position:absolute;right:24px;top:50%;transform:translateY(-50%);
+  font-size:160px;font-weight:800;opacity:.07;color:var(--blue);
+  font-family:var(--mono);line-height:1;pointer-events:none;
+}
+.guide-hero h2{font-size:1.7rem;font-weight:800;color:var(--blue);margin-bottom:10px;letter-spacing:-.3px}
+.guide-hero p{font-size:1rem;color:var(--text2);max-width:620px;line-height:1.75}
+.guide-hero .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.gtag{padding:5px 13px;border-radius:20px;font-size:.8rem;font-weight:700;letter-spacing:.3px}
+.gtag-blue{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-bdr)}
+.gtag-teal{background:var(--teal-lt);color:var(--teal);border:1px solid var(--teal-bdr)}
+.gtag-green{background:var(--green-lt);color:var(--green);border:1px solid var(--green-bdr)}
+.gtag-amber{background:var(--amber-lt);color:var(--amber);border:1px solid var(--amber-bdr)}
+.gtag-violet{background:var(--violet-lt);color:var(--violet);border:1px solid var(--violet-bdr)}
+.gtag-orange{background:var(--orange-lt);color:var(--orange);border:1px solid var(--orange-bdr)}
+
+.g-section{margin-bottom:32px}
+.g-section-title{
+  font-size:1.2rem;font-weight:800;color:var(--text);
+  margin-bottom:18px;padding-bottom:10px;
+  border-bottom:2px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  letter-spacing:-.2px;
+}
+.g-section-title span{font-size:1.4rem}
+
+/* Definition Card */
+.def-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r-xl);overflow:hidden;
+  margin-bottom:14px;
+  transition:box-shadow .15s;
+}
+.def-card:hover{box-shadow:var(--sh)}
+.def-card-head{
+  padding:16px 22px;
+  display:flex;align-items:flex-start;gap:14px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;
+  user-select:none;
+}
+.def-card-head::-webkit-details-marker{display:none}
+.def-badge{
+  min-width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.82rem;font-weight:800;letter-spacing:.5px;
+  font-family:var(--mono);flex-shrink:0;
+}
+.def-badge.input{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-bdr)}
+.def-badge.output{background:var(--teal-lt);color:var(--teal);border:1px solid var(--teal-bdr)}
+.def-badge.limit{background:var(--violet-lt);color:var(--violet);border:1px solid var(--violet-bdr)}
+.def-badge.combined{background:var(--green-lt);color:var(--green);border:1px solid var(--green-bdr)}
+
+.def-head-text{flex:1}
+.def-name{font-size:1.05rem;font-weight:700;color:var(--text);letter-spacing:-.1px}
+.def-symbol{font-size:.88rem;font-weight:600;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.def-type-tag{
+  display:inline-flex;align-items:center;
+  padding:3px 10px;border-radius:12px;
+  font-size:.72rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  margin-left:auto;flex-shrink:0;align-self:flex-start;margin-top:2px;
+}
+.tag-input{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-bdr)}
+.tag-output{background:var(--teal-lt);color:var(--teal);border:1px solid var(--teal-bdr)}
+.tag-limit{background:var(--violet-lt);color:var(--violet);border:1px solid var(--violet-bdr)}
+.tag-combined{background:var(--green-lt);color:var(--green);border:1px solid var(--green-bdr)}
+
+.def-body{padding:20px 22px}
+.def-formula{
+  background:var(--bg3);border:1px solid var(--border);
+  border-left:3px solid var(--blue);
+  border-radius:var(--r);padding:14px 18px;
+  font-family:var(--mono);font-size:1rem;font-weight:600;
+  color:var(--text);margin-bottom:16px;letter-spacing:.3px;
+  overflow-x:auto;white-space:nowrap;
+}
+.def-formula.violet{border-left-color:var(--violet)}
+.def-formula.teal{border-left-color:var(--teal)}
+.def-formula.green{border-left-color:var(--green)}
+.def-formula.amber{border-left-color:var(--amber)}
+.def-formula.orange{border-left-color:var(--orange)}
+
+.def-desc{font-size:.95rem;color:var(--text2);line-height:1.8;margin-bottom:14px}
+.def-desc strong{color:var(--text);font-weight:700}
+
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.why-box{border-radius:var(--r);padding:14px 16px}
+.why-hi{background:var(--green-lt);border:1px solid var(--green-bdr)}
+.why-lo{background:var(--red-lt);border:1px solid var(--red-bdr)}
+.why-box h4{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.why-hi h4{color:var(--green)}
+.why-lo h4{color:var(--red)}
+.why-box ul{padding-left:16px;margin:0}
+.why-box li{font-size:.88rem;color:var(--text2);margin-bottom:5px;line-height:1.5}
+
+/* Typical range bar */
+.range-row{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+.range-lbl{font-size:.82rem;font-weight:600;color:var(--text4);min-width:110px;flex-shrink:0}
+.range-track{flex:1;height:18px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;position:relative;min-width:120px}
+.range-fill{height:100%;border-radius:10px;position:absolute;top:0}
+.range-text{font-size:.82rem;font-weight:700;color:var(--text2);font-family:var(--mono);min-width:80px;text-align:right}
+
+/* Hierarchy chart */
+.hierarchy{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:24px;margin-bottom:28px;
+}
+.hierarchy h3{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.hrow{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.hlbl{font-size:.88rem;font-weight:600;color:var(--text3);min-width:180px;flex-shrink:0}
+.htrack{flex:1;height:24px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-width:120px;position:relative}
+.hfill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hfill span{font-size:.78rem;font-weight:700;color:#fff;white-space:nowrap}
+.h-carnot .hfill{background:linear-gradient(90deg,var(--violet),#7060c0)}
+.h-thermal .hfill{background:linear-gradient(90deg,var(--blue),var(--blue-mid))}
+.h-overall .hfill{background:linear-gradient(90deg,var(--teal),#20a098)}
+.h-comp .hfill{background:linear-gradient(90deg,var(--amber),#c08030)}
+.harrow{color:var(--text4);font-size:.9rem;flex-shrink:0}
+
+/* Comparison table */
+.comp-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.comp-table th{
+  background:var(--bg3);color:var(--text3);padding:10px 14px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:.73rem;
+  text-align:left;border-bottom:2px solid var(--border);
+}
+.comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:hover td{background:var(--bg3)}
+.comp-table td:first-child{font-weight:700;color:var(--text);font-size:.92rem}
+.comp-table .hi-cell{color:var(--green);font-weight:700}
+.comp-table .lo-cell{color:var(--red);font-weight:700}
+.comp-table .mid-cell{color:var(--amber);font-weight:700}
+
+/* Insight boxes */
+.insight{
+  border-radius:var(--r-lg);padding:18px 22px;margin-bottom:16px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.insight-icon{font-size:1.4rem;flex-shrink:0;line-height:1}
+.insight-body h4{font-size:.9rem;font-weight:700;margin-bottom:5px}
+.insight-body p{font-size:.88rem;line-height:1.7;color:var(--text2)}
+.insight-body p strong{color:var(--text)}
+.ins-blue{background:var(--blue-lt);border:1px solid var(--blue-bdr)}
+.ins-blue h4{color:var(--blue)}
+.ins-amber{background:var(--amber-lt);border:1px solid var(--amber-bdr)}
+.ins-amber h4{color:var(--amber)}
+.ins-green{background:var(--green-lt);border:1px solid var(--green-bdr)}
+.ins-green h4{color:var(--green)}
+.ins-red{background:var(--red-lt);border:1px solid var(--red-bdr)}
+.ins-red h4{color:var(--red)}
+.ins-violet{background:var(--violet-lt);border:1px solid var(--violet-bdr)}
+.ins-violet h4{color:var(--violet)}
+.ins-teal{background:var(--teal-lt);border:1px solid var(--teal-bdr)}
+.ins-teal h4{color:var(--teal)}
+
+@media(max-width:720px){
+  .guide-hero{padding:22px 18px}
+  .guide-hero h2{font-size:1.35rem}
+  .guide-hero::before{font-size:90px;right:10px}
+  .why-grid{grid-template-columns:1fr}
+  .def-body{padding:16px}
+  .def-card-head{padding:14px 16px}
+  .comp-table{font-size:.82rem}
+  .comp-table td,.comp-table th{padding:8px 10px}
+  .hierarchy{padding:18px}
+  .hlbl{min-width:140px;font-size:.82rem}
+}
+
+
+/* ── HOME BUTTON ── */
+.home-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;
+  background:var(--bg3);border:1.5px solid var(--border2);
+  border-radius:20px;
+  font-family:var(--sans);font-size:.86rem;font-weight:700;
+  color:var(--text3);text-decoration:none;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
+}
+.home-btn:hover{
+  background:var(--blue-lt);border-color:var(--blue-bdr);
+  color:var(--blue);
+  box-shadow:0 2px 8px rgba(30,77,140,.12);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-icon">♨</div>
+  <div class="hdr-text">
+    <div class="hdr-title">multicalci<span>.com</span></div>
+    <div class="hdr-sub">Thermodynamic Cycle Calculator · NIST IF97 Steam Tables · ±0.3 kJ/kg (subcritical) / ±2 kJ/kg (near-critical)</div>
+  </div>
+  <div class="hdr-right">
+    <a href="https://multicalci.com/" class="home-btn" title="Back to multicalci.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      multicalci.com
+    </a>
+    <div class="units-label">Unit System</div>
+    <div class="units-toggle">
+      <button class="ut-btn active" id="btn-si" onclick="setUnits('SI')">SI</button>
+      <button class="ut-btn" id="btn-us" onclick="setUnits('US')">US / Imperial</button>
+    </div>
+    <div class="hdr-chips">
+      <span class="chip chip-green">✓ NIST Tables</span>
+      <span class="chip chip-blue">v5.0</span>
+    </div>
+  </div>
+</div>
+
+<!-- UNITS BAR -->
+<div class="units-bar">
+  <span>📐 Active units:</span>
+  <strong class="si-only">SI — Temperature: °C &nbsp;|&nbsp; Pressure: MPa &nbsp;|&nbsp; Enthalpy: kJ/kg &nbsp;|&nbsp; Power: kW / MW &nbsp;|&nbsp; Flow: kg/s</strong>
+  <strong class="us-only">US Customary — Temperature: °F &nbsp;|&nbsp; Pressure: psia &nbsp;|&nbsp; Enthalpy: BTU/lb &nbsp;|&nbsp; Power: BTU/hr &amp; hp &nbsp;|&nbsp; Flow: lb/s</strong>
+  &nbsp;<span style="color:var(--amber);font-size:.8rem;font-weight:600">⚠ Condenser P and T are not independent in the saturation region — results will warn if they are inconsistent.</span>
+</div>
+
+<!-- ACTION BAR: PDF + SOCIAL -->
+<div class="action-bar">
+  <span class="action-label">Export</span>
+  <button class="btn-pdf" onclick="printPDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
+    <span>Save as PDF</span>
+  </button>
+  <div class="action-divider"></div>
+  <span class="action-label">Share</span>
+  <div class="social-links">
+    <a class="soc-btn tw" href="#" onclick="shareTwitter();return false;" title="Share on X / Twitter">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      <span>X / Twitter</span>
+    </a>
+    <a class="soc-btn li" href="#" onclick="shareLinkedIn();return false;" title="Share on LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      <span>LinkedIn</span>
+    </a>
+    <a class="soc-btn wa" href="#" onclick="shareWhatsApp();return false;" title="Share via WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      <span>WhatsApp</span>
+    </a>
+    <a class="soc-btn em" href="#" onclick="shareEmail();return false;" title="Share via Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span>Email</span>
+    </a>
+    <button class="soc-btn cp" onclick="copyLink(this)" title="Copy link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>Copy Link</span>
+    </button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+  <button class="tab-btn active" onclick="switchTab('basic',this)">♨ Basic Rankine</button>
+  <button class="tab-btn" onclick="switchTab('superheat',this)">🔥 Superheated</button>
+  <button class="tab-btn" onclick="switchTab('reheat',this)">🔄 Reheat</button>
+  <button class="tab-btn" onclick="switchTab('regen',this)">♻ Regenerative</button>
+  <button class="tab-btn" onclick="switchTab('carnot',this)">📐 Carnot</button>
+  <button class="tab-btn" onclick="switchTab('guide',this)">📚 Efficiency Guide</button>
+</div>
+
+<!-- ═══ BASIC RANKINE ═══ -->
+<div id="tab-basic" class="tab-pane active">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-blue">♨</div><div class="card-title">Basic Rankine Cycle</div></div>
+      <div class="card-body">
+        <div class="preset-strip">
+          <button class="pchip" onclick="loadPreset('basic','coal')">🏭 Coal Plant</button>
+          <button class="pchip" onclick="loadPreset('basic','nuclear')">☢ Nuclear</button>
+          <button class="pchip" onclick="loadPreset('basic','geothermal')">🌋 Geothermal</button>
+          <button class="pchip" onclick="loadPreset('basic','biomass')">🌿 Biomass</button>
+        </div>
+        <form id="basicForm" novalidate>
+          <div class="slabel">🌡 Boiler — High Pressure Side</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-b_T3">Boiler Temperature T₃</label>
+              <div class="irow"><input type="number" id="b_T3" value="300" step="5" min="50" max="800">
+              <div class="ulab u-blue" id="ulbl-b_T3">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-b_Ph">Boiler Pressure P_high</label>
+              <div class="irow"><input type="number" id="b_Ph" value="3" step="0.1" min="0.01" max="30" oninput="autoTsat('b_Ph','b_Tsat_info')">
+              <div class="ulab u-blue" id="ulbl-b_Ph">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P_high (auto)</label>
+              <div class="irow"><input type="text" id="b_Tsat_info" value="—" readonly>
+              <div class="ulab u-teal" id="ulbl-b_Tsat_info">°C</div></div>
+            </div>
+          </div>
+          <div class="slabel teal">❄ Condenser — Low Pressure Side</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-b_T1">Condenser Temperature T₁</label>
+              <div class="irow"><input type="number" id="b_T1" value="40" step="1" min="1" max="200">
+              <div class="ulab u-teal" id="ulbl-b_T1">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-b_Pc">Condenser Pressure P_low</label>
+              <div class="irow"><input type="number" id="b_Pc" value="0.00738" step="0.001" min="0.0001" max="10">
+              <div class="ulab u-teal" id="ulbl-b_Pc">MPa</div></div>
+            </div>
+          </div>
+          <div class="slabel amber">⚙ Component Efficiencies</div>
+          <div class="fgrid">
+            <div class="fg"><label>Turbine η_t</label><div class="irow"><input type="number" id="b_etaT" value="85" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg"><label>Pump η_p</label><div class="irow"><input type="number" id="b_etaP" value="80" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg"><label>Generator η_g</label><div class="irow"><input type="number" id="b_etaG" value="98" step="0.5" min="70" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg"><label>Boiler η_b</label><div class="irow"><input type="number" id="b_etaB" value="88" step="1" min="50" max="100"><div class="ulab u-amber">%</div></div></div>
+          </div>
+          <div class="slabel green">⚡ Plant Scale</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-b_mdot">Steam Flow ṁ</label>
+              <div class="irow"><input type="number" id="b_mdot" value="50" step="5" min="0.1">
+              <div class="ulab u-green" id="ulbl-b_mdot">kg/s</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-b_hhv">Fuel Heating Value (HHV)</label>
+              <div class="irow"><input type="number" id="b_hhv" value="25" step="1" min="1">
+              <div class="ulab u-green" id="ulbl-b_hhv">MJ/kg</div></div>
+            </div>
+          </div>
+          <div id="b_err" class="err-box">⚠ <span id="b_err_txt"></span></div>
+          <div class="btn-row">
+            <button type="submit" class="btn-calc">⚡ Calculate Cycle</button>
+            <button type="button" class="btn-reset" onclick="resetCalc('b','basicForm')">↺ Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-teal">📊</div><div class="card-title">Results</div></div>
+      <div id="b_ph" class="ph"><div class="ph-ico">♨</div><h3>Awaiting Calculation</h3><p>Fill in the parameters and press Calculate</p></div>
+      <div id="b_spin" class="spinner-wrap"><div class="spin"></div><p class="spin-txt">Computing steam properties…</p></div>
+      <div id="b_res" class="res-pane"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SUPERHEATED ═══ -->
+<div id="tab-superheat" class="tab-pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-blue">🔥</div><div class="card-title">Superheated Rankine</div></div>
+      <div class="card-body">
+        <div class="preset-strip">
+          <button class="pchip" onclick="loadPreset('superheat','modern')">⚡ Modern Coal</button>
+          <button class="pchip" onclick="loadPreset('superheat','supercritical')">🚀 Supercritical</button>
+          <button class="pchip" onclick="loadPreset('superheat','industrial')">🏗 Industrial</button>
+        </div>
+        <form id="superheatForm" novalidate>
+          <div class="slabel">🔥 Superheat Conditions</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-sh_Tsh">Superheat Temperature T_sh</label>
+              <div class="irow"><input type="number" id="sh_Tsh" value="500" step="10" min="100" max="800" oninput="updateDSH()">
+              <div class="ulab u-blue" id="ulbl-sh_Tsh">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-sh_Ph">Boiler Pressure P_high</label>
+              <div class="irow"><input type="number" id="sh_Ph" value="10" step="0.5" min="0.1" max="30" oninput="autoTsat('sh_Ph','sh_Tsat_info');updateDSH()">
+              <div class="ulab u-blue" id="ulbl-sh_Ph">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P_high (auto)</label>
+              <div class="irow"><input type="text" id="sh_Tsat_info" value="—" readonly>
+              <div class="ulab u-teal" id="ulbl-sh_Tsat">°C</div></div>
+            </div>
+            <div class="fg">
+              <label>Degree of Superheat ΔT_sh</label>
+              <div class="irow"><input type="text" id="sh_dsh" value="—" readonly style="color:var(--amber);background:var(--amber-lt);border-color:var(--amber-bdr)">
+              <div class="ulab u-amber">°C</div></div>
+            </div>
+          </div>
+          <div class="slabel teal">❄ Condenser</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-sh_Tc">Condenser Temperature T_c</label>
+              <div class="irow"><input type="number" id="sh_Tc" value="40" step="1" min="1" max="100">
+              <div class="ulab u-teal" id="ulbl-sh_Tc">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-sh_Pc">Condenser Pressure P_c</label>
+              <div class="irow"><input type="number" id="sh_Pc" value="0.00738" step="0.001" min="0.001" max="5">
+              <div class="ulab u-teal" id="ulbl-sh_Pc">MPa</div></div>
+            </div>
+            <div class="fg"><label>Turbine η_t</label><div class="irow"><input type="number" id="sh_etaT" value="88" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg"><label>Pump η_p</label><div class="irow"><input type="number" id="sh_etaP" value="82" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg">
+              <label id="lbl-sh_mdot">Steam Flow ṁ</label>
+              <div class="irow"><input type="number" id="sh_mdot" value="100" step="10" min="0.1">
+              <div class="ulab u-green" id="ulbl-sh_mdot">kg/s</div></div>
+            </div>
+          </div>
+          <div id="sh_err" class="err-box">⚠ <span id="sh_err_txt"></span></div>
+          <div class="btn-row">
+            <button type="submit" class="btn-calc">🔥 Calculate Cycle</button>
+            <button type="button" class="btn-reset" onclick="resetCalc('sh','superheatForm')">↺ Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-teal">📊</div><div class="card-title">Results</div></div>
+      <div id="sh_ph" class="ph"><div class="ph-ico">🔥</div><h3>Awaiting Calculation</h3><p>Fill in the parameters and press Calculate</p></div>
+      <div id="sh_spin" class="spinner-wrap"><div class="spin"></div><p class="spin-txt">Computing…</p></div>
+      <div id="sh_res" class="res-pane"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REHEAT ═══ -->
+<div id="tab-reheat" class="tab-pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-amber">🔄</div><div class="card-title">Reheat Rankine Cycle</div></div>
+      <div class="card-body">
+        <form id="reheatForm" novalidate>
+          <div class="slabel">🌡 High Pressure Turbine (HPT)</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rh_T1">HPT Inlet Temperature T₁</label>
+              <div class="irow"><input type="number" id="rh_T1" value="550" step="10" min="100" max="800">
+              <div class="ulab u-blue" id="ulbl-rh_T1">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-rh_P1">HPT Inlet Pressure P₁</label>
+              <div class="irow"><input type="number" id="rh_P1" value="15" step="1" min="0.5" max="30" oninput="autoTsat('rh_P1','rh_Tsat1')">
+              <div class="ulab u-blue" id="ulbl-rh_P1">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P₁ (auto)</label>
+              <div class="irow"><input type="text" id="rh_Tsat1" value="—" readonly>
+              <div class="ulab u-teal" id="ulbl-rh_Tsat1">°C</div></div>
+            </div>
+            <div class="fg"><label>HPT Isentropic η</label><div class="irow"><input type="number" id="rh_etaHP" value="88" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+          </div>
+          <div class="slabel amber">🔥 Reheat Stage</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rh_Trh">Reheat Temperature T_rh</label>
+              <div class="irow"><input type="number" id="rh_Trh" value="550" step="10" min="100" max="800">
+              <div class="ulab u-blue" id="ulbl-rh_Trh">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-rh_P2">Reheat Pressure P₂</label>
+              <div class="irow"><input type="number" id="rh_P2" value="3" step="0.5" min="0.05" max="25" oninput="autoTsat('rh_P2','rh_Tsat2')">
+              <div class="ulab u-blue" id="ulbl-rh_P2">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P₂ (auto)</label>
+              <div class="irow"><input type="text" id="rh_Tsat2" value="—" readonly>
+              <div class="ulab u-teal" id="ulbl-rh_Tsat2">°C</div></div>
+            </div>
+            <div class="fg"><label>LPT Isentropic η</label><div class="irow"><input type="number" id="rh_etaLP" value="87" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+          </div>
+          <div class="slabel teal">❄ Condenser &amp; Pump</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rh_Pc">Condenser Pressure P_c</label>
+              <div class="irow"><input type="number" id="rh_Pc" value="0.00738" step="0.001" min="0.001" max="1">
+              <div class="ulab u-teal" id="ulbl-rh_Pc">MPa</div></div>
+            </div>
+            <div class="fg"><label>Pump η</label><div class="irow"><input type="number" id="rh_etaP" value="82" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg">
+              <label id="lbl-rh_mdot">Steam Flow ṁ</label>
+              <div class="irow"><input type="number" id="rh_mdot" value="150" step="10" min="0.1">
+              <div class="ulab u-green" id="ulbl-rh_mdot">kg/s</div></div>
+            </div>
+          </div>
+          <div id="rh_err" class="err-box">⚠ <span id="rh_err_txt"></span></div>
+          <div class="btn-row">
+            <button type="submit" class="btn-calc">🔄 Calculate Cycle</button>
+            <button type="button" class="btn-reset" onclick="resetCalc('rh','reheatForm')">↺ Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-amber">📊</div><div class="card-title">Results</div></div>
+      <div id="rh_ph" class="ph"><div class="ph-ico">🔄</div><h3>Awaiting Calculation</h3><p>Fill in the parameters and press Calculate</p></div>
+      <div id="rh_spin" class="spinner-wrap"><div class="spin"></div></div>
+      <div id="rh_res" class="res-pane"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REGENERATIVE ═══ -->
+<div id="tab-regen" class="tab-pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-green">♻</div><div class="card-title">Regenerative Rankine (Open FWH)</div></div>
+      <div class="card-body">
+        <form id="regenForm" novalidate>
+          <div class="slabel green">🌡 Turbine Inlet</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rg_Thi">Turbine Inlet Temperature T_hi</label>
+              <div class="irow"><input type="number" id="rg_Thi" value="500" step="10" min="100" max="800">
+              <div class="ulab u-blue" id="ulbl-rg_Thi">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-rg_Phi">Turbine Inlet Pressure P_hi</label>
+              <div class="irow"><input type="number" id="rg_Phi" value="10" step="1" min="0.5" max="30" oninput="autoTsat('rg_Phi','rg_Tsat_in')">
+              <div class="ulab u-blue" id="ulbl-rg_Phi">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P_hi (auto)</label>
+              <div class="irow"><input type="text" id="rg_Tsat_in" value="—" readonly>
+              <div class="ulab u-teal">°C</div></div>
+            </div>
+          </div>
+          <div class="slabel amber">♻ Bleed / Feedwater Heater</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rg_Pbleed">Bleed Pressure P_bleed</label>
+              <div class="irow"><input type="number" id="rg_Pbleed" value="1.0" step="0.1" min="0.1" max="20" oninput="autoTsat('rg_Pbleed','rg_Tsat_bleed')">
+              <div class="ulab u-blue" id="ulbl-rg_Pbleed">MPa</div></div>
+            </div>
+            <div class="fg">
+              <label>T_sat at P_bleed — FWH outlet</label>
+              <div class="irow"><input type="text" id="rg_Tsat_bleed" value="—" readonly>
+              <div class="ulab u-teal">°C</div></div>
+            </div>
+          </div>
+          <div class="slabel teal">❄ Condenser &amp; Pumps</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-rg_Pc">Condenser Pressure P_c</label>
+              <div class="irow"><input type="number" id="rg_Pc" value="0.00738" step="0.001" min="0.001" max="1">
+              <div class="ulab u-teal" id="ulbl-rg_Pc">MPa</div></div>
+            </div>
+            <div class="fg"><label>Turbine η_t</label><div class="irow"><input type="number" id="rg_etaT" value="87" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg"><label>Pump η_p</label><div class="irow"><input type="number" id="rg_etaP" value="82" step="1" min="40" max="100"><div class="ulab u-amber">%</div></div></div>
+            <div class="fg">
+              <label id="lbl-rg_mdot">Total Steam Flow ṁ</label>
+              <div class="irow"><input type="number" id="rg_mdot" value="100" step="10" min="0.1">
+              <div class="ulab u-green" id="ulbl-rg_mdot">kg/s</div></div>
+            </div>
+          </div>
+          <div id="rg_err" class="err-box">⚠ <span id="rg_err_txt"></span></div>
+          <div class="btn-row">
+            <button type="submit" class="btn-calc">♻ Calculate Cycle</button>
+            <button type="button" class="btn-reset" onclick="resetCalc('rg','regenForm')">↺ Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-green">📊</div><div class="card-title">Results</div></div>
+      <div id="rg_ph" class="ph"><div class="ph-ico">♻</div><h3>Awaiting Calculation</h3><p>Fill in the parameters and press Calculate</p></div>
+      <div id="rg_spin" class="spinner-wrap"><div class="spin"></div></div>
+      <div id="rg_res" class="res-pane"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CARNOT ═══ -->
+<div id="tab-carnot" class="tab-pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-violet">📐</div><div class="card-title">Carnot Efficiency — Theoretical Limit</div></div>
+      <div class="card-body">
+        <form id="carnotForm" novalidate>
+          <div class="slabel violet">🌡 Temperature Inputs (auto-converted to Kelvin / Rankine)</div>
+          <div class="fgrid">
+            <div class="fg">
+              <label id="lbl-c_TH">Hot Reservoir T_H</label>
+              <div class="irow"><input type="number" id="c_TH" value="400" step="5" min="-272" max="2000" oninput="updateCarnotPreview()">
+              <div class="ulab u-blue" id="ulbl-c_TH">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-c_TC">Cold Reservoir T_C</label>
+              <div class="irow"><input type="number" id="c_TC" value="25" step="1" min="-272" max="1990" oninput="updateCarnotPreview()">
+              <div class="ulab u-teal" id="ulbl-c_TC">°C</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-c_TH_K">T_H in Kelvin (live)</label>
+              <div class="irow"><input type="text" id="c_TH_K" value="673.15 K" readonly style="color:var(--violet);background:var(--violet-lt);border-color:var(--violet-bdr)">
+              <div class="ulab u-violet" id="ulbl-c_TH_K">K</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-c_TC_K">T_C in Kelvin (live)</label>
+              <div class="irow"><input type="text" id="c_TC_K" value="298.15 K" readonly style="color:var(--violet);background:var(--violet-lt);border-color:var(--violet-bdr)">
+              <div class="ulab u-violet" id="ulbl-c_TC_K">K</div></div>
+            </div>
+            <div class="fg">
+              <label>Carnot η — Live Preview</label>
+              <div class="irow"><input type="text" id="c_eta_prev" value="55.73%" readonly style="color:var(--orange);background:var(--orange-lt);border-color:var(--orange-bdr);font-size:1.05rem;font-weight:700">
+              <div class="ulab u-blue">%</div></div>
+            </div>
+            <div class="fg">
+              <label>Actual Cycle η (optional)</label>
+              <div class="irow"><input type="number" id="c_actual" value="" step="0.5" min="0" max="100" placeholder="e.g. 35">
+              <div class="ulab u-amber">%</div></div>
+            </div>
+            <div class="fg">
+              <label id="lbl-c_QH">Heat Input Q_H</label>
+              <div class="irow"><input type="number" id="c_QH" value="1000" step="10" min="1">
+              <div class="ulab u-green" id="ulbl-c_QH">kW</div></div>
+            </div>
+          </div>
+          <div id="c_err" class="err-box">⚠ <span id="c_err_txt"></span></div>
+          <div class="btn-row">
+            <button type="submit" class="btn-calc">📐 Calculate Carnot</button>
+            <button type="button" class="btn-reset" onclick="resetCalc('c','carnotForm')">↺ Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico ico-violet">📊</div><div class="card-title">Results</div></div>
+      <div id="c_ph" class="ph"><div class="ph-ico">📐</div><h3>Awaiting Calculation</h3><p>Enter temperatures and press Calculate</p></div>
+      <div id="c_spin" class="spinner-wrap"><div class="spin"></div></div>
+      <div id="c_res" class="res-pane"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EFFICIENCY GUIDE TAB ═══ -->
+<div id="tab-guide" class="tab-pane">
+<div class="guide-wrap">
+
+  <!-- Hero -->
+  <div class="guide-hero">
+    <h2>Understanding Efficiency in Rankine Cycles</h2>
+    <p>Every efficiency value in this calculator has a specific meaning, formula, and range. This guide explains what each one measures, why the numbers differ, and the physical reasoning behind why some efficiencies are inherently higher or lower than others.</p>
+    <div class="tag-row">
+      <span class="gtag gtag-blue">INPUT Efficiencies</span>
+      <span class="gtag gtag-teal">OUTPUT Efficiencies</span>
+      <span class="gtag gtag-violet">Theoretical Limits</span>
+      <span class="gtag gtag-green">Combined Metrics</span>
+    </div>
+  </div>
+
+  <!-- Hierarchy Overview -->
+  <div class="hierarchy">
+    <h3>⚖️ The Efficiency Hierarchy — Why They're Always in This Order</h3>
+    <p style="font-size:.9rem;color:var(--text3);margin-bottom:18px;line-height:1.7">
+      In any real steam power cycle, the efficiencies form a strict pyramid. The Carnot limit sits at top as the absolute ceiling; actual cycle efficiency is always below it; overall plant efficiency is lower still because it accounts for generator and boiler losses. Component efficiencies (turbine, pump) describe individual machine quality, not the whole system.
+    </p>
+    <div class="hrow h-carnot">
+      <div class="hlbl">① Carnot η (ceiling)</div>
+      <div class="htrack"><div class="hfill" style="width:65%"><span>~55–75% typical</span></div></div>
+      <div style="font-size:.82rem;color:var(--violet);font-weight:700;min-width:90px">Always highest</div>
+    </div>
+    <div class="hrow" style="padding-left:20px">
+      <div style="color:var(--text4);font-size:.82rem;flex-shrink:0">▾ Real losses cut this down</div>
+    </div>
+    <div class="hrow h-thermal">
+      <div class="hlbl">② Thermal η_th</div>
+      <div class="htrack"><div class="hfill" style="width:45%"><span>25–47% typical</span></div></div>
+      <div style="font-size:.82rem;color:var(--blue);font-weight:700;min-width:90px">Below Carnot</div>
+    </div>
+    <div class="hrow" style="padding-left:20px">
+      <div style="color:var(--text4);font-size:.82rem;flex-shrink:0">▾ Generator &amp; boiler losses reduce further</div>
+    </div>
+    <div class="hrow h-overall">
+      <div class="hlbl">③ Overall Plant η</div>
+      <div class="htrack"><div class="hfill" style="width:35%"><span>20–40% typical</span></div></div>
+      <div style="font-size:.82rem;color:var(--teal);font-weight:700;min-width:90px">Lowest whole-system</div>
+    </div>
+    <div class="hrow" style="margin-top:16px;border-top:1px dashed var(--border);padding-top:14px">
+      <div class="hlbl">⚙ Turbine η_t (component)</div>
+      <div class="htrack"><div class="hfill h-comp" style="width:88%"><span>82–92% world-class</span></div></div>
+      <div style="font-size:.82rem;color:var(--amber);font-weight:700;min-width:90px">High — by design</div>
+    </div>
+    <div class="hrow h-comp">
+      <div class="hlbl">⚙ Pump η_p (component)</div>
+      <div class="htrack"><div class="hfill" style="width:80%"><span>75–88% typical</span></div></div>
+      <div style="font-size:.82rem;color:var(--amber);font-weight:700;min-width:90px">High — by design</div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 1: INPUT EFFICIENCIES ═══ -->
+  <div class="g-section">
+    <div class="g-section-title"><span>🔧</span> Input Efficiencies — What You Set, What They Mean</div>
+    <p style="font-size:.92rem;color:var(--text3);margin-bottom:18px;line-height:1.7">These are the component efficiencies you enter as inputs. They describe how well each individual machine performs relative to the theoretical ideal. They are NOT the overall cycle efficiency — they feed into the cycle calculation.</p>
+
+    <!-- Turbine -->
+    <div class="def-card">
+      <div class="def-card-head" onclick="this.parentElement.classList.toggle('expanded')" style="cursor:default">
+        <div class="def-badge input">η_t</div>
+        <div class="def-head-text">
+          <div class="def-name">Isentropic Turbine Efficiency</div>
+          <div class="def-symbol">η_t = (h₃ − h₄_actual) / (h₃ − h₄_isentropic)</div>
+        </div>
+        <span class="def-type-tag tag-input">Input</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula">η_t = W_actual / W_isentropic = (h₃ − h₄) / (h₃ − h₄s)</div>
+        <div class="def-desc">
+          The turbine converts steam enthalpy into shaft work. In a <strong>perfect (isentropic) turbine</strong>, entropy stays constant as steam expands — all available energy becomes work. Real turbines lose energy to <strong>blade friction, flow separation, tip leakage, windage, and moisture erosion</strong>. The isentropic efficiency tells you what fraction of the ideal work you actually extract.
+          <br><br>
+          A value of <strong>η_t = 0.88</strong> means 88% of the theoretically available work is extracted; 12% becomes heat that raises the exhaust enthalpy above the ideal value. This higher exhaust enthalpy (h₄ &gt; h₄s) means <strong>more heat must be rejected in the condenser</strong>, directly reducing cycle thermal efficiency.
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ Why η_t is HIGH (88–92%)</h4>
+            <ul>
+              <li>Modern 3D blade profiling minimises secondary flow losses</li>
+              <li>Large multi-stage turbines with many small pressure drops</li>
+              <li>Precision manufacturing — tight tip clearances</li>
+              <li>Dry, superheated steam (no moisture erosion)</li>
+              <li>Optimal operating load point (design RPM)</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ Why η_t is LOW (70–82%)</h4>
+            <ul>
+              <li>High moisture content at LP turbine exit erodes blades</li>
+              <li>Small turbines have worse tip-to-span ratio (more leakage)</li>
+              <li>Off-design operation (part-load or over-speed)</li>
+              <li>Fouling, scale deposits on blade surfaces</li>
+              <li>Old or worn rotor — blade profile degraded</li>
+            </ul>
+          </div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Typical range</div>
+          <div class="range-track">
+            <div class="range-fill" style="left:50%;width:40%;background:linear-gradient(90deg,var(--amber),var(--blue))"></div>
+          </div>
+          <div class="range-text">75–92%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pump -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge input">η_p</div>
+        <div class="def-head-text">
+          <div class="def-name">Isentropic Pump Efficiency</div>
+          <div class="def-symbol">η_p = W_isentropic / W_actual = (h₂s − h₁) / (h₂ − h₁)</div>
+        </div>
+        <span class="def-type-tag tag-input">Input</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula teal">η_p = (v_f × ΔP) / (h₂ − h₁_actual)</div>
+        <div class="def-desc">
+          The pump raises water pressure from condenser to boiler pressure. In an ideal pump, only liquid incompressibility matters — the work equals <strong>v_f × ΔP</strong> (specific volume × pressure rise). Real pumps waste energy in <strong>fluid recirculation, cavitation, mechanical friction, and hydraulic losses</strong>. The pump efficiency tells you how much extra work must be supplied compared to the ideal.
+          <br><br>
+          Unlike the turbine where low efficiency means you get <em>less</em> output, low pump efficiency means you must <em>supply more</em> work. Because pump work is typically only 0.1–2% of turbine work in a Rankine cycle, pump efficiency has a small but measurable effect on the <strong>Back Work Ratio</strong> — the fraction of turbine work consumed by the pump.
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ Why η_p is HIGH (82–90%)</h4>
+            <ul>
+              <li>Centrifugal pumps at their design flow point</li>
+              <li>Liquid water is incompressible — minimal internal losses</li>
+              <li>Subcooled liquid at pump inlet prevents cavitation</li>
+              <li>Proper NPSH (net positive suction head) margin</li>
+              <li>Variable-speed drives at optimal RPM</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ Why η_p is LOW (65–78%)</h4>
+            <ul>
+              <li>Cavitation — inlet steam flashing destroys impeller</li>
+              <li>Throttle-controlled (energy wasted in throttle valve)</li>
+              <li>Pump oversized for actual flow — runs far off design</li>
+              <li>Multi-pump systems with mismatched characteristics</li>
+              <li>Mechanical seal friction and bearing losses</li>
+            </ul>
+          </div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Typical range</div>
+          <div class="range-track">
+            <div class="range-fill" style="left:52%;width:36%;background:linear-gradient(90deg,var(--teal),var(--blue))"></div>
+          </div>
+          <div class="range-text">72–88%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generator -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge input" style="font-size:.72rem">η_g</div>
+        <div class="def-head-text">
+          <div class="def-name">Generator Efficiency</div>
+          <div class="def-symbol">η_g = P_electrical / P_mechanical_shaft</div>
+        </div>
+        <span class="def-type-tag tag-input">Input</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula green">η_g = P_elec / P_shaft   (typically 96–99%)</div>
+        <div class="def-desc">
+          The synchronous generator converts turbine shaft rotation into electrical power. Losses are <strong>copper losses</strong> (I²R heating in windings), <strong>iron losses</strong> (eddy currents and hysteresis in the stator core), <strong>mechanical losses</strong> (bearing friction, windage of the rotor), and <strong>excitation losses</strong>. Generators are among the most efficient machines ever built — losses are engineered to be tiny.
+          <br><br>
+          At η_g = 0.98, the generator converts 98% of shaft work to electricity. The remaining 2% heats the windings and must be removed by forced ventilation or hydrogen cooling in large machines. Generator efficiency is <strong>nearly constant across load</strong>, making it almost a fixed scaling factor on net power.
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ Why η_g is HIGH (97–99.5%)</h4>
+            <ul>
+              <li>Large machines: better ratio of active material to surface losses</li>
+              <li>Hydrogen-cooled rotors — 7× better thermal conductivity than air</li>
+              <li>Water-cooled stator windings in &gt;500 MW machines</li>
+              <li>High-grade silicon steel minimises eddy current losses</li>
+              <li>Modern insulation allows tighter winding packing</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ Why η_g is LOWER (93–96%)</h4>
+            <ul>
+              <li>Small generators: surface losses proportionally larger</li>
+              <li>Air-cooled units have higher windage losses</li>
+              <li>Part-load operation raises relative excitation losses</li>
+              <li>Older insulation class limits current density</li>
+              <li>High ambient temperature forces derating</li>
+            </ul>
+          </div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Typical range</div>
+          <div class="range-track">
+            <div class="range-fill" style="left:64%;width:33%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+          </div>
+          <div class="range-text">94–99.5%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boiler -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge input" style="font-size:.72rem">η_b</div>
+        <div class="def-head-text">
+          <div class="def-name">Boiler / Combustion Efficiency</div>
+          <div class="def-symbol">η_b = Q_steam / (ṁ_fuel × HHV)</div>
+        </div>
+        <span class="def-type-tag tag-input">Input</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula amber">η_b = Q_absorbed_by_steam / Q_fuel_released</div>
+        <div class="def-desc">
+          Boiler efficiency measures how much of the fuel's chemical energy is successfully transferred to the working fluid (steam). Losses include <strong>stack losses</strong> (hot flue gas exits with unused heat), <strong>radiation losses</strong> (heat lost through boiler walls), <strong>incomplete combustion</strong> (CO, unburned hydrocarbons), <strong>blowdown losses</strong>, and <strong>moisture in fuel</strong>. The HHV (Higher Heating Value) used in this calculator assumes all latent heat of water vapour in combustion products is recovered.
+          <br><br>
+          Boiler efficiency is typically the <strong>largest single source of loss</strong> in a power plant. A 10% improvement in boiler efficiency from 80% to 88% directly increases overall plant output by the same factor. Modern supercritical boilers achieve 92–95% efficiency by recovering heat from flue gas (economisers, air preheaters) and minimising excess air.
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ Why η_b is HIGH (88–95%)</h4>
+            <ul>
+              <li>Flue gas economiser recovers exhaust heat to preheat feedwater</li>
+              <li>Air preheater recovers more heat to warm combustion air</li>
+              <li>Optimal excess air ratio — complete combustion without excess losses</li>
+              <li>Low-ash, low-moisture fuel (natural gas → coal)</li>
+              <li>High furnace temperatures maximise radiative heat transfer</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ Why η_b is LOW (70–82%)</h4>
+            <ul>
+              <li>Wet fuel (biomass, green wood) — latent heat lost in stack</li>
+              <li>High stack temperature — insufficient heat recovery</li>
+              <li>Excess air — unnecessary nitrogen heating load</li>
+              <li>Scale on heat transfer surfaces — thermal resistance</li>
+              <li>Poorly distributed flame — hot spots and quenching</li>
+            </ul>
+          </div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Typical range</div>
+          <div class="range-track">
+            <div class="range-fill" style="left:40%;width:48%;background:linear-gradient(90deg,var(--amber),var(--green))"></div>
+          </div>
+          <div class="range-text">72–95%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: OUTPUT EFFICIENCIES ═══ -->
+  <div class="g-section">
+    <div class="g-section-title"><span>📊</span> Output Efficiencies — What the Calculator Computes</div>
+    <p style="font-size:.92rem;color:var(--text3);margin-bottom:18px;line-height:1.7">These are derived results — the calculator computes them from your inputs and steam table lookups. They describe the cycle as a whole, not individual components.</p>
+
+    <!-- Thermal Efficiency -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge output">η_th</div>
+        <div class="def-head-text">
+          <div class="def-name">Thermal (Cycle) Efficiency</div>
+          <div class="def-symbol">η_th = W_net / Q_in = (W_turbine − W_pump) / Q_boiler</div>
+        </div>
+        <span class="def-type-tag tag-output">Output</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula">η_th = (h₃ − h₄ − (h₂ − h₁)) / (h₃ − h₂)</div>
+        <div class="def-desc">
+          The thermal efficiency is the most fundamental measure of how well the <strong>thermodynamic cycle itself</strong> converts heat into work — <em>before</em> accounting for generator or boiler losses. It answers: "Of all the heat added in the boiler, what fraction became net shaft work at the turbine coupling?"
+          <br><br>
+          This is the standard metric used to compare different cycle configurations. A basic Rankine cycle running at 300°C / 3 MPa might achieve 28–32%. The same cycle with superheat to 560°C might reach 40–44%. Regenerative and reheat cycles can push this further. <strong>Thermal efficiency is always lower than the Carnot limit</strong> because real processes are irreversible — friction, heat transfer across finite temperature differences, and non-isentropic compression/expansion all generate entropy.
+        </div>
+        <div class="insight ins-blue">
+          <div class="insight-icon">💡</div>
+          <div class="insight-body">
+            <h4>Key Insight: Higher Boiler Temperature → Higher η_th</h4>
+            <p>Carnot tells us η = 1 − T_cold/T_hot. The same logic applies to real cycles: <strong>raising T₃ (turbine inlet) dramatically raises η_th</strong> because more of the heat is added at a higher mean temperature. This is why supercritical plants (T₃ ≥ 600°C) outperform subcritical ones (T₃ ≤ 400°C) by 8–12 percentage points.</p>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ η_th is HIGHER when…</h4>
+            <ul>
+              <li>Higher turbine inlet temperature (more work per kg)</li>
+              <li>Lower condenser temperature (larger pressure ratio)</li>
+              <li>Superheat added (heat at high mean temperature)</li>
+              <li>Reheat stages (recover partial expansion losses)</li>
+              <li>Regeneration (internal heat exchange reduces Q_in)</li>
+              <li>High turbine η_t (less enthalpy left in exhaust)</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ η_th is LOWER when…</h4>
+            <ul>
+              <li>Low turbine inlet temperature (small enthalpy drop)</li>
+              <li>High condenser pressure (constrained by cooling water)</li>
+              <li>Saturated steam at turbine inlet (moisture limits T)</li>
+              <li>Low turbine isentropic efficiency</li>
+              <li>High pump work (pressurising gas — not applicable here)</li>
+              <li>Geothermal / nuclear: limited max temperature</li>
+            </ul>
+          </div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Basic Rankine</div>
+          <div class="range-track"><div class="range-fill" style="left:12%;width:22%;background:linear-gradient(90deg,var(--amber),var(--blue))"></div></div>
+          <div class="range-text">18–30%</div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Superheated</div>
+          <div class="range-track"><div class="range-fill" style="left:22%;width:24%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div>
+          <div class="range-text">30–46%</div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Reheat / Regen</div>
+          <div class="range-track"><div class="range-fill" style="left:28%;width:24%;background:linear-gradient(90deg,var(--teal),var(--green))"></div></div>
+          <div class="range-text">36–48%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carnot Efficiency -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge limit">η_C</div>
+        <div class="def-head-text">
+          <div class="def-name">Carnot Efficiency — The Absolute Ceiling</div>
+          <div class="def-symbol">η_C = 1 − T_cold (K) / T_hot (K)</div>
+        </div>
+        <span class="def-type-tag tag-limit">Limit</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula violet">η_Carnot = 1 − T_C / T_H   [temperatures in Kelvin!]</div>
+        <div class="def-desc">
+          The Carnot efficiency is the <strong>maximum thermodynamically possible efficiency</strong> for any heat engine operating between two fixed temperature reservoirs. It is not a real cycle — no real process achieves it. Rather, it is a mathematical boundary derived from the Second Law of Thermodynamics.
+          <br><br>
+          <strong>Why must temperatures be in Kelvin?</strong> Because the Carnot formula uses the ratio T_C / T_H. This ratio only has physical meaning on an absolute temperature scale. On the Celsius scale, 0°C is not "zero heat energy" — it is 273.15 K. Using °C in the formula gives a physically wrong (and often absurd) result. The calculator always converts to Kelvin internally. In US mode, it converts to Rankine (°R = °F + 459.67), which is the US absolute scale.
+          <br><br>
+          In the Rankine cycle context, T_H is approximately the <strong>mean temperature at which heat is added</strong> (not the peak turbine inlet temperature) and T_C is the condenser saturation temperature. This is why the Carnot efficiency shown uses boiler and condenser temperatures — it is a useful comparison benchmark, not an exact calculation.
+        </div>
+        <div class="insight ins-violet">
+          <div class="insight-icon">⚠️</div>
+          <div class="insight-body">
+            <h4>Critical: °C vs Kelvin Error</h4>
+            <p>Example: T_H = 400°C = 673 K, T_C = 40°C = 313 K.<br>
+            <strong>Correct (Kelvin):</strong> η = 1 − 313/673 = 53.5% ✓<br>
+            <strong>Wrong (Celsius):</strong> η = 1 − 40/400 = 90% ✗ — <em>wildly overstated</em><br>
+            The calculator flags this error explicitly in the Carnot tab.</p>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ Carnot η is HIGHER when…</h4>
+            <ul>
+              <li>Very high T_H (supercritical steam, gas turbines)</li>
+              <li>Very cold T_C (cold ocean water, winter cooling)</li>
+              <li>Large temperature ratio T_H / T_C</li>
+              <li>Example: 600°C / 20°C → η_C = 67.8%</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ Carnot η is LOWER when…</h4>
+            <ul>
+              <li>Low T_H: geothermal (≤200°C), nuclear PWR (≤320°C)</li>
+              <li>Warm T_C: tropical cooling water (35–40°C)</li>
+              <li>Constrained by material limits on max temperature</li>
+              <li>Example: 180°C / 40°C → η_C = 31.4%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2nd Law Efficiency -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge combined">η_II</div>
+        <div class="def-head-text">
+          <div class="def-name">Second Law Efficiency (Exergetic Efficiency)</div>
+          <div class="def-symbol">η_II = η_th / η_Carnot</div>
+        </div>
+        <span class="def-type-tag tag-combined">Combined</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula green">η_II = η_thermal / η_Carnot = (W_net / Q_in) / (1 − T_C / T_H)</div>
+        <div class="def-desc">
+          The Second Law efficiency answers: <strong>"How well does this cycle use its thermodynamic opportunity?"</strong> It is the ratio of what you achieve (thermal efficiency) to the maximum you could theoretically achieve (Carnot efficiency) for the same temperature limits.
+          <br><br>
+          A 2nd Law efficiency of <strong>70%</strong> means your cycle extracts 70% of the maximum possible work from the available temperature difference. The remaining 30% is destroyed by irreversibilities — friction, heat transfer across temperature gradients, and mixing. This is a more meaningful comparison between cycles than thermal efficiency alone, because it normalises for the temperature conditions.
+          <br><br>
+          Real world-class steam plants achieve <strong>2nd Law efficiencies of 75–85%</strong>. Simple cycles or older plants may be 55–65%. The difference is mostly turbine quality, boiler design, and use of regeneration and reheat.
+        </div>
+        <div class="insight ins-green">
+          <div class="insight-icon">📈</div>
+          <div class="insight-body">
+            <h4>Why η_II is the "True" Measure of Engineering Quality</h4>
+            <p>A geothermal plant running at 25% thermal efficiency on 180°C steam might have a <strong>higher 2nd Law efficiency than a coal plant at 35% thermal efficiency on 500°C steam</strong>, if the geothermal plant uses its limited temperature difference more cleverly. The 2nd Law metric strips out the advantage of raw fuel temperature and measures only engineering quality.</p>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-box why-hi">
+            <h4>✓ η_II is HIGHER when…</h4>
+            <ul>
+              <li>High turbine η_t (less entropy generation)</li>
+              <li>Regenerative feedwater heating (reduces heat addition irreversibility)</li>
+              <li>Reheat brings T₃ closer to the Carnot temperature</li>
+              <li>Low condenser subcooling losses</li>
+              <li>Modern plant with multiple optimisation stages</li>
+            </ul>
+          </div>
+          <div class="why-box why-lo">
+            <h4>✗ η_II is LOWER when…</h4>
+            <ul>
+              <li>Large throttling losses (pressure drops in valves)</li>
+              <li>Heat added at large temperature differences (boiler)</li>
+              <li>High moisture content — irreversible condensation in turbine</li>
+              <li>No regeneration — cold feedwater meets hot boiler directly</li>
+              <li>Poor turbine or pump efficiency amplifies losses</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overall Plant Efficiency -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge combined" style="font-size:.72rem">η_plant</div>
+        <div class="def-head-text">
+          <div class="def-name">Overall Plant Efficiency</div>
+          <div class="def-symbol">η_plant = η_th × η_generator × η_boiler</div>
+        </div>
+        <span class="def-type-tag tag-combined">Combined</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula orange">η_plant = η_th × η_g × η_b = P_electrical / (ṁ_fuel × HHV)</div>
+        <div class="def-desc">
+          The overall plant efficiency is the <strong>bottom-line number</strong> — it tells you how much of the fuel's total chemical energy ends up as electricity at the generator terminals. It multiplies the three major efficiency chains: how well the thermodynamic cycle converts heat to shaft work (η_th), how well the shaft drives the generator (η_g), and how much of the fuel's heat actually reached the working fluid (η_b).
+          <br><br>
+          This is the number used for <strong>carbon accounting, fuel cost calculations, and regulatory reporting</strong>. A plant with η_th = 42%, η_g = 98%, and η_b = 90% has overall plant efficiency of 42% × 98% × 90% = <strong>37%</strong>. Of every 100 units of fuel energy burned, only 37 become electricity.
+        </div>
+        <div class="insight ins-amber">
+          <div class="insight-icon">🔥</div>
+          <div class="insight-body">
+            <h4>Why η_plant is Always Significantly Lower Than η_th</h4>
+            <p>Even with η_g ≈ 98% and η_b ≈ 90%, multiplying gives 0.98 × 0.90 = 0.882. So overall plant efficiency is only 88.2% of the thermal cycle efficiency. A cycle achieving η_th = 45% gives only η_plant = 45% × 0.882 = <strong>39.7%</strong>. The boiler is by far the bigger loss — improving it from 85% → 92% saves more than upgrading the turbine by 3 percentage points.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Work Ratio -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge output" style="font-size:.7rem">BWR</div>
+        <div class="def-head-text">
+          <div class="def-name">Back Work Ratio</div>
+          <div class="def-symbol">BWR = W_pump / W_turbine</div>
+        </div>
+        <span class="def-type-tag tag-output">Output</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula teal">BWR = W_pump / W_turbine = (h₂ − h₁) / (h₃ − h₄)</div>
+        <div class="def-desc">
+          The Back Work Ratio is <strong>the Rankine cycle's great advantage over the gas turbine</strong>. In a gas turbine (Brayton cycle), compressing a gas requires enormous work — BWR is 40–80%. In the Rankine cycle, you pump <em>liquid</em> water, which requires almost no work because liquids are nearly incompressible. The BWR for Rankine cycles is typically only <strong>0.1–3%</strong>.
+          <br><br>
+          This is why the Rankine cycle is the dominant technology for large-scale thermal power: almost all the turbine output is available as net work. The pump work is negligible in comparison. A BWR of 0.4% means only 4 units of every 1,000 turbine output units are used to drive the pump.
+        </div>
+        <div class="insight ins-teal">
+          <div class="insight-icon">⚡</div>
+          <div class="insight-body">
+            <h4>Rankine vs. Brayton: Why Liquids Win</h4>
+            <p>Water at 40°C has specific volume v_f ≈ 0.001 m³/kg. Pump work = v_f × ΔP ≈ 0.001 × 10,000 kPa = <strong>10 kJ/kg</strong>. Turbine work ≈ 800–1200 kJ/kg. <strong>BWR ≈ 1%.</strong> Compare to a Brayton cycle where compressor work is 300–500 kJ/kg against turbine work of 600–900 kJ/kg — BWR of 40–60%. This 40× advantage is why Rankine cycles dominate large power generation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Heat Rate -->
+    <div class="def-card">
+      <div class="def-card-head">
+        <div class="def-badge output" style="font-size:.68rem">HR</div>
+        <div class="def-head-text">
+          <div class="def-name">Heat Rate</div>
+          <div class="def-symbol">HR = 3600 / η_th &nbsp;(SI: kJ/kWh) &nbsp;&nbsp; HR = 3412 / η_th &nbsp;(US: BTU/Wh)</div>
+        </div>
+        <span class="def-type-tag tag-output">Output</span>
+      </div>
+      <div class="def-body">
+        <div class="def-formula">HR (kJ/kWh) = 3600 / η_th &nbsp;&nbsp;→&nbsp;&nbsp; Lower = More Efficient</div>
+        <div class="def-desc">
+          Heat rate is the <strong>standard industry metric</strong> for power plant performance, especially in the US. It tells you how many kilojoules (or BTU) of fuel energy are required to produce one kilowatt-hour of electricity. The relationship is simply the inverse of thermal efficiency, scaled to the unit of kWh.
+          <br><br>
+          A heat rate of <strong>8,000 kJ/kWh means the plant is 45% efficient</strong> (3600/8000 = 0.45). World-class ultra-supercritical plants achieve heat rates of 7,200–7,800 kJ/kWh. Older subcritical plants may be 10,000–12,000 kJ/kWh. <strong>Every 1% reduction in heat rate saves approximately 1% on fuel costs</strong> — a critical economic metric.
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">World-class plant</div>
+          <div class="range-track"><div class="range-fill" style="left:0%;width:38%;background:var(--green)"></div></div>
+          <div class="range-text">7,200–8,000</div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Modern plant</div>
+          <div class="range-track"><div class="range-fill" style="left:0%;width:52%;background:var(--blue)"></div></div>
+          <div class="range-text">8,500–10,000</div>
+        </div>
+        <div class="range-row">
+          <div class="range-lbl">Older plant</div>
+          <div class="range-track"><div class="range-fill" style="left:0%;width:72%;background:var(--amber)"></div></div>
+          <div class="range-text">10,000–13,500</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: CYCLE COMPARISON ═══ -->
+  <div class="g-section">
+    <div class="g-section-title"><span>⚖️</span> Cycle Comparison — Why Each Configuration Has Different Efficiency</div>
+    <div class="tbl-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Cycle Type</th>
+            <th>Typical η_th</th>
+            <th>Why Higher / Lower</th>
+            <th>Key Improvement Mechanism</th>
+            <th>Limitation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Basic Rankine (saturated)</td>
+            <td class="lo-cell">18–30%</td>
+            <td>Lowest — heat added at saturation temperature; moisture limits turbine exit quality</td>
+            <td>Baseline — lowest capital cost</td>
+            <td>Turbine damage from wet steam; low T₃</td>
+          </tr>
+          <tr>
+            <td>Superheated Rankine</td>
+            <td class="mid-cell">30–46%</td>
+            <td>Higher mean heat-addition temperature raises η; dry steam protects turbine blades</td>
+            <td>Superheating raises T₃ well above T_sat, increasing enthalpy drop</td>
+            <td>Material limits (~620°C ferritic, ~700°C Ni-alloy)</td>
+          </tr>
+          <tr>
+            <td>Reheat Rankine</td>
+            <td class="mid-cell">34–47%</td>
+            <td>Second expansion stage adds work at intermediate pressure; moisture kept low</td>
+            <td>Reduces irreversibility in LP turbine; raises mean heat-addition T</td>
+            <td>Added reheater cost; optimal P₂ selection critical</td>
+          </tr>
+          <tr>
+            <td>Regenerative Rankine</td>
+            <td class="hi-cell">36–48%</td>
+            <td>Feedwater preheating reduces boiler heat input for same output; mean T_addition rises</td>
+            <td>Bled steam internally heats feedwater — recovers otherwise wasted heat</td>
+            <td>Reduces steam flow to LP turbine (less mass doing work)</td>
+          </tr>
+          <tr>
+            <td>Carnot (theoretical max)</td>
+            <td class="hi-cell">31–75%</td>
+            <td>All processes perfectly reversible — zero entropy generation. Physically impossible</td>
+            <td>Isothermal heat addition and rejection at exact T_H and T_C</td>
+            <td>Cannot be built — requires infinite time for reversible processes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight ins-blue" style="margin-top:18px">
+      <div class="insight-icon">🔄</div>
+      <div class="insight-body">
+        <h4>Why Reheat + Regeneration Together Achieves the Highest Real Efficiency</h4>
+        <p>Modern ultra-supercritical plants combine <strong>superheat (T₃ ≥ 600°C) + reheat (one or two stages) + regenerative feedwater heating (5–8 bleeds)</strong>. Each addition addresses a different source of irreversibility. Superheat raises the peak temperature. Reheat keeps the steam dry and adds more work. Regeneration reduces the temperature gap between cold feedwater and hot boiler gases. Together, these push η_th from ~30% to 45–48% — a 50% improvement in cycle efficiency.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: QUICK REFERENCE ═══ -->
+  <div class="g-section">
+    <div class="g-section-title"><span>📋</span> Quick Reference Card</div>
+    <div class="tbl-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Symbol</th><th>Name</th><th>Where</th><th>Formula</th><th>Typical Range</th><th>Higher means…</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>η_t</td><td>Turbine isentropic η</td><td>Input</td><td>(h₃−h₄)/(h₃−h₄s)</td><td class="mid-cell">82–92%</td><td>Less friction, better blades</td></tr>
+          <tr><td>η_p</td><td>Pump isentropic η</td><td>Input</td><td>(h₂s−h₁)/(h₂−h₁)</td><td class="mid-cell">75–88%</td><td>Less cavitation, better hydraulics</td></tr>
+          <tr><td>η_g</td><td>Generator η</td><td>Input</td><td>P_elec / P_shaft</td><td class="hi-cell">96–99.5%</td><td>Less winding/iron loss</td></tr>
+          <tr><td>η_b</td><td>Boiler η</td><td>Input</td><td>Q_steam / (ṁ×HHV)</td><td class="mid-cell">75–95%</td><td>Less stack loss, better heat recovery</td></tr>
+          <tr><td>η_th</td><td>Thermal efficiency</td><td>Output</td><td>W_net / Q_in</td><td class="lo-cell">18–48%</td><td>Better cycle design, higher T₃</td></tr>
+          <tr><td>η_C</td><td>Carnot efficiency</td><td>Limit</td><td>1 − T_C(K)/T_H(K)</td><td class="mid-cell">30–75%</td><td>Wider temperature ratio</td></tr>
+          <tr><td>η_II</td><td>2nd Law η</td><td>Output</td><td>η_th / η_C</td><td class="mid-cell">55–85%</td><td>Less irreversibility, better components</td></tr>
+          <tr><td>η_plant</td><td>Overall plant η</td><td>Output</td><td>η_th × η_g × η_b</td><td class="lo-cell">20–42%</td><td>All three sub-efficiencies improved</td></tr>
+          <tr><td>BWR</td><td>Back work ratio</td><td>Output</td><td>W_pump / W_turbine</td><td class="hi-cell">0.1–3%</td><td>Lower is better — less pump work</td></tr>
+          <tr><td>HR</td><td>Heat rate</td><td>Output</td><td>3600 / η_th (kJ/kWh)</td><td class="lo-cell">7,200–13,500</td><td>Lower HR = more efficient plant</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- END EFFICIENCY GUIDE TAB -->
+
+<div class="footer">
+  multicalci.com — Rankine Cycle Calculator · NIST IF97 Steam Tables · Wagner Equation for P_sat · Catmull–Rom Cubic Spline Interpolation<br>
+  <span style="font-size:.78rem;color:var(--text4)">Model assumptions: incompressible pump (v_f·ΔP), single open FWH (regenerative), isentropic efficiency applied to enthalpy drop. For pressures &gt;18 MPa, accuracy degrades near the critical point — validate against full IF97 software. <strong>Not for direct design use without independent verification.</strong></span>
+  <div class="print-timestamp"></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════
+// API ENDPOINT — all calcs run server-side
+// ════════════════════════════════════════
+const API_URL = '/api/rankine';
+
+async function callAPI(type, params) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, params })
+  });
+  if (!res.ok) throw new Error('API error ' + res.status);
+  return res.json();
+}
+
+// ════════════════════════════════════════
+// UNIT SYSTEM STATE
+// ════════════════════════════════════════
+let UNITS = 'SI'; // 'SI' or 'US'
+
+// Conversion factors SI → US
+const C2F = t => t * 9 / 5 + 32;
+const F2C = t => (t - 32) * 5 / 9;
+const MPa2psia = p => p * 145.038;
+const psia2MPa = p => p / 145.038;
+const kJkg2BTUlb = h => h * 0.429923;
+const BTUlb2kJkg = h => h / 0.429923;
+const kJs2BTUhr = w => w * 3412.14;
+const kgS2lbS = m => m * 2.20462;
+const lbS2kgS = m => m / 2.20462;
+const MJkg2BTUlb = e => e * 430.0;
+const BTUlb2MJkg = e => e / 430.0;
+const kJs2hp = w => w * 1.34102;
+
+// Field unit config: [SI_label, US_label, SI_unit, US_unit, si2us_fn, us2si_fn]
+const FIELD_UNITS = {
+  'b_T3': ['Boiler Temperature T₃','Boiler Temperature T₃','°C','°F',C2F,F2C],
+  'b_T1': ['Condenser Temperature T₁','Condenser Temperature T₁','°C','°F',C2F,F2C],
+  'sh_Tsh': ['Superheat Temperature T_sh','Superheat Temperature T_sh','°C','°F',C2F,F2C],
+  'sh_Tc': ['Condenser Temperature T_c','Condenser Temperature T_c','°C','°F',C2F,F2C],
+  'rh_T1': ['HPT Inlet Temperature T₁','HPT Inlet Temperature T₁','°C','°F',C2F,F2C],
+  'rh_Trh': ['Reheat Temperature T_rh','Reheat Temperature T_rh','°C','°F',C2F,F2C],
+  'rg_Thi': ['Turbine Inlet Temperature T_hi','Turbine Inlet Temperature T_hi','°C','°F',C2F,F2C],
+  'c_TH': ['Hot Reservoir T_H','Hot Reservoir T_H','°C','°F',C2F,F2C],
+  'c_TC': ['Cold Reservoir T_C','Cold Reservoir T_C','°C','°F',C2F,F2C],
+  'b_Ph': ['Boiler Pressure P_high','Boiler Pressure P_high','MPa','psia',MPa2psia,psia2MPa],
+  'b_Pc': ['Condenser Pressure P_low','Condenser Pressure P_low','MPa','psia',MPa2psia,psia2MPa],
+  'sh_Ph': ['Boiler Pressure P_high','Boiler Pressure P_high','MPa','psia',MPa2psia,psia2MPa],
+  'sh_Pc': ['Condenser Pressure P_c','Condenser Pressure P_c','MPa','psia',MPa2psia,psia2MPa],
+  'rh_P1': ['HPT Inlet Pressure P₁','HPT Inlet Pressure P₁','MPa','psia',MPa2psia,psia2MPa],
+  'rh_P2': ['Reheat Pressure P₂','Reheat Pressure P₂','MPa','psia',MPa2psia,psia2MPa],
+  'rh_Pc': ['Condenser Pressure P_c','Condenser Pressure P_c','MPa','psia',MPa2psia,psia2MPa],
+  'rg_Phi': ['Turbine Inlet Pressure P_hi','Turbine Inlet Pressure P_hi','MPa','psia',MPa2psia,psia2MPa],
+  'rg_Pbleed': ['Bleed Pressure P_bleed','Bleed Pressure P_bleed','MPa','psia',MPa2psia,psia2MPa],
+  'rg_Pc': ['Condenser Pressure P_c','Condenser Pressure P_c','MPa','psia',MPa2psia,psia2MPa],
+  'b_mdot': ['Steam Flow ṁ','Steam Flow ṁ','kg/s','lb/s',kgS2lbS,lbS2kgS],
+  'sh_mdot': ['Steam Flow ṁ','Steam Flow ṁ','kg/s','lb/s',kgS2lbS,lbS2kgS],
+  'rh_mdot': ['Steam Flow ṁ','Steam Flow ṁ','kg/s','lb/s',kgS2lbS,lbS2kgS],
+  'rg_mdot': ['Total Steam Flow ṁ','Total Steam Flow ṁ','kg/s','lb/s',kgS2lbS,lbS2kgS],
+  'b_hhv': ['Fuel Heating Value (HHV)','Fuel Heating Value (HHV)','MJ/kg','BTU/lb',MJkg2BTUlb,BTUlb2MJkg],
+  'c_TH_K': ['T_H in Kelvin (live)','T_H in Rankine (live)','K','°R',null,null],
+  'c_TC_K': ['T_C in Kelvin (live)','T_C in Rankine (live)','K','°R',null,null],
+  'c_QH': ['Heat Input Q_H','Heat Input Q_H','kW','BTU/hr',kJs2BTUhr,v=>v/3412.14],
+};
+
+function setUnits(mode) {
+  if (mode === UNITS) return;
+  UNITS = mode;
+  document.body.classList.toggle('us-units', mode === 'US');
+  document.getElementById('btn-si').classList.toggle('active', mode === 'SI');
+  document.getElementById('btn-us').classList.toggle('active', mode === 'US');
+  for (const [id, cfg] of Object.entries(FIELD_UNITS)) {
+    const el = document.getElementById(id);
+    const lblEl = document.getElementById('lbl-' + id);
+    if (!el) continue;
+    const [siLbl, usLbl, siUnit, usUnit, si2us, us2si] = cfg;
+    if (lblEl) lblEl.textContent = mode === 'SI' ? siLbl : usLbl;
+    const unitBadge = document.getElementById('ulbl-' + id);
+    if (unitBadge) unitBadge.textContent = mode === 'SI' ? siUnit : usUnit;
+    if (!el.readOnly && el.type !== 'text' && si2us && us2si) {
+      const val = parseFloat(el.value);
+      if (!isNaN(val)) {
+        const newVal = mode === 'SI' ? us2si(val) : si2us(val);
+        el.value = parseFloat(newVal.toPrecision(6));
+      }
+    }
+  }
+  refreshAutoFields();
+  updateCarnotPreview();
+}
+
+function getSI(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  if (UNITS === 'SI' || !FIELD_UNITS[id]) return v;
+  const cfg = FIELD_UNITS[id];
+  const us2si = cfg[5];
+  if (us2si && !isNaN(v)) return us2si(v);
+  return v;
+}
+
+function getVal(id) { return parseFloat(document.getElementById(id).value); }
+function fmtT(t_C) { return UNITS === 'SI' ? t_C.toFixed(1) + '°C' : C2F(t_C).toFixed(1) + '°F'; }
+function fmtP(p_MPa) { return UNITS === 'SI' ? p_MPa + ' MPa' : (MPa2psia(p_MPa)).toFixed(1) + ' psia'; }
+function hUnit() { return UNITS === 'SI' ? 'kJ/kg' : 'BTU/lb'; }
+function wUnit() { return UNITS === 'SI' ? 'kW' : 'BTU/hr'; }
+function tUnit() { return UNITS === 'SI' ? '°C' : '°F'; }
+function hd(h) { return UNITS === 'SI' ? h.toFixed(2) : kJkg2BTUlb(h).toFixed(3); }
+function wd(w) { return UNITS === 'SI' ? w.toFixed(1) : kJs2BTUhr(w).toFixed(0); }
+function wfld(w) { return UNITS === 'SI' ? w.toFixed(4) : kJkg2BTUlb(w).toFixed(5); }
+function wkd(w) { return UNITS === 'SI' ? w.toFixed(3) : kJkg2BTUlb(w).toFixed(4); }
+
+// ════════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════════
+function showErr(pfx, msg) {
+  const e = document.getElementById(pfx + '_err'), t = document.getElementById(pfx + '_err_txt');
+  if (e && t) { t.textContent = msg; e.classList.add('show'); }
+}
+function hideErr(pfx) { const e = document.getElementById(pfx + '_err'); if (e) e.classList.remove('show'); }
+function startCalc(pfx) {
+  document.getElementById(pfx + '_ph').style.display = 'none';
+  document.getElementById(pfx + '_spin').classList.add('show');
+  document.getElementById(pfx + '_res').classList.remove('show');
+}
+function showRes(pfx, html) {
+  document.getElementById(pfx + '_spin').classList.remove('show');
+  const el = document.getElementById(pfx + '_res');
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+function resetCalc(pfx, formId) {
+  if (formId) document.getElementById(formId).reset();
+  ['_ph', '_spin', '_res'].forEach(s => {
+    const el = document.getElementById(pfx + s);
+    if (!el) return;
+    if (s === '_ph') el.style.display = '';
+    else if (s === '_spin') el.classList.remove('show');
+    else { el.classList.remove('show'); el.innerHTML = ''; }
+  });
+  hideErr(pfx);
+  document.querySelectorAll('.pchip').forEach(c => c.classList.remove('on'));
+}
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ════════════════════════════════════════
+// LIVE T_SAT DISPLAY — calls API
+// ════════════════════════════════════════
+async function autoTsat(pId, dId) {
+  const P_SI = getSI(pId);
+  const el = document.getElementById(dId);
+  if (!el || isNaN(P_SI)) return;
+  try {
+    const r = await callAPI('tsat', { P_MPa: P_SI });
+    const Ts = r.tsat;
+    if (isNaN(Ts)) { el.value = 'invalid'; return; }
+    el.value = UNITS === 'SI' ? Ts.toFixed(1) + '°C' : C2F(Ts).toFixed(1) + '°F';
+  } catch (e) { el.value = '—'; }
+}
+
+async function updateDSH() {
+  await autoTsat('sh_Ph', 'sh_Tsat_info');
+  const Tsh_SI = getSI('sh_Tsh'), Ph_SI = getSI('sh_Ph');
+  if (isNaN(Tsh_SI) || isNaN(Ph_SI)) return;
+  try {
+    const r = await callAPI('tsat', { P_MPa: Ph_SI });
+    const Ts = r.tsat;
+    const dsh = Tsh_SI - Ts;
+    const el = document.getElementById('sh_dsh');
+    el.value = isNaN(Ts) ? '—' : (UNITS === 'SI' ? dsh.toFixed(1) + '°C' : (dsh * 9 / 5).toFixed(1) + '°F');
+  } catch (e) {}
+}
+
+function updateCarnotPreview() {
+  const TH_SI = getSI('c_TH'), TC_SI = getSI('c_TC');
+  const absUnit = UNITS === 'SI' ? 'K' : '°R';
+  const TH_K = TH_SI + 273.15, TC_K = TC_SI + 273.15;
+  if (UNITS === 'SI') {
+    document.getElementById('c_TH_K').value = isNaN(TH_SI) ? '—' : TH_K.toFixed(2) + ' K';
+    document.getElementById('c_TC_K').value = isNaN(TC_SI) ? '—' : TC_K.toFixed(2) + ' K';
+  } else {
+    document.getElementById('c_TH_K').value = isNaN(TH_SI) ? '—' : (TH_K * 9 / 5).toFixed(2) + ' °R';
+    document.getElementById('c_TC_K').value = isNaN(TC_SI) ? '—' : (TC_K * 9 / 5).toFixed(2) + ' °R';
+  }
+  const ep = document.getElementById('c_eta_prev');
+  if (!isNaN(TH_SI) && !isNaN(TC_SI) && TH_SI > TC_SI) {
+    ep.value = ((1 - (TC_SI + 273.15) / (TH_SI + 273.15)) * 100).toFixed(3) + '%';
+  } else if (ep) ep.value = '—';
+}
+
+function refreshAutoFields() {
+  [['b_Ph','b_Tsat_info'],['sh_Ph','sh_Tsat_info'],
+   ['rh_P1','rh_Tsat1'],['rh_P2','rh_Tsat2'],
+   ['rg_Phi','rg_Tsat_in'],['rg_Pbleed','rg_Tsat_bleed']
+  ].forEach(([pId, dId]) => autoTsat(pId, dId));
+  updateDSH();
+}
+
+// ════════════════════════════════════════
+// RENDER HELPERS
+// ════════════════════════════════════════
+function effStatus(e) { if (e >= 45) return { b: 'b-ok', t: '✓ Excellent' }; if (e >= 35) return { b: 'b-ok', t: '✓ Good' }; if (e >= 25) return { b: 'b-warn', t: '⚠ Moderate' }; if (e >= 15) return { b: 'b-warn', t: '⚠ Low' }; return { b: 'b-err', t: '↓ Very Low' }; }
+function kpi(lbl, val, unit, cls = 'k-blue', sub = '') { return `<div class="kpi ${cls}"><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val}<span class="kpi-unit">${unit}</span></div>${sub ? `<div class="kpi-sub">${sub}</div>` : ''}</div>`; }
+function effBar(lbl, pct, cls = 'ef-blue') { const p = Math.min(100, Math.max(0, pct)); return `<div class="eff-row"><div class="eff-lbl">${lbl}</div><div class="eff-track"><div class="eff-fill ${cls}" style="width:${p}%"></div></div><div class="eff-pct">${p.toFixed(1)}%</div></div>`; }
+function resBanner(title, meta, st) { return `<div class="res-banner"><div><h3>${title}</h3><div class="res-meta">${meta}</div></div><span class="badge ${st.b}">${st.t}</span></div>`; }
+function eta2ndColor(pct) { return pct >= 70 ? 'k-green' : pct >= 50 ? 'k-amber' : 'k-red'; }
+
+function moistWarn(x4, moist) {
+  if (x4 >= 0.88) return `<div class="note n-green" style="margin-top:12px"><div class="nt">✓ Exit Quality — Acceptable</div><div class="nb">Quality x = <strong>${(x4 * 100).toFixed(1)}%</strong>, moisture ${moist.toFixed(1)}% — above 88% IAPWS minimum. Blade erosion risk: Low.</div></div>`;
+  if (x4 >= 0.85) return `<div class="note n-amber" style="margin-top:12px"><div class="nt">⚠ Marginal Exit Quality</div><div class="nb">Quality x = <strong>${(x4 * 100).toFixed(1)}%</strong>, moisture ${moist.toFixed(1)}%. Below 88% IAPWS limit.</div></div>`;
+  return `<div class="note n-red" style="margin-top:12px"><div class="nt">⛔ Critical — Excessive Moisture</div><div class="nb">Quality x = <strong>${(x4 * 100).toFixed(1)}%</strong>, moisture ${moist.toFixed(1)}%. Cycle NOT viable without superheat or reheat.</div></div>`;
+}
+function metalWarn(T_C) {
+  if (T_C > 700) return `<div class="warn-inline">⚠ ${fmtT(T_C)} exceeds 700°C / 1292°F — Ni-superalloy blading required.</div>`;
+  if (T_C > 620) return `<div class="warn-inline">⚠ ${fmtT(T_C)} exceeds 620°C / 1148°F ferritic steel limit — austenitic stainless or Ni-alloy required.</div>`;
+  return '';
+}
+function criticalWarn(P_MPa) {
+  if (P_MPa > 22.064) return `<div class="warn-inline">⚠ <strong>Supercritical pressure (${fmtP(P_MPa)} > 22.064 MPa).</strong> Tabular interpolation accuracy degrades — expect ±2–5 kJ/kg.</div>`;
+  if (P_MPa > 18) return `<div class="warn-inline">⚠ Near-critical region (${fmtP(P_MPa)} > 18 MPa). Verify critical outputs independently.</div>`;
+  return '';
+}
+function pumpModelNote(Ph_MPa) {
+  if (Ph_MPa > 15) return `<div class="note n-amber" style="margin-top:8px"><div class="nt">⚠ High-Pressure Pump Model</div><div class="nb">Incompressible-liquid approximation causes ~${(Ph_MPa * 0.0045).toFixed(1)}% underestimation of pump work at ${fmtP(Ph_MPa)}.</div></div>`;
+  return '';
+}
+function etaChainNote(etaTh, etaG, etaB, etaOverall, WelecKW, fuelRateKgs) {
+  const hrCycle = 3600 / Math.max(etaTh, 0.001), hrStation = 3600 / Math.max(etaOverall, 0.001);
+  return `<div class="note n-blue" style="margin-top:8px"><div class="nt">⚙ Efficiency Chain — No Double-Count</div><div class="nb"><ul>
+    <li><strong>η_th (cycle)</strong> = <strong>${(etaTh * 100).toFixed(2)}%</strong></li>
+    <li><strong>η_plant</strong> = η_th × η_g × η_b = <strong>${(etaOverall * 100).toFixed(2)}%</strong></li>
+    <li><strong>Cycle HR</strong> = ${hrCycle.toFixed(0)} kJ/kWh &nbsp;|&nbsp; <strong>Station HR</strong> = ${hrStation.toFixed(0)} kJ/kWh</li>
+    <li><strong>Fuel flow</strong> = ${(fuelRateKgs * 3600).toFixed(1)} kg/hr</li>
+  </ul></div></div>`;
+}
+function reheatPressureNote(P1_MPa, P2_MPa, Pc_MPa) {
+  const optP2 = Math.sqrt(P1_MPa * Pc_MPa), ratio = P2_MPa / P1_MPa, optRatio = optP2 / P1_MPa;
+  let cls = 'n-teal', icon = '✓';
+  let msg = `Reheat pressure ratio P₂/P₁ = ${(ratio * 100).toFixed(1)}%. `;
+  if (ratio < 0.12 || ratio > 0.50) { cls = 'n-red'; icon = '⛔'; msg += `Outside typical 12–50% range. `; }
+  else if (ratio < 0.18 || ratio > 0.38) { cls = 'n-amber'; icon = '⚠'; msg += `Slightly outside optimal 18–38% range. `; }
+  msg += `Optimal P₂ ≈ √(P₁ × P_cond) = <strong>${optP2.toFixed(3)} MPa</strong> (${(optRatio * 100).toFixed(1)}%).`;
+  return `<div class="note ${cls}" style="margin-top:10px"><div class="nt">${icon} Reheat Pressure Ratio</div><div class="nb">${msg}</div></div>`;
+}
+
+// ════════════════════════════════════════
+// PRESETS (stored in SI, converted on load)
+// ════════════════════════════════════════
+const PRESETS = {
+  basic: {
+    coal: { b_T3:400,b_Ph:3,b_T1:40,b_Pc:0.00738,b_etaT:85,b_etaP:80,b_etaG:98,b_etaB:88,b_mdot:50,b_hhv:25 },
+    nuclear: { b_T3:290,b_Ph:6.9,b_T1:32,b_Pc:0.005,b_etaT:84,b_etaP:78,b_etaG:98,b_etaB:99,b_mdot:200,b_hhv:45 },
+    geothermal: { b_T3:180,b_Ph:1.0,b_T1:40,b_Pc:0.00738,b_etaT:78,b_etaP:72,b_etaG:96,b_etaB:95,b_mdot:30,b_hhv:40 },
+    biomass: { b_T3:350,b_Ph:2.5,b_T1:45,b_Pc:0.00974,b_etaT:82,b_etaP:78,b_etaG:97,b_etaB:80,b_mdot:40,b_hhv:18 }
+  },
+  superheat: {
+    modern: { sh_Tsh:560,sh_Ph:10,sh_Tc:40,sh_Pc:0.00738,sh_etaT:88,sh_etaP:82,sh_mdot:100 },
+    supercritical: { sh_Tsh:620,sh_Ph:25,sh_Tc:35,sh_Pc:0.006,sh_etaT:90,sh_etaP:84,sh_mdot:200 },
+    industrial: { sh_Tsh:400,sh_Ph:4,sh_Tc:50,sh_Pc:0.0124,sh_etaT:82,sh_etaP:78,sh_mdot:60 }
+  }
+};
+
+function loadPreset(tab, name) {
+  const p = PRESETS[tab] && PRESETS[tab][name];
+  if (!p) return;
+  for (const [id, val_SI] of Object.entries(p)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (UNITS === 'SI' || !FIELD_UNITS[id] || el.readOnly) { el.value = val_SI; continue; }
+    const cfg = FIELD_UNITS[id];
+    const si2us = cfg[4];
+    if (si2us) el.value = parseFloat(si2us(val_SI).toPrecision(6));
+    else el.value = val_SI;
+  }
+  refreshAutoFields();
+  document.querySelectorAll('.pchip').forEach(c => c.classList.toggle('on', c.getAttribute('onclick') && c.getAttribute('onclick').includes(`'${name}'`)));
+}
+
+// ════════════════════════════════════════
+// BASIC RANKINE
+// ════════════════════════════════════════
+document.getElementById('basicForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); hideErr('b');
+  const T3=getSI('b_T3'),Ph=getSI('b_Ph'),T1=getSI('b_T1'),Pc=getSI('b_Pc');
+  const etaT=getVal('b_etaT')/100,etaP=getVal('b_etaP')/100,etaG=getVal('b_etaG')/100,etaB=getVal('b_etaB')/100;
+  const mdot=getSI('b_mdot'),hhv=getSI('b_hhv');
+  if([T3,Ph,T1,Pc,etaT,etaP,etaG,etaB,mdot,hhv].some(v=>isNaN(v))) return showErr('b','All fields are required.');
+  startCalc('b');
+  try {
+    const r = await callAPI('basic', {T3,Ph,T1,Pc,etaT,etaP,etaG,etaB,mdot,hhv});
+    if (r.error) { document.getElementById('b_spin').classList.remove('show'); document.getElementById('b_ph').style.display=''; return showErr('b', r.error); }
+    const {etaTh,etaCarnot,eta2nd,etaOverall,WkW,QkW,QrejkW,heatRate,fuelRate,bwr,wT,wp,wNet,qB,h1,h2,h3,h4,s1,s3,x4,moisture,TsatBoiler} = r;
+    const st=effStatus(etaTh*100), hUnit_=hUnit(), wUnit_=wUnit();
+    const mdotDisp=UNITS==='SI'?mdot.toFixed(1)+' kg/s':(kgS2lbS(mdot)).toFixed(2)+' lb/s';
+    showRes('b',
+      resBanner('Basic Rankine Cycle',`Boiler: ${fmtT(T3)} / ${fmtP(Ph)} · Condenser: ${fmtT(T1)} · ṁ = ${mdotDisp}`,st)+
+      criticalWarn(Ph)+metalWarn(T3)+
+      `<div class="kpi-grid">
+        ${kpi('Thermal η',(etaTh*100).toFixed(2),'%','k-blue','Net cycle efficiency')}
+        ${kpi('Carnot Limit',(etaCarnot*100).toFixed(2),'%','k-violet','1 − T_C/T_H (Kelvin)')}
+        ${kpi('2nd Law η',(eta2nd*100).toFixed(1),'%',eta2ndColor(eta2nd*100),'η_th / η_Carnot')}
+        ${kpi('Net Power',UNITS==='SI'?WkW.toFixed(0):(kJs2BTUhr(WkW)).toFixed(0),wUnit_,'k-teal',UNITS==='SI'?(WkW/1000).toFixed(3)+' MW':(kJs2hp(WkW)).toFixed(1)+' hp')}
+        ${kpi('Heat Input Q_in',UNITS==='SI'?QkW.toFixed(0):(kJs2BTUhr(QkW)).toFixed(0),wUnit_,'k-blue','Boiler duty')}
+        ${kpi('Heat Rejected',UNITS==='SI'?QrejkW.toFixed(0):(kJs2BTUhr(QrejkW)).toFixed(0),wUnit_,'k-teal','Condenser duty')}
+        ${kpi('Cycle Heat Rate',UNITS==='SI'?heatRate.toFixed(0):(heatRate*0.947817).toFixed(1),UNITS==='SI'?'kJ/kWh':'BTU/Wh','k-amber','Lower = more efficient')}
+        ${kpi('Back Work Ratio',(bwr*100).toFixed(3),'%','k-green','Low = Rankine advantage')}
+      </div>
+      <div class="eff-section">
+        ${effBar('Thermal η_th',etaTh*100,'ef-blue')}
+        ${effBar('Carnot Limit η_C',etaCarnot*100,'ef-teal')}
+        ${effBar('Overall Plant η',etaOverall*100,'ef-green')}
+      </div>
+      <div class="tbl-wrap"><table class="dtbl">
+        <thead><tr><th>State</th><th>Location</th><th>h (${hUnit_})</th><th>s (kJ/kg·K)</th><th>T</th><th>P</th></tr></thead>
+        <tbody>
+          <tr><td class="lc">1</td><td>Condenser exit — sat. liquid</td><td class="lo">${hd(h1)}</td><td>${s1.sf.toFixed(4)}</td><td>${fmtT(T1)}</td><td>${fmtP(Pc)}</td></tr>
+          <tr><td class="lc">2</td><td>Pump exit — compressed liquid</td><td>${hd(h2)}</td><td>≈${s1.sf.toFixed(4)}</td><td>≈${fmtT(T1+0.3)}</td><td>${fmtP(Ph)}</td></tr>
+          <tr><td class="lc">3</td><td>Turbine inlet</td><td class="hi">${hd(h3)}</td><td>${s3.s.toFixed(4)}</td><td>${fmtT(T3)}</td><td>${fmtP(Ph)}</td></tr>
+          <tr><td class="lc">4</td><td>Turbine exit — condenser inlet</td><td class="lo">${hd(h4)}</td><td>—</td><td>≈${fmtT(T1+1)}</td><td>${fmtP(Pc)}</td></tr>
+        </tbody>
+      </table></div>
+      <div class="tbl-wrap" style="margin-top:12px"><table class="dtbl">
+        <thead><tr><th>Energy Term</th><th>Per unit mass (${hUnit_})</th><th>Total (${wUnit_})</th></tr></thead>
+        <tbody>
+          <tr><td class="lc">Turbine Work W_T</td><td class="hi">+${wkd(wT)}</td><td class="hi">+${wd(wT*mdot)}</td></tr>
+          <tr><td class="lc">Pump Work W_P</td><td style="color:var(--red)">−${wfld(wp)}</td><td style="color:var(--red)">−${wd(wp*mdot)}</td></tr>
+          <tr><td class="lc">Net Work W_net</td><td class="hi">${wkd(wNet)}</td><td class="hi">${wd(WkW)}</td></tr>
+          <tr><td class="lc">Boiler Q_in</td><td>${wkd(qB)}</td><td>${wd(QkW)}</td></tr>
+          <tr><td class="lc">Fuel Flow (at η_b=${(etaB*100).toFixed(0)}%)</td><td colspan="2">${fuelRate.toFixed(4)} kg/s = ${(fuelRate*3600).toFixed(1)} kg/hr</td></tr>
+        </tbody>
+      </table></div>
+      ${moistWarn(x4,moisture)}
+      ${pumpModelNote(Ph)}
+      ${etaChainNote(etaTh,etaG,etaB,etaOverall,WkW*etaG,fuelRate)}
+      <div class="note n-blue" style="margin-top:8px">
+        <div class="nt">📋 Key Thermodynamic Values</div>
+        <div class="nb"><ul>
+          <li>T_sat at ${fmtP(Ph)} = <strong>${fmtT(TsatBoiler)}</strong></li>
+          <li>η_Carnot = 1 − ${(T1+273.15).toFixed(2)} K / ${(T3+273.15).toFixed(2)} K = <strong>${(etaCarnot*100).toFixed(3)}%</strong></li>
+          <li>2nd Law η = <strong>${(eta2nd*100).toFixed(1)}%</strong></li>
+          <li>Cycle Heat Rate: <strong>${UNITS==='SI'?heatRate.toFixed(0)+' kJ/kWh':(heatRate*0.947817).toFixed(1)+' BTU/Wh'}</strong></li>
+        </ul></div>
+      </div>`
+    );
+  } catch(err) {
+    document.getElementById('b_spin').classList.remove('show');
+    document.getElementById('b_ph').style.display = '';
+    showErr('b', 'Server error: ' + err.message);
+  }
+});
+
+// ════════════════════════════════════════
+// SUPERHEATED RANKINE
+// ════════════════════════════════════════
+document.getElementById('superheatForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); hideErr('sh');
+  const Tsh=getSI('sh_Tsh'),Ph=getSI('sh_Ph'),Tc=getSI('sh_Tc'),Pc=getSI('sh_Pc');
+  const etaT=getVal('sh_etaT')/100,etaP=getVal('sh_etaP')/100,mdot=getSI('sh_mdot');
+  if([Tsh,Ph,Tc,Pc,etaT,etaP,mdot].some(v=>isNaN(v))) return showErr('sh','Fill all required fields.');
+  startCalc('sh');
+  try {
+    const r = await callAPI('superheat', {Tsh,Ph,Tc,Pc,etaT,etaP,mdot});
+    if (r.error) { document.getElementById('sh_spin').classList.remove('show'); document.getElementById('sh_ph').style.display=''; return showErr('sh', r.error); }
+    const {etaTh,etaC,eta2nd,WkW,QkW,heatRate,bwr,wT,wp,wNet,qB,h1,h2,h3,h4,s1,x4,moisture,dsh,TsatB} = r;
+    const st=effStatus(etaTh*100), hUnit_=hUnit(), wUnit_=wUnit();
+    showRes('sh',
+      resBanner('Superheated Rankine',`T_sh=${fmtT(Tsh)} / ${fmtP(Ph)} · ΔT_sh=${UNITS==='SI'?dsh.toFixed(1)+'°C':(dsh*9/5).toFixed(1)+'°F'} · T_c=${fmtT(Tc)}`,st)+
+      criticalWarn(Ph)+metalWarn(Tsh)+
+      `<div class="kpi-grid">
+        ${kpi('Thermal η',(etaTh*100).toFixed(2),'%','k-blue','W_net / Q_boiler')}
+        ${kpi('Carnot Limit',(etaC*100).toFixed(2),'%','k-violet','1 − T_C/T_H (Kelvin)')}
+        ${kpi('2nd Law η',(eta2nd*100).toFixed(1),'%',eta2ndColor(eta2nd*100),'η_th / η_Carnot')}
+        ${kpi('Net Power',UNITS==='SI'?WkW.toFixed(0):(kJs2BTUhr(WkW)).toFixed(0),wUnit_,'k-teal',UNITS==='SI'?(WkW/1000).toFixed(3)+' MW':(kJs2hp(WkW)).toFixed(1)+' hp')}
+        ${kpi('Cycle Heat Rate',UNITS==='SI'?heatRate.toFixed(0):(heatRate*0.947817).toFixed(1),UNITS==='SI'?'kJ/kWh':'BTU/Wh','k-amber','Lower = more efficient')}
+        ${kpi('Superheat ΔT_sh',UNITS==='SI'?dsh.toFixed(1):(dsh*9/5).toFixed(1),tUnit(),'k-blue','Above saturation')}
+        ${kpi('Exit Quality x₄',Math.min(x4*100,100).toFixed(1),'%',x4<0.88?'k-red':'k-teal','Wet = blade erosion risk')}
+        ${kpi('Q_in',UNITS==='SI'?QkW.toFixed(0):(kJs2BTUhr(QkW)).toFixed(0),wUnit_,'k-blue','Boiler duty')}
+      </div>
+      <div class="eff-section">
+        ${effBar('Superheated η_th',etaTh*100,'ef-blue')}
+        ${effBar('Carnot Limit η_C',etaC*100,'ef-teal')}
+      </div>
+      <div class="tbl-wrap"><table class="dtbl">
+        <thead><tr><th>State</th><th>Location</th><th>h (${hUnit_})</th><th>s (kJ/kg·K)</th><th>Phase</th></tr></thead>
+        <tbody>
+          <tr><td class="lc">1</td><td>Condenser exit — sat. liquid</td><td class="lo">${hd(h1)}</td><td>${s1.sf.toFixed(4)}</td><td>Sat. liquid</td></tr>
+          <tr><td class="lc">2</td><td>Pump exit</td><td>${hd(h2)}</td><td>≈${s1.sf.toFixed(4)}</td><td>Compressed liq.</td></tr>
+          <tr><td class="lc">3</td><td>Turbine inlet — superheated</td><td class="hi">${hd(h3)}</td><td>—</td><td>Superheated (ΔT_sh=${UNITS==='SI'?dsh.toFixed(1)+'°C':(dsh*9/5).toFixed(1)+'°F'})</td></tr>
+          <tr><td class="lc">4</td><td>Turbine exit</td><td class="lo">${hd(h4)}</td><td>—</td><td>${x4>=1?'Superheated':'Wet mixture x='+Math.min(x4*100,100).toFixed(1)+'%'}</td></tr>
+        </tbody>
+      </table></div>
+      ${moistWarn(x4,moisture)}
+      ${pumpModelNote(Ph)}`
+    );
+  } catch(err) {
+    document.getElementById('sh_spin').classList.remove('show');
+    document.getElementById('sh_ph').style.display = '';
+    showErr('sh', 'Server error: ' + err.message);
+  }
+});
+
+// ════════════════════════════════════════
+// REHEAT RANKINE
+// ════════════════════════════════════════
+document.getElementById('reheatForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); hideErr('rh');
+  const T1=getSI('rh_T1'),P1=getSI('rh_P1'),P2=getSI('rh_P2'),etaHPT=getVal('rh_etaHP')/100;
+  const Trh=getSI('rh_Trh'),Pc=getSI('rh_Pc'),etaLPT=getVal('rh_etaLP')/100,etaP=getVal('rh_etaP')/100,mdot=getSI('rh_mdot');
+  if([T1,P1,P2,etaHPT,Trh,Pc,etaLPT,etaP,mdot].some(v=>isNaN(v))) return showErr('rh','Fill all required fields.');
+  startCalc('rh');
+  try {
+    const r = await callAPI('reheat', {T1,P1,Trh,P2,Tc:null,Pc,etaHPT,etaLPT,etaP,mdot});
+    if (r.error) { document.getElementById('rh_spin').classList.remove('show'); document.getElementById('rh_ph').style.display=''; return showErr('rh', r.error); }
+    const {etaTh,etaC,eta2nd,WkW,QkW,heatRate,bwr,wHPT,wLPT,wp,wNet,qBoiler,qReheat,qTotal,h1,h2,h3,h4,h5,h6,s1,x6,moisture,Tsat1,optP2} = r;
+    const Tc_disp = r.Tc !== undefined ? r.Tc : 40; // fallback
+    const st=effStatus(etaTh*100), hUnit_=hUnit(), wUnit_=wUnit();
+    showRes('rh',
+      resBanner('Reheat Rankine Cycle',`HPT: ${fmtT(T1)}/${fmtP(P1)} → Reheat: ${fmtT(Trh)}/${fmtP(P2)}`,st)+
+      criticalWarn(P1)+metalWarn(Math.max(T1,Trh))+
+      `<div class="kpi-grid">
+        ${kpi('Reheat Cycle η',(etaTh*100).toFixed(2),'%','k-blue','W_net / Q_total')}
+        ${kpi('Carnot Limit',(etaC*100).toFixed(2),'%','k-violet','1 − T_C/T_H (K)')}
+        ${kpi('2nd Law η',(eta2nd*100).toFixed(1),'%',eta2ndColor(eta2nd*100),'η_th / η_Carnot')}
+        ${kpi('Net Power',UNITS==='SI'?WkW.toFixed(0):(kJs2BTUhr(WkW)).toFixed(0),wUnit_,'k-teal',UNITS==='SI'?(WkW/1000).toFixed(3)+' MW':(kJs2hp(WkW)).toFixed(1)+' hp')}
+        ${kpi('HPT Work',UNITS==='SI'?(wHPT*mdot).toFixed(0):(kJs2BTUhr(wHPT*mdot)).toFixed(0),wUnit_,'k-amber','High-pressure stage')}
+        ${kpi('LPT Work',UNITS==='SI'?(wLPT*mdot).toFixed(0):(kJs2BTUhr(wLPT*mdot)).toFixed(0),wUnit_,'k-amber','After reheat')}
+        ${kpi('Cycle Heat Rate',UNITS==='SI'?heatRate.toFixed(0):(heatRate*0.947817).toFixed(1),UNITS==='SI'?'kJ/kWh':'BTU/Wh','k-teal','Lower = better')}
+        ${kpi('LPT Exit Quality',Math.min(x6*100,100).toFixed(1),'%',x6<0.88?'k-red':'k-green','Key turbine health indicator')}
+      </div>
+      <div class="eff-section">
+        ${effBar('Reheat η_th',etaTh*100,'ef-blue')}
+        ${effBar('Carnot Limit η_C',etaC*100,'ef-teal')}
+      </div>
+      <div class="tbl-wrap"><table class="dtbl">
+        <thead><tr><th>State</th><th>Location</th><th>h (${hUnit_})</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lc">1</td><td>HPT inlet — superheated</td><td class="hi">${hd(h1)}</td><td>${fmtT(T1)} / ${fmtP(P1)}</td></tr>
+          <tr><td class="lc">2</td><td>HPT exit / reheater inlet</td><td>${hd(h2)}</td><td>After HPT expansion</td></tr>
+          <tr><td class="lc">3</td><td>Reheater exit / LPT inlet</td><td class="hi">${hd(h3)}</td><td>${fmtT(Trh)} / ${fmtP(P2)}</td></tr>
+          <tr><td class="lc">4</td><td>LPT exit — condenser inlet</td><td class="lo">${hd(h4)}</td><td>x = ${Math.min(x6*100,100).toFixed(1)}%</td></tr>
+          <tr><td class="lc">5</td><td>Pump exit</td><td>${hd(h5)}</td><td>→ ${fmtP(P1)}</td></tr>
+        </tbody>
+      </table></div>
+      ${moistWarn(x6,moisture)}
+      ${reheatPressureNote(P1,P2,Pc)}
+      ${pumpModelNote(P1)}`
+    );
+  } catch(err) {
+    document.getElementById('rh_spin').classList.remove('show');
+    document.getElementById('rh_ph').style.display = '';
+    showErr('rh', 'Server error: ' + err.message);
+  }
+});
+
+// ════════════════════════════════════════
+// REGENERATIVE RANKINE
+// ════════════════════════════════════════
+document.getElementById('regenForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); hideErr('rg');
+  const Thi=getSI('rg_Thi'),Phi=getSI('rg_Phi'),Pbleed=getSI('rg_Pbleed'),Pc=getSI('rg_Pc');
+  const etaT=getVal('rg_etaT')/100,etaP=getVal('rg_etaP')/100,mdot=getSI('rg_mdot');
+  if([Thi,Phi,Pbleed,Pc,etaT,etaP,mdot].some(v=>isNaN(v))) return showErr('rg','Fill all required fields.');
+  startCalc('rg');
+  try {
+    const r = await callAPI('regen', {Thi,Phi,Tbleed:null,Pbleed,Tc:null,Pc,etaT,etaP,mdot});
+    if (r.error) { document.getElementById('rg_spin').classList.remove('show'); document.getElementById('rg_ph').style.display=''; return showErr('rg', r.error); }
+    const {etaTh,etaC,eta2nd,WkW,QkW,heatRate,wT,wp_total,wNet,qB,y,h1,h2,h4,h5,h6,h7,s1,x4,moisture,TsatIn,TsatBleed} = r;
+    const st=effStatus(etaTh*100), hUnit_=hUnit(), wUnit_=wUnit();
+    const bleedRatio=Pbleed/Phi;
+    let bleedWarn='';
+    if(bleedRatio>0.6||bleedRatio<0.1) bleedWarn=`<div class="warn-inline">⚠ Bleed pressure ratio P_bleed/P_hi = ${(bleedRatio*100).toFixed(1)}% is ${bleedRatio>0.6?'very high':'very low'}. Typical optimal range: 20–60%.</div>`;
+    showRes('rg',
+      resBanner('Regenerative Rankine (Open FWH)',`${fmtT(Thi)}/${fmtP(Phi)} · Bleed: ${fmtP(Pbleed)} → FWH at ${TsatBleed?fmtT(TsatBleed):'—'}`,st)+
+      criticalWarn(Phi)+bleedWarn+metalWarn(Thi)+
+      `<div class="kpi-grid">
+        ${kpi('Regen Cycle η',(etaTh*100).toFixed(2),'%','k-blue','W_net / Q_boiler')}
+        ${kpi('Carnot Limit',(etaC*100).toFixed(2),'%','k-violet','1 − T_C/T_H (K)')}
+        ${kpi('2nd Law η',(eta2nd*100).toFixed(1),'%',eta2ndColor(eta2nd*100),'η_th / η_Carnot')}
+        ${kpi('Net Power',UNITS==='SI'?WkW.toFixed(0):(kJs2BTUhr(WkW)).toFixed(0),wUnit_,'k-teal',UNITS==='SI'?(WkW/1000).toFixed(3)+' MW':(kJs2hp(WkW)).toFixed(1)+' hp')}
+        ${kpi('Bleed Fraction y',(y*100).toFixed(2),'%','k-amber','Mass flow to FWH')}
+        ${kpi('FWH Outlet Temp.',TsatBleed?fmtT(TsatBleed):'—','','k-teal','Sat. liq. at P_bleed')}
+        ${kpi('Cycle Heat Rate',UNITS==='SI'?heatRate.toFixed(0):(heatRate*0.947817).toFixed(1),UNITS==='SI'?'kJ/kWh':'BTU/Wh','k-amber','Lower = more efficient')}
+        ${kpi('Q_in',UNITS==='SI'?QkW.toFixed(0):(kJs2BTUhr(QkW)).toFixed(0),wUnit_,'k-blue','Boiler duty')}
+      </div>
+      <div class="eff-section">
+        ${effBar('Regenerative η_th',etaTh*100,'ef-blue')}
+        ${effBar('Carnot Limit η_C',etaC*100,'ef-teal')}
+      </div>
+      <div class="tbl-wrap"><table class="dtbl">
+        <thead><tr><th>State</th><th>Location</th><th>h (${hUnit_})</th><th>Phase / Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="lc">1</td><td>Turbine inlet (superheated)</td><td class="hi">${hd(h1)}</td><td>${fmtT(Thi)} / ${fmtP(Phi)}</td></tr>
+          <tr><td class="lc">2</td><td>Bleed point → FWH (y=${(y*100).toFixed(2)}%)</td><td>${hd(h2)}</td><td>${fmtP(Pbleed)}</td></tr>
+          <tr><td class="lc">4</td><td>LPT exit → condenser</td><td class="lo">${hd(h4)}</td><td>x=${Math.min(x4*100,100).toFixed(1)}%</td></tr>
+          <tr><td class="lc">5</td><td>Pump-1 exit (condensate)</td><td>${hd(h5)}</td><td>→ ${fmtP(Pbleed)}</td></tr>
+          <tr><td class="lc">6</td><td>Open FWH exit — sat. liquid</td><td>${hd(h6)}</td><td>T_sat = ${TsatBleed?fmtT(TsatBleed):'—'}</td></tr>
+          <tr><td class="lc">7</td><td>Pump-2 exit (feed pump)</td><td>${hd(h7)}</td><td>→ ${fmtP(Phi)}</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note n-teal" style="margin-top:10px">
+        <div class="nt">♻ Open FWH Energy Balance</div>
+        <div class="nb">
+          <strong>y = bleed fraction:</strong> y = (h₆ − h₅) / (h₂ − h₅) = <strong>${(y*100).toFixed(3)}%</strong> (bounded 0–50%)<br>
+          Bled steam preheats feedwater, reducing external heat input to boiler → higher η.
+        </div>
+      </div>
+      ${moistWarn(x4,moisture)}
+      ${pumpModelNote(Phi)}`
+    );
+  } catch(err) {
+    document.getElementById('rg_spin').classList.remove('show');
+    document.getElementById('rg_ph').style.display = '';
+    showErr('rg', 'Server error: ' + err.message);
+  }
+});
+
+// ════════════════════════════════════════
+// CARNOT
+// ════════════════════════════════════════
+document.getElementById('carnotForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); hideErr('c');
+  const TH=getSI('c_TH'),TC=getSI('c_TC'),QH_SI=getSI('c_QH');
+  const aI=document.getElementById('c_actual').value.trim(),actual=aI?parseFloat(aI):null;
+  if([TH,TC,QH_SI].some(v=>isNaN(v))) return showErr('c','Fill temperature and heat input fields.');
+  startCalc('c');
+  try {
+    const r = await callAPI('carnot', {TH,TC,QH:QH_SI,actual});
+    if (r.error) { document.getElementById('c_spin').classList.remove('show'); document.getElementById('c_ph').style.display=''; return showErr('c', r.error); }
+    const {etaC,Wmax,Qrej,COPhp,COPref,eta2nd,wrongEta,TH_K,TC_K} = r;
+    const wUnit_=wUnit();
+    const absUnit=UNITS==='SI'?'K':'°R';
+    const TH_abs=UNITS==='SI'?TH_K:TH_K*9/5, TC_abs=UNITS==='SI'?TC_K:TC_K*9/5;
+    showRes('c',
+      `<div class="res-banner"><div><h3>Carnot Efficiency Analysis</h3><div class="res-meta">T_H = ${fmtT(TH)} = ${TH_abs.toFixed(2)} ${absUnit} · T_C = ${fmtT(TC)} = ${TC_abs.toFixed(2)} ${absUnit}</div></div><span class="badge b-info">Theoretical Limit</span></div>`+
+      `<div class="kpi-grid">
+        ${kpi('Carnot η',(etaC*100).toFixed(3),'%','k-violet','1 − T_C/T_H (absolute)')}
+        ${kpi('Max Work W_max',UNITS==='SI'?Wmax.toFixed(2):(kJs2BTUhr(Wmax)).toFixed(1),wUnit_,'k-green')}
+        ${kpi('Min Heat Rejected',UNITS==='SI'?Qrej.toFixed(2):(kJs2BTUhr(Qrej)).toFixed(1),wUnit_,'k-teal')}
+        ${kpi('T_H (absolute)',TH_abs.toFixed(2),absUnit,'k-blue',fmtT(TH))}
+        ${kpi('T_C (absolute)',TC_abs.toFixed(2),absUnit,'k-teal',fmtT(TC))}
+        ${kpi('T_C / T_H ratio',(TC_K/TH_K).toFixed(5),'','k-amber')}
+        ${kpi('HP COP (Carnot)',COPhp.toFixed(3),'','k-green','Heat pump mode')}
+        ${kpi('Refrig COP',COPref.toFixed(3),'','k-teal','Cooling mode')}
+      </div>
+      ${actual&&eta2nd?`<div class="kpi-grid">
+        ${kpi('Actual η',actual.toFixed(2),'%','k-blue','User input')}
+        ${kpi('2nd Law η',(eta2nd*100).toFixed(2),'%','k-green','η_act / η_Carnot')}
+        ${kpi('Gap to Carnot',((etaC-actual/100)*100).toFixed(2),'%','k-red','Lost to irreversibilities')}
+      </div>`:''}
+      <div class="eff-section">
+        ${effBar('Carnot η = 1 − T_C/T_H',etaC*100,'ef-teal')}
+        ${actual?effBar('Actual Cycle η',actual,'ef-blue'):''}
+        ${actual&&eta2nd?effBar('2nd Law η (Actual / Carnot)',eta2nd*100,'ef-green'):''}
+      </div>
+      <div class="note n-blue" style="margin-top:10px">
+        <div class="nt">📐 Why Absolute Temperature is Mandatory</div>
+        <div class="nb">Carnot η = 1 − T_C/T_H requires <strong>absolute</strong> temperature (Kelvin or Rankine).<br>
+        SI: K = °C + 273.15 &nbsp;&nbsp; US: °R = °F + 459.67<br>
+        Correct: 1 − ${TC_K.toFixed(2)} K / ${TH_K.toFixed(2)} K = <strong>${(etaC*100).toFixed(3)}%</strong>
+        ${wrongEta?`<br><span style="color:var(--red)">⛔ Wrong if °C used: 1 − ${TC}/${TH} = ${wrongEta.toFixed(2)}% — INCORRECT</span>`:''}
+        </div>
+      </div>`
+    );
+  } catch(err) {
+    document.getElementById('c_spin').classList.remove('show');
+    document.getElementById('c_ph').style.display = '';
+    showErr('c', 'Server error: ' + err.message);
+  }
+});
+
+// ════════════════════════════════════════
+// PDF PRINT & SOCIAL SHARE
+// ════════════════════════════════════════
+function printPDF(){
+  const ts = document.querySelector('.print-timestamp');
+  if(ts) ts.textContent = 'Generated: ' + new Date().toLocaleString();
+  window.print();
+}
+function getShareText(){ const tab=document.querySelector('.tab-btn.active'); return 'Check out multicalci.com — free Rankine Cycle calculator with NIST steam tables, SI/US units. '+(tab?tab.textContent.trim():''); }
+function getShareURL(){ return window.location.href.split('?')[0]; }
+function shareTwitter(){ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(getShareText())+'&url='+encodeURIComponent(getShareURL())+'&hashtags=thermodynamics,engineering','_blank','width=600,height=400'); }
+function shareLinkedIn(){ window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(getShareURL()),'_blank','width=600,height=500'); }
+function shareWhatsApp(){ window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(getShareText()+' '+getShareURL()),'_blank'); }
+function shareEmail(){ window.location.href='mailto:?subject='+encodeURIComponent('multicalci.com — Rankine Cycle Calculator')+'&body='+encodeURIComponent(getShareText()+'\n\n'+getShareURL()); }
+function copyLink(btn){
+  const url=getShareURL();
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(()=>showCopyFeedback(btn)); }
+  else { const el=document.createElement('input');el.value=url;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);showCopyFeedback(btn); }
+}
+function showCopyFeedback(btn){
+  const span=btn.querySelector('span');
+  const orig=span?span.textContent:'';
+  if(span) span.textContent='Copied!';
+  btn.style.borderColor='var(--green)';btn.style.color='var(--green)';btn.style.background='var(--green-lt)';
+  setTimeout(()=>{ if(span)span.textContent=orig;btn.style.borderColor='';btn.style.color='';btn.style.background=''; },2200);
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  updateCarnotPreview();
+  refreshAutoFields();
+});
+</script>
+</body>
+</html>
