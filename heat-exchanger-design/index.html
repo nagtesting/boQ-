@@ -1453,6 +1453,7 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
           </div>
         </div>
         <div id="lm_err" class="err-box">⚠ <span id="lm_err_txt"></span></div>
+        <div id="lm_spin" class="spinner"></div>
         <div class="btn-row">
           <button type="submit" class="btn btn-calc">🧮 Calculate LMTD &amp; NTU</button>
         </div>
@@ -3548,8 +3549,8 @@ async function callAPI(payload) {
 function v(id)      { return parseFloat(document.getElementById(id).value); }
 function g(id)      { return document.getElementById(id); }
 function showErr(pfx, msg) {
-  document.getElementById(pfx+'_spin').classList.remove('show');
-  document.getElementById(pfx+'_ph').style.display='';
+  const _spin=document.getElementById(pfx+'_spin'); if(_spin) _spin.classList.remove('show');
+  const _ph=document.getElementById(pfx+'_ph'); if(_ph) _ph.style.display='';
   const el = document.getElementById(pfx+'_err');
   if (el) { el.textContent = msg; el.style.display='block'; }
   else alert(msg);
@@ -3562,8 +3563,8 @@ function hideErr(pfx) {
 function startCalc(pfx) {
   _apiPending = true;
   hideErr(pfx);
-  document.getElementById(pfx+'_ph').style.display='none';
-  document.getElementById(pfx+'_spin').classList.add('show');
+  const _ph2=document.getElementById(pfx+'_ph'); if(_ph2) _ph2.style.display='none';
+  const _spin2=document.getElementById(pfx+'_spin'); if(_spin2) _spin2.classList.add('show');
   const res = document.getElementById(pfx+'_res');
   if (res) res.classList.remove('show');
 }
@@ -3661,14 +3662,18 @@ function setColdMode(mode){
 function plToggleColdMode(){
   const mode=g('pl_coldMode').value;
   const showFlow=mode==='flow';
-  g('pl_cF_row').style.display=showFlow?'':'none';
-  g('pl_cTo_row').style.display=showFlow?'none':'';
+  const plcFgrp=g('pl_cF_grp');   if(plcFgrp)   plcFgrp.style.display   =showFlow?'':'none';
+  const plcTocalc=g('pl_cTo_calc');if(plcTocalc) plcTocalc.style.display =showFlow?'':'none';
+  const plcTogrp=g('pl_cTo_grp'); if(plcTogrp)  plcTogrp.style.display  =showFlow?'none':'';
+  const plcFcalc=g('pl_cF_calc'); if(plcFcalc)  plcFcalc.style.display  =showFlow?'none':'';
 }
 function dpToggleColdMode(){
   const mode=g('dp_coldMode').value;
   const showFlow=mode==='flow';
-  g('dp_cF_row').style.display=showFlow?'':'none';
-  g('dp_cTo_row').style.display=showFlow?'none':'';
+  const dpcFgrp=g('dp_cF_grp');   if(dpcFgrp)   dpcFgrp.style.display   =showFlow?'':'none';
+  const dpcTocalc=g('dp_cTo_calc');if(dpcTocalc) dpcTocalc.style.display =showFlow?'':'none';
+  const dpcTogrp=g('dp_cTo_grp'); if(dpcTogrp)  dpcTogrp.style.display  =showFlow?'none':'';
+  const dpcFcalc=g('dp_cF_calc'); if(dpcFcalc)  dpcFcalc.style.display  =showFlow?'none':'';
 }
 
 // ── Cold flow/outlet live preview ─────────────────────────────────────────────
