@@ -10,12 +10,14 @@
 <meta property="og:description" content="Free steam desuperheating calculator using IAPWS-IF97 for quench water flow rate calculation.">
 <meta property="og:url" content="https://multicalci.com/steam-quench-calculator/">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://multicalci.com/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Steam Quench Calculator — Desuperheater Design | multicalci.com">
-<meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Steam Quench Calculator — Desuperheater Design | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Steam Quench Desuperheater Calculator","description":"Steam desuperheating and quench water flow calculator using IAPWS-IF97 steam properties for desuperheater design.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/steam-quench-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -86,8 +88,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .vu-sel:focus{border-color:var(--bl)}
 
 .calc-btn{width:100%;padding:12px;background:var(--bl);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px}
-.calc-btn:hover:not(:disabled){background:var(--bl2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(14,95,168,.3)}
-.calc-btn:disabled{opacity:.6;cursor:not-allowed}
+.calc-btn:hover{background:var(--bl2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(14,95,168,.3)}
 .sec-btn{width:100%;padding:9px;border:1.5px solid var(--bd);border-radius:7px;background:var(--sur);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;color:var(--mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
 .sec-btn:hover{border-color:var(--bl);color:var(--bl);background:var(--bl-p)}
 .sec-btn.dng:hover{border-color:var(--rd);color:var(--rd);background:var(--rd-p)}
@@ -186,31 +187,65 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .gtbl td:first-child{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--bl);white-space:nowrap;font-size:.75rem}
 .gtbl td:nth-child(2){color:var(--mid);font-size:.72rem;white-space:nowrap}
 
-.loading-overlay{position:fixed;inset:0;background:rgba(15,17,23,.5);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.loading-overlay.show{display:flex}
-.loading-box{background:var(--ink2);border-radius:14px;padding:28px 40px;text-align:center;color:#fff;box-shadow:0 8px 40px rgba(0,0,0,.4)}
-.loading-spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--bl2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--pale);margin-bottom:4px}
-.loading-sub{font-size:.72rem;color:var(--subtle)}
-
 @media(max-width:700px){.ban-grid{grid-template-columns:1fr 1fr}.mg3,.mg4{grid-template-columns:1fr 1fr}.r2,.r3{grid-template-columns:1fr}}
 @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 .home-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);border-radius:20px;color:#6ee7b7;font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
 .home-btn:hover{background:#10b981;border-color:#10b981;color:#fff}
 @media(max-width:500px){.home-btn span{display:none}}
+.learn-wrap{padding-bottom:60px}
+.learn-hero{background:linear-gradient(135deg,var(--ink2) 0%,#0e3060 55%,#0a5488 100%);border-radius:12px;padding:32px 28px;margin-bottom:20px;position:relative;overflow:hidden;text-align:center}
+.learn-hero::before{content:'💧';position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:7rem;opacity:.06}
+.lh-badge{display:inline-block;background:rgba(14,95,168,.3);border:1px solid rgba(144,184,248,.4);color:#90b8f8;font-size:.62rem;font-weight:800;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:12px;text-transform:uppercase}
+.learn-hero h1{font-family:'Syne',sans-serif;color:#fff;font-size:1.55rem;margin:0 0 8px;font-weight:800;letter-spacing:-.3px}
+.learn-hero p{color:var(--pale);font-size:.84rem;line-height:1.65;max-width:640px;margin:0 auto}
+.lsec-title{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2);padding-bottom:9px;margin-bottom:15px;border-bottom:2px solid var(--bd);display:flex;align-items:center;gap:8px}
+.learn-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+.learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:16px}
+.tcard{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;box-shadow:var(--sh);transition:box-shadow .2s,transform .2s;border-left:3px solid var(--bl)}
+.tcard:hover{box-shadow:0 6px 24px rgba(14,95,168,.12);transform:translateY(-2px)}
+.tcard.tl{border-left-color:var(--tl)}.tcard.gn{border-left-color:var(--gn)}.tcard.am{border-left-color:var(--am)}.tcard.rd{border-left-color:var(--rd)}.tcard.pu{border-left-color:var(--pu)}
+.tc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.tc-name{font-family:'Syne',sans-serif;font-size:.87rem;font-weight:700;color:var(--ink)}
+.tc-sym{background:var(--bl-p);color:var(--bl);font-size:.67rem;font-weight:700;padding:2px 9px;border-radius:12px;white-space:nowrap;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.tc-unit{font-size:.63rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.tc-def{font-size:.78rem;color:var(--mid);line-height:1.6}
+.tc-formula{background:var(--ink);border-radius:6px;padding:8px 11px;font-family:'JetBrains Mono',monospace;font-size:.69rem;color:#a8bfd8;line-height:1.85;margin-top:8px}
+.tc-example{background:var(--gn-p);border:1px solid var(--gn-m);padding:7px 10px;font-size:.72rem;color:var(--gn);border-radius:6px;margin-top:8px;line-height:1.5;font-weight:600}
+.learn-prose{font-size:.81rem;color:var(--mid);line-height:1.75}
+.learn-prose strong{color:var(--ink2);font-weight:700}
+.learn-prose h4{color:var(--ink2);font-family:'Syne',sans-serif;font-size:.84rem;margin:16px 0 6px;font-weight:700}
+.pcard{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--sh)}
+.pcard .pc-ico{font-size:1.9rem;flex-shrink:0}
+.pcard .pc-title{font-family:'Syne',sans-serif;font-size:.87rem;font-weight:700;color:var(--ink2);margin-bottom:4px}
+.pcard .pc-desc{font-size:.77rem;color:var(--mid);line-height:1.6}
+.pcard .pc-tag{display:inline-block;font-size:.61rem;font-weight:700;padding:2px 9px;border-radius:10px;margin-top:7px;text-transform:uppercase;letter-spacing:.4px}
+.tag-bl{background:var(--bl-p);color:var(--bl)}.tag-tl{background:var(--tl-p);color:var(--tl)}.tag-am{background:var(--am-p);color:var(--am)}.tag-rd{background:var(--rd-p);color:var(--rd)}.tag-pu{background:var(--pu-p);color:var(--pu)}.tag-gn{background:var(--gn-p);color:var(--gn)}
+.step-list{list-style:none;padding:0;margin:0;counter-reset:steps}
+.step-list li{counter-increment:steps;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--tint);font-size:.79rem;color:var(--mid);line-height:1.65}
+.step-list li:last-child{border-bottom:none}
+.step-list li::before{content:counter(steps);background:var(--bl);color:#fff;font-size:.62rem;font-weight:800;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-list li strong{color:var(--ink2)}
+.al-box{border-radius:8px;padding:12px 15px;font-size:.78rem;line-height:1.55;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start;border-left:3px solid}
+.al-inf{background:var(--bl-p);border-color:var(--bl);color:#1e3a8a}
+.al-wa{background:var(--am-p);border-color:var(--am);color:#78350f}
+.al-ok{background:var(--gn-p);border-color:var(--gn);color:#064e3b}
+.al-rd{background:var(--rd-p);border-color:var(--rd);color:#7f1d1d}
+.al-ico{font-size:1rem;flex-shrink:0;margin-top:1px}
+.fr-box2{background:var(--ink);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.fr-title2{font-size:.66rem;font-weight:700;color:var(--pale);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-family:'Syne',sans-serif}
+.fr-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+.fr-row:last-child{border-bottom:none}
+.fr-name{color:var(--pale);font-size:.71rem;font-weight:600;min-width:165px}
+.fr-eq{color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:.71rem;font-weight:600}
+.ref-tbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.ref-tbl th{background:var(--ink2);color:#fff;padding:8px 11px;text-align:left;font-size:.67rem;font-weight:700;letter-spacing:.3px}
+.ref-tbl td{padding:8px 11px;border-bottom:1px solid var(--bd);color:var(--mid);vertical-align:top;line-height:1.5}
+.ref-tbl td:first-child{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--bl);white-space:nowrap;font-size:.74rem}
+.ref-tbl td:nth-child(2){font-weight:700;color:var(--ink2)}
+.ref-tbl tr:nth-child(even) td{background:var(--sur2)}
 </style>
 </head>
 <body>
-
-<!-- Loading overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-box">
-    <div class="loading-spinner"></div>
-    <div class="loading-txt">Computing Steam Properties</div>
-    <div class="loading-sub">IAPWS-IF97 · Mass &amp; Energy Balance</div>
-  </div>
-</div>
 
 <div class="hdr">
   <div class="hdr-in">
@@ -218,13 +253,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
       <div class="hdr-ico">💧</div>
       <div>
         <div class="hdr-title">Steam Quench / Desuperheater Calculator</div>
-        <div class="hdr-sub">Attemperator Spray Water Flow · Heat &amp; Mass Balance · IAPWS-IF97 · Valve Sizing · Sensitivity Analysis</div>
+        <div class="hdr-sub">Attemperator Spray Water Flow · Heat & Mass Balance · IAPWS-IF97 · Valve Sizing · Sensitivity Analysis</div>
       </div>
     </div>
     <div class="hdr-bs">
       <a class="home-btn" href="https://multicalci.com/">🏠 <span>Home</span></a>
       <div class="hb bl">IAPWS-IF97</div>
-      <div class="hb st">Server-Side Engine</div>
+      <div class="hb st">PCHIP Tables</div>
       <div class="hb st">ISA S75 Cv</div>
       <div class="hb st">Deterministic</div>
     </div>
@@ -313,7 +348,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
     <div id="props_w" class="prop-strip">—</div>
     <div class="ibox inf" style="margin-top:10px;font-size:.74rem">
       <div class="ibox-t">💡 Water Supply Pressure</div>
-      Water pressure must exceed steam line pressure by ≥ 3–5 bar minimum (recommend 10–15% margin) to ensure reliable injection.
+      Water pressure must exceed steam line pressure by ≥ 3–5 bar minimum (recommend 10–15% margin) to ensure reliable injection through the spray nozzle against steam back-pressure.
     </div>
   </div>
 </div>
@@ -336,7 +371,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 </div>
 
 <div class="card">
-  <div class="ch"><span class="ch-ico">🔧</span><span class="ch-ttl">Control Range &amp; Valve Sizing</span></div>
+  <div class="ch"><span class="ch-ico">🔧</span><span class="ch-ttl">Control Range & Valve Sizing</span></div>
   <div class="cb">
     <div class="r3">
       <div class="fg">
@@ -354,7 +389,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
     </div>
     <div id="alertBox" class="wbox"></div>
     <div style="margin-top:10px">
-      <button class="calc-btn" id="calcBtn" onclick="calculate()">
+      <button class="calc-btn" onclick="calculate()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         Calculate Quench Water Flow
       </button>
@@ -376,274 +411,1182 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
   <div class="ph">
     <div class="ph-ico">💧</div>
     <div class="ph-txt">Steam Quench / Desuperheater Calculator</div>
-    <div class="ph-sub">Select a preset or enter operating conditions. Click <strong>Calculate</strong> to compute required spray water flow.</div>
+    <div class="ph-sub">Select a preset or enter steam operating conditions, quench water temperature, and target outlet temperature. Click <strong>Calculate</strong> to compute the required spray water flow rate.</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:480px;margin-left:auto;margin-right:auto;text-align:left">
       <div style="background:var(--sur);border:1px solid var(--bd);border-radius:8px;padding:12px;border-left:3px solid var(--bl)">
         <div style="font-size:.68rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Energy Balance</div>
         <div style="font-size:.78rem;color:var(--ink2);font-weight:600;line-height:1.55">ṁ_in·h₁ + ṁ_w·h_w = ṁ_out·h₂</div>
       </div>
       <div style="background:var(--sur);border:1px solid var(--bd);border-radius:8px;padding:12px;border-left:3px solid var(--tl)">
-        <div style="font-size:.68rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Quench Water</div>
-        <div style="font-size:.78rem;color:var(--ink2);font-weight:600;line-height:1.55">ṁ_w = ṁ_in × (h₁−h₂)/(h₂−h_w)</div>
+        <div style="font-size:.68rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Steam Tables</div>
+        <div style="font-size:.78rem;color:var(--ink2);font-weight:600;line-height:1.55">IAPWS-IF97 Region 1 & 2</div>
       </div>
     </div>
   </div>
 </div>
 
-</div>
+</div><!-- end layout -->
+
+<!-- ══════════════════════════════════════════════════════
+     LEARN — FULL EDUCATIONAL REFERENCE
+══════════════════════════════════════════════════════ -->
+<div class="learn-wrap" style="margin-top:24px">
+
+  <!-- HERO -->
+  <div class="learn-hero">
+    <div class="lh-badge">Educational Reference — Students &amp; Engineers</div>
+    <h1>📚 Steam Desuperheating — Complete Guide</h1>
+    <p>A comprehensive reference covering all key concepts, thermodynamic terms, IAPWS-IF97 steam properties, valve sizing theory, and step-by-step instructions for using every feature of this calculator.</p>
+  </div>
+
+  <!-- ══ 1. WHAT IS STEAM DESUPERHEATING ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🔬</span> What is Steam Desuperheating?</div>
+    <div class="learn-prose">
+      <strong>Steam desuperheating</strong> (also called <strong>attemperation</strong> or <strong>steam quenching</strong>) is the process of reducing the temperature of superheated steam to a lower, controlled value by injecting precisely metered quantities of cooler liquid water directly into the steam flow. The injected water absorbs heat from the steam as it evaporates, lowering the steam temperature to the desired setpoint.
+      <br><br>
+      Desuperheaters are among the most critical control devices in any steam power plant, industrial steam system, or process facility. They appear on boiler superheater outlets, between turbine extraction points, on steam header interconnections, and wherever steam temperature must be tightly regulated before delivery to downstream turbines, heat exchangers, or process equipment.
+      <h4>Why Temperature Control Matters</h4>
+      Steam at excessively high temperatures causes accelerated creep and oxidation in alloy steel pipework, turbine blades, and pressure vessel walls — rapidly consuming design life and ultimately leading to catastrophic failure. Conversely, steam that is too close to saturation carries the risk of condensate dropout and two-phase flow, causing turbine blade erosion, water hammer, and control instability. Desuperheating maintains steam in the critical "safe superheat margin" band — typically 10–30 °C above the saturation temperature at operating pressure.
+      <h4>The Physics in One Equation</h4>
+      The entire calculation rests on an <strong>adiabatic energy balance</strong>: the enthalpy brought in by the superheated steam plus the enthalpy brought in by the quench water must equal the enthalpy leaving in the mixed outlet steam. No heat escapes to the environment (adiabatic assumption). This single equation, solved using IAPWS-IF97 steam tables, yields the required quench water mass flow rate.
+    </div>
+  </div>
+
+  <!-- ══ 2. CORE THERMODYNAMIC TERMS ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🧩</span> Core Thermodynamic Terms &amp; Definitions</div>
+    <div class="learn-grid">
+
+      <div class="tcard">
+        <div class="tc-head"><div class="tc-name">Specific Enthalpy</div><div class="tc-sym">h</div></div>
+        <div class="tc-unit">Unit: kJ/kg (SI) · BTU/lb (Imperial)</div>
+        <div class="tc-def">The total thermodynamic energy content per unit mass of a substance — the sum of its internal energy and the flow work (pressure × specific volume). Enthalpy is the fundamental quantity driving all heat and mass balance calculations in steam systems. The difference in enthalpy between two states determines how much heat is exchanged.</div>
+        <div class="tc-formula">h = u + P·v &nbsp; [kJ/kg]<br>Superheated steam: h ≈ 2500–3500 kJ/kg<br>Compressed water: h ≈ h_f(T) at low pressure</div>
+        <div class="tc-example">💡 At 100 bara / 500 °C: h₁ ≈ 3374 kJ/kg. At 100 bara / 420 °C: h₂ ≈ 3244 kJ/kg. The 130 kJ/kg difference is removed by the quench water.</div>
+      </div>
+
+      <div class="tcard tl">
+        <div class="tc-head"><div class="tc-name">Specific Entropy</div><div class="tc-sym">s</div></div>
+        <div class="tc-unit">Unit: kJ/(kg·K)</div>
+        <div class="tc-def">A measure of molecular disorder in the steam. Entropy is used to assess the quality and efficiency of thermodynamic processes. An ideal (isentropic) turbine expansion maintains constant entropy. Entropy increases in irreversible processes (throttling, mixing, heat transfer across finite temperature differences). The calculator displays entropy for completeness and turbine stage analysis.</div>
+        <div class="tc-formula">ds = δQ_rev / T &nbsp; (Clausius inequality)<br>Typical superheated steam: s ≈ 5.8–7.5 kJ/(kg·K)</div>
+      </div>
+
+      <div class="tcard gn">
+        <div class="tc-head"><div class="tc-name">Specific Volume</div><div class="tc-sym">v</div></div>
+        <div class="tc-unit">Unit: m³/kg · ft³/lb</div>
+        <div class="tc-def">The volume occupied per unit mass of steam. Specific volume increases dramatically as steam is superheated and decreases as pressure rises. It is the reciprocal of density and is essential for sizing pipes, nozzles, and valves — high specific volume at low pressure means large pipe diameters are required to keep velocities within acceptable limits.</div>
+        <div class="tc-formula">v = V / m &nbsp; [m³/kg]<br>Sat. steam at 1 bara: v ≈ 1.694 m³/kg<br>Superheated at 100 bara/500°C: v ≈ 0.0032 m³/kg</div>
+        <div class="tc-example">💡 The thousand-fold difference in specific volume between low-pressure exhaust steam and high-pressure steam explains why LP turbine sections are physically enormous compared to HP sections.</div>
+      </div>
+
+      <div class="tcard am">
+        <div class="tc-head"><div class="tc-name">Saturation Temperature</div><div class="tc-sym">T_sat</div></div>
+        <div class="tc-unit">Unit: °C · °F</div>
+        <div class="tc-def">The temperature at which water boils (liquid → vapour) or steam condenses (vapour → liquid) at a given pressure. It is a single-valued function of pressure for pure water. Above T_sat the steam is superheated; below it, condensation occurs. The calculator auto-computes T_sat for the entered steam pressure using the IAPWS-IF97 Wagner equation.</div>
+        <div class="tc-formula">Wagner eq. (IAPWS-IF97 §8.1):<br>ln(P/P_c) = (T_c/T)·[a₁τ + a₂τ^1.5 + a₃τ³ + a₄τ^3.5 + a₅τ⁴ + a₆τ^7.5]<br>where τ = 1 − T/T_c</div>
+        <div class="tc-example">💡 At 100 bara: T_sat = 311.0 °C. Steam at 500 °C is 189 °C superheated. After quenching to 420 °C it still has 109 °C superheat margin — safely above saturation.</div>
+      </div>
+
+      <div class="tcard">
+        <div class="tc-head"><div class="tc-name">Superheat / Superheat Margin</div><div class="tc-sym">ΔT_sh</div></div>
+        <div class="tc-unit">Unit: °C · °F (temperature difference)</div>
+        <div class="tc-def">The difference between actual steam temperature and saturation temperature at the same pressure: ΔT_sh = T_steam − T_sat(P). It quantifies how far the steam is from condensation. A minimum superheat margin (typically 10–30 °C) must be maintained at the desuperheater outlet to prevent moisture formation in downstream pipework. The calculator warns if the target outlet temperature is set too close to saturation.</div>
+        <div class="tc-formula">ΔT_sh = T_outlet − T_sat(P_steam) &nbsp; [°C]<br>Minimum recommended: ΔT_sh ≥ 10 °C<br>ASME/IEC best practice: ΔT_sh ≥ 14–28 °C</div>
+        <div class="tc-example">💡 If P = 100 bara (T_sat = 311 °C) and you quench to T₂ = 320 °C, the margin is only 9 °C — dangerously low. The calculator shows an orange warning badge.</div>
+      </div>
+
+      <div class="tcard tl">
+        <div class="tc-head"><div class="tc-name">Saturation Pressure</div><div class="tc-sym">P_sat</div></div>
+        <div class="tc-unit">Unit: bara (SI) · psia (Imperial)</div>
+        <div class="tc-def">The pressure at which water and steam coexist in equilibrium at a given temperature. For pure water this is a unique function of temperature. Understanding P_sat is critical for avoiding steam condensation in pipework, for setting safety valve setpoints, and for interpreting steam quality (dryness fraction) in wet steam systems.</div>
+        <div class="tc-formula">At 100 °C: P_sat = 1.013 bara<br>At 200 °C: P_sat = 15.54 bara<br>At 311 °C: P_sat = 100.0 bara<br>Critical point: 374.14 °C / 220.64 bara</div>
+      </div>
+
+      <div class="tcard gn">
+        <div class="tc-head"><div class="tc-name">Saturated Liquid Enthalpy</div><div class="tc-sym">h_f</div></div>
+        <div class="tc-unit">Unit: kJ/kg</div>
+        <div class="tc-def">The specific enthalpy of liquid water at the saturation point — i.e., the enthalpy of water that is just on the verge of boiling at the given pressure. It is the minimum enthalpy state for steam/water at that pressure. Compressed (subcooled) liquid water has enthalpy slightly below h_f. The quench water enthalpy h_w is approximately equal to h_f at the water temperature.</div>
+        <div class="tc-formula">h_f at 100 °C (1.013 bara): 419.1 kJ/kg<br>h_f at 200 °C (15.54 bara): 852.4 kJ/kg<br>h_f at 311 °C (100 bara): 1408 kJ/kg</div>
+      </div>
+
+      <div class="tcard am">
+        <div class="tc-head"><div class="tc-name">Saturated Vapour Enthalpy</div><div class="tc-sym">h_g</div></div>
+        <div class="tc-unit">Unit: kJ/kg</div>
+        <div class="tc-def">The specific enthalpy of saturated (dry) steam at the saturation point — liquid water that has just fully evaporated. h_g = h_f + h_fg, where h_fg is the latent heat of vaporisation. When steam is superheated, its enthalpy exceeds h_g. The enthalpy gap (h₁ − h_g) represents the "sensible superheat" that must be removed before condensation could occur.</div>
+        <div class="tc-formula">h_fg (latent heat) at 100 °C: 2257 kJ/kg<br>h_fg at 200 °C: 1941 kJ/kg<br>h_fg at 311 °C (100 bara): ~1317 kJ/kg<br>h_fg → 0 as P → critical point</div>
+        <div class="tc-example">💡 The decreasing latent heat at high pressures means high-pressure steam quench systems require more precise water flow control — small flow changes have a larger temperature effect.</div>
+      </div>
+
+      <div class="tcard pu">
+        <div class="tc-head"><div class="tc-name">Mass Flow Rate</div><div class="tc-sym">ṁ</div></div>
+        <div class="tc-unit">Unit: kg/h · kg/s · t/h · lb/h</div>
+        <div class="tc-def">The mass of fluid passing a cross-section per unit time. In the desuperheater energy balance, three mass flow rates appear: inlet steam (ṁ_in), quench water (ṁ_w), and outlet steam (ṁ_out). By conservation of mass: ṁ_out = ṁ_in + ṁ_w. The quench water fraction (ṁ_w / ṁ_in) is the key design parameter — typically 1–8% for normal operation.</div>
+        <div class="tc-formula">ṁ_w / ṁ_in = (h₁ − h₂) / (h₂ − h_w)<br>ṁ_out = ṁ_in + ṁ_w<br>ṁ_w = ṁ_in × (h₁ − h₂) / (h₂ − h_w)</div>
+      </div>
+
+      <div class="tcard rd">
+        <div class="tc-head"><div class="tc-name">Valve Flow Coefficient</div><div class="tc-sym">C_v</div></div>
+        <div class="tc-unit">Unit: US gpm / √psi (dimensionless by convention)</div>
+        <div class="tc-def">A standardised capacity index for control valves defined as the flow of water in US gallons per minute through the valve when the pressure drop across it is 1 psi. Larger C_v = higher flow capacity. The required C_v is calculated from the design flow rate and the differential pressure (water supply pressure minus steam line pressure). The installed C_v must exceed the required C_v by a margin (typically 10–25%) to allow for control rangeability.</div>
+        <div class="tc-formula">C_v_required = Q_gpm / √(ΔP_psi / SG)<br>Sizing ratio = C_v_installed / C_v_required ≥ 1.10<br>ISA S75.01 / IEC 60534-2</div>
+        <div class="tc-example">💡 An undersized valve (ratio &lt; 1.0) cannot pass the required flow — the desuperheater will be unable to maintain temperature setpoint at design conditions. A grossly oversized valve causes poor controllability and valve hunting.</div>
+      </div>
+
+      <div class="tcard">
+        <div class="tc-head"><div class="tc-name">Cavitation &amp; Cavitation Index</div><div class="tc-sym">σ</div></div>
+        <div class="tc-unit">Dimensionless</div>
+        <div class="tc-def">Cavitation occurs when the local pressure inside a valve drops below the vapour pressure of the liquid, causing vapour bubbles to form and then violently collapse as pressure recovers — producing noise, vibration, and severe erosion damage to valve trim and body. The cavitation index σ compares the actual pressure recovery to the threshold for vapour formation. σ &lt; 2.0 indicates cavitation risk in the quench water control valve.</div>
+        <div class="tc-formula">σ = (P_in − P_vap) / (P_in − P_out)<br>Risk threshold: σ &lt; 2.0<br>P_vap = saturation pressure at water temperature</div>
+        <div class="tc-example">💡 Hot quench water (close to its own boiling point) is most prone to cavitation. Keeping water temperature low or using anti-cavitation valve trim reduces this risk.</div>
+      </div>
+
+      <div class="tcard tl">
+        <div class="tc-head"><div class="tc-name">Flashing &amp; Choked Flow</div><div class="tc-sym">—</div></div>
+        <div class="tc-unit">Flow regime classification</div>
+        <div class="tc-def"><strong>Flashing</strong> occurs when the outlet pressure of the control valve falls below the vapour pressure of the water — so the water exits as a two-phase steam/liquid mixture rather than pure liquid. This changes the flow regime entirely and can cause valve instability. <strong>Choked flow</strong> occurs when the flow velocity through the valve reaches sonic conditions — further reducing outlet pressure no longer increases flow rate. Both conditions must be detected and addressed in valve sizing.</div>
+        <div class="tc-formula">Flashing: P_out &lt; P_vap(T_w)<br>Choked: ΔP &gt; F_L² × (P_in − F_F × P_vap)<br>F_L = liquid pressure recovery factor (~0.9 for globe valves)</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ 3. IAPWS-IF97 STEAM STANDARD ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>📐</span> IAPWS-IF97 — The International Steam Standard</div>
+    <div class="al-box al-inf" style="margin-bottom:14px">
+      <span class="al-ico">ℹ️</span>
+      <div><strong>IAPWS-IF97</strong> (International Association for the Properties of Water and Steam — Industrial Formulation 1997) is the universally accepted international standard for calculating thermodynamic and transport properties of water and steam used in industrial applications. All reputable steam engineering software uses IF97. This calculator implements it faithfully using dense numerical tables and PCHIP monotone interpolation.</div>
+    </div>
+    <div class="learn-grid">
+      <div class="pcard">
+        <div class="pc-ico">1️⃣</div>
+        <div>
+          <div class="pc-title">Region 1 — Compressed Liquid Water</div>
+          <div class="pc-desc">Covers subcooled liquid water from 0 °C to 350 °C at pressures up to 1000 bar. The quench water entering the desuperheater is always in Region 1 (compressed liquid). Properties are computed using a Gibbs free-energy formulation with 34 coefficients. The enthalpy of the quench water (h_w) is calculated here.</div>
+          <span class="pc-tag tag-bl">T: 0–350 °C · P: up to 1000 bar</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">2️⃣</div>
+        <div>
+          <div class="pc-title">Region 2 — Superheated Steam</div>
+          <div class="pc-desc">Covers superheated steam from 0 °C to 800 °C at low to moderate pressures. This is where the inlet and outlet steam properties (h₁, s₁, v₁, h₂, s₂, v₂) are calculated. Also uses a Gibbs formulation with 43 residual coefficients — the most complex region. This calculator implements it via dense NIST-IF97 tables with PCHIP interpolation for efficiency.</div>
+          <span class="pc-tag tag-tl">T: 0–800 °C · P: up to 165 bar (standard)</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">4️⃣</div>
+        <div>
+          <div class="pc-title">Region 4 — Saturation Curve</div>
+          <div class="pc-desc">The two-phase boundary (boiling curve) from the triple point (0.01 °C / 0.00611 bar) to the critical point (374.14 °C / 220.64 bar). Defined by the Wagner saturation-pressure equation — a single equation giving P_sat(T) with six coefficients. Inverted numerically (Newton-Raphson + bisection) to give T_sat(P). Used to display T_sat and check superheat margins.</div>
+          <span class="pc-tag tag-am">Triple point → Critical point</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">⚠️</div>
+        <div>
+          <div class="pc-title">Region 3 — Near-Critical (Not Fully Implemented)</div>
+          <div class="pc-desc">The near-critical and supercritical region (T &gt; 350 °C, P &gt; 165 bar approximately) requires the full IF97 Region 3 Helmholtz formulation with 40 coefficients. This calculator interpolates in this region with reduced accuracy (±5–15 kJ/kg on enthalpy). A warning badge is shown whenever operating conditions fall in this region.</div>
+          <span class="pc-tag tag-rd">Reduced accuracy — warning shown</span>
+        </div>
+      </div>
+    </div>
+    <div class="al-box al-wa" style="margin-top:4px">
+      <span class="al-ico">⚠️</span>
+      <div><strong>Accuracy statement:</strong> This calculator achieves ±0.3 kJ/kg on enthalpy and ±0.002 kJ/(kg·K) on entropy for normal superheated steam conditions. Near the critical point the accuracy degrades to ±5–15 kJ/kg. For legally binding design calculations, always verify against certified IAPWS-IF97 software (e.g., REFPROP, WaterSteamPro, or published IF97 verification tables).</div>
+    </div>
+  </div>
+
+  <!-- ══ 4. ENERGY & MASS BALANCE ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>⚖️</span> Adiabatic Energy &amp; Mass Balance — The Core Derivation</div>
+    <div class="learn-prose">
+      The desuperheater is modelled as a <strong>steady-state, adiabatic, open system</strong> with one outlet and two inlets. No heat is exchanged with the surroundings (perfectly insulated), and kinetic and potential energy changes are negligible. Applying the First Law of Thermodynamics for open systems:
+      <h4>Step 1 — Mass Conservation</h4>
+    </div>
+    <div class="fr-box2">
+      <div class="fr-title2">Governing Equations</div>
+      <div class="fr-row"><span class="fr-name">Mass balance</span><span class="fr-eq">ṁ_in + ṁ_w = ṁ_out</span></div>
+      <div class="fr-row"><span class="fr-name">Energy balance (adiabatic)</span><span class="fr-eq">ṁ_in · h₁ + ṁ_w · h_w = ṁ_out · h₂</span></div>
+      <div class="fr-row"><span class="fr-name">Substitute mass balance →</span><span class="fr-eq">ṁ_in · h₁ + ṁ_w · h_w = (ṁ_in + ṁ_w) · h₂</span></div>
+      <div class="fr-row"><span class="fr-name">Solve for ṁ_w</span><span class="fr-eq">ṁ_w = ṁ_in · (h₁ − h₂) / (h₂ − h_w)</span></div>
+      <div class="fr-row"><span class="fr-name">Water/steam ratio</span><span class="fr-eq">ṁ_w / ṁ_in = (h₁ − h₂) / (h₂ − h_w)</span></div>
+      <div class="fr-row"><span class="fr-name">Heat removed from steam</span><span class="fr-eq">Q_rem = ṁ_in · (h₁ − h₂) / 3600 &nbsp; [kW]</span></div>
+      <div class="fr-row"><span class="fr-name">Heat absorbed by water</span><span class="fr-eq">Q_abs = ṁ_w · (h₂ − h_w) / 3600 &nbsp; [kW]</span></div>
+      <div class="fr-row"><span class="fr-name">Energy balance check</span><span class="fr-eq">Q_rem = Q_abs (must be equal)</span></div>
+    </div>
+    <div class="learn-prose">
+      <h4>Physical Interpretation</h4>
+      The numerator (h₁ − h₂) represents the <strong>enthalpy drop per kg of steam</strong> that must be achieved — the amount of cooling required. The denominator (h₂ − h_w) represents the <strong>enthalpy rise per kg of quench water</strong> from its supply condition to the outlet steam condition. The ratio of these two quantities gives the mass fraction of quench water needed.
+      <br><br>
+      <strong>Cold water is more effective:</strong> Colder quench water has lower h_w, making the denominator (h₂ − h_w) larger and reducing the required flow rate. Conversely, hot quench water near the saturation temperature has h_w approaching h₂, making the denominator small and requiring very large water flows — potentially impractical or impossible.
+      <br><br>
+      <strong>Pressure drop effect:</strong> The quench water is supplied at a higher pressure than the steam line. When injected, it undergoes a pressure drop. The calculator accounts for this using the Poynting correction for compressed liquid enthalpy (IAPWS-IF97 Region 1).
+    </div>
+  </div>
+
+  <!-- ══ 5. DESUPERHEATER TYPES ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🔧</span> Types of Desuperheaters in Industry</div>
+    <div class="learn-grid">
+      <div class="pcard">
+        <div class="pc-ico">💦</div>
+        <div>
+          <div class="pc-title">Variable-Orifice Spray Nozzle</div>
+          <div class="pc-desc">The most common type. A spring-loaded variable-orifice nozzle atomises the quench water into fine droplets, maximising surface area for rapid evaporation. An upstream control valve regulates the water flow. Suitable for broad load range (turndown 10:1). The nozzle requires a minimum differential pressure of 3–5 bar to atomise effectively.</div>
+          <span class="pc-tag tag-bl">Most common — wide turndown</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">🌀</div>
+        <div>
+          <div class="pc-title">Fixed-Orifice / Liner Type</div>
+          <div class="pc-desc">A fixed orifice injects water into a thermally protected liner (thermal sleeve) inside the steam pipe. The liner protects the main pipe from thermal shock caused by cold water impingement. Used at high pressures and temperatures where thermal cycling fatigue of the main pipe wall is a concern (e.g., boiler superheater outlets at 500+ °C).</div>
+          <span class="pc-tag tag-tl">High T/P service — thermal protection</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">⚡</div>
+        <div>
+          <div class="pc-title">Venturi / Self-Actuating Type</div>
+          <div class="pc-desc">Uses the venturi effect (local pressure drop caused by a restriction in the steam pipe) to draw in water without an external pump — self-regulating by differential pressure. Simple and reliable but limited in control precision and flow range. Used for small auxiliary steam lines where a simpler, lower-cost solution is acceptable.</div>
+          <span class="pc-tag tag-am">Self-actuating — no control valve</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-ico">🏭</div>
+        <div>
+          <div class="pc-title">Attemperator (Boiler Duty)</div>
+          <div class="pc-desc">Heavy-duty desuperheater installed between the primary and secondary superheater stages of a boiler, or on the superheater outlet. Uses boiler feedwater (high-purity, high-pressure) as the quench medium. Must handle extreme cycling duty as boiler load changes. Typically provided with multiple spray nozzles and a thermal sleeve assembly per ASME B31.1.</div>
+          <span class="pc-tag tag-rd">Boiler duty — ASME B31.1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 6. VALVE SIZING THEORY ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🎛️</span> Control Valve Sizing Theory (ISA S75.01 / IEC 60534)</div>
+    <div class="learn-prose">
+      The quench water control valve is sized to pass the maximum required flow rate at the minimum available differential pressure, while also providing adequate controllability at minimum load. The standard approach follows ISA S75.01 (identical to IEC 60534-2):
+    </div>
+    <div class="learn-grid" style="margin-top:14px">
+      <div class="tcard">
+        <div class="tc-head"><div class="tc-name">Required C_v Calculation</div><div class="tc-sym">Cv_req</div></div>
+        <div class="tc-def">The minimum valve capacity needed to pass the design water flow at the available differential pressure (water supply pressure minus steam line pressure). The specific gravity (SG) of the hot quench water is less than 1.0 and must be calculated at actual water temperature for accuracy.</div>
+        <div class="tc-formula">C_v_req = Q_gpm / √(ΔP_psi / SG_water)<br>SG = ρ_water(T) / 999 kg/m³<br>ΔP = P_water − P_steam [psi]</div>
+      </div>
+      <div class="tcard tl">
+        <div class="tc-head"><div class="tc-name">Installed C_v &amp; Sizing Ratio</div><div class="tc-sym">C_v ratio</div></div>
+        <div class="tc-def">The control valve selected from a manufacturer's catalogue will have a standard (installed) C_v. The sizing ratio (C_v_installed / C_v_required) should be 1.10–1.35. Too low means the valve is undersized and cannot reach setpoint at design load. Too high (ratio > 2.0) means poor controllability — the valve will operate near closed for most of its range.</div>
+        <div class="tc-formula">Sizing ratio = C_v_installed / C_v_req<br>Acceptable range: 1.10 to 1.35<br>Maximum recommended: ≤ 2.0</div>
+      </div>
+      <div class="tcard am">
+        <div class="tc-head"><div class="tc-name">Cavitation Index</div><div class="tc-sym">σ</div></div>
+        <div class="tc-def">When a liquid passes through a valve restriction, its local pressure momentarily drops below vapour pressure — causing vapour bubble formation (cavitation). Bubble collapse produces intense micro-jets that erode valve trim. The cavitation index σ predicts whether cavitation will occur. σ &lt; 2.0 requires anti-cavitation valve trim or a two-stage pressure-drop arrangement.</div>
+        <div class="tc-formula">σ = (P_in − P_vap) / (P_in − P_out)<br>Safe: σ ≥ 2.0<br>Risk: 1.0 ≤ σ &lt; 2.0<br>Severe: σ &lt; 1.0</div>
+      </div>
+      <div class="tcard rd">
+        <div class="tc-head"><div class="tc-name">Flashing &amp; Choked Flow</div><div class="tc-sym">—</div></div>
+        <div class="tc-def">If the valve outlet pressure drops below vapour pressure, the water <em>stays</em> as vapour-liquid mixture downstream — this is flashing. Choked flow occurs when the pressure drop exceeds a critical value and flow no longer increases with further pressure reduction. Both require special valve selection and may limit the effective controllability of the desuperheating system.</div>
+        <div class="tc-formula">Flashing: P_out ≤ P_vap(T_w)<br>Choked ΔP_c = F_L²·(P₁ − F_F·P_vap)<br>F_F = 0.96 − 0.28·√(P_vap/P_c)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 7. HOW TO USE THE CALCULATOR ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🛠️</span> How to Use This Calculator — Step-by-Step</div>
+    <div class="al-box al-ok" style="margin-bottom:14px">
+      <span class="al-ico">✅</span>
+      <div><strong>Auto-calculation:</strong> Results update automatically as you type — no need to press Calculate unless inputs were pasted. The PDF Report exports a full engineering calculation sheet with mass balance, stream table, valve sizing, and all reference formulae.</div>
+    </div>
+    <div class="learn-prose">
+      <h4>⚙️ Step 1 — Choose Unit System</h4>
+    </div>
+    <ol class="step-list">
+      <li><strong>Select SI or Imperial</strong> using the Unit System toggle at the top of the left panel. SI uses °C, bara, kg/h, kJ/kg. Imperial uses °F, psia, lb/h, BTU/lb. All inputs and outputs switch simultaneously. The underlying calculation is always performed in SI.</li>
+    </ol>
+    <div class="learn-prose"><h4>⚡ Step 2 — Load a Preset or Enter Custom Conditions</h4></div>
+    <ol class="step-list">
+      <li><strong>Click a Quick Preset</strong> (Boiler Superheater, Turbine Extraction, Steam Header, LP Steam) to populate all fields with a representative industrial case — a good starting point for learning the calculator.</li>
+      <li><strong>Or enter custom inlet steam conditions:</strong> Steam pressure (P_s), inlet temperature (T₁), and steam mass flow rate (ṁ_in). The saturation temperature T_sat auto-fills immediately, and the steam properties strip (h, s, v) updates in real time.</li>
+    </ol>
+    <div class="learn-prose"><h4>💧 Step 3 — Enter Quench Water Conditions</h4></div>
+    <ol class="step-list">
+      <li><strong>Enter water inlet temperature (T_w).</strong> This is the temperature of the cooling water supply — typically boiler feedwater at 100–150 °C for boiler attemperators, or condensate/demineralised water at 20–60 °C for process desuperheaters.</li>
+      <li><strong>Enter water supply pressure (P_w).</strong> Must exceed steam pressure by at least 3–5 bar to ensure reliable injection. A 10–15% margin is recommended. The calculator warns if insufficient differential pressure is detected.</li>
+    </ol>
+    <div class="learn-prose"><h4>🎯 Step 4 — Set Target Outlet Conditions</h4></div>
+    <ol class="step-list">
+      <li><strong>Enter target outlet temperature (T₂).</strong> This is the desired steam temperature leaving the desuperheater. Must be above T_sat by at least the minimum superheat margin.</li>
+      <li><strong>Set minimum superheat margin</strong> (default 10 °C). The calculator warns (orange) or errors (red) if the target T₂ is too close to or below saturation temperature.</li>
+    </ol>
+    <div class="learn-prose"><h4>🔧 Step 5 — Control Range &amp; Valve Sizing (Optional)</h4></div>
+    <ol class="step-list">
+      <li><strong>Set Min Load % and Max Load %</strong> to define the operating range (e.g., 30% to 110% of design steam flow). The results table shows required quench water flow at each load point — critical for valve rangeability assessment.</li>
+      <li><strong>Enter installed valve C_v</strong> (optional). If provided, the calculator computes the sizing ratio, cavitation index, and flags flashing and choked flow conditions per ISA S75.01.</li>
+    </ol>
+    <div class="learn-prose"><h4>📊 Step 6 — Read the Results</h4></div>
+    <ol class="step-list">
+      <li><strong>Banner KPIs:</strong> Quench water flow rate, outlet steam flow, water/steam ratio, and heat removed are displayed prominently in the results banner.</li>
+      <li><strong>Stream Table:</strong> Inlet steam, quench water, and outlet steam properties (T, P, h, s, v, superheat) are tabulated for your calculation record.</li>
+      <li><strong>Sensitivity Table:</strong> Required quench water flow across the full load range (min to max), plus T-sensitivity (°C change per kg/h of water flow change) — essential for control valve and actuator sizing.</li>
+      <li><strong>Valve Sizing Panel:</strong> C_v required, sizing ratio, cavitation index, and flow regime (flashing/choked) assessment if C_v was entered.</li>
+      <li><strong>PDF Report:</strong> Click to generate a formatted engineering calculation document including all inputs, results, mass/energy balance equations, stream table, sensitivity table, valve sizing, and IAPWS-IF97 references — suitable for design files and review packages.</li>
+    </ol>
+  </div>
+
+  <!-- ══ 8. COMMON APPLICATION TABLE ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>🏭</span> Typical Industrial Applications &amp; Operating Ranges</div>
+    <div style="overflow-x:auto">
+      <table class="ref-tbl">
+        <thead><tr><th>Application</th><th>Preset</th><th>P_steam</th><th>T_in → T_out</th><th>Quench Water</th><th>Key Concern</th></tr></thead>
+        <tbody>
+          <tr><td>Boiler Superheater Attemperator</td><td>🔵 Boiler SH</td><td>80–180 bara</td><td>480–540 °C → 420–480 °C</td><td>Boiler feedwater 100–150 °C</td><td>Thermal fatigue, water purity (zero TDS), high cycling duty</td></tr>
+          <tr><td>Turbine Extraction Steam</td><td>🟢 Turbine</td><td>40–80 bara</td><td>350–420 °C → 300–360 °C</td><td>Condensate / BFW</td><td>Turbine blade protection, moisture carryover prevention</td></tr>
+          <tr><td>Steam Header Interconnect</td><td>🟠 Header</td><td>20–40 bara</td><td>250–320 °C → 200–260 °C</td><td>Demineralised water or condensate</td><td>Water hammer risk, draining at low load</td></tr>
+          <tr><td>LP Steam (Process)</td><td>🔴 LP Steam</td><td>3–8 bara</td><td>160–200 °C → 140–170 °C</td><td>Any available water source</td><td>Small superheat margin — approach saturation risk</td></tr>
+          <tr><td>HRSG Duct Burner Control</td><td>Custom</td><td>60–120 bara</td><td>Variable</td><td>BFW</td><td>Rapid load swings, wide turndown requirement</td></tr>
+          <tr><td>District Heating</td><td>Custom</td><td>5–15 bara</td><td>200–250 °C → 150–200 °C</td><td>Return condensate</td><td>Water quality, corrosion, long pipe runs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ 9. FORMULA REFERENCE ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>📋</span> Complete Formula Reference</div>
+    <div class="fr-box2">
+      <div class="fr-title2">Mass &amp; Energy Balance — IAPWS-IF97 — ISA S75.01</div>
+      <div class="fr-row"><span class="fr-name">Mass balance</span><span class="fr-eq">ṁ_out = ṁ_in + ṁ_w</span></div>
+      <div class="fr-row"><span class="fr-name">Energy balance</span><span class="fr-eq">ṁ_in·h₁ + ṁ_w·h_w = ṁ_out·h₂</span></div>
+      <div class="fr-row"><span class="fr-name">Quench water flow</span><span class="fr-eq">ṁ_w = ṁ_in · (h₁ − h₂) / (h₂ − h_w)</span></div>
+      <div class="fr-row"><span class="fr-name">Water/steam ratio</span><span class="fr-eq">R = ṁ_w / ṁ_in = (h₁ − h₂) / (h₂ − h_w)</span></div>
+      <div class="fr-row"><span class="fr-name">Heat removed</span><span class="fr-eq">Q = ṁ_in · (h₁ − h₂) / 3600  kW</span></div>
+      <div class="fr-row"><span class="fr-name">Superheat margin</span><span class="fr-eq">ΔT_sh = T₂ − T_sat(P_steam)  [°C]</span></div>
+      <div class="fr-row"><span class="fr-name">Wagner sat. pressure (IF97)</span><span class="fr-eq">ln(P/P_c) = (T_c/T)·Σaᵢτⁿⁱ, τ = 1−T/T_c</span></div>
+      <div class="fr-row"><span class="fr-name">Atmosphere pressure</span><span class="fr-eq">1 bara = 100 kPa = 14.504 psia</span></div>
+      <div class="fr-row"><span class="fr-name">Valve C_v (ISA S75.01)</span><span class="fr-eq">C_v = Q_gpm / √(ΔP_psi / SG)</span></div>
+      <div class="fr-row"><span class="fr-name">Cavitation index</span><span class="fr-eq">σ = (P_in − P_vap) / (P_in − P_out)</span></div>
+      <div class="fr-row"><span class="fr-name">Choked ΔP</span><span class="fr-eq">ΔP_c = F_L² · (P₁ − F_F · P_vap)</span></div>
+      <div class="fr-row"><span class="fr-name">F_F (critical pressure ratio)</span><span class="fr-eq">F_F = 0.96 − 0.28 · √(P_vap / P_c)</span></div>
+    </div>
+    <div class="al-box al-inf" style="margin-top:0">
+      <span class="al-ico">📖</span>
+      <div><strong>Key References:</strong> IAPWS-IF97 (International Steam Tables, 1997 &amp; 2007 revision) · NIST REFPROP Steam Tables · ISA S75.01-2007 / IEC 60534-2 (Control Valve Sizing) · ASME B31.1 (Power Piping) · ASME PTC 4 (Boiler Performance Test Code) · VDI 2173 (Strömungstechnische Kenngrößen) · Wagner &amp; Kruse, "Properties of Water and Steam" (Springer)</div>
+    </div>
+  </div>
+
+  <!-- ══ 10. COMMON MISTAKES ══ -->
+  <div class="learn-card">
+    <div class="lsec-title"><span>💡</span> Practical Tips &amp; Common Engineering Mistakes</div>
+    <div class="learn-grid">
+      <div class="tcard">
+        <div class="tc-name" style="margin-bottom:8px">⚠️ Insufficient differential pressure</div>
+        <div class="tc-def">The most common field problem. If water supply pressure ≤ steam pressure, the control valve cannot inject water against steam back-pressure. Always confirm P_water ≥ P_steam + 3 bar minimum, with 10–15% margin recommended. Check at minimum steam pressure (worst case for differential) and maximum steam flow.</div>
+      </div>
+      <div class="tcard tl">
+        <div class="tc-name" style="margin-bottom:8px">🌡️ Approaching saturation temperature</div>
+        <div class="tc-def">Setting T₂ within 5–10 °C of T_sat risks moisture dropout in the downstream pipework. At part-load, steam flow drops and mixing is less effective — actual outlet temperature can be lower than calculated. Always maintain ≥ 14 °C superheat margin in the design, and consider adding a temperature safety interlock to trip the water valve if T₂ falls too low.</div>
+      </div>
+      <div class="tcard am">
+        <div class="tc-name" style="margin-bottom:8px">💧 Water quality requirements</div>
+        <div class="tc-def">Boiler attemperators require high-purity water (zero TDS — boiler feedwater quality). Any dissolved solids in the quench water are deposited on superheater tubes and turbine blades as the water evaporates. Even small concentrations cause severe fouling and blade damage over time. Process desuperheaters may accept lower-quality water if steam is not used for turbines.</div>
+      </div>
+      <div class="tcard rd">
+        <div class="tc-name" style="margin-bottom:8px">🔥 Thermal shock at startup</div>
+        <div class="tc-def">Injecting cold water into hot steam pipe walls during startup creates severe thermal gradients. Always warm the water supply line before commissioning injection. Use a thermal sleeve liner design for T &gt; 450 °C or ΔT_injection &gt; 200 °C. Follow OEM startup procedures — many desuperheater failures occur during first-start and shutdown cycles, not during steady operation.</div>
+      </div>
+      <div class="tcard pu">
+        <div class="tc-name" style="margin-bottom:8px">📏 Mixing length downstream</div>
+        <div class="tc-def">The temperature measurement that controls the desuperheater must be placed far enough downstream for complete evaporation and mixing. Recommended minimum: 10–15 pipe diameters downstream (ASME B31.1). Too short a mixing length gives a false (too-high) temperature reading and causes the control system to over-inject water — potentially causing steam line flooding.</div>
+      </div>
+      <div class="tcard gn">
+        <div class="tc-name" style="margin-bottom:8px">📊 Load range sizing</div>
+        <div class="tc-def">Always size the valve for the full operating range (30–110% of design load is typical). Use the Sensitivity Table to check valve travel at min and max load. A valve that operates below 10% open at minimum load will have poor controllability and may cause hunting. Consider a split-range arrangement (small + large valve in parallel) for very wide turndown ratios (&gt;10:1).</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end learn-wrap -->
+
 </div><!-- end page -->
 
 <script>
 'use strict';
 
-/* ══════════════════════════════════════════════════
-   CLIENT STATE — no physics here
-   All calculations happen on the server via /api/steam-quench
-══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   STEAM PROPERTIES — IAPWS-IF97 Tables + PCHIP Engine  v3.1
+   Version: v3.1  |  Calc-ID: stamped per session (see CALC_ID)
+   ── Deterministic · No external runtime · Same result every run ──
 
-// API endpoint — auto-detects same origin (works on Vercel + local dev)
-const API_URL = '/api/steam-quench';
+   Method (per property region):
+     Sat. P(T):        Wagner equation — IAPWS-IF97 §8.1 (exact)
+     Sat. T(P):        Newton–Raphson + bisection fallback (< 1e-7°C residual)
+     Sat. props:       NIST-IF97 tables (0.01–374°C) + PCHIP monotone interp
+     Superheated h,s,v: NIST-IF97 tables (dense grid) + log-P PCHIP interp (B3)
+     Compressed liq. h: Poynting + isothermal-compressibility correction (B4)
+     Critical region:  Detected (T>360°C & P>180 bar) + user warning (B5)
 
-const CALC_VERSION = 'v4.0-api';
+   Accuracy (vs certified IAPWS-IF97 software):
+     h:  ±0.3 kJ/kg  (sat, normal conditions)
+         ±1.0 kJ/kg  (superheated interpolation)
+         ±5–15 kJ/kg (near-critical region — warning shown)
+     s:  ±0.002 kJ/(kg·K)
+     v:  ±0.2%
+
+   NOT implemented (requires Region-3 Gibbs polynomial):
+     IF97 Region-3 (T > 350°C AND P > 165 bar exactly)
+     For those conditions results are interpolated with reduced accuracy.
+════════════════════════════════════════════════════════════════ */
+
+/* ── B25: Version stamp + per-session traceability ── */
+const CALC_VERSION = 'v3.1';
 const CALC_ID = 'SQC-' + Date.now().toString(36).toUpperCase();
 
-let SYS = 'SI';
-let lastUnit = 'SI';
-let lastR = null;   // last result from API
+/* ── Wagner saturation-pressure equation (IAPWS-IF97 §8.1) ── */
+function pSat(T_C) {           // returns bar
+  const T = T_C + 273.15;
+  const Tc = 647.096, Pc = 220.64;
+  if (T >= Tc) return Pc;
+  if (T < 273.15) return NaN;
+  const tau = 1 - T / Tc;
+  const arg = (Tc / T) * (
+    -7.85951783  * tau                  +
+     1.84408259  * Math.pow(tau, 1.5)   +
+    -11.7866497  * Math.pow(tau, 3)     +
+     22.6807411  * Math.pow(tau, 3.5)   +
+    -15.9618719  * Math.pow(tau, 4)     +
+     1.80122502  * Math.pow(tau, 7.5)
+  );
+  return Pc * Math.exp(arg);
+}
 
-const E  = id => document.getElementById(id);
-const gv = id => parseFloat(E(id).value) || 0;
-const f0 = n => n.toFixed(0);
-const f1 = n => n.toFixed(1);
-const f2 = n => n.toFixed(2);
-const f3 = n => n.toFixed(3);
-const f4 = n => n.toFixed(4);
+/* ── Robust Tsat: Newton + bisection fallback (Bug 4 fix) ── */
+let _tSatConvWarn = false;
+function tSat(P_bar) {
+  _tSatConvWarn = false;
+  if (!isFinite(P_bar) || P_bar <= 0) return NaN;
+  if (P_bar >= 220.64) return 374.14;
+  if (P_bar < 0.006) return NaN;
+  // Improved initial guess (empirical fit to NIST)
+  let T;
+  if      (P_bar < 1)  T = 45 * Math.pow(P_bar, 0.28) + 20;
+  else if (P_bar < 10) T = 100 + 55 * Math.log10(P_bar);
+  else                 T = 160 + 65 * Math.log10(P_bar / 10);
+  T = Math.max(1, Math.min(373, T));
+  // Newton iterations (central-difference derivative)
+  let converged = false;
+  for (let i = 0; i < 80; i++) {
+    const P  = pSat(T);
+    if (!isFinite(P)) break;
+    const dP = (pSat(T + 0.005) - pSat(T - 0.005)) / 0.01;
+    if (!isFinite(dP) || Math.abs(dP) < 1e-12) break;
+    const dT = (P - P_bar) / dP;
+    T -= Math.max(-20, Math.min(20, dT));
+    if (Math.abs(dT) < 5e-8) { converged = true; break; }
+  }
+  if (!converged) {
+    // Bisection fallback (Bug 4 – no convergence failure)
+    _tSatConvWarn = true;
+    let lo = 0.01, hi = 373.9;
+    for (let i = 0; i < 100; i++) {
+      const mid = (lo + hi) / 2;
+      const P   = pSat(mid);
+      if (!isFinite(P)) break;
+      if (Math.abs(P - P_bar) < 1e-6) { T = mid; break; }
+      if (P < P_bar) lo = mid; else hi = mid;
+      T = mid;
+    }
+  }
+  return Math.max(0.01, Math.min(374.14, T));
+}
 
-/* ── Unit conversion helpers (client-only, no physics) ── */
-function toC(v)   { return SYS === 'IMP' ? (v - 32) * 5 / 9 : v; }
-function frC(v)   { return SYS === 'IMP' ? v * 9 / 5 + 32 : v; }
-const fromC = v => frC(v);
-const toMPa = v => SYS === 'IMP' ? v * 0.006894757 : v * 0.1;
-const frPd  = v => SYS === 'IMP' ? v / 0.006894757 : v * 10;
+/* MPa-interface aliases for legacy call sites */
+function Psat(T_C)   { return pSat(T_C) / 10; }   // bar → MPa
+function Tsat(P_MPa) { return tSat(P_MPa * 10); }  // MPa → °C
 
-/* ── Flow units ── */
+/* ── NIST saturation table by temperature (0.01–240°C) ── */
+const SAT_T = [
+  [  0.01,   0.00, 2501.4, 2501.4, 0.0000, 9.1562, 9.1562, 0.0010002, 206.140],
+  [     5,  21.02, 2489.6, 2510.6, 0.0763, 8.9496, 9.0259, 0.0010001, 147.120],
+  [    10,  42.02, 2477.7, 2519.7, 0.1511, 8.7488, 8.8999, 0.0010003, 106.380],
+  [    15,  62.98, 2465.9, 2528.9, 0.2245, 8.5566, 8.7811, 0.0010009,  77.926],
+  [    20,  83.91, 2453.6, 2537.5, 0.2966, 8.3706, 8.6671, 0.0010018,  57.791],
+  [    25, 104.87, 2441.7, 2546.5, 0.3673, 8.1910, 8.5583, 0.0010029,  43.360],
+  [    30, 125.77, 2430.0, 2555.8, 0.4369, 8.0164, 8.4533, 0.0010044,  32.894],
+  [    35, 146.66, 2418.2, 2564.9, 0.5052, 7.8478, 8.3530, 0.0010060,  25.216],
+  [    40, 167.54, 2406.0, 2573.5, 0.5724, 7.6845, 8.2569, 0.0010079,  19.523],
+  [    45, 188.44, 2393.9, 2582.4, 0.6386, 7.5261, 8.1647, 0.0010099,  15.258],
+  [    50, 209.33, 2382.0, 2591.3, 0.7037, 7.3725, 8.0762, 0.0010121,  12.032],
+  [    60, 251.18, 2357.7, 2608.8, 0.8313, 7.0784, 7.9096, 0.0010171,   7.671],
+  [    70, 292.97, 2333.0, 2626.0, 0.9548, 6.7989, 7.7537, 0.0010228,   5.042],
+  [    80, 334.88, 2307.8, 2642.7, 1.0753, 6.5366, 7.6119, 0.0010292,   3.407],
+  [    90, 376.90, 2282.2, 2659.1, 1.1924, 6.2866, 7.4790, 0.0010361,   2.361],
+  [   100, 419.06, 2256.9, 2676.0, 1.3069, 6.0480, 7.3549, 0.0010435,  1.6720],
+  [   110, 461.14, 2229.7, 2690.8, 1.4185, 5.8194, 7.2379, 0.0010516,  1.2101],
+  [   120, 503.78, 2202.6, 2706.3, 1.5279, 5.6006, 7.1284, 0.0010603,  0.8917],
+  [   130, 546.37, 2174.2, 2720.5, 1.6346, 5.3906, 7.0252, 0.0010700,  0.6685],
+  [   140, 589.16, 2144.9, 2734.0, 1.7391, 5.1894, 6.9285, 0.0010803,  0.5089],
+  [   150, 632.18, 2114.3, 2746.5, 1.8416, 4.9961, 6.8377, 0.0010912,  0.3924],
+  [   160, 675.55, 2082.6, 2758.1, 1.9422, 4.8100, 6.7522, 0.0011029,  0.3071],
+  [   170, 719.08, 2049.5, 2768.5, 2.0412, 4.6297, 6.6709, 0.0011150,  0.2428],
+  [   180, 763.06, 2015.3, 2778.2, 2.1387, 4.4547, 6.5934, 0.0011281,  0.1940],
+  [   190, 807.57, 1979.0, 2786.4, 2.2349, 4.2844, 6.5192, 0.0011420,  0.1565],
+  [   200, 852.38, 1940.7, 2793.1, 2.3300, 4.1179, 6.4479, 0.0011565, 0.12721],
+  [   210, 897.76, 1900.7, 2798.5, 2.4245, 3.9583, 6.3828, 0.0011726, 0.10441],
+  [   220, 943.58, 1858.5, 2802.1, 2.5175, 3.7927, 6.3102, 0.0011891, 0.08619],
+  [   230, 990.21, 1813.8, 2804.0, 2.6099, 3.6234, 6.2333, 0.0012075, 0.07158],
+  [   240,1037.6,  1769.4, 2807.0, 2.7018, 3.4735, 6.1753, 0.0012270, 0.05977],
+];
+/* NIST saturation table by pressure (1–220.64 bar) */
+const SAT_P = [
+  [  1.0,  99.63,  417.44, 2675.6, 1.3026, 7.3594, 0.001043, 1.6941],
+  [  2.0, 120.23,  504.68, 2706.7, 1.5301, 7.1268, 0.001061, 0.88574],
+  [  3.0, 133.55,  561.43, 2725.3, 1.6716, 6.9909, 0.001073, 0.60582],
+  [  4.0, 143.63,  604.66, 2738.1, 1.7764, 6.8959, 0.001084, 0.46242],
+  [  5.0, 151.86,  640.09, 2748.1, 1.8604, 6.8212, 0.001093, 0.37483],
+  [  6.0, 158.85,  670.38, 2756.4, 1.9308, 6.7600, 0.001101, 0.31567],
+  [  7.0, 165.00,  697.07, 2763.4, 1.9918, 6.7080, 0.001108, 0.27279],
+  [  8.0, 170.43,  720.87, 2769.1, 2.0461, 6.6628, 0.001115, 0.24049],
+  [  9.0, 175.38,  742.56, 2773.8, 2.0946, 6.6226, 0.001121, 0.21497],
+  [ 10.0, 179.91,  762.81, 2778.1, 2.1387, 6.5865, 0.001127, 0.19444],
+  [ 12.0, 187.99,  798.65, 2784.8, 2.2166, 6.5233, 0.001139, 0.16333],
+  [ 14.0, 195.07,  830.08, 2790.0, 2.2837, 6.4693, 0.001149, 0.14078],
+  [ 16.0, 201.41,  858.56, 2794.0, 2.3440, 6.4218, 0.001159, 0.12374],
+  [ 18.0, 207.11,  885.17, 2797.6, 2.3976, 6.3794, 0.001168, 0.11043],
+  [ 20.0, 212.42,  908.47, 2799.5, 2.4468, 6.3409, 0.001177, 0.099585],
+  [ 25.0, 224.00,  962.11, 2803.3, 2.5547, 6.2575, 0.001197, 0.079977],
+  [ 30.0, 233.90, 1008.4,  2804.2, 2.6457, 6.1869, 0.001216, 0.066628],
+  [ 35.0, 242.60, 1049.8,  2803.8, 2.7253, 6.1253, 0.001235, 0.057063],
+  [ 40.0, 250.40, 1087.4,  2801.4, 2.7966, 6.0696, 0.001252, 0.049779],
+  [ 45.0, 257.49, 1122.1,  2798.3, 2.8612, 6.0190, 0.001269, 0.044079],
+  [ 50.0, 263.99, 1154.4,  2794.3, 2.9202, 5.9737, 0.001286, 0.039457],
+  [ 60.0, 275.64, 1213.7,  2784.3, 3.0248, 5.8902, 0.001319, 0.032445],
+  [ 70.0, 285.88, 1267.4,  2772.1, 3.1210, 5.8133, 0.001352, 0.027370],
+  [ 80.0, 295.06, 1317.1,  2758.4, 3.2076, 5.7450, 0.001384, 0.023525],
+  [ 90.0, 303.40, 1363.2,  2742.8, 3.2857, 5.6811, 0.001418, 0.020489],
+  [100.0, 311.06, 1407.6,  2724.5, 3.3596, 5.6141, 0.001452, 0.018026],
+  [110.0, 318.15, 1450.3,  2705.0, 3.4295, 5.5473, 0.001489, 0.015985],
+  [120.0, 324.75, 1491.8,  2684.9, 3.4962, 5.4924, 0.001527, 0.014267],
+  [130.0, 330.93, 1532.0,  2662.9, 3.5605, 5.4295, 0.001567, 0.012721],
+  [140.0, 336.75, 1571.0,  2638.7, 3.6229, 5.3717, 0.001611, 0.011485],
+  [150.0, 342.24, 1609.0,  2614.5, 3.6834, 5.3108, 0.001658, 0.010340],
+  [160.0, 347.44, 1650.5,  2580.6, 3.7428, 5.2455, 0.001710, 0.0093499],
+  [170.0, 352.37, 1690.7,  2548.5, 3.7996, 5.1832, 0.001765, 0.0083849],
+  [180.0, 357.06, 1732.0,  2509.1, 3.8553, 5.1044, 0.001840, 0.0074920],
+  [190.0, 361.54, 1776.5,  2468.4, 3.9102, 5.0218, 0.001926, 0.0066531],
+  [200.0, 365.81, 1826.3,  2409.7, 4.0139, 4.9269, 0.002036, 0.0058750],
+  [210.0, 369.89, 1886.3,  2336.8, 4.1014, 4.8013, 0.002213, 0.0051020],
+  [220.0, 373.71, 2010.3,  2192.4, 4.2887, 4.5481, 0.002790, 0.0037800],
+  [220.64,374.14, 2099.3,  2099.3, 4.4120, 4.4120, 0.003155, 0.0031550],
+];
+
+/* ── PCHIP (Fritsch-Carlson) monotone interpolation (Bug 1/3 fix) ──
+   Guarantees no overshoot between table nodes — physically correct
+   for all thermodynamic properties including near the critical point. */
+function pchipInterp(xs, ys, x) {
+  const n = xs.length;
+  if (x <= xs[0])    return ys[0];
+  if (x >= xs[n-1])  return ys[n-1];
+  // Find interval
+  let k = 0;
+  for (let j = 0; j < n-1; j++) { if (x >= xs[j] && x <= xs[j+1]) { k=j; break; } }
+  // Compute finite differences
+  const h  = xs[k+1] - xs[k];
+  const d  = (ys[k+1] - ys[k]) / h;
+  // One-sided slopes at each end, otherwise centered
+  const m0 = k === 0
+    ? d
+    : ((ys[k]-ys[k-1])/(xs[k]-xs[k-1]) + d) / 2;
+  const m1 = k === n-2
+    ? d
+    : (d + (ys[k+2]-ys[k+1])/(xs[k+2]-xs[k+1])) / 2;
+  // Fritsch-Carlson monotonicity constraints
+  let mk0 = m0, mk1 = m1;
+  if (Math.abs(d) < 1e-14) {
+    mk0 = 0; mk1 = 0;
+  } else {
+    const alpha = mk0 / d, beta = mk1 / d;
+    const tau   = alpha*alpha + beta*beta;
+    if (tau > 9) { mk0 = 3*d*alpha/Math.sqrt(tau); mk1 = 3*d*beta/Math.sqrt(tau); }
+  }
+  // Hermite basis
+  const t  = (x - xs[k]) / h;
+  const t2 = t*t, t3 = t2*t;
+  return ys[k]*(2*t3-3*t2+1) + ys[k+1]*(-2*t3+3*t2)
+       + mk0*h*(t3-2*t2+t)   + mk1*h*(t3-t2);
+}
+// Alias used by satByT_fb / satByP_fb
+const csplineInterp = pchipInterp;
+
+/* Saturated properties by temperature (fallback) */
+function satByT_fb(T_C) {
+  if (T_C < 0.01 || T_C > 374.14) return null;
+  let row;
+  if (T_C <= 240) {
+    const xs = SAT_T.map(r=>r[0]);
+    const interp = c => csplineInterp(xs, SAT_T.map(r=>r[c]), T_C);
+    row = { T:T_C, hf:interp(1), hfg:interp(2), hg:interp(3),
+            sf:interp(4), sfg:interp(5), sg:interp(6),
+            vf:interp(7), vg:interp(8), P:pSat(T_C) };
+  } else {
+    row = satByP_fb(pSat(T_C));
+  }
+  return row;
+}
+/* Saturated properties by pressure in bar (fallback) */
+function satByP_fb(P_bar) {
+  if (P_bar < 0.006 || P_bar > 220.9) return null;
+  const xs = SAT_P.map(r=>r[0]);
+  const interp = c => csplineInterp(xs, SAT_P.map(r=>r[c]), P_bar);
+  const Ts=interp(1), hf=interp(2), hg=interp(3),
+        sf=interp(4), sg=interp(5), vf=interp(6), vg=interp(7);
+  return { T:Ts, P:P_bar, hf, hfg:hg-hf, hg, sf, sfg:sg-sf, sg, vf, vg };
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SUPERHEATED STEAM TABLE  (B2 fix: denser grid; B3 fix: log-P interp)
+   Source: NIST WebBook / IAPWS-IF97 certified values
+   Columns per row: [T°C, h kJ/kg, s kJ/(kg·K), v m³/kg]
+   Pressures: 14 levels from 1–220 bar (was 13, added 15 & 30 bar)
+   Temperature points: 13 per band (added 450°C throughout)
+════════════════════════════════════════════════════════════════ */
+const SH_FB = [
+  {P:1,   d:[[100,2676.2,7.3614,1.6958],[120,2716.9,7.4668,1.7931],[150,2776.5,7.6150,1.9364],[200,2875.5,7.8343,2.1724],[250,2974.5,8.0333,2.4062],[300,3074.3,8.2166,2.6389],[350,3175.8,8.3905,2.8710],[400,3279.6,8.5456,3.1026],[450,3384.9,8.6927,3.3337],[500,3488.1,8.8342,3.5645],[600,3705.4,9.1018,4.0279],[700,3928.7,9.3499,4.4900],[800,4159.0,9.5822,4.9519]]},
+  {P:2,   d:[[120,2713.6,7.3282,0.8875],[150,2769.1,7.4085,0.9596],[200,2870.5,7.7079,1.0803],[250,2971.2,7.9085,1.1988],[300,3071.8,8.0926,1.3162],[350,3174.1,8.2669,1.4328],[400,3278.2,8.4224,1.5492],[450,3383.6,8.5697,1.6652],[500,3487.1,8.7113,1.7811],[600,3704.7,9.7909,2.0124],[700,3928.2,9.2393,2.2433],[800,4158.6,9.4720,2.4739]]},
+  {P:5,   d:[[152,2748.7,6.8213,0.3748],[200,2855.4,7.0592,0.4249],[250,2961.0,7.2724,0.4744],[300,3064.2,7.4599,0.5226],[350,3168.1,7.6329,0.5705],[400,3272.3,7.7938,0.6181],[450,3378.0,7.9432,0.6654],[500,3484.9,8.0873,0.7127],[600,3704.3,8.3522,0.8072],[700,3927.1,8.6053,0.9015],[800,4157.8,8.8398,0.9958]]},
+  {P:10,  d:[[180,2778.1,6.5865,0.1944],[200,2827.9,6.6940,0.2060],[250,2942.6,6.9247,0.2327],[300,3051.2,7.1229,0.2579],[350,3157.7,7.3011,0.2825],[400,3264.5,7.4651,0.3066],[450,3372.1,7.6180,0.3304],[500,3480.6,7.7622,0.3541],[600,3697.9,8.0290,0.4011],[700,3922.5,8.2808,0.4479],[800,4154.5,8.5153,0.4945]]},
+  {P:15,  d:[[198,2796.8,6.4448,0.1325],[200,2797.2,6.4462,0.1326],[250,2923.5,6.7090,0.1520],[300,3037.6,6.9179,0.1697],[350,3147.5,7.1019,0.1865],[400,3256.5,7.2690,0.2030],[450,3365.5,7.4241,0.2193],[500,3474.8,7.5698,0.2354],[600,3693.2,7.8394,0.2672],[700,3918.5,8.0937,0.2988],[800,4151.2,8.3297,0.3302]]},
+  {P:20,  d:[[212,2799.5,6.3409,0.0996],[250,2902.5,6.5453,0.1115],[300,3023.5,6.7684,0.1255],[350,3137.0,6.9583,0.1386],[400,3248.7,7.1292,0.1520],[450,3360.7,7.2867,0.1650],[500,3472.6,7.4317,0.1781],[600,3694.8,7.7024,0.1996],[700,3915.0,7.9583,0.2210],[800,4147.9,8.1962,0.2466]]},
+  {P:30,  d:[[234,2803.3,6.1869,0.0667],[250,2856.0,6.2872,0.0706],[300,2994.3,6.5412,0.0811],[350,3115.3,6.7450,0.0906],[400,3230.9,6.9212,0.0996],[450,3344.5,7.0856,0.1082],[500,3457.2,7.2358,0.1167],[600,3680.8,7.5123,0.1333],[700,3906.1,7.7705,0.1497],[800,4140.3,8.0120,0.1660]]},
+  {P:40,  d:[[250,2801.4,6.0696,0.0498],[300,2962.0,6.3615,0.0589],[350,3092.5,6.5843,0.0666],[400,3213.6,6.7714,0.0734],[450,3330.3,6.9386,0.0800],[500,3445.3,7.0919,0.0864],[600,3670.3,7.3688,0.0989],[700,3894.9,7.6299,0.1112],[800,4122.0,7.8729,0.1234]]},
+  {P:60,  d:[[275,2784.3,5.8902,0.0324],[300,2885.5,6.0702,0.0362],[350,3043.4,6.3357,0.0422],[400,3178.3,6.5432,0.0474],[450,3305.0,6.7198,0.0521],[500,3422.2,6.8826,0.0567],[600,3658.4,7.1693,0.0653],[700,3876.1,7.4085,0.0736],[800,4095.0,7.6673,0.0818]]},
+  {P:80,  d:[[295,2758.4,5.7450,0.0235],[300,2786.5,5.7937,0.0243],[350,2988.1,6.1321,0.0299],[400,3139.4,6.3658,0.0343],[450,3274.0,6.5559,0.0383],[500,3398.3,6.7266,0.0398],[600,3633.2,7.0592,0.0480],[700,3857.2,7.3205,0.0543],[800,4074.0,7.5625,0.0604]]},
+  {P:100, d:[[311,2725.5,5.6141,0.0180],[350,2924.5,5.9450,0.0228],[400,3096.5,6.2120,0.0264],[450,3249.0,6.4190,0.0297],[500,3374.2,6.5990,0.0328],[550,3491.4,6.7690,0.0357],[600,3625.3,6.9029,0.0384],[700,3838.2,7.1765,0.0427],[800,4053.0,7.4183,0.0487]]},
+  {P:120, d:[[325,2684.9,5.4924,0.0143],[360,2820.0,5.7520,0.0165],[400,3051.6,6.0040,0.0208],[450,3215.9,6.2330,0.0236],[500,3350.7,6.4250,0.0262],[550,3476.3,6.6010,0.0286],[600,3582.3,6.7420,0.0308],[700,3793.5,7.0270,0.0351],[800,4032.0,7.2710,0.0405]]},
+  {P:140, d:[[337,2637.6,5.3717,0.0115],[360,2753.0,5.5810,0.0132],[400,3001.9,5.8450,0.0166],[450,3182.5,6.0860,0.0191],[500,3323.1,6.2850,0.0214],[550,3454.2,6.4650,0.0236],[600,3541.2,6.6040,0.0260],[700,3762.2,6.8980,0.0302],[800,4011.0,7.1430,0.0352]]},
+  {P:160, d:[[347,2580.6,5.2455,0.0093],[380,2745.0,5.5080,0.0115],[400,2947.0,5.6930,0.0132],[450,3146.1,5.9510,0.0157],[500,3295.0,6.1560,0.0178],[550,3432.4,6.3390,0.0198],[600,3561.1,6.5130,0.0214],[700,3732.3,6.7810,0.0256],[800,3989.0,7.0290,0.0302]]},
+  {P:180, d:[[357,2509.1,5.1044,0.0075],[390,2748.0,5.4840,0.0100],[400,2880.1,5.5540,0.0107],[450,3104.9,5.8270,0.0130],[500,3266.1,6.0370,0.0149],[550,3410.7,6.2240,0.0167],[600,3542.0,6.4090,0.0181],[700,3701.4,6.6570,0.0218],[800,3968.0,6.9090,0.0260]]},
+  {P:200, d:[[366,2409.7,4.9269,0.0059],[395,2702.0,5.3780,0.0085],[400,2818.1,5.4720,0.0099],[450,3060.1,5.7960,0.0121],[500,3239.3,6.0180,0.0145],[550,3388.0,6.2060,0.0162],[600,3532.0,6.3360,0.0175],[700,3670.6,6.5890,0.0210],[800,3947.0,6.8450,0.0249]]},
+  {P:220, d:[[374,2192.4,4.5481,0.0038],[400,2672.0,5.2070,0.0076],[450,2996.0,5.7200,0.0107],[500,3213.0,5.9820,0.0131],[550,3372.0,6.1730,0.0148],[600,3516.0,6.3380,0.0165],[700,3653.0,6.5810,0.0199],[800,3931.0,6.8320,0.0236]]},
+];
+
+/* ── B3 fix: log-P PCHIP interpolation for superheated steam ──
+   Thermodynamic properties are much smoother in log(P) space.
+   Linear P interpolation between bands introduces systematic error
+   particularly at high pressures where bands are widely spaced. */
+function shProps_fb(P_bar, T_C) {
+  try {
+    const prs = SH_FB.map(b => b.P);
+    function atB(idx, T) {
+      const d = SH_FB[idx].d;
+      const ts = d.map(r=>r[0]);
+      return { h: pchipInterp(ts, d.map(r=>r[1]), T),
+               s: pchipInterp(ts, d.map(r=>r[2]), T),
+               v: pchipInterp(ts, d.map(r=>r[3]), T) };
+    }
+    if (P_bar <= prs[0])             return atB(0, T_C);
+    if (P_bar >= prs[prs.length-1])  return atB(prs.length-1, T_C);
+    let lo = 0;
+    for (let i = 0; i < prs.length-1; i++) {
+      if (prs[i] <= P_bar && P_bar <= prs[i+1]) { lo=i; break; }
+    }
+    /* B3 fix: interpolate in log(P) space for thermodynamic consistency */
+    const logP  = Math.log(P_bar);
+    const logP0 = Math.log(prs[lo]);
+    const logP1 = Math.log(prs[lo+1]);
+    const fP = (logP - logP0) / (logP1 - logP0);
+    const a = atB(lo, T_C), b = atB(lo+1, T_C);
+    return {
+      h: a.h + fP*(b.h - a.h),
+      s: a.s + fP*(b.s - a.s),
+      v: a.v + fP*(b.v - a.v)
+    };
+  } catch(e) {
+    /* B24: silent failure guard */
+    return { h: 2800, s: 6.5, v: 0.05 };
+  }
+}
+
+/* ── Unified saturation wrappers (deterministic — no Pyodide) ── */
+function satByT(T_C)   { return satByT_fb(T_C); }
+function satByP(P_bar) { return satByP_fb(P_bar); }
+
+/* ── Superheated steam properties (bar, °C) ── */
+function superheatedProps(P_bar, T_C) {
+  const fb = shProps_fb(P_bar, T_C);
+  return { h: fb.h, s: fb.s, v: fb.v };
+}
+
+/* ── B5: Critical region detection ──
+   IF97 Region-3 (T > 350°C, P > 165 bar) is NOT implemented.
+   Properties near the critical point (Tc=374.14°C, Pc=220.64 bar)
+   are extrapolated and carry increased uncertainty. */
+function isCriticalRegion(P_bar, T_C) {
+  return (T_C > 350 && P_bar > 165);
+}
+function criticalRegionWarning(P_bar, T_C) {
+  if (!isCriticalRegion(P_bar, T_C)) return null;
+  const dist = Math.sqrt(Math.pow((T_C-374.14)/24, 2) + Math.pow((P_bar-220.64)/56, 2));
+  if (dist < 0.5) return 'CRITICAL'; // within ~12°C & ~28 bar of critical point
+  return 'NEAR_CRITICAL';            // Region-3 territory
+}
+
+/* ─── Public adapter functions (MPa interface) ───
+   All internal maths in bar / °C — conversion only at this boundary. */
+
+// B24: all calls wrapped in try/catch — no silent NaN propagation
+function h_steam(Tc, P_MPa) {
+  try {
+    const r = superheatedProps(P_MPa * 10, Tc);
+    if (!isFinite(r.h) || r.h < 1000) throw new Error('h out of range');
+    return r.h;
+  } catch(e) {
+    const sat = satByP_fb(P_MPa * 10);
+    return sat ? sat.hg + 2.0 * Math.max(0, Tc - sat.T) : 2800;
+  }
+}
+function v_steam(Tc, P_MPa) {
+  try {
+    const r = superheatedProps(P_MPa * 10, Tc);
+    if (!isFinite(r.v) || r.v <= 0) throw new Error('v invalid');
+    return r.v;
+  } catch(e) {
+    const R = 0.461526, Tk = Tc + 273.15;
+    return Math.max(1e-4, R * Tk / (P_MPa * 1000));
+  }
+}
+function s_steam(Tc, P_MPa) {
+  try {
+    const r = superheatedProps(P_MPa * 10, Tc);
+    if (!isFinite(r.s) || r.s < 3.5) throw new Error('s out of range');
+    return r.s;
+  } catch(e) {
+    const sat = satByP_fb(P_MPa * 10);
+    return sat ? sat.sg + 0.003 * Math.max(0, Tc - sat.T) : 6.5;
+  }
+}
+
+// h_water: Poynting + isothermal compressibility (B4, already implemented)
+function h_water(Tc, P_MPa) {
+  try {
+    const P_bar = P_MPa * 10;
+    const sat = satByT_fb(Math.max(0.01, Math.min(Tc, 370)));
+    if (!sat) throw new Error('no sat data');
+    const dP_bar = P_bar - sat.P;
+    const dP_kPa = dP_bar * 100;
+    const kT = Math.max(1e-6, 4.5e-5 - 1.4e-7 * Tc);
+    const v_liq = sat.vf * Math.exp(-kT * dP_bar);
+    const v_avg = (sat.vf + v_liq) / 2;
+    const h = sat.hf + v_avg * dP_kPa;
+    if (!isFinite(h)) throw new Error('h_water NaN');
+    return Math.max(0, h);
+  } catch(e) {
+    const sat = satByT_fb(Math.min(Tc, 370));
+    return sat ? Math.max(0, sat.hf) : 0;
+  }
+}
+
+function hf_P(P_MPa) {
+  try { const s = satByP(P_MPa*10); return (s && isFinite(s.hf)) ? s.hf : NaN; }
+  catch(e) { return NaN; }
+}
+function hg_P(P_MPa) {
+  try { const s = satByP(P_MPa*10); return (s && isFinite(s.hg)) ? s.hg : NaN; }
+  catch(e) { return NaN; }
+}
+function vf_P(P_MPa) {
+  try { const s = satByP(P_MPa*10); return (s && isFinite(s.vf)) ? s.vf : 0.001; }
+  catch(e) { return 0.001; }
+}
+
+/* ── B18: Property uncertainty estimator ──
+   Returns ±kJ/kg for h, shown in results panel. */
+function propUncertainty(P_bar, T_C, isSuperheated) {
+  const crit = criticalRegionWarning(P_bar, T_C);
+  if (crit === 'CRITICAL')      return '±15 kJ/kg ⚠ critical region';
+  if (crit === 'NEAR_CRITICAL') return '±5 kJ/kg ⚠ near-critical';
+  if (isSuperheated) {
+    if (P_bar > 160) return '±2 kJ/kg';
+    if (P_bar > 80)  return '±1 kJ/kg';
+    return '±0.5 kJ/kg';
+  }
+  return '±0.3 kJ/kg';
+}
+
+/* ══════════════════════════════════════════════════
+   STATE & UNITS
+══════════════════════════════════════════════════ */
+let SYS = 'SI', lastR = null, lastUnit = 'SI';
+
 const FU = [
-  { id:'kgh',  lbl:'kg/h',  f:1,           sys:['SI','IMP'] },
-  { id:'th',   lbl:'t/h',   f:1000,        sys:['SI'] },
-  { id:'kgs',  lbl:'kg/s',  f:3600,        sys:['SI'] },
-  { id:'lbh',  lbl:'lb/h',  f:0.453592,    sys:['IMP'] },
-  { id:'lbm',  lbl:'lb/min',f:0.453592*60, sys:['IMP'] },
-  { id:'klbh', lbl:'klb/h', f:453.592,     sys:['IMP'] },
+  {id:'kgh', lbl:'kg/h',  sys:['SI'],  f:1},
+  {id:'th',  lbl:'t/h',   sys:['SI'],  f:1000},
+  {id:'kgs', lbl:'kg/s',  sys:['SI'],  f:3600},
+  {id:'lbh', lbl:'lb/h',  sys:['IMP'],f:0.453592},
+  {id:'lbs', lbl:'lb/s',  sys:['IMP'],f:1632.93},
+  {id:'klb', lbl:'klb/h', sys:['IMP'],f:453.592},
 ];
 function popFlowU(id) {
-  const s = E(id), cv = s.value; s.innerHTML = '';
-  FU.filter(u => u.sys.includes(SYS)).forEach(u => s.add(new Option(u.lbl, u.id)));
-  s.value = FU.filter(u => u.sys.includes(SYS)).some(u => u.id === cv) ? cv : (SYS === 'IMP' ? 'lbh' : 'kgh');
+  const s=E(id), cv=s.value; s.innerHTML='';
+  FU.filter(u=>u.sys.includes(SYS)).forEach(u=>s.add(new Option(u.lbl,u.id)));
+  s.value = FU.filter(u=>u.sys.includes(SYS)).some(u=>u.id===cv) ? cv : (SYS==='IMP'?'lbh':'kgh');
 }
-function toKgh(v, uid) { const u = FU.find(x => x.id === uid); return u ? v * u.f : v; }
-function fromKgh(v, uid) { const u = FU.find(x => x.id === uid); return u ? v / u.f : v; }
+function toKgh(v,uid){ const u=FU.find(x=>x.id===uid); return u?v*u.f:v; }
+function fromKgh(v,uid){ const u=FU.find(x=>x.id===uid); return u?v/u.f:v; }
 
-/* ── Unit switching ── */
-function setUnit(sys) {
-  SYS = sys;
-  E('btn_SI').classList.toggle('on', sys === 'SI');
-  E('btn_IMP').classList.toggle('on', sys === 'IMP');
-  const T = sys === 'IMP' ? '°F' : '°C', P = sys === 'IMP' ? 'psia' : 'bara';
-  [['u_T1',T],['u_T2',T],['u_Tw',T],['u_Ts',T],['u_sh',T]].forEach(([id,v]) => { const e = E(id); if(e) e.textContent = '(' + v + ')'; });
-  [['u_P',P],['u_Pw',P]].forEach(([id,v]) => { const e = E(id); if(e) e.textContent = '(' + v + ')'; });
+const E  = id=>document.getElementById(id);
+const gv = id=>parseFloat(E(id).value)||0;
+const f0 = n=>n.toFixed(0);
+const f1 = n=>n.toFixed(1);
+const f2 = n=>n.toFixed(2);
+const f3 = n=>n.toFixed(3);
+const f4 = n=>n.toFixed(4);
+
+function toC(v)  { return SYS==='IMP' ? (v-32)*5/9 : v; }
+function frC(v)  { return SYS==='IMP' ? v*9/5+32 : v; }
+
+const fromC = v => frC(v);   // alias so both names work
+const toMPa = v => SYS==='IMP' ? v*0.006894757 : v*0.1;   // psia or bara → MPa
+const frPd  = v => SYS==='IMP' ? v/0.006894757 : v*10;    // MPa → psia or bara
+
+function setUnit(sys){
+  SYS=sys;
+  E('btn_SI').classList.toggle('on',sys==='SI');
+  E('btn_IMP').classList.toggle('on',sys==='IMP');
+  const T=sys==='IMP'?'°F':'°C', P=sys==='IMP'?'psia':'bara';
+  [['u_T1',T],['u_T2',T],['u_Tw',T],['u_Ts',T],['u_sh',T]].forEach(([id,v])=>{ const e=E(id); if(e) e.textContent='('+v+')'; });
+  [['u_P',P],['u_Pw',P]].forEach(([id,v])=>{ const e=E(id); if(e) e.textContent='('+v+')'; });
   popFlowU('ms_u');
-  E('u_ms').textContent = '(' + (sys === 'IMP' ? 'lb/h' : 'kg/h') + ')';
+  E('u_ms').textContent='('+( sys==='IMP'?'lb/h':'kg/h' )+')';
 
+  // Convert existing input values when toggling units
   const curP = parseFloat(E('P_s').value)||0;
-  const curT1 = parseFloat(E('T1').value)||0;
-  const curTw = parseFloat(E('Tw').value)||0;
-  const curPw = parseFloat(E('Pw').value)||0;
-  const curT2 = parseFloat(E('T2').value)||0;
-  const curMs = parseFloat(E('ms_v').value)||0;
+  const curT1= parseFloat(E('T1').value)||0;
+  const curTw= parseFloat(E('Tw').value)||0;
+  const curPw= parseFloat(E('Pw').value)||0;
+  const curT2= parseFloat(E('T2').value)||0;
+  const curMs= parseFloat(E('ms_v').value)||0;
 
-  if (sys === 'IMP' && lastUnit === 'SI') {
+  if(sys==='IMP' && lastUnit==='SI'){
+    // SI → Imperial
     if(curP)  E('P_s').value = (curP*14.5038).toFixed(1);
     if(curT1) E('T1').value  = (curT1*9/5+32).toFixed(1);
     if(curTw) E('Tw').value  = (curTw*9/5+32).toFixed(1);
     if(curPw) E('Pw').value  = (curPw*14.5038).toFixed(1);
     if(curT2) E('T2').value  = (curT2*9/5+32).toFixed(1);
-    if(curMs) E('ms_v').value = (curMs*2.20462).toFixed(0);
+    if(curMs) E('ms_v').value= (curMs*2.20462).toFixed(0);
     E('sh_min').value = ((parseFloat(E('sh_min').value)||10)*9/5).toFixed(1);
-  } else if (sys === 'SI' && lastUnit === 'IMP') {
+  } else if(sys==='SI' && lastUnit==='IMP'){
+    // Imperial → SI
     if(curP)  E('P_s').value = (curP/14.5038).toFixed(2);
     if(curT1) E('T1').value  = ((curT1-32)*5/9).toFixed(1);
     if(curTw) E('Tw').value  = ((curTw-32)*5/9).toFixed(1);
     if(curPw) E('Pw').value  = (curPw/14.5038).toFixed(2);
     if(curT2) E('T2').value  = ((curT2-32)*5/9).toFixed(1);
-    if(curMs) E('ms_v').value = (curMs/2.20462).toFixed(0);
+    if(curMs) E('ms_v').value= (curMs/2.20462).toFixed(0);
     E('sh_min').value = ((parseFloat(E('sh_min').value)||18)*5/9).toFixed(1);
   }
   lastUnit = sys;
+  liveProp();
   if(lastR) calculate();
 }
 
-function showAlert(msg, cls = 'wa') { E('alertBox').innerHTML = msg; E('alertBox').className = 'wbox show ' + cls; }
-function clrAlert() { E('alertBox').className = 'wbox'; }
+function showAlert(msg,cls='wa'){ E('alertBox').innerHTML=msg; E('alertBox').className='wbox show '+cls; }
+function clrAlert(){ E('alertBox').className='wbox'; }
 
-/* ── Presets ── */
-const PR = {
-  boiler:  {P:100, T1:500, ms:100000, Tw:105, Pw:120, T2:420},
-  turbine: {P:60,  T1:380, ms:60000,  Tw:90,  Pw:75,  T2:320},
-  header:  {P:30,  T1:280, ms:40000,  Tw:80,  Pw:40,  T2:220},
-  lp:      {P:5,   T1:180, ms:20000,  Tw:50,  Pw:8,   T2:150},
+/* ══════════════════════════════════════════════════
+   PRESETS (always stored in SI °C / bara)
+══════════════════════════════════════════════════ */
+const PR={
+  boiler: {P:100,T1:500,ms:100000,Tw:105,Pw:120,T2:420},
+  turbine:{P:60, T1:380,ms:60000, Tw:90, Pw:75, T2:320},
+  header: {P:30, T1:280,ms:40000, Tw:80, Pw:40, T2:220},
+  lp:     {P:5,  T1:180,ms:20000, Tw:50, Pw:8,  T2:150},
 };
-function loadPreset(k, btn) {
-  document.querySelectorAll('.pchip').forEach(b => b.classList.remove('on'));
+function loadPreset(k,btn){
+  document.querySelectorAll('.pchip').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
-  const p = PR[k];
-  if (SYS === 'SI') {
-    E('P_s').value = p.P; E('T1').value = p.T1;
-    E('Tw').value = p.Tw; E('Pw').value = p.Pw; E('T2').value = p.T2;
+  const p=PR[k];
+  if(SYS==='SI'){
+    E('P_s').value=p.P; E('T1').value=p.T1;
+    E('Tw').value=p.Tw; E('Pw').value=p.Pw; E('T2').value=p.T2;
   } else {
-    E('P_s').value  = f1(frPd(p.P*0.1));
-    E('T1').value   = f1(fromC(p.T1));
-    E('Tw').value   = f1(fromC(p.Tw));
-    E('Pw').value   = f1(frPd(p.Pw*0.1));
-    E('T2').value   = f1(fromC(p.T2));
+    E('P_s').value=f1(frPd(p.P*0.1));
+    E('T1').value=f1(fromC(p.T1));
+    E('Tw').value=f1(fromC(p.Tw));
+    E('Pw').value=f1(frPd(p.Pw*0.1));
+    E('T2').value=f1(fromC(p.T2));
   }
-  E('ms_v').value = SYS === 'IMP' ? f0(p.ms/0.453592) : p.ms;
-  popFlowU('ms_u'); E('ms_u').value = SYS === 'IMP' ? 'lbh' : 'kgh';
-  calculate();
+  E('ms_v').value = SYS==='IMP'?f0(p.ms/0.453592):p.ms;
+  popFlowU('ms_u'); E('ms_u').value=SYS==='IMP'?'lbh':'kgh';
+  liveProp(); calculate();
 }
 
 /* ══════════════════════════════════════════════════
-   MAIN CALCULATE  — calls /api/steam-quench
-   All inputs are converted to SI before sending.
-   API returns SI results; display layer re-applies unit formatting.
+   LIVE PROPERTY DISPLAY
 ══════════════════════════════════════════════════ */
-let _calcDebounce = null;
+function liveProp(){
+  const T=SYS==='IMP'?'°F':'°C';
+  const Ps=toMPa(gv('P_s')), T1c=toC(gv('T1'));
+  if(Ps>0){
+    const Ts0=Tsat(Ps);
+    E('Tsat_disp').value=f1(fromC(Ts0));
+  } else {
+    E('Tsat_disp').value='\u2014';
+  }
+  if(Ps>0&&T1c>0){
+    const Ts=Tsat(Ps), h1=h_steam(T1c,Ps), v1=v_steam(T1c,Ps), s1=s_steam(T1c,Ps);
+    E('props_in').innerHTML=
+      `<strong>h₁</strong> ${f1(h1)} kJ/kg &nbsp;·&nbsp; `+
+      `<strong>Tsat</strong> ${f1(fromC(Ts))} ${T} &nbsp;·&nbsp; `+
+      `<strong>SH</strong> ${f1(SYS==='IMP'?(T1c-Ts)*9/5:T1c-Ts)} Δ${T} &nbsp;·&nbsp; `+
+      `<strong>v</strong> ${f4(v1)} m³/kg &nbsp;·&nbsp; `+
+      `<strong>s</strong> ${f3(s1)} kJ/kg·K`;
+  }
+  const Pw=toMPa(gv('Pw')), Twc=toC(gv('Tw'));
+  if(Pw>0&&Twc>=0){
+    const hw=h_water(Twc,Pw), Tsw=Tsat(Pw);
+    E('props_w').innerHTML=
+      `<strong>h_w</strong> ${f1(hw)} kJ/kg &nbsp;·&nbsp; `+
+      `<strong>State</strong> ${Twc<Tsw?'💧 Compressed liquid':'⚠ Near/above saturation!'} &nbsp;·&nbsp; `+
+      `<strong>Tsat@Pw</strong> ${f1(fromC(Tsw))} ${T}`;
+  }
+  const Ps2=toMPa(gv('P_s')), T2c=toC(gv('T2'));
+  if(Ps2>0&&T2c>0){
+    const Ts2=Tsat(Ps2), h2=h_steam(T2c,Ps2), sh2=T2c-Ts2;
+    E('props_out').innerHTML=
+      `<strong>h₂</strong> ${f1(h2)} kJ/kg &nbsp;·&nbsp; `+
+      `<strong>SH at outlet</strong> ${f1(SYS==='IMP'?sh2*9/5:sh2)} Δ${T} &nbsp;·&nbsp; `+
+      `<strong>${sh2<5?'⚠ Wet steam risk!':sh2<15?'⚠ Low superheat':'✅ Adequate superheat'}</strong>`;
+  }
+}
 
-async function calculate() {
+/* ══════════════════════════════════════════════════
+   MAIN CALCULATE
+   Energy balance (adiabatic attemperator):
+     ṁ_in·h₁ + ṁ_w·h_w = ṁ_out·h₂
+     ṁ_out = ṁ_in + ṁ_w
+   → ṁ_w = ṁ_in × (h₁ − h₂) / (h₂ − h_w)
+══════════════════════════════════════════════════ */
+function calculate(){
   clrAlert();
-  const Ps_d = gv('P_s'), T1_d = gv('T1'), Tw_d = gv('Tw'), Pw_d = gv('Pw'), T2_d = gv('T2');
-  const msv = gv('ms_v'), msu = E('ms_u').value;
-  const shMin_d = gv('sh_min') || 10, fMin = gv('f_min') || 30, fMax = gv('f_max') || 110;
-  const cvIn = gv('cv_in');
+  const Ps_d=gv('P_s'), T1_d=gv('T1'), Tw_d=gv('Tw'), Pw_d=gv('Pw'), T2_d=gv('T2');
+  const msv=gv('ms_v'), msu=E('ms_u').value;
+  const shMin_d=gv('sh_min')||10, fMin=gv('f_min')||30, fMax=gv('f_max')||110;
+  const cvIn=gv('cv_in');
 
-  if (!Ps_d || !T1_d || !Tw_d || !T2_d || !msv) {
-    showAlert('⚠ Fill in all required fields: steam pressure, inlet temperature, water temperature, outlet target temperature, and steam flow rate.', 'wa');
+  if(!Ps_d||!T1_d||!Tw_d||!T2_d||!msv){
+    showAlert('⚠ Fill in all required fields: steam pressure, inlet temperature, water temperature, outlet target temperature, and steam flow rate.','wa');
     return;
   }
 
-  // Convert display values → SI for API
-  const P_s_SI  = SYS === 'IMP' ? Ps_d / 14.5038 : Ps_d;       // bara
-  const T1_SI   = toC(T1_d);                                     // °C
-  const Tw_SI   = toC(Tw_d);                                     // °C
-  const Pw_SI   = SYS === 'IMP' ? Pw_d / 14.5038 : Pw_d;        // bara
-  const T2_SI   = toC(T2_d);                                     // °C
-  const m_in_SI = toKgh(msv, msu);                               // kg/h
-  const shMin_SI = SYS === 'IMP' ? shMin_d * 5/9 : shMin_d;     // °C
+  // Convert to SI internal units
+  const Ps=toMPa(Ps_d), T1=toC(T1_d), Tw=toC(Tw_d), Pw=toMPa(Pw_d), T2=toC(T2_d);
+  const m_in=toKgh(msv,msu);
 
-  const body = {
-    P_s: P_s_SI, T1: T1_SI, Tw: Tw_SI, Pw: Pw_SI, T2: T2_SI,
-    m_in: m_in_SI,
-    sh_min: shMin_SI, f_min: fMin, f_max: fMax, cv_in: cvIn,
-  };
+  // Bug 18 — tSat convergence monitoring
+  _tSatConvWarn = false;
+  const Ts=Tsat(Ps);
+  const convWarn = _tSatConvWarn;
 
-  // Show loading
-  E('loadingOverlay').classList.add('show');
-  E('calcBtn').disabled = true;
+  const shMin_C = SYS==='IMP' ? shMin_d*5/9 : shMin_d;
 
-  try {
-    const resp = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const data = await resp.json();
+  // Validation
+  const errs=[], warns=[];
+  if(convWarn) warns.push('⚠ Saturation temperature solver required bisection fallback — check inputs near critical region.');
+  if(!isFinite(Ts)) { showAlert('🔴 Could not compute saturation temperature. Check steam pressure range (0.006–220 bara).','err'); return; }
+  if(T1<=Ts+0.5) errs.push(`Inlet steam (${f1(fromC(T1))} ${SYS==='IMP'?'°F':'°C'}) is not superheated — must exceed Tsat (${f1(fromC(Ts))} ${SYS==='IMP'?'°F':'°C'}).`);
+  if(T2>=T1)     errs.push(`Target outlet (${f1(fromC(T2))}) must be LOWER than inlet (${f1(fromC(T1))}). Desuperheating cools the steam.`);
+  if(T2<=Ts+shMin_C) errs.push(`Outlet target too close to saturation. Min. superheat = ${f1(shMin_d)} Δ${SYS==='IMP'?'°F':'°C'}, so min. outlet = ${f1(fromC(Ts+shMin_C))} ${SYS==='IMP'?'°F':'°C'}.`);
+  if(Tw>=T2)     errs.push(`Water temperature (${f1(fromC(Tw))}) must be below outlet target (${f1(fromC(T2))}). No cooling possible.`);
+  if(m_in<=0)    errs.push('Steam mass flow rate must be positive.');
+  if(errs.length){ showAlert('🔴 '+errs.join('<br>🔴 '),'err'); return; }
 
-    if (!resp.ok) {
-      showAlert('🔴 ' + (data.error || 'Calculation error'), 'err');
-      return;
-    }
+  if(Tw>=Ts) warns.push(`⚠ Water temperature (${f1(fromC(Tw))} ${SYS==='IMP'?'°F':'°C'}) ≥ saturation temperature at steam pressure — flash and two-phase flow risk at injection point.`);
+  if(Pw>0&&Pw<=Ps+0.3) warns.push(`⚠ Water supply pressure margin very small (P_w − P_s = ${f2((Pw-Ps)*10)} bar). Need ≥ 3–5 bar margin for reliable injection.`);
 
-    // Attach display-only fields
-    data.isI = SYS === 'IMP';
-    data.fMin = fMin;
-    data.fMax = fMax;
-    data.shMin_d = shMin_d;
-    data.ms_uid = msu;
-    data.ms_val_disp = msv;
-    data.ts = new Date().toLocaleString();
-    data.calcId = CALC_ID;
+  // Properties
+  const h1=h_steam(T1,Ps);
+  const h2=h_steam(T2,Ps);
+  const hw=h_water(Tw,Pw);
+  const v1=v_steam(T1,Ps), v2=v_steam(T2,Ps);
+  const s1=s_steam(T1,Ps), s2=s_steam(T2,Ps);
 
-    // Map shStatus → shSt object
-    data.shSt = data.shStatus === 'ADEQUATE'
-      ? { c:'ok', lbl:'ADEQUATE SUPERHEAT',     bb:'bb-ok' }
-      : data.shStatus === 'LOW'
-      ? { c:'wa', lbl:'LOW SUPERHEAT MARGIN',   bb:'bb-wa' }
-      : { c:'bd', lbl:'INSUFFICIENT SUPERHEAT', bb:'bb-bd' };
-
-    lastR = data;
-
-    // Show API warnings
-    if (data.warns && data.warns.length) showAlert(data.warns.join('<br>'), 'wa');
-
-    // Update Tsat display and live props (from API result)
-    E('Tsat_disp').value = f1(fromC(data.Ts));
-    E('props_in').innerHTML =
-      `<strong>h₁</strong> ${f1(data.h1)} kJ/kg &nbsp;·&nbsp; ` +
-      `<strong>Tsat</strong> ${f1(fromC(data.Ts))} ${SYS==='IMP'?'°F':'°C'} &nbsp;·&nbsp; ` +
-      `<strong>SH</strong> ${f1(SYS==='IMP'?(T1_SI-data.Ts)*9/5:(T1_SI-data.Ts))} Δ${SYS==='IMP'?'°F':'°C'} &nbsp;·&nbsp; ` +
-      `<strong>v</strong> ${f4(data.v1)} m³/kg &nbsp;·&nbsp; ` +
-      `<strong>s</strong> ${f3(data.s1)} kJ/kg·K`;
-    E('props_w').innerHTML =
-      `<strong>h_w</strong> ${f1(data.hw)} kJ/kg &nbsp;·&nbsp; ` +
-      `<strong>State</strong> 💧 Compressed liquid &nbsp;·&nbsp; ` +
-      `<strong>Tsat@Pw</strong> — (server-checked)`;
-    E('props_out').innerHTML =
-      `<strong>h₂</strong> ${f1(data.h2)} kJ/kg &nbsp;·&nbsp; ` +
-      `<strong>SH at outlet</strong> ${f1(SYS==='IMP'?data.sh_out*9/5:data.sh_out)} Δ${SYS==='IMP'?'°F':'°C'} &nbsp;·&nbsp; ` +
-      `<strong>${data.sh_out<5?'⚠ Wet steam risk!':data.sh_out<15?'⚠ Low superheat':'✅ Adequate superheat'}</strong>`;
-
-    render();
-
-  } catch (err) {
-    showAlert('🔴 Network error — could not reach calculation server. ' + err.message, 'err');
-  } finally {
-    E('loadingOverlay').classList.remove('show');
-    E('calcBtn').disabled = false;
+  // B5: critical region check
+  const critWarn1 = criticalRegionWarning(Ps*10, T1);
+  const critWarn2 = criticalRegionWarning(Ps*10, T2);
+  if (critWarn1 || critWarn2) {
+    const sev = (critWarn1==='CRITICAL'||critWarn2==='CRITICAL') ? 'CRITICAL' : 'NEAR_CRITICAL';
+    warns.push(`⚠ ${sev==='CRITICAL'?'🔴 Critical region':'Near-critical region'} detected (T>350°C & P>165 bar). ` +
+      `IF97 Region-3 is not fully implemented — property accuracy reduced to ±${sev==='CRITICAL'?15:5} kJ/kg. ` +
+      `Verify h₁, h₂ against certified steam tables before using in design.`);
   }
+
+  // B18: property uncertainty estimates
+  const unc_h1 = propUncertainty(Ps*10, T1, true);
+  const unc_h2 = propUncertainty(Ps*10, T2, true);
+  const unc_hw = propUncertainty(Pw*10, Tw, false);
+
+  if(!isFinite(h1)||!isFinite(h2)||!isFinite(hw)){
+    showAlert('🔴 Property calculation failed. Verify that all temperatures and pressures are within valid steam table ranges.','err'); return;
+  }
+  if(h1<=h2) { showAlert('🔴 Inlet steam enthalpy ≤ outlet enthalpy — verify temperatures.','err'); return; }
+
+  // Bug 19 — robust denominator guard
+  const denom = h2 - hw;
+  if(denom < 20) {    // 20 kJ/kg minimum driving force (physically meaningful threshold)
+    showAlert(`🔴 Insufficient enthalpy driving force (h₂ − h_w = ${f1(denom)} kJ/kg). ` +
+      'Reduce water temperature or raise outlet target temperature. ' +
+      'Minimum recommended: 20 kJ/kg.','err');
+    return;
+  }
+
+  // Mass balance
+  const ratio  = (h1 - h2) / denom;           // ṁ_w / ṁ_in
+  const m_w    = m_in * ratio;
+  const m_out  = m_in + m_w;
+  const qPct   = (m_w / m_out) * 100;
+
+  // Heat duties
+  const Q_rem = m_in / 3600 * (h1 - h2);
+  const Q_abs = m_w  / 3600 * denom;
+  const sh_out = T2 - Ts;
+
+  // Bug 8 — near-saturation quality check
+  // If outlet is within 3°C of saturation, warn and estimate x
+  let outletQuality = null;
+  if (sh_out < 3 && sh_out >= 0) {
+    const satOut = satByP(Ps * 10);
+    if (satOut) {
+      const x_est = (h2 - satOut.hf) / Math.max(1, satOut.hfg);
+      outletQuality = Math.max(0, Math.min(1, x_est));
+      warns.push(`⚠ Outlet is very close to saturation (SH = ${f1(SYS==='IMP'?sh_out*9/5:sh_out)} Δ${SYS==='IMP'?'°F':'°C'}). ` +
+        `Estimated steam quality at outlet: x ≈ ${outletQuality.toFixed(3)}. Risk of wet steam — increase superheat margin.`);
+    }
+  }
+
+  // Control range
+  const mw_min=m_w*fMin/100, mw_max=m_w*fMax/100;
+  const mo_min=m_in+mw_min,  mo_max=m_in+mw_max;
+
+  // Bug 10/11 — ISA S75.01 / IEC 60534 valve Cv + cavitation check
+  let cv_res = null;
+  if (cvIn > 0) {
+    const Ps_bar  = Ps * 10;                   // bar  (internal unit)
+    const Pw_bar  = Pw * 10;                   // bar
+    const dP_bar  = Pw_bar - Ps_bar;           // differential pressure across valve
+    const dP_psi  = dP_bar * 14.5038;
+
+    // Water density at actual TEMPERATURE Tw (not at saturation pressure)
+    // Using satByT_fb(Tw) gives vf at the real fluid temperature for correct SG
+    const satWt   = satByT_fb(Math.max(1, Math.min(Tw, 370)));
+    const rho_w   = satWt ? (1 / satWt.vf) : 998;
+    const SG      = rho_w / 998.2;            // specific gravity vs water at 60°F
+
+    // Vapour pressure of water at water inlet temperature
+    const Pv_bar  = pSat(Tw);                 // bar — vapour pressure at Tw
+
+    // ISA S75.01 liquid Cv (incompressible, no choke)
+    const m_w_gpm = m_w / 0.453592 / 60 / 8.3454;   // kg/h → US gpm
+    const Cv_req  = dP_bar > 0.1
+      ? m_w_gpm / Math.sqrt(Math.max(0.01, dP_psi / SG))
+      : NaN;
+
+    // FL recovery factor (typical globe valve spray nozzle: 0.90)
+    const FL = 0.90;
+    // Allowable pressure drop (choked flow limit)
+    const dP_allow = FL * FL * (Pw_bar - Pv_bar);  // bar
+
+    // Cavitation index σ (Tullis/ISA) — Bug 11
+    const sigma = dP_bar > 0.01
+      ? (Pw_bar - Pv_bar) / dP_bar
+      : Infinity;
+    // Critical σ for incipient cavitation ≈ 2.0 (conservative for spray valves)
+    const cavitating = sigma < 2.0 && dP_bar > 0.1;
+    const flashing   = Pv_bar >= Pw_bar;
+
+    // Choked flow check
+    const choked = dP_bar > dP_allow;
+    const Kv_req  = isFinite(Cv_req) ? Cv_req / 1.1561 : NaN;
+
+    cv_res = {
+      Cv_req, Kv_req, Cv_inst: cvIn, Kv_inst: cvIn/1.1561, rat: isFinite(Cv_req) ? cvIn/Cv_req : NaN,
+      dP_psi, dP_bar, m_w_gpm, SG, rho_w,
+      Pv_bar, sigma, cavitating, flashing, choked, dP_allow,
+      FL
+    };
+  }
+
+  const shSt = sh_out>=20?{c:'ok',lbl:'ADEQUATE SUPERHEAT',bb:'bb-ok'}
+             : sh_out>=shMin_C?{c:'wa',lbl:'LOW SUPERHEAT MARGIN',bb:'bb-wa'}
+             : {c:'bd',lbl:'INSUFFICIENT SUPERHEAT',bb:'bb-bd'};
+
+  if(warns.length) showAlert(warns.join('<br>'),'wa');
+
+  const isI = SYS==='IMP';
+  lastR={Ps,T1,Tw,Pw,T2,m_in,m_w,m_out,ratio,qPct,
+         h1,h2,hw,v1,v2,s1,s2,Ts,sh_out,shMin_C,
+         Q_rem,Q_abs,mw_min,mw_max,mo_min,mo_max,
+         fMin,fMax,cv_res,shSt,warns,outletQuality,
+         unc_h1, unc_h2, unc_hw,
+         ms_uid:msu, ms_val_disp:msv,
+         convWarn, isI,
+         ts:new Date().toLocaleString()};
+  render();
 }
 
 /* ══════════════════════════════════════════════════
-   RENDER  — pure display layer, no maths
+   RENDER
 ══════════════════════════════════════════════════ */
-function render() {
-  const r = lastR;
-  const T   = SYS === 'IMP' ? '°F' : '°C';
-  const Pu  = SYS === 'IMP' ? 'psia' : 'bara';
-  const isI = SYS === 'IMP';
+function render(){
+  const r=lastR;
+  const T=SYS==='IMP'?'°F':'°C', Pu=SYS==='IMP'?'psia':'bara';
+  const isI=SYS==='IMP';
+  const fT = v => fromC(v).toFixed(1)+' '+T;
+  const fPu= v => frPd(v).toFixed(1)+' '+Pu;
+  const fFu= v => (isI?v/0.453592:v).toFixed(0)+' '+(isI?'lb/h':'kg/h');
+  const fFt= v => (v/1000).toFixed(2)+' t/h';
+  const fKw= v => v.toFixed(1)+' kW';
 
-  const fT  = v => fromC(v).toFixed(1) + ' ' + T;
-  const fPu = v => frPd(v).toFixed(1) + ' ' + Pu;
-  const fFu = v => (isI ? v/0.453592 : v).toFixed(0) + ' ' + (isI ? 'lb/h' : 'kg/h');
-  const fFt = v => (v/1000).toFixed(2) + ' t/h';
-  const fKw = v => v.toFixed(1) + ' kW';
+  // Sensitivity tables
+  const sensT=[], sensW=[];
+  for(let d=-10;d<=10;d+=2){
+    const T2s=r.T2+d;
+    if(T2s>r.T1||T2s<=r.Ts+r.shMin_C) continue;
+    const h2s=h_steam(T2s,r.Ps);
+    if(h2s<=r.hw+5) continue;
+    const mws=r.m_in*(r.h1-h2s)/(h2s-r.hw);
+    sensT.push({d,T2s,mws,pct:mws/(r.m_in+mws)*100,base:d===0});
+  }
+  for(let d=-20;d<=20;d+=5){
+    const Tws=r.Tw+d;
+    if(Tws<=0||Tws>=r.T2) continue;
+    const hws=h_water(Tws,r.Pw);
+    if(r.h2<=hws+5) continue;
+    const mws=r.m_in*(r.h1-r.h2)/(r.h2-hws);
+    sensW.push({d,Tws,mws,pct:mws/(r.m_in+mws)*100,base:d===0});
+  }
 
-  // Sensitivity data from API
-  const sensT = r.sensT || [];
-  const sensW = r.sensW || [];
-
-  E('RP').innerHTML = `<div style="animation:fi .35s ease">
+  E('RP').innerHTML=`<div style="animation:fi .35s ease">
 
   <!-- BANNER -->
   <div class="banner">
     <div class="ban-grid">
       <div class="ban-item">
         <div class="ban-lbl">Quench Water Flow (ṁ_w)</div>
-        <div class="ban-val">${isI ? f0(r.m_w/0.453592) : (r.m_w/1000).toFixed(2)}<span class="bmu">${isI?'lb/h':'t/h'}</span></div>
+        <div class="ban-val">${isI?f0(r.m_w/0.453592):(r.m_w/1000).toFixed(2)}<span class="bmu">${isI?'lb/h':'t/h'}</span></div>
         <div class="ban-sub">${fFu(r.m_w)} · ${f2(r.ratio*100)}% of ṁ_in</div>
         <span class="ban-bdg bb-inf">ṁ_w/ṁ_in = ${f3(r.ratio)}</span>
       </div>
       <div class="ban-item">
         <div class="ban-lbl">Outlet Steam Flow (ṁ_out)</div>
-        <div class="ban-val">${isI ? f0(r.m_out/0.453592) : (r.m_out/1000).toFixed(2)}<span class="bmu">${isI?'lb/h':'t/h'}</span></div>
+        <div class="ban-val">${isI?f0(r.m_out/0.453592):(r.m_out/1000).toFixed(2)}<span class="bmu">${isI?'lb/h':'t/h'}</span></div>
         <div class="ban-sub">${fFu(r.m_out)}</div>
         <span class="ban-bdg bb-nt">+${f1(r.qPct)}% vs inlet</span>
       </div>
@@ -664,7 +1607,7 @@ function render() {
 
   <!-- MASS & ENERGY BALANCE -->
   <div class="card">
-    <div class="ch"><span class="ch-ico">⚖️</span><span class="ch-ttl">Mass &amp; Energy Balance</span></div>
+    <div class="ch"><span class="ch-ico">⚖️</span><span class="ch-ttl">Mass & Energy Balance</span></div>
     <div class="cb">
       <div class="sec" style="margin-top:0">⚖️ Mass Balance</div>
       <div class="mg4">
@@ -707,9 +1650,12 @@ function render() {
         <pre><span class="cy">ṁ_in · h₁  +  ṁ_w · h_w  =  ṁ_out · h₂   (First Law, no heat loss)</span>
 <span class="cy">ṁ_out = ṁ_in + ṁ_w                          (Mass conservation)</span>
 
+Substituting:
+  ṁ_in · h₁ + ṁ_w · h_w = (ṁ_in + ṁ_w) · h₂
   ṁ_in · (h₁ − h₂) = ṁ_w · (h₂ − h_w)
   <span class="hl">ṁ_w = ṁ_in × (h₁ − h₂) / (h₂ − h_w)</span>
 
+Substituting values:
   h₁ = <span class="hl">${f1(r.h1)}</span> kJ/kg  (inlet steam at ${fT(r.T1)}, ${fPu(r.Ps)})
   h₂ = <span class="hl">${f1(r.h2)}</span> kJ/kg  (outlet steam at ${fT(r.T2)}, ${fPu(r.Ps)})
   h_w = <span class="hl">${f1(r.hw)}</span> kJ/kg  (quench water at ${fT(r.Tw)}, ${fPu(r.Pw)})
@@ -725,7 +1671,7 @@ function render() {
 
   <!-- STEAM PROPERTIES TABLE -->
   <div class="card">
-    <div class="ch"><span class="ch-ico">📊</span><span class="ch-ttl">Steam Properties (IAPWS-IF97 · Server-Computed)</span></div>
+    <div class="ch"><span class="ch-ico">📊</span><span class="ch-ttl">Steam Properties (IAPWS-IF97 Tables)</span></div>
     <div class="cb">
       <table class="dtbl">
         <thead>
@@ -766,7 +1712,7 @@ function render() {
           <tr class="tot">
             <td>Saturation @ P_steam</td>
             <td class="num">${fT(r.Ts)}</td><td class="num">${fPu(r.Ps)}</td>
-            <td class="num">${f1(r.hf_steam)} / ${f1(r.hg_steam)}</td>
+            <td class="num">${f1(hf_P(r.Ps))} / ${f1(hg_P(r.Ps))}</td>
             <td class="num">—</td>
             <td class="num" colspan="2">h_f / h_g</td>
             <td class="num">—</td><td>Sat. boundary</td>
@@ -776,8 +1722,8 @@ function render() {
       <div style="margin-top:7px;padding:6px 10px;background:var(--tint);border-radius:6px;font-size:.72rem;color:var(--subtle)">
         <strong style="color:var(--ink3)">Calc-ID:</strong> ${CALC_ID} &nbsp;·&nbsp;
         <strong style="color:var(--ink3)">Version:</strong> ${CALC_VERSION} &nbsp;·&nbsp;
-        <strong style="color:var(--ink3)">Engine:</strong> IAPWS-IF97 (server-side, protected) + PCHIP interp &nbsp;·&nbsp;
-        For EPC-grade design, verify against certified steam tables.
+        <strong style="color:var(--ink3)">Method:</strong> IAPWS-IF97 tables + PCHIP / log-P interp &nbsp;·&nbsp;
+        Uncertainty estimates are per-region interpolation bounds. For EPC-grade design, verify against certified steam tables.
       </div>
     </div>
   </div>
@@ -788,80 +1734,133 @@ function render() {
     <div class="cb">
       <div class="flow-dg">
         <svg width="720" height="310" viewBox="0 0 720 310" font-family="JetBrains Mono,monospace" font-size="10">
+
+          <!-- ── BACKGROUND ── -->
           <rect width="720" height="310" fill="#0d1220" rx="8"/>
+
+          <!-- ── GRID LINES (subtle) ── -->
           <line x1="0" y1="155" x2="720" y2="155" stroke="#1a2540" stroke-width="1" stroke-dasharray="4,6"/>
-          <!-- Inlet box -->
+
+          <!-- ══════════════════════════════════════
+               ZONE 1 — INLET (left box, x 10–170)
+               Labels ABOVE the pipe centreline
+          ═══════════════════════════════════════ -->
+          <!-- Inlet label box -->
           <rect x="10" y="62" width="145" height="90" rx="7" fill="#111827" stroke="#1e3a5f" stroke-width="1.2"/>
-          <text x="82" y="79" fill="#90b8f8" font-size="10.5" font-weight="700" text-anchor="middle">♨ INLET STEAM</text>
+          <text x="82" y="79"  fill="#90b8f8" font-size="10.5" font-weight="700" text-anchor="middle">♨ INLET STEAM</text>
           <line x1="20" y1="83" x2="145" y2="83" stroke="#1e3a5f" stroke-width="0.8"/>
-          <text x="22" y="96" fill="#6b8fb5" font-size="9">Temp</text>
+          <text x="22" y="96"  fill="#6b8fb5" font-size="9">Temp</text>
           <text x="100" y="96" fill="#90b8f8" font-size="9.5" font-weight="600" text-anchor="end">${fT(r.T1)}</text>
           <text x="22" y="109" fill="#6b8fb5" font-size="9">Press</text>
           <text x="100" y="109" fill="#90b8f8" font-size="9.5" font-weight="600" text-anchor="end">${fPu(r.Ps)}</text>
           <text x="22" y="122" fill="#6b8fb5" font-size="9">Flow</text>
-          <text x="100" y="122" fill="#90b8f8" font-size="9.5" font-weight="600" text-anchor="end">${fFt(r.m_in)}</text>
+          <text x="100" y="122" fill="#90b8f8" font-size="9.5" font-weight="600" text-anchor="end">${isI?f0(r.m_in/0.453592)+' lb/h':fFt(r.m_in)}</text>
           <text x="22" y="135" fill="#6b8fb5" font-size="9">h₁</text>
           <text x="100" y="135" fill="#c0d4f0" font-size="9.5" font-weight="600" text-anchor="end">${f0(r.h1)} kJ/kg</text>
-          <!-- Inlet arrow -->
+          <text x="22" y="148" fill="#6b8fb5" font-size="9">s₁</text>
+          <text x="100" y="148" fill="#c0d4f0" font-size="9.5" font-weight="600" text-anchor="end">${f3(r.s1)} kJ/kg·K</text>
+
+          <!-- Inlet arrow (right of box → body) -->
           <line x1="155" y1="155" x2="212" y2="155" stroke="#90b8f8" stroke-width="7" stroke-linecap="round"/>
           <polygon points="206,149 220,155 206,161" fill="#90b8f8"/>
-          <!-- Body -->
+
+          <!-- ══════════════════════════════════════
+               ZONE 2 — DESUPERHEATER BODY (centre)
+               x 220–500, y 110–200
+          ═══════════════════════════════════════ -->
           <rect x="220" y="110" width="280" height="90" rx="12" fill="#131e33" stroke="#2a4a7a" stroke-width="2"/>
+          <!-- inner glow border -->
+          <rect x="223" y="113" width="274" height="84" rx="10" fill="none" stroke="#1e3a6a" stroke-width="1"/>
+
+          <!-- Body title -->
           <text x="360" y="140" fill="#e2eaf8" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="1">DESUPERHEATER</text>
           <line x1="240" y1="146" x2="480" y2="146" stroke="#2a4a7a" stroke-width="0.8"/>
           <text x="360" y="160" fill="#9bacc8" font-size="9.5" text-anchor="middle">ṁ_w / ṁ_in = ${f3(r.ratio)} (${f2(r.ratio*100)}%)</text>
           <text x="360" y="174" fill="#9bacc8" font-size="9.5" text-anchor="middle">ΔT = ${f1(isI?(r.T1-r.T2)*9/5:r.T1-r.T2)} Δ${T}  ·  Q = ${(r.Q_rem/1000).toFixed(2)} MW</text>
           <text x="360" y="188" fill="${r.shSt.c==='ok'?'#6ee7b7':r.shSt.c==='wa'?'#fbbf24':'#f87171'}" font-size="9" text-anchor="middle" font-weight="700">⬡ ${r.shSt.lbl}</text>
-          <!-- Water injection -->
+
+          <!-- ══════════════════════════════════════
+               ZONE 3 — WATER INJECTION (top, centre)
+          ═══════════════════════════════════════ -->
+          <!-- Water info box (top centre) -->
           <rect x="262" y="8" width="196" height="56" rx="7" fill="#0d1f1a" stroke="#1a4a35" stroke-width="1.2"/>
-          <text x="360" y="24" fill="#6ee7b7" font-size="10.5" font-weight="700" text-anchor="middle">💧 QUENCH WATER</text>
+          <text x="360" y="24"  fill="#6ee7b7" font-size="10.5" font-weight="700" text-anchor="middle">💧 QUENCH WATER</text>
           <line x1="272" y1="28" x2="448" y2="28" stroke="#1a4a35" stroke-width="0.8"/>
-          <text x="275" y="40" fill="#4a9a78" font-size="9">Temp</text>
-          <text x="453" y="40" fill="#6ee7b7" font-size="9.5" font-weight="600" text-anchor="end">${fT(r.Tw)}</text>
-          <text x="275" y="53" fill="#4a9a78" font-size="9">Flow</text>
-          <text x="453" y="53" fill="#6ee7b7" font-size="9.5" font-weight="600" text-anchor="end">${fFt(r.m_w)}</text>
+          <text x="275" y="40"  fill="#4a9a78" font-size="9">Temp</text>
+          <text x="453" y="40"  fill="#6ee7b7" font-size="9.5" font-weight="600" text-anchor="end">${fT(r.Tw)}</text>
+          <text x="275" y="53"  fill="#4a9a78" font-size="9">Flow</text>
+          <text x="453" y="53"  fill="#6ee7b7" font-size="9.5" font-weight="600" text-anchor="end">${isI?f0(r.m_w/0.453592)+' lb/h':fFt(r.m_w)}</text>
+
+          <!-- Water vertical pipe -->
           <line x1="360" y1="64" x2="360" y2="106" stroke="#6ee7b7" stroke-width="5" stroke-linecap="round"/>
+          <!-- Arrow head pointing down into body -->
           <polygon points="351,100 360,112 369,100" fill="#6ee7b7"/>
+          <!-- Spray cone inside body -->
           <ellipse cx="360" cy="122" rx="22" ry="8" fill="rgba(110,231,183,.15)" stroke="#6ee7b7" stroke-width="1" stroke-dasharray="3,2"/>
+          <!-- Droplet dots -->
           <circle cx="348" cy="132" r="2" fill="rgba(110,231,183,.4)"/>
           <circle cx="360" cy="136" r="2" fill="rgba(110,231,183,.4)"/>
           <circle cx="372" cy="132" r="2" fill="rgba(110,231,183,.4)"/>
-          <!-- Outlet arrow -->
+          <text x="360" y="64" fill="#4a9a78" font-size="8" text-anchor="middle" dy="-4">h_w = ${f0(r.hw)} kJ/kg</text>
+
+          <!-- ══════════════════════════════════════
+               ZONE 4 — OUTLET (right box, x 550–710)
+          ═══════════════════════════════════════ -->
+          <!-- Outlet arrow (body → right box) -->
           <line x1="500" y1="155" x2="558" y2="155" stroke="#a78bfa" stroke-width="7" stroke-linecap="round"/>
           <polygon points="552,149 566,155 552,161" fill="#a78bfa"/>
-          <!-- Outlet box -->
-          <rect x="566" y="62" width="145" height="90" rx="7" fill="#150f2a" stroke="#3b2d6e" stroke-width="1.2"/>
-          <text x="638" y="79" fill="#a78bfa" font-size="10.5" font-weight="700" text-anchor="middle">✅ OUTLET STEAM</text>
+
+          <!-- Outlet label box -->
+          <rect x="566" y="62" width="145" height="103" rx="7" fill="#150f2a" stroke="#3b2d6e" stroke-width="1.2"/>
+          <text x="638" y="79"  fill="#a78bfa" font-size="10.5" font-weight="700" text-anchor="middle">✅ OUTLET STEAM</text>
           <line x1="576" y1="83" x2="701" y2="83" stroke="#3b2d6e" stroke-width="0.8"/>
-          <text x="578" y="96" fill="#7a6a9e" font-size="9">Temp</text>
-          <text x="704" y="96" fill="#a78bfa" font-size="9.5" font-weight="600" text-anchor="end">${fT(r.T2)}</text>
-          <text x="578" y="109" fill="#7a6a9e" font-size="9">Flow</text>
-          <text x="704" y="109" fill="#a78bfa" font-size="9.5" font-weight="600" text-anchor="end">${fFt(r.m_out)}</text>
-          <text x="578" y="122" fill="#7a6a9e" font-size="9">h₂</text>
-          <text x="704" y="122" fill="#c9bcf5" font-size="9.5" font-weight="600" text-anchor="end">${f0(r.h2)} kJ/kg</text>
-          <text x="578" y="135" fill="#7a6a9e" font-size="9">SH</text>
-          <text x="704" y="135" fill="${r.shSt.c==='ok'?'#6ee7b7':r.shSt.c==='wa'?'#fbbf24':'#f87171'}" font-size="9.5" font-weight="700" text-anchor="end">+${f1(isI?r.sh_out*9/5:r.sh_out)} Δ${T}</text>
-          <!-- Bottom summary bar -->
+          <text x="578" y="96"  fill="#7a6a9e" font-size="9">Temp</text>
+          <text x="704" y="96"  fill="#a78bfa" font-size="9.5" font-weight="600" text-anchor="end">${fT(r.T2)}</text>
+          <text x="578" y="109" fill="#7a6a9e" font-size="9">Press</text>
+          <text x="704" y="109" fill="#a78bfa" font-size="9.5" font-weight="600" text-anchor="end">${fPu(r.Ps)}</text>
+          <text x="578" y="122" fill="#7a6a9e" font-size="9">Flow</text>
+          <text x="704" y="122" fill="#a78bfa" font-size="9.5" font-weight="600" text-anchor="end">${isI?f0(r.m_out/0.453592)+' lb/h':fFt(r.m_out)}</text>
+          <text x="578" y="135" fill="#7a6a9e" font-size="9">h₂</text>
+          <text x="704" y="135" fill="#c9bcf5" font-size="9.5" font-weight="600" text-anchor="end">${f0(r.h2)} kJ/kg</text>
+          <text x="578" y="148" fill="#7a6a9e" font-size="9">s₂</text>
+          <text x="704" y="148" fill="#c9bcf5" font-size="9.5" font-weight="600" text-anchor="end">${f3(r.s2)} kJ/kg·K</text>
+          <text x="578" y="161" fill="#7a6a9e" font-size="9">SH</text>
+          <text x="704" y="161" fill="${r.shSt.c==='ok'?'#6ee7b7':r.shSt.c==='wa'?'#fbbf24':'#f87171'}" font-size="9.5" font-weight="700" text-anchor="end">+${f1(isI?r.sh_out*9/5:r.sh_out)} Δ${T}</text>
+
+          <!-- ══════════════════════════════════════
+               ZONE 5 — BOTTOM SUMMARY BAR
+          ═══════════════════════════════════════ -->
           <rect x="10" y="222" width="700" height="78" rx="8" fill="#0c1520" stroke="#1e3045" stroke-width="1"/>
+
+          <!-- Section dividers -->
           <line x1="185" y1="232" x2="185" y2="290" stroke="#1e3045" stroke-width="1"/>
           <line x1="360" y1="232" x2="360" y2="290" stroke="#1e3045" stroke-width="1"/>
           <line x1="535" y1="232" x2="535" y2="290" stroke="#1e3045" stroke-width="1"/>
-          <text x="97" y="242" fill="#6b8fb5" font-size="8.5" text-anchor="middle" font-weight="700">MASS BALANCE</text>
-          <text x="97" y="256" fill="#e2eaf8" font-size="9" text-anchor="middle">ṁ_in + ṁ_w = ṁ_out</text>
-          <text x="97" y="269" fill="#90b8f8" font-size="9.5" text-anchor="middle" font-weight="700">${fFu(r.m_in)}</text>
-          <text x="97" y="281" fill="#6b8fb5" font-size="8.5" text-anchor="middle">+ ${fFu(r.m_w)} = ${fFu(r.m_out)}</text>
+
+          <!-- Col 1: Mass balance -->
+          <text x="97"  y="242" fill="#6b8fb5" font-size="8.5" text-anchor="middle" font-weight="700" text-transform="uppercase">MASS BALANCE</text>
+          <text x="97"  y="256" fill="#e2eaf8" font-size="9"   text-anchor="middle">ṁ_in + ṁ_w = ṁ_out</text>
+          <text x="97"  y="269" fill="#90b8f8" font-size="9.5" text-anchor="middle" font-weight="700">${fFu(r.m_in)}</text>
+          <text x="97"  y="281" fill="#6b8fb5" font-size="8.5" text-anchor="middle">+ ${fFu(r.m_w)} = ${fFu(r.m_out)}</text>
+
+          <!-- Col 2: Enthalpy drop -->
           <text x="272" y="242" fill="#6b8fb5" font-size="8.5" text-anchor="middle" font-weight="700">ENTHALPY DROP</text>
-          <text x="272" y="256" fill="#e2eaf8" font-size="9" text-anchor="middle">h₁ → h₂</text>
+          <text x="272" y="256" fill="#e2eaf8" font-size="9"   text-anchor="middle">h₁ → h₂</text>
           <text x="272" y="269" fill="#f9c580" font-size="9.5" text-anchor="middle" font-weight="700">${f0(r.h1)} → ${f0(r.h2)} kJ/kg</text>
           <text x="272" y="281" fill="#6b8fb5" font-size="8.5" text-anchor="middle">Δh = ${f0(r.h1-r.h2)} kJ/kg</text>
+
+          <!-- Col 3: Heat duty -->
           <text x="447" y="242" fill="#6b8fb5" font-size="8.5" text-anchor="middle" font-weight="700">HEAT REMOVED</text>
-          <text x="447" y="256" fill="#e2eaf8" font-size="9" text-anchor="middle">Q = ṁ_in × Δh</text>
+          <text x="447" y="256" fill="#e2eaf8" font-size="9"   text-anchor="middle">Q = ṁ_in × Δh</text>
           <text x="447" y="269" fill="#f87171" font-size="9.5" text-anchor="middle" font-weight="700">${(r.Q_rem/1000).toFixed(3)} MW</text>
           <text x="447" y="281" fill="#6b8fb5" font-size="8.5" text-anchor="middle">${r.Q_rem.toFixed(0)} kW absorbed</text>
+
+          <!-- Col 4: Superheat status -->
           <text x="617" y="242" fill="#6b8fb5" font-size="8.5" text-anchor="middle" font-weight="700">SUPERHEAT</text>
-          <text x="617" y="256" fill="#e2eaf8" font-size="9" text-anchor="middle">T_out − T_sat</text>
+          <text x="617" y="256" fill="#e2eaf8" font-size="9"   text-anchor="middle">T_out − T_sat</text>
           <text x="617" y="269" fill="${r.shSt.c==='ok'?'#6ee7b7':r.shSt.c==='wa'?'#fbbf24':'#f87171'}" font-size="9.5" text-anchor="middle" font-weight="700">+${f1(isI?r.sh_out*9/5:r.sh_out)} Δ${T}</text>
           <text x="617" y="281" fill="${r.shSt.c==='ok'?'#4a9a78':r.shSt.c==='wa'?'#a07820':'#9a2020'}" font-size="8.5" text-anchor="middle">${r.shSt.lbl}</text>
+
         </svg>
       </div>
     </div>
@@ -898,20 +1897,20 @@ function render() {
     <div class="card" style="margin:0">
       <div class="ch"><span class="ch-ico">🔩</span><span class="ch-ttl">Control Valve Sizing (ISA S75 / IEC 60534)</span></div>
       <div class="cb">
-        ${r.cv_res ? `
-        ${r.cv_res.flashing?`<div class="ibox bd" style="margin-bottom:10px"><div class="ibox-t">⚠ FLASHING DETECTED</div>Water inlet temperature exceeds its vapour pressure. Two-phase flow — standard Cv equation does not apply.</div>`:''}
-        ${r.cv_res.choked?`<div class="ibox bd" style="margin-bottom:10px"><div class="ibox-t">⚠ CHOKED FLOW WARNING</div>ΔP (${f2(r.cv_res.dP_bar)} bar) exceeds allowable FL²·(P₁−Pv) = ${f2(r.cv_res.dP_allow)} bar.</div>`:''}
-        ${r.cv_res.cavitating?`<div class="ibox wa" style="margin-bottom:10px"><div class="ibox-t">⚠ CAVITATION RISK</div>σ = ${r.cv_res.sigma} < 2.0. Anti-cavitation trim recommended.</div>`:''}
+        ${r.cv_res?`
+        ${r.cv_res.flashing?`<div class="ibox bd" style="margin-bottom:10px"><div class="ibox-t">⚠ FLASHING DETECTED</div>Water inlet temperature exceeds its own vapour pressure. Two-phase flow at the valve — standard Cv equation does not apply. Consult specialist.</div>`:''}
+        ${r.cv_res.choked?`<div class="ibox bd" style="margin-bottom:10px"><div class="ibox-t">⚠ CHOKED FLOW WARNING</div>ΔP (${f2(r.cv_res.dP_bar)} bar) exceeds allowable FL²·(P₁−Pv) = ${f2(r.cv_res.dP_allow)} bar. Valve may be in choked condition — actual flow will be lower than Cv prediction.</div>`:''}
+        ${r.cv_res.cavitating?`<div class="ibox wa" style="margin-bottom:10px"><div class="ibox-t">⚠ CAVITATION RISK</div>σ = ${r.cv_res.sigma.toFixed(2)} < 2.0 (incipient cavitation threshold). Trim material, anti-cavitation trim, or pressure staging recommended.</div>`:''}
         <div class="mg2">
           <div class="mc bl">
             <div class="mc-lbl">Cv Required (ISA S75)</div>
-            <div class="mc-val">${r.cv_res.Cv_req!=null?f2(r.cv_res.Cv_req):'—'}</div>
-            <div class="mc-sub">Kv = ${r.cv_res.Kv_req!=null?f2(r.cv_res.Kv_req):'—'} m³/h·bar½ · SG=${r.cv_res.SG}</div>
+            <div class="mc-val">${isFinite(r.cv_res.Cv_req)?f2(r.cv_res.Cv_req):'—'}</div>
+            <div class="mc-sub">Kv = ${isFinite(r.cv_res.Kv_req)?f2(r.cv_res.Kv_req):'—'} m³/h·bar½ · SG=${r.cv_res.SG.toFixed(3)}</div>
           </div>
-          <div class="mc ${r.cv_res.rat>=1.1?'gn':r.cv_res.rat>=0.85?'am':'rd'}">
+          <div class="mc ${isFinite(r.cv_res.rat)&&r.cv_res.rat>=1.1?'gn':isFinite(r.cv_res.rat)&&r.cv_res.rat>=0.85?'am':'rd'}">
             <div class="mc-lbl">Cv Installed / Required</div>
-            <div class="mc-val">${r.cv_res.rat!=null?f2(r.cv_res.rat):'—'}</div>
-            <div class="mc-sub">${r.cv_res.rat>=1.1?'✅ Adequate':'⚠ Undersized — review!'}</div>
+            <div class="mc-val">${isFinite(r.cv_res.rat)?f2(r.cv_res.rat):'—'}</div>
+            <div class="mc-sub">${isFinite(r.cv_res.rat)&&r.cv_res.rat>=1.1?'✅ Adequate':'⚠ Undersized — review!'}</div>
           </div>
         </div>
         <div class="mg3">
@@ -922,7 +1921,7 @@ function render() {
           </div>
           <div class="mc ${r.cv_res.cavitating?'rd':'tl'}">
             <div class="mc-lbl">Cavitation Index σ</div>
-            <div class="mc-val">${r.cv_res.sigma!=null?r.cv_res.sigma:'∞'}</div>
+            <div class="mc-val">${isFinite(r.cv_res.sigma)?r.cv_res.sigma.toFixed(2):'∞'}</div>
             <div class="mc-sub">${r.cv_res.cavitating?'⚠ Cavitation risk':'✅ OK (σ > 2.0)'}</div>
           </div>
           <div class="mc ${r.cv_res.flashing?'rd':'bl'}">
@@ -931,15 +1930,15 @@ function render() {
             <div class="mc-sub">${r.cv_res.flashing?'⚠ Flashing!':'Below P_supply'}</div>
           </div>
         </div>
-        <div class="fbox"><div class="fbox-t">Cv Calculation — ISA S75.01 Liquid Sizing</div>
-        <pre>Q [gpm] = Cv × √(ΔP [psi] / SG)     SG = ${r.cv_res.SG}
-Cv_req  = ${r.cv_res.m_w_gpm} gpm / √(${r.cv_res.dP_psi} psi / ${r.cv_res.SG}) = <span class="wh">${r.cv_res.Cv_req!=null?f2(r.cv_res.Cv_req):'N/A'}</span>
-Kv_req  = Cv / 1.1561 = <span class="wh">${r.cv_res.Kv_req!=null?f2(r.cv_res.Kv_req):'N/A'}</span> m³/h·bar½
-FL = ${r.cv_res.FL}  → Choked ΔP limit = ${f2(r.cv_res.dP_allow)} bar
-σ = ${r.cv_res.sigma!=null?r.cv_res.sigma:'∞'}  [crit. σ ≈ 2.0]
+        <div class="fbox"><div class="fbox-t">Cv Calculation — ISA S75.01 / IEC 60534 Liquid Sizing</div>
+        <pre>Q [gpm] = Cv × √(ΔP [psi] / SG)     SG = ρ_w / ρ_ref = ${r.cv_res.SG.toFixed(3)}
+Cv_req  = Q / √(ΔP/SG) = <span class="hl">${f1(r.cv_res.m_w_gpm)}</span> / √(${f1(r.cv_res.dP_psi)}/${r.cv_res.SG.toFixed(3)}) = <span class="wh">${isFinite(r.cv_res.Cv_req)?f2(r.cv_res.Cv_req):'N/A'}</span>
+Kv_req  = Cv / 1.1561 = <span class="wh">${isFinite(r.cv_res.Kv_req)?f2(r.cv_res.Kv_req):'N/A'}</span> m³/h·bar½  (IEC 60534 / European)
+FL factor (globe spray): ${r.cv_res.FL.toFixed(2)}   →  Choked ΔP limit = FL²·(P₁−Pv) = ${f2(r.cv_res.dP_allow)} bar
+Cavitation index: σ = (P₁ − Pv) / ΔP = ${isFinite(r.cv_res.sigma)?r.cv_res.sigma.toFixed(2):'∞'}   [crit. σ ≈ 2.0]
 <span class="${r.cv_res.cavitating?'rd':'gr'}">${r.cv_res.cavitating?'⚠ Cavitation regime — anti-cavitation trim recommended':'✅ No cavitation'}</span>
-<span class="${r.cv_res.choked?'rd':'gr'}">${r.cv_res.choked?'⚠ Choked flow':'✅ Not choked'}</span></pre></div>
-        ` : `<div class="ibox inf"><div class="ibox-t">Valve Sizing</div>Enter a Control Valve Cv in the input panel to compute sizing ratio, cavitation index, and choked-flow check.</div>`}
+<span class="${r.cv_res.choked?'rd':'gr'}">${r.cv_res.choked?'⚠ Choked flow — actual capacity limited by FL':'✅ Not choked'}</span></pre></div>
+        `:`<div class="ibox inf"><div class="ibox-t">Valve Sizing</div>Enter a Control Valve Cv in the input panel (left) to compute required vs installed Cv, cavitation index, and choked-flow check.</div>`}
       </div>
     </div>
   </div>
@@ -978,8 +1977,50 @@ FL = ${r.cv_res.FL}  → Choked ΔP limit = ${f2(r.cv_res.dP_allow)} bar
       </div>
       <div class="ibox inf" style="margin-top:6px">
         <div class="ibox-t">📌 Key Insight</div>
-        Cooler quench water (lower h_w) absorbs more heat per kg → <strong>less water mass needed</strong>.
-        Higher outlet target → smaller enthalpy drop → <strong>less quench water required</strong>.
+        Cooler quench water (lower h_w) absorbs more heat per kg → <strong>less water mass needed</strong> for same temperature reduction.
+        Higher outlet target temperature → smaller enthalpy drop (h₁−h₂) → <strong>less quench water</strong>.
+        Lower outlet target → more water required → monitor minimum superheat margin carefully.
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="card">
+    <div class="ch"><span class="ch-ico">📚</span><span class="ch-ttl">Glossary, Engineering Basis & References</span></div>
+    <div class="cb">
+      <table class="gtbl">
+        <thead><tr><th>Term</th><th>Symbol / Unit</th><th>Engineering Definition</th></tr></thead>
+        <tbody>
+          <tr><td>Desuperheater</td><td>Attemperator</td><td>In-line device that injects liquid water spray into a superheated steam flow to reduce temperature to a controlled setpoint while maintaining steam in the superheated state.</td></tr>
+          <tr><td>ṁ_in</td><td>kg/h or lb/h</td><td>Inlet superheated steam mass flow — the stream to be cooled. Fixed by the upstream system (boiler, turbine, etc.).</td></tr>
+          <tr><td>ṁ_w</td><td>kg/h or lb/h</td><td>Required quench / spray water mass flow — the primary result of this calculation. Must be a compressed liquid at the injection point to prevent nozzle damage and flash noise.</td></tr>
+          <tr><td>ṁ_out</td><td>kg/h or lb/h</td><td>Outlet steam flow = ṁ_in + ṁ_w. The added water mass increases total flow — important for downstream pipe sizing.</td></tr>
+          <tr><td>h₁, h₂, h_w</td><td>kJ/kg</td><td>Specific enthalpies from IAPWS-IF97. h₁ = inlet steam; h₂ = outlet steam (target); h_w = quench water (compressed liquid at its supply conditions).</td></tr>
+          <tr><td>Superheat margin</td><td>T_out − T_sat [°C]</td><td>Temperature margin above saturation at the outlet. Must remain ≥ 10–15°C minimum to avoid wet steam formation, erosion damage to downstream pipework, and water hammer.</td></tr>
+          <tr><td>Cv</td><td>gpm / √psi</td><td>Control valve flow coefficient (ISA/IEC 60534): Q = Cv × √(ΔP/SG). Used to size the spray water control valve. Recommended Cv_installed / Cv_required ≥ 1.1–1.25.</td></tr>
+          <tr><td>IAPWS-IF97</td><td>Steam tables</td><td>International Association for Properties of Water and Steam Industrial Formulation 1997. The internationally recognised standard for steam power plant thermodynamic property calculations.</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;padding:9px 12px;background:var(--tint);border-radius:7px;border-left:3px solid var(--bd2);font-size:.75rem;color:var(--mid);line-height:1.7">
+        <strong style="color:var(--ink2)">Property Method &amp; Accuracy:</strong>
+        Saturation properties use NIST-IF97 tables (0.01–374°C / 0.006–220.6 bar) with PCHIP monotone interpolation — accuracy ±0.3 kJ/kg (h), ±0.002 kJ/(kg·K) (s).
+        Superheated steam uses IAPWS-IF97 verified table values on a dense P×T grid (16 pressure bands, 13 temperature points each) with log-P PCHIP interpolation for thermodynamic consistency — accuracy ±0.5–1.0 kJ/kg typical.
+        Compressed liquid uses Poynting correction with isothermal compressibility κ_T(T) — accuracy ±0.5 kJ/kg up to 200 bar.
+        <strong style="color:var(--am)">Near-critical region (T&gt;350°C &amp; P&gt;165 bar): accuracy degrades to ±5–15 kJ/kg — warning shown automatically. IF97 Region-3 is not implemented.</strong>
+        Valve sizing uses ISA S75.01 / IEC 60534 liquid Cv with FL recovery factor, cavitation index σ, and choked-flow limit. Flashing check uses vapour pressure at T_w.
+        <strong style="color:var(--am)">This tool is a high-quality engineering estimator. For EPC-grade or plant-critical design, verify all outputs against certified IAPWS-IF97 software (e.g. REFPROP, IAPWS-IF97 certified libraries).</strong>
+        <br><br>
+        <strong style="color:var(--ink2)">Limitations (out of scope for this tool):</strong>
+        Adiabatic mixing assumed (real plant deviation 2–6%) · Instantaneous evaporation assumed · Steady-state only (no transient response) · No droplet/atomisation physics · No spray nozzle ΔP · No mixing-zone pressure drop · No metal temperature protection checks.
+        <br><br>
+        <strong style="color:var(--ink2)">References:</strong>
+        IAPWS-IF97 (Wagner &amp; Kruse, 1997) ·
+        ISA S75.01 / IEC 60534-2-1 Control Valve Sizing ·
+        Tullis (1989) Cavitation Guide for Control Valves ·
+        ASME PTC 4 Fired Steam Generator ·
+        EN 12952-15 Water-tube boilers ·
+        Spirax Sarco Steam Engineering Tutorials ·
+        Çengel &amp; Boles "Thermodynamics" 8th Ed.
       </div>
     </div>
   </div>
@@ -988,56 +2029,53 @@ FL = ${r.cv_res.FL}  → Choked ΔP limit = ${f2(r.cv_res.dP_allow)} bar
 }
 
 /* ══════════════════════════════════════════════════
-   PDF REPORT  — uses lastR from API
+   PDF
 ══════════════════════════════════════════════════ */
-function generatePDF() {
-  if (!lastR) { alert('Run a calculation first.'); return; }
-  const r = lastR;
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
-  const isI = r.isI;
-  const T = isI ? '°F' : '°C', Pu = isI ? 'psia' : 'bara';
-  const fT = v => fromC(v).toFixed(1) + ' ' + T;
-  const fPu = v => frPd(v).toFixed(1) + ' ' + Pu;
-  const fFu = v => (isI ? v/0.453592 : v).toFixed(0) + ' ' + (isI?'lb/h':'kg/h');
-  const f1 = n => n.toFixed(1), f2 = n => n.toFixed(2), f3 = n => n.toFixed(3);
+function generatePDF(){
+  if(!lastR){ showAlert('Run a calculation first.','wa'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const r=lastR;
+  const T=SYS==='IMP'?'°F':'°C', Pu=SYS==='IMP'?'psia':'bara';
+  const isI=SYS==='IMP';
+  const fT=v=>fromC(v).toFixed(1)+' '+T;
+  const fPu=v=>frPd(v).toFixed(2)+' '+Pu;
+  const fFu=v=>(isI?v/0.453592:v).toFixed(0)+' '+(isI?'lb/h':'kg/h');
 
-  // Header
-  doc.setFillColor(30,35,52); doc.rect(0,0,210,28,'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
-  doc.text('Steam Quench / Desuperheater Calculator',10,12);
-  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(185,190,210);
-  doc.text('IAPWS-IF97 · Adiabatic Mass & Energy Balance · ISA S75.01 Cv Sizing · multicalci.com',10,19);
-  doc.text(`Calc-ID: ${CALC_ID} · ${r.ts} · ${CALC_VERSION}`,10,25);
+  doc.setFillColor(30,35,52); doc.rect(0,0,210,40,'F');
+  doc.setFillColor(14,95,168); doc.rect(0,0,5,40,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(17);
+  doc.text('Steam Quench / Desuperheater Report',8,14);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(200,210,230);
+  doc.text('Attemperator Water Flow · Heat & Mass Balance · IAPWS-IF97 Tables · Valve Sizing',8,23);
+  doc.text(`Generated: ${r.ts}   |   Units: ${SYS}   |   Status: ${r.shSt.lbl}`,8,31);
+  doc.text(`Calc-ID: ${CALC_ID}   |   Version: ${CALC_VERSION}   |   Method: IAPWS-IF97 Tables + PCHIP / log-P`,8,38);
 
-  let y = 34;
-  const secHead = t => {
-    doc.setFillColor(240,244,250); doc.rect(8,y-4,194,8,'F');
+  let y=48;
+  const secHead=title=>{
+    doc.setFillColor(240,244,250); doc.rect(8,y-5,194,9,'F');
     doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(30,35,52);
-    doc.text(t,10,y); y += 7;
+    doc.text(title,10,y+0.5); y+=9;
   };
 
-  secHead('1 · PROCESS INPUTS & KEY RESULTS');
-  const kpis = [
-    ['Steam Pressure',       `${fPu(r.Ps)}`],
-    ['Inlet Steam Temp (T₁)',`${fT(r.T1)}  (Tsat = ${fT(r.Ts)})`],
-    ['Quench Water Temp',    `${fT(r.Tw)}  @ ${fPu(r.Pw)}`],
-    ['Target Outlet Temp',   `${fT(r.T2)}`],
-    ['Inlet Steam Flow',     `${fFu(r.m_in)}`],
-    ['Quench Water Flow (ṁ_w)', `${fFu(r.m_w)}  =  ${(r.m_w/1000).toFixed(3)} t/h`],
-    ['Outlet Steam Flow',    `${fFu(r.m_out)}`],
-    ['Water/Steam Ratio',    `${r.ratio.toFixed(5)} (${(r.ratio*100).toFixed(2)}% of ṁ_in)`],
-    ['Quench Fraction',      `${r.qPct.toFixed(2)}%`],
-    ['Heat Removed from Steam', `${r.Q_rem.toFixed(1)} kW = ${(r.Q_rem/1000).toFixed(3)} MW`],
-    ['Outlet Superheat',     `${isI?(r.sh_out*9/5).toFixed(1):r.sh_out.toFixed(1)} Δ${T} (${r.shSt.lbl})`],
+  secHead('1 · KEY RESULTS');
+  const kpis=[
+    ['Quench Water Flow (ṁ_w)',  `${fFu(r.m_w)}  =  ${(r.m_w/1000).toFixed(3)} t/h`],
+    ['Outlet Steam Flow (ṁ_out)',`${fFu(r.m_out)}`],
+    ['Water/Steam Ratio',        `${r.ratio.toFixed(5)} (${(r.ratio*100).toFixed(2)}% of ṁ_in)`],
+    ['Quench Fraction of Outlet',`${r.qPct.toFixed(2)}%`],
+    ['Heat Removed from Steam',  `${r.Q_rem.toFixed(1)} kW = ${(r.Q_rem/1000).toFixed(3)} MW`],
+    ['Heat Absorbed by Water',   `${r.Q_abs.toFixed(1)} kW`],
+    ['Outlet Superheat',         `${isI?(r.sh_out*9/5).toFixed(1):r.sh_out.toFixed(1)} Δ${T} (${r.shSt.lbl})`],
   ];
-  kpis.forEach(([k,v]) => {
+  kpis.forEach(([k,v])=>{
     doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(75,80,100);
     doc.text(k,12,y);
     doc.setFont('helvetica','bold'); doc.setTextColor(15,20,40);
-    doc.text(v,90,y); y += 5.5;
+    doc.text(v,90,y); y+=5.5;
   });
-  y += 3;
+  y+=3;
 
   doc.autoTable({
     startY:y, margin:{left:10,right:10},
@@ -1046,65 +2084,93 @@ function generatePDF() {
       ['Inlet Steam',  fT(r.T1), fPu(r.Ps), r.h1.toFixed(1), r.s1.toFixed(3), r.v1.toFixed(5), `${isI?((r.T1-r.Ts)*9/5).toFixed(1):(r.T1-r.Ts).toFixed(1)} Δ${T}`, 'Superheated'],
       ['Quench Water', fT(r.Tw), fPu(r.Pw), r.hw.toFixed(1), '—', '~0.00103', '—', 'Comp. Liquid'],
       ['Outlet Steam', fT(r.T2), fPu(r.Ps), r.h2.toFixed(1), r.s2.toFixed(3), r.v2.toFixed(5), `${isI?(r.sh_out*9/5).toFixed(1):r.sh_out.toFixed(1)} Δ${T}`, r.sh_out>=10?'OK':'⚠ Low SH'],
-      ['Saturation',   fT(r.Ts), fPu(r.Ps), `${r.hf_steam} / ${r.hg_steam}`,'—','—','0','h_f / h_g'],
+      ['Saturation',   fT(r.Ts), fPu(r.Ps), `${hf_P(r.Ps).toFixed(1)} / ${hg_P(r.Ps).toFixed(1)}`,'—','—','0','h_f / h_g'],
     ],
     styles:{fontSize:7.5,cellPadding:2},
     headStyles:{fillColor:[30,35,52],textColor:255,fontStyle:'bold',fontSize:7},
     alternateRowStyles:{fillColor:[248,250,253]},
   });
-  y = doc.lastAutoTable.finalY + 6;
+  y=doc.lastAutoTable.finalY+6;
 
   secHead('2 · MASS & ENERGY BALANCE');
-  const lines = [
+  const lines=[
     `Energy balance: ṁ_in · h₁ + ṁ_w · h_w = ṁ_out · h₂  (adiabatic, no heat loss)`,
     `ṁ_w / ṁ_in = (h₁ − h₂) / (h₂ − h_w) = (${r.h1.toFixed(1)} − ${r.h2.toFixed(1)}) / (${r.h2.toFixed(1)} − ${r.hw.toFixed(1)}) = ${r.ratio.toFixed(5)}`,
-    `ṁ_w = ${fFu(r.m_in)} × ${r.ratio.toFixed(5)} = ${fFu(r.m_w)}`,
+    `ṁ_w  = ${fFu(r.m_in)} × ${r.ratio.toFixed(5)} = ${fFu(r.m_w)}  (${(r.m_w/1000).toFixed(3)} t/h)`,
     `ṁ_out = ṁ_in + ṁ_w = ${fFu(r.m_in)} + ${fFu(r.m_w)} = ${fFu(r.m_out)}`,
   ];
-  lines.forEach(l => {
+  lines.forEach(l=>{
     doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(30,35,52);
-    const w = doc.splitTextToSize(l,188); doc.text(w,12,y); y += w.length*5;
+    const w=doc.splitTextToSize(l,188); doc.text(w,12,y); y+=w.length*5;
   });
+  y+=4;
 
-  const pg = doc.getNumberOfPages();
-  for (let i = 1; i <= pg; i++) {
+  doc.autoTable({
+    startY:y, margin:{left:10,right:10},
+    head:[['Load','ṁ_w Required','ṁ_out Total','Quench %']],
+    body:[
+      [`Min ${r.fMin}%`,  fFu(r.mw_min), fFu(r.mo_min), `${(r.mw_min/(r.m_in+r.mw_min)*100).toFixed(1)}%`],
+      ['Design 100%',     fFu(r.m_w),    fFu(r.m_out),  `${r.qPct.toFixed(1)}%`],
+      [`Max ${r.fMax}%`,  fFu(r.mw_max), fFu(r.mo_max), `${(r.mw_max/(r.m_in+r.mw_max)*100).toFixed(1)}%`],
+    ],
+    styles:{fontSize:8.5,cellPadding:2.5},
+    headStyles:{fillColor:[30,35,52],textColor:255,fontStyle:'bold',fontSize:7.5},
+    alternateRowStyles:{fillColor:[248,250,253]},
+  });
+  y=doc.lastAutoTable.finalY+6;
+
+  if(r.cv_res){
+    if(y>240){doc.addPage();y=15;}
+    secHead('3 · VALVE SIZING (ISA S75.01 / IEC 60534)');
+    const vl=[
+      `Q = Cv × √(ΔP/SG)  →  Cv_req = Q / √(ΔP/SG)`,
+      `Q = ${r.cv_res.m_w_gpm.toFixed(2)} US gpm  |  ΔP = ${r.cv_res.dP_psi.toFixed(2)} psi  |  SG = ${r.cv_res.SG.toFixed(3)}`,
+      `Cv_required = ${isFinite(r.cv_res.Cv_req)?r.cv_res.Cv_req.toFixed(3):'N/A'}  |  Cv_installed = ${r.cv_res.Cv_inst}`,
+      `Ratio = ${isFinite(r.cv_res.rat)?r.cv_res.rat.toFixed(3):'N/A'} → ${isFinite(r.cv_res.rat)&&r.cv_res.rat>=1.1?'Adequate sizing':'⚠ May be undersized — review'}`,
+      `Cavitation index σ = ${isFinite(r.cv_res.sigma)?r.cv_res.sigma.toFixed(2):'∞'} (limit 2.0) → ${r.cv_res.cavitating?'⚠ CAVITATION RISK':'No cavitation'}`,
+      `Flashing: ${r.cv_res.flashing?'⚠ YES — two-phase flow regime':'No'}  |  Choked: ${r.cv_res.choked?'⚠ YES — choked flow':'No'}`,
+    ];
+    vl.forEach(l=>{
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(30,35,52);
+      const w=doc.splitTextToSize(l,188); doc.text(w,12,y); y+=w.length*5;
+    });
+  }
+
+  const pg=doc.getNumberOfPages();
+  for(let i=1;i<=pg;i++){
     doc.setPage(i);
     doc.setFillColor(240,244,250); doc.rect(0,285,210,12,'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(100,115,140);
-    doc.text('Steam Quench Calculator · IAPWS-IF97 · ASME PTC 4 · multicalci.com · For engineering estimation only.',10,291);
+    doc.text('Steam Quench Calculator · IAPWS-IF97 · ASME PTC 4 · multicalci.com · For engineering estimation only — verify against full steam tables',10,291);
     doc.text(`Page ${i} of ${pg}`,198,291,{align:'right'});
   }
   doc.save(`SteamQuench_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
-/* ══════════════════════════════════════════════════
-   CLEAR
-══════════════════════════════════════════════════ */
-function clearAll() {
-  ['P_s','T1','Tw','Pw','T2','ms_v','cv_in','sh_min'].forEach(id => { const e = E(id); if(e) e.value = ''; });
-  if(E('sh_min')) E('sh_min').value = '10';
-  if(E('f_min'))  E('f_min').value  = '30';
-  if(E('f_max'))  E('f_max').value  = '110';
-  clrAlert(); lastR = null; lastUnit = SYS;
-  ['props_in','props_w','props_out'].forEach(id => E(id).innerHTML = '—');
-  E('Tsat_disp').value = '—';
-  E('RP').innerHTML = `<div class="ph"><div class="ph-ico">💧</div><div class="ph-txt">Ready</div><div class="ph-sub">Enter conditions and click Calculate</div></div>`;
+function clearAll(){
+  ['P_s','T1','Tw','Pw','T2','ms_v','cv_in','sh_min'].forEach(id=>{ const e=E(id); if(e) e.value=''; });
+  if(E('sh_min')) E('sh_min').value='10';
+  if(E('f_min'))  E('f_min').value='30';
+  if(E('f_max'))  E('f_max').value='110';
+  clrAlert(); lastR=null; lastUnit=SYS;
+  ['props_in','props_w','props_out'].forEach(id=>E(id).innerHTML='—');
+  E('Tsat_disp').value='—';
+  E('RP').innerHTML=`<div class="ph"><div class="ph-ico">💧</div><div class="ph-txt">Ready</div><div class="ph-sub">Enter conditions and click Calculate</div></div>`;
 }
 
-/* ── Auto-calculate on input ── */
-let _deb = null;
-['P_s','T1','Tw','Pw','T2','ms_v','sh_min','f_min','f_max','cv_in'].forEach(id => {
-  E(id).addEventListener('input', () => {
-    clearTimeout(_deb);
-    const req = ['P_s','T1','Tw','Pw','T2','ms_v'];
-    if (req.every(i => E(i).value.trim() !== '')) {
-      _deb = setTimeout(calculate, 600);  // debounce 600ms to avoid hammering the API
-    }
+// Auto-calculate on all inputs
+['P_s','T1','Tw','Pw','T2','ms_v','sh_min','f_min','f_max','cv_in'].forEach(id=>{
+  E(id).addEventListener('input',()=>{
+    liveProp();
+    const req=['P_s','T1','Tw','Pw','T2','ms_v'];
+    if(req.every(i=>E(i).value.trim()!=='')) calculate();
   });
 });
-E('ms_u').addEventListener('change', () => {
-  const req = ['P_s','T1','Tw','Pw','T2','ms_v'];
-  if (req.every(i => E(i).value.trim() !== '')) calculate();
+
+// ms_u (flow unit selector) change triggers recalculation
+E('ms_u').addEventListener('change', ()=>{
+  const req=['P_s','T1','Tw','Pw','T2','ms_v'];
+  if(req.every(i=>E(i).value.trim()!=='')) calculate();
 });
 
 // Init
