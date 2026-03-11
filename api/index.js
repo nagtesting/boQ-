@@ -5327,6 +5327,797 @@ async function handle_npsh_calculator(body, res) {
 
 
 
+
+
+// ================================================================
+// CIVIL ENGINEERING CALCULATORS — api/civil-engineering-calculators.js
+// Covers: Beam, Column, Footing, Concrete Mix, Steel Section,
+//         Pipe Flow, Retaining Wall, Earthwork, Surveying
+// ================================================================
+
+// ============================================================
+// Vercel Serverless API — Civil Engineering Calculators
+// Repo: github.com/nagtesting/nagtesting
+// Path: /api/civil-engineering-calculators.js
+// Covers: Beam, Column, Footing, Concrete Mix, Steel Section,
+//         Pipe Flow, Retaining Wall, Earthwork, Surveying
+// ============================================================
+
+// ── SAFE HELPERS ─────────────────────────────────────────────
+function safeDiv(num, den, fallback = Infinity) {
+  return Math.abs(den) < 1e-15 ? fallback : num / den;
+}
+function fN(v, dp = 2, u = '') {
+  return (isNaN(v) || !isFinite(v)) ? '—' : (v.toFixed(dp) + (u ? ' ' + u : ''));
+}
+
+// ── UNIT CONVERTERS ───────────────────────────────────────────
+function toM(val, u)   { return u === 'ft'  ? val * 0.3048   : val; }
+function civil_toMm(val, u) { return u === 'in' ? val * 25.4 : val; }
+function toKN(val, u)  { return u === 'kip' ? val * 4.44822  : val; }
+function toKPa(val, u) { return u === 'ksf' ? val * 47.88    : val; }
+function toKNm3(val,u) { return u === 'pcf' ? val * 0.157088 : val; }
+function toM3(val, u)  { return u === 'yd3' ? val * 0.7646   : val; }
+function toM2(val, u)  { return u === 'ft2' ? val * 0.0929   : val; }
+function toKmh(val, u) { return u === 'mph' ? val * 1.60934  : val; }
+function toMs2(val, u) { return u === 'ft2' ? val * 0.0929   : val; }
+function toLS(val, u)  { return u === 'gpm' ? val * 0.0630902 : val; }
+
+// ── CALC: BEAM BENDING ────────────────────────────────────────
+function calcBeam(p) {
+  let L  = toM(parseFloat(p.L),  p.L_u);
+  let w  = p.w_u === 'kipft' ? parseFloat(p.w) * 14.5939 : parseFloat(p.w);
+  let b  = civil_toMm(parseFloat(p.b), p.dim_u) / 1000;
+  let d  = civil_toMm(parseFloat(p.d), p.dim_u) / 1000;
+  let tw = civil_toMm(parseFloat(p.tw)||0, p.dim_u) / 1000;
+  let tf = civil_toMm(parseFloat(p.tf)||0, p.dim_u) / 1000;
+  let dia= civil_toMm(parseFloat(p.dia)||0, p.dim_u) / 1000;
+  const E_GPa = parseFloat(p.E_GPa);
+  const fy    = parseFloat(p.fy);
+  const type  = p.type;
+  const sec   = p.sec;
+  const Ev    = E_GPa * 1e6; // kN/m²
+
+  const warns = [];
+  if (L <= 0)    throw new Error('Span L must be > 0');
+  if (w < 0)     throw new Error('Load cannot be negative');
+  if (E_GPa <= 0) throw new Error('Elastic modulus must be > 0');
+  if (E_GPa > 500) warns.push('⚠ E > 500 GPa is unrealistic — check units (enter GPa, not MPa)');
+  if (fy <= 0)   throw new Error('Yield stress fy must be > 0');
+
+  let I, A_sec;
+  if (sec === 'rect') {
+    if (b <= 0 || d <= 0) throw new Error('Width b and depth d must be > 0');
+    I = b*d*d*d/12; A_sec = b*d;
+  } else if (sec === 'circ') {
+    if (dia <= 0) throw new Error('Diameter must be > 0');
+    I = Math.PI * Math.pow(dia,4) / 64; A_sec = Math.PI*dia*dia/4;
+  } else if (sec === 'hol') {
+    if (b<=0||d<=0||tw<=0||tf<=0) throw new Error('All hollow section dimensions must be > 0');
+    if (2*tw >= b) throw new Error('2·tw ≥ b — wall eliminates void (width)');
+    if (2*tf >= d) throw new Error('2·tf ≥ d — wall eliminates void (depth)');
+    const bi = b-2*tw, di = d-2*tf;
+    I = (b*d*d*d - bi*di*di*di)/12; A_sec = b*d-bi*di;
+  } else { // I
+    if (b<=0||d<=0||tw<=0||tf<=0) throw new Error('All I-section dimensions must be > 0');
+    if (tw >= b) throw new Error('Web thickness tw ≥ flange width b');
+    if (2*tf >= d) throw new Error('2·tf ≥ d — no web remains');
+    const hw = d-2*tf;
+    I = (b*d*d*d - (b-tw)*hw*hw*hw)/12;
+    A_sec = 2*b*tf + hw*tw;
+  }
+
+  if (I <= 0 || !isFinite(I)) throw new Error('Computed I ≤ 0 — check section geometry');
+  const y   = sec === 'circ' ? dia/2 : d/2;
+  const Z   = safeDiv(I, y);
+  const rg  = Math.sqrt(safeDiv(I, A_sec, 0));
+
+  let M=0, V=0, def=0, formula='';
+  if      (type==='ss_udl')   { M=w*L*L/8;     V=w*L/2;   def=5*w*L*L*L*L/(384*Ev*I); formula='M=wL²/8 | V=wL/2 | δ=5wL⁴/384EI'; }
+  else if (type==='ss_pt')    { M=w*L/4;        V=w/2;     def=w*L*L*L/(48*Ev*I);      formula='M=PL/4 | V=P/2 | δ=PL³/48EI'; }
+  else if (type==='cant_udl') { M=w*L*L/2;      V=w*L;     def=w*L*L*L*L/(8*Ev*I);     formula='M=wL²/2 | V=wL | δ=wL⁴/8EI'; }
+  else if (type==='cant_pt')  { M=w*L;          V=w;       def=w*L*L*L/(3*Ev*I);       formula='M=PL | V=P | δ=PL³/3EI'; }
+  else if (type==='fixed_udl'){ M=w*L*L/12;     V=w*L/2;   def=w*L*L*L*L/(384*Ev*I);  formula='M_end=wL²/12 | M_mid=wL²/24 | V=wL/2 | δ=wL⁴/384EI'; }
+
+  const sigma = safeDiv(M, Z) / 1000; // MPa
+  if (!isFinite(sigma)) throw new Error('Bending stress overflow — check inputs');
+
+  const isConcrete = (E_GPa >= 15 && E_GPa <= 50);
+  const creepTheta = isConcrete ? 2.5 : 1.0;
+  const def_lt = def * creepTheta;
+  const LD_lt  = def_lt > 0 ? L / def_lt : Infinity;
+  const LD     = def > 0 ? L / def : Infinity;
+  const ok = sigma <= fy;
+
+  if (E_GPa >= 15 && E_GPa <= 50)
+    warns.push('⚠ Concrete detected — long-term deflection multiplied by θ=' + creepTheta + ' (IS 456 Cl.23.2 simplified)');
+  if (LD < 250)
+    warns.push('⚠ L/δ = ' + LD.toFixed(0) + ' < 250 — serviceability deflection may be excessive');
+
+  return {
+    status: ok ? 'PASS' : 'WARN',
+    warns,
+    summary: `Type: ${type} | Section: ${sec} | Formula: ${formula}`,
+    results: [
+      { label: 'Moment of Inertia I',  value: fN(I*1e12/1e6, 3, '×10⁶ mm⁴'), warn: false },
+      { label: 'Section Modulus Z',    value: fN(Z*1e9/1e3, 2, '×10³ mm³'),  warn: false },
+      { label: 'Radius of Gyration',   value: fN(rg*1000, 2, 'mm'),           warn: false },
+      { label: 'Max Bending Moment M', value: fN(M, 3, 'kN·m'),               warn: false },
+      { label: 'Max Shear Force V',    value: fN(V, 3, 'kN'),                  warn: false },
+      { label: 'Max Deflection δ',     value: fN(def*1000, 3, 'mm'),           warn: false },
+      { label: 'Long-term Deflection', value: fN(def_lt*1000, 3, 'mm') + (isConcrete ? ' (×'+creepTheta+' creep IS 456)' : ' (no creep)'), warn: isConcrete },
+      { label: 'L/δ (short-term)',     value: LD === Infinity ? '∞' : fN(LD, 0), warn: LD < 250 },
+      { label: 'L/δ (long-term)',      value: LD_lt === Infinity ? '∞' : fN(LD_lt, 0), warn: LD_lt < 250 },
+      { label: 'Bending Stress σ',     value: fN(sigma, 2, 'MPa'),             warn: !ok },
+      { label: 'Stress Check',         value: ok ? '✓ OK — σ ≤ fy' : '✗ Overstressed (fy=' + fy + ' MPa)', warn: !ok },
+      { label: 'EI Stiffness',         value: fN(Ev*I, 0, 'kN·m²'),            warn: false },
+    ]
+  };
+}
+
+// ── CALC: COLUMN BUCKLING ─────────────────────────────────────
+function calcCol(p) {
+  const sec = p.sec;
+  const K   = parseFloat(p.K);
+  let Le    = toM(parseFloat(p.Le), p.Le_u);
+  let b     = civil_toMm(parseFloat(p.b)||0, p.dim_u) / 1000;
+  let d     = civil_toMm(parseFloat(p.d)||0, p.dim_u) / 1000;
+  let diam  = civil_toMm(parseFloat(p.diam)||0, p.dim_u) / 1000;
+  let OD    = civil_toMm(parseFloat(p.OD)||0, p.dim_u) / 1000;
+  let t     = civil_toMm(parseFloat(p.t)||0, p.dim_u) / 1000;
+  let tw    = civil_toMm(parseFloat(p.tw)||0, p.dim_u) / 1000;
+  let tf    = civil_toMm(parseFloat(p.tf)||0, p.dim_u) / 1000;
+  const E_GPa = parseFloat(p.E_GPa);
+  const Ev    = E_GPa * 1e6;
+  const fy    = parseFloat(p.fy);
+  let N       = toKN(parseFloat(p.N)||0, p.N_u);
+
+  if (Le <= 0)   throw new Error('Length Le must be > 0');
+  if (E_GPa <= 0) throw new Error('Elastic modulus must be > 0');
+  if (fy <= 0)   throw new Error('Yield stress fy must be > 0');
+
+  let A=0, Ix=0, Iy=0;
+  if (sec === 'rect') {
+    if (b<=0||d<=0) throw new Error('Width and depth must be > 0');
+    A = b*d; Ix = b*d*d*d/12; Iy = d*b*b*b/12;
+  } else if (sec === 'circ') {
+    if (diam <= 0) throw new Error('Diameter must be > 0');
+    A = Math.PI*diam*diam/4; Ix = Iy = Math.PI*Math.pow(diam,4)/64;
+  } else if (sec === 'I') {
+    if (b<=0||d<=0||tw<=0||tf<=0) throw new Error('All I-section dimensions must be > 0');
+    if (tw >= b) throw new Error('Web thickness tw ≥ flange width b');
+    if (2*tf >= d) throw new Error('2·tf ≥ d — no web remains');
+    const hw = d-2*tf;
+    A  = 2*b*tf + hw*tw;
+    Ix = (b*d*d*d - (b-tw)*hw*hw*hw) / 12;
+    Iy = 2*(tf*b*b*b/12) + hw*tw*tw*tw/12;
+  } else { // hollow
+    if (OD<=0||t<=0) throw new Error('OD and thickness must be > 0');
+    const ID = OD-2*t;
+    if (ID <= 0) throw new Error('Wall thickness t > OD/2 — section is solid');
+    A = Math.PI*(OD*OD-ID*ID)/4; Ix = Iy = Math.PI*(Math.pow(OD,4)-Math.pow(ID,4))/64;
+  }
+
+  const I_min  = Math.min(Ix, Iy);
+  const r_min  = Math.sqrt(I_min/A);
+  const KL     = K * Le;
+  const KL_r   = safeDiv(KL, r_min);
+  const fy_kPa = fy * 1000;
+  const sigma_cr_euler = (Math.PI*Math.PI*Ev) / (KL_r*KL_r);
+  const lambda_c = Math.PI * Math.sqrt(2*Ev/fy_kPa);
+  let sigma_cr, formula_note;
+  if (KL_r >= lambda_c) {
+    sigma_cr = sigma_cr_euler; formula_note = 'Euler (slender)';
+  } else {
+    sigma_cr = fy_kPa*(1-(fy_kPa*KL_r*KL_r)/(4*Math.PI*Math.PI*Ev));
+    formula_note = 'Johnson parabola (KL/r < λc=' + lambda_c.toFixed(0) + ')';
+  }
+  const Pcr = sigma_cr * A;
+
+  const lambda_bar = Math.sqrt(fy_kPa / ((Math.PI*Math.PI*Ev)/(KL_r*KL_r)));
+  const alphaMap   = { rect:0.49, circ:0.21, I:0.21, hol:0.34 };
+  const alpha      = alphaMap[sec] || 0.34;
+  let chi;
+  if (lambda_bar <= 0.2) {
+    chi = 1.0;
+  } else {
+    const phi = 0.5*(1 + alpha*(lambda_bar-0.2) + lambda_bar*lambda_bar);
+    chi = Math.min(1.0, 1.0/(phi + Math.sqrt(phi*phi - lambda_bar*lambda_bar)));
+  }
+  const gamma_M0 = 1.10;
+  const fcd = chi * fy_kPa / gamma_M0;
+  const Pd  = fcd * A;
+  const sigma_act = safeDiv(N, A);
+  const demandOK  = N <= Pd;
+  const SF        = N > 0 ? safeDiv(Pd, N) : Infinity;
+  const curveLabel = {0.21:'a (α=0.21)', 0.34:'b (α=0.34)', 0.49:'c (α=0.49)'}[alpha] || 'b';
+  const warns = [];
+  if (KL_r > 180) warns.push('⚠ KL/r > 180 — very slender column, consider stiffening');
+  if (!demandOK)  warns.push('⚠ Applied load N exceeds design resistance Pd');
+
+  return {
+    status: demandOK ? 'PASS' : 'WARN',
+    warns,
+    summary: `Section: ${sec} | KL/r = ${fN(KL_r,1)} | ${formula_note} | IS 800 curve ${curveLabel}`,
+    results: [
+      { label: 'Area A',                   value: fN(A*1e6, 1, 'mm²'),              warn: false },
+      { label: 'Min. Inertia I_min',        value: fN(I_min*1e12/1e6, 2, '×10⁶ mm⁴'), warn: false },
+      { label: 'Min. Radius of Gyration r', value: fN(r_min*1000, 2, 'mm'),          warn: false },
+      { label: 'Slenderness KL/r',          value: fN(KL_r, 1) + ' (λc = ' + lambda_c.toFixed(0) + ')', warn: KL_r > 180 },
+      { label: 'IS 800 λ̄',                 value: fN(lambda_bar, 3),                warn: false },
+      { label: 'IS 800 χ (curve '+curveLabel+')', value: fN(chi, 3),                warn: false },
+      { label: 'Pcr (elastic theoretical)', value: fN(Pcr, 2, 'kN'),                warn: false },
+      { label: 'Pd (IS 800 design)',        value: fN(Pd, 2, 'kN'),                  warn: !demandOK },
+      { label: 'Applied Load N',            value: fN(N, 2, 'kN'),                   warn: !demandOK },
+      { label: 'Demand Check N ≤ Pd',       value: demandOK ? '✓ Adequate' : '✗ N > Pd — overstressed', warn: !demandOK },
+      { label: 'Safety Factor Pd/N',        value: SF === Infinity ? '∞' : fN(SF, 2) + (SF>=2?' ✓ Adequate':SF>=1?' ⚠ Marginal':' ✗ Inadequate'), warn: SF < 1.5 },
+      { label: 'Critical Stress σcr',       value: fN(sigma_cr/1000, 2, 'MPa'),      warn: false },
+      { label: 'Axial Stress σ',            value: fN(sigma_act/1000, 2, 'MPa'),     warn: sigma_act > fy_kPa },
+    ]
+  };
+}
+
+// ── CALC: FOOTING ─────────────────────────────────────────────
+function calcFooting(p) {
+  let P   = toKN(parseFloat(p.P),   p.P_u);
+  let cb  = civil_toMm(parseFloat(p.cb),  p.dim_u) / 1000;
+  let cd  = civil_toMm(parseFloat(p.cd),  p.dim_u) / 1000;
+  let B   = toM(parseFloat(p.B),    p.L_u);
+  let L   = toM(parseFloat(p.L),    p.L_u);
+  let d   = civil_toMm(parseFloat(p.d),   p.dim_u) / 1000;
+  let qa  = toKPa(parseFloat(p.qa), p.qa_u);
+  let ex  = toM(parseFloat(p.ex)||0, p.L_u);
+  let ey  = toM(parseFloat(p.ey)||0, p.L_u);
+  const fck  = parseInt(p.fck);
+  const fy_s = parseInt(p.fy_s);
+
+  if (P<=0)         throw new Error('Column load P must be > 0');
+  if (B<=0||L<=0)   throw new Error('Footing dimensions must be > 0');
+  if (d<=0)         throw new Error('Effective depth must be > 0');
+  if (cb<=0||cd<=0) throw new Error('Column dimensions must be > 0');
+  if (cb>=B||cd>=L) throw new Error('Column larger than footing');
+
+  const q_avg = P / (B*L);
+  const q_max = q_avg * (1 + 6*Math.abs(ex)/B + 6*Math.abs(ey)/L);
+  const q_min = q_avg * (1 - 6*Math.abs(ex)/B - 6*Math.abs(ey)/L);
+  const A_req = P / qa;
+  const A_prov = B * L;
+  const bearOK = q_max <= qa;
+  const cantB  = (B-cb)/2, cantL = (L-cd)/2;
+  const Mu_B   = 1.5 * q_max * cantB * cantB / 2;
+  const Mu_L   = 1.5 * q_max * cantL * cantL / 2;
+  const b_px   = cb+d, b_py = cd+d;
+  const b0     = 2*(b_px+b_py);
+  const V_punch = 1.5*P - 1.5*q_avg*b_px*b_py;
+  const tau_v   = V_punch / (b0*d*1000);
+  const beta_c  = Math.min(cb,cd) / Math.max(cb,cd);
+  const k_s     = Math.min(1.0, 0.5+beta_c);
+  const tau_co  = 0.25*Math.sqrt(fck);
+  const tau_c   = k_s*tau_co;
+  const punchOK = tau_v <= tau_c;
+  const D_overall = d + 0.05;
+  const pt_min    = fy_s >= 500 ? 0.0012 : 0.0015;
+  const Ast_min   = pt_min * 1000 * D_overall * 1000;
+  const Ast_B_calc = (Mu_B*1e6)/(0.87*fy_s*0.9*d*1000);
+  const Ast_L_calc = (Mu_L*1e6)/(0.87*fy_s*0.9*d*1000);
+  const Ast_B = Math.max(Ast_B_calc, Ast_min);
+  const Ast_L = Math.max(Ast_L_calc, Ast_min);
+  const critB = Math.max(0,(B-cb)/2-d), critL = Math.max(0,(L-cd)/2-d);
+  const Vow_B = 1.5*q_max*critB, Vow_L = 1.5*q_max*critL;
+  const tau_ow_B = Vow_B/(d*1000), tau_ow_L = Vow_L/(d*1000);
+  function tauC_IS456(pt,fck){ if(pt<=0)return 0; const beta=Math.max(1,0.8*fck/(6.89*pt*100)); return 0.85*Math.sqrt(0.8*fck)*(Math.sqrt(1+5*beta)-1)/(6*beta); }
+  const pt_B = Math.min(Ast_B/(1000*d*1000),0.03), pt_L = Math.min(Ast_L/(1000*d*1000),0.03);
+  const tau_c_ow_B = tauC_IS456(pt_B*100,fck), tau_c_ow_L = tauC_IS456(pt_L*100,fck);
+  const owOK_B = tau_ow_B <= tau_c_ow_B, owOK_L = tau_ow_L <= tau_c_ow_L;
+  const allOK = bearOK && punchOK && owOK_B && owOK_L;
+  const warns = [];
+  if (!bearOK)  warns.push('⚠ Max bearing pressure q_max exceeds allowable SBC');
+  if (!punchOK) warns.push('⚠ Punching shear fails — increase d or fck');
+  if (!owOK_B)  warns.push('⚠ One-way shear fails in B-direction — increase effective depth');
+  if (!owOK_L)  warns.push('⚠ One-way shear fails in L-direction — increase effective depth');
+  if (q_min < 0) warns.push('⚠ Tension at base (q_min < 0) — check soil contact');
+
+  return {
+    status: allOK ? 'PASS' : 'WARN',
+    warns,
+    summary: `Footing ${fN(B,2)}×${fN(L,2)} m | d=${fN(d*1000,0)} mm | fck=${fck} MPa | fy=${fy_s} MPa`,
+    results: [
+      { label: 'Max Bearing Pressure q_max', value: fN(q_max,2,'kN/m²'), warn: !bearOK },
+      { label: 'Bearing Check',              value: bearOK ? '✓ q_max ≤ qa' : '✗ Exceeds qa='+qa.toFixed(0)+' kN/m²', warn: !bearOK },
+      { label: 'Min Bearing Pressure q_min', value: fN(q_min,2,'kN/m²'), warn: q_min<0 },
+      { label: 'Required Area',              value: fN(A_req,2,'m²'),     warn: false },
+      { label: 'Provided Area',              value: fN(A_prov,2,'m²') + (A_prov>=A_req?' ✓':' ✗'), warn: A_prov<A_req },
+      { label: 'Factored Mu (B-dir)',        value: fN(Mu_B,2,'kN·m/m'), warn: false },
+      { label: 'Factored Mu (L-dir)',        value: fN(Mu_L,2,'kN·m/m'), warn: false },
+      { label: 'Punch Perimeter b0',         value: fN(b0*1000,0,'mm'),  warn: false },
+      { label: 'Applied τ_v',                value: fN(tau_v,3,'MPa'),   warn: !punchOK },
+      { label: 'k_s (IS 456 Cl.31.6.3)',     value: fN(k_s,3)+' (β_c='+fN(beta_c,3)+')', warn: false },
+      { label: 'Allowable τ_c',              value: fN(tau_c,3,'MPa'),   warn: false },
+      { label: 'Punching Check',             value: punchOK ? '✓ Safe τ_v ≤ τ_c' : '✗ Fails — increase d or fck', warn: !punchOK },
+      { label: 'Ast B-dir',                  value: fN(Ast_B,0,'mm²/m'), warn: false },
+      { label: 'Ast L-dir',                  value: fN(Ast_L,0,'mm²/m'), warn: false },
+      { label: 'Ast_min',                    value: fN(Ast_min,0,'mm²/m') + ' (IS 456 Cl.26.5.2.1)', warn: false },
+      { label: 'One-way Shear B',            value: fN(tau_ow_B,3,'MPa')+' vs τ_c='+fN(tau_c_ow_B,3,'MPa'), warn: !owOK_B },
+      { label: 'One-way Shear L',            value: fN(tau_ow_L,3,'MPa')+' vs τ_c='+fN(tau_c_ow_L,3,'MPa'), warn: !owOK_L },
+    ]
+  };
+}
+
+// ── CALC: CONCRETE MIX ───────────────────────────────────────
+function calcConc(p) {
+  const grade  = parseInt(p.grade);
+  const wc     = parseFloat(p.wc);
+  let   vol    = parseFloat(p.vol_u) === 'yd3' ? parseFloat(p.vol)*0.7646 : parseFloat(p.vol);
+  if (vol <= 0) vol = 1;
+  const slump  = parseInt(p.slump);
+  const aggSz  = parseInt(p.aggSz);
+  const FA_pct = parseFloat(p.FA_pct) / 100;
+  const exp    = p.exp;
+  const cem    = p.cem;
+  const expMap = {
+    mild:      { minCem:300, maxWC:0.65 },
+    moderate:  { minCem:320, maxWC:0.55 },
+    severe:    { minCem:340, maxWC:0.50 },
+    very_severe:{ minCem:360, maxWC:0.45 }
+  };
+  const expData = expMap[exp] || expMap['moderate'];
+
+  let W = 175;
+  if (aggSz===10) W+=15; if (aggSz===40) W-=15;
+  if (slump===25) W-=15; if (slump===150) W+=20;
+  let C = W / wc;
+  if (C < expData.minCem) C = expData.minCem;
+  const WC_actual = W / C;
+  const S_dev = grade >= 30 ? 5 : 4;
+  const fm    = grade + 1.65 * S_dev;
+  const rho_cem = cem==='PPC' ? 2900 : (cem==='SRPC' ? 3200 : 3150);
+  const vol_cem = C/rho_cem, vol_w = W/1000, vol_air = 0.015;
+  const vol_agg = 1 - vol_cem - vol_w - vol_air;
+  const FA = vol_agg * FA_pct * 2650;
+  const CA = vol_agg * (1-FA_pct) * 2700;
+  const density = C+W+FA+CA;
+  const bags = C/50;
+  const rFA = FA/C, rCA = CA/C, rW = W/C;
+  const wcOK = WC_actual <= expData.maxWC;
+  const warns = [];
+  if (!wcOK) warns.push('⚠ W/C ratio ' + WC_actual.toFixed(3) + ' exceeds durability limit ' + expData.maxWC + ' for ' + exp + ' exposure');
+
+  return {
+    status: wcOK ? 'PASS' : 'WARN',
+    warns,
+    summary: `M${grade} | fm=${fN(fm,1)} MPa | W/C=${WC_actual.toFixed(3)} | ρ=${fN(density,0)} kg/m³`,
+    results: [
+      { label: 'Target Mean Strength fm', value: fN(fm,1,'MPa') + ' = fck + 1.65×'+S_dev, warn: false },
+      { label: 'Cement Content',          value: fN(C,0,'kg/m³') + ' | Batch: ' + fN(C*vol,0,'kg'), warn: C > 500 },
+      { label: 'Water Content',           value: fN(W,0,'L/m³') + ' | Batch: ' + fN(W*vol,0,'L'), warn: false },
+      { label: 'W/C Ratio (actual)',       value: WC_actual.toFixed(3) + (wcOK?' ✓':' ✗ Exceeds '+expData.maxWC), warn: !wcOK },
+      { label: 'Fine Aggregate FA',        value: fN(FA,0,'kg/m³') + ' | Batch: ' + fN(FA*vol,0,'kg'), warn: false },
+      { label: 'Coarse Aggregate CA',      value: fN(CA,0,'kg/m³') + ' | Batch: ' + fN(CA*vol,0,'kg'), warn: false },
+      { label: 'Mix Ratio C:FA:CA:W',      value: '1:'+rFA.toFixed(2)+':'+rCA.toFixed(2)+':'+rW.toFixed(2), warn: false },
+      { label: 'Fresh Density (computed)', value: fN(density,0,'kg/m³'), warn: false },
+      { label: 'Cement Bags',             value: fN(bags,1,'bags (50 kg/m³)'), warn: false },
+    ]
+  };
+}
+
+// ── CALC: STEEL SECTION ───────────────────────────────────────
+function calcSteel(p) {
+  const type = p.type;
+  const fy_s = parseFloat(p.fy_s);
+  if (!isFinite(fy_s) || fy_s <= 0) throw new Error('fy must be a positive number');
+
+  let Ixx=0, Iyy=0, A=0, Zpx=0, Zpy=0, yc=0, yt=0, yb=0, zt=0, zb=0;
+  let zpxLabel='', zpyLabel='';
+
+  function findPNA(areaAbove, lo, hi, tol=1e-6) {
+    for (let i=0; i<60; i++) {
+      const mid=(lo+hi)/2;
+      if (areaAbove(mid) > A/2) lo=mid; else hi=mid;
+      if (hi-lo < tol) break;
+    }
+    return (lo+hi)/2;
+  }
+
+  if (type === 'I') {
+    const H=parseFloat(p.H),Bf=parseFloat(p.Bf),Tf=parseFloat(p.Tf),Tw=parseFloat(p.Tw);
+    if (H<=0||Bf<=0||Tf<=0||Tw<=0) throw new Error('All dimensions must be > 0');
+    if (H<=2*Tf) throw new Error('H ≤ 2·Tf — web height is zero');
+    if (Tw>=Bf)  throw new Error('Web thickness ≥ flange width');
+    const hw=H-2*Tf;
+    A=2*Bf*Tf+hw*Tw; yc=H/2; yt=yb=H/2; zt=zb=Bf/2;
+    Ixx=(Bf*H*H*H-(Bf-Tw)*hw*hw*hw)/12;
+    Iyy=2*(Tf*Bf*Bf*Bf/12)+hw*Tw*Tw*Tw/12;
+    Zpx=2*(Bf*Tf*(hw/2+Tf/2)+Tw*(hw/2)*(hw/4));
+    Zpy=2*(2*Tf*(Bf/2)*(Bf/4)+hw*(Tw/2)*(Tw/4));
+    zpxLabel='Exact — doubly-symmetric I'; zpyLabel='Exact';
+
+  } else if (type === 'C') {
+    const H=parseFloat(p.H),Bf=parseFloat(p.Bf),Tf=parseFloat(p.Tf),Tw=parseFloat(p.Tw);
+    if (H<=0||Bf<=0||Tf<=0||Tw<=0) throw new Error('All dimensions must be > 0');
+    if (H<=2*Tf) throw new Error('H ≤ 2·Tf — web height is zero');
+    if (Tw>=Bf)  throw new Error('Web thickness ≥ flange width');
+    const hw=H-2*Tf;
+    A=2*Bf*Tf+hw*Tw; yc=H/2; yt=yb=H/2;
+    const A_flange=Bf*Tf,A_web=hw*Tw;
+    const zc_flange=Tw+Bf/2, zc_web=Tw/2;
+    const zc=(2*A_flange*zc_flange+A_web*zc_web)/A;
+    zt=zc; zb=Bf+Tw-zc;
+    Ixx=(Bf*H*H*H-(Bf-Tw)*hw*hw*hw)/12;
+    const Iyy_flange_own=2*(Tf*Bf*Bf*Bf/12);
+    const Iyy_flange_pa=2*(A_flange*(zc_flange-zc)*(zc_flange-zc));
+    const Iyy_web_own=hw*Tw*Tw*Tw/12;
+    const Iyy_web_pa=A_web*(zc_web-zc)*(zc_web-zc);
+    Iyy=Iyy_flange_own+Iyy_flange_pa+Iyy_web_own+Iyy_web_pa;
+    Zpx=2*(Bf*Tf*(hw/2+Tf/2)+Tw*(hw/2)*(hw/4));
+    const zfl_right=Bf+Tw-zc;
+    const Zpy_flange_right=2*(Tf*zfl_right*(zfl_right/2));
+    const Zpy_web_left=hw*(Math.min(Tw,zc))*(Math.min(Tw,zc)/2);
+    const Zpy_flange_left=2*(Tf*Math.max(0,zc-Tw)*(Math.max(0,zc-Tw)/2));
+    Zpy=Zpy_flange_right+Zpy_web_left+Zpy_flange_left;
+    zpxLabel='Exact — C-channel'; zpyLabel='Exact — minor axis';
+
+  } else if (type === 'angle') {
+    const La=parseFloat(p.La),ta=parseFloat(p.ta);
+    if (La<=0||ta<=0) throw new Error('Leg length and thickness must be > 0');
+    if (ta>=La)       throw new Error('Thickness ≥ leg length');
+    const A1=La*ta, y1c=La/2, A2=(La-ta)*ta, y2c=ta/2;
+    A=A1+A2; yc=(A1*y1c+A2*y2c)/A;
+    yt=La-yc; yb=yc; zt=La-yc; zb=yc;
+    const Ixx1=ta*La*La*La/12+A1*(y1c-yc)*(y1c-yc);
+    const Ixx2=(La-ta)*ta*ta*ta/12+A2*(y2c-yc)*(y2c-yc);
+    Ixx=Ixx1+Ixx2; Iyy=Ixx;
+    const Ixy=A1*(La/2-yc)*(y1c-yc)+A2*((La+ta)/2-yc)*(y2c-yc);
+    const Imin=Ixx-Math.abs(Ixy); const Imax=Ixx+Math.abs(Ixy);
+    function areaAboveAngle(y){ return ta*Math.max(0,La-y)+(La-ta)*Math.max(0,ta-y); }
+    const y_pna=findPNA(areaAboveAngle,0,La);
+    function fmAbove(y_p){ let S=0; if(y_p<ta){S+=La*(ta-y_p)*(ta-y_p)/2;S+=ta*((La-y_p)*(La-y_p)-(ta-y_p)*(ta-y_p))/2;}else{S=ta*(La-y_p)*(La-y_p)/2;} return S; }
+    function fmBelow(y_p){ const lo_end=Math.min(y_p,ta); let S=La*(y_p*lo_end-lo_end*lo_end/2); if(y_p>ta)S+=ta*(y_p-ta)*(y_p-ta)/2; return S; }
+    Zpx=fmAbove(y_pna)+fmBelow(y_pna); Zpy=Zpx;
+    Ixx=Imin; Iyy=Imax;
+    zpxLabel='Exact — bisection PNA (equal angle)'; zpyLabel='Exact (= Zpx)';
+
+  } else if (type === 'SHS') {
+    const Bs=parseFloat(p.Bs),ts=parseFloat(p.ts);
+    if (Bs<=0||ts<=0) throw new Error('Outer size and thickness must be > 0');
+    if (2*ts>=Bs)     throw new Error('2·t ≥ B — wall thickness eliminates void');
+    const Bi=Bs-2*ts;
+    A=Bs*Bs-Bi*Bi; yc=Bs/2; yt=yb=Bs/2; zt=zb=Bs/2;
+    Ixx=Iyy=(Bs*Bs*Bs*Bs-Bi*Bi*Bi*Bi)/12;
+    Zpx=Zpy=(Bs*Bs*Bs-Bi*Bi*Bi)/4;
+    zpxLabel=zpyLabel='Exact — (Bs³−Bi³)/4';
+
+  } else if (type === 'CHS') {
+    const Dc=parseFloat(p.Dc),tc=parseFloat(p.tc);
+    if (Dc<=0||tc<=0) throw new Error('Outer diameter and thickness must be > 0');
+    if (2*tc>=Dc)     throw new Error('2·t ≥ D — wall eliminates bore');
+    const Di=Dc-2*tc;
+    A=Math.PI*(Dc*Dc-Di*Di)/4; yc=Dc/2; yt=yb=Dc/2; zt=zb=Dc/2;
+    Ixx=Iyy=Math.PI*(Math.pow(Dc,4)-Math.pow(Di,4))/64;
+    Zpx=Zpy=(Math.pow(Dc,3)-Math.pow(Di,3))/6;
+    zpxLabel=zpyLabel='Exact — (Do³−Di³)/6';
+  } else {
+    throw new Error('Unknown section type: ' + type);
+  }
+
+  if (!isFinite(A)||A<=0) throw new Error('Computed area invalid — check inputs');
+  if (!isFinite(Ixx)||Ixx<=0) throw new Error('Ixx ≤ 0 — geometry produces zero inertia');
+
+  const y_max=Math.max(yt,yb), z_max=Math.max(zt,zb);
+  const Zxx=Ixx/y_max, Zyy=Iyy/z_max;
+  const rx=Math.sqrt(Ixx/A), ry=Math.sqrt(Iyy/A);
+  const wt_per_m=A*7850/1e6;
+  const gamma_M0=1.10;
+  const Mc=Zpx*fy_s/(gamma_M0*1e6);
+  const eps=Math.sqrt(250/fy_s);
+  let classNote='', classBadge='info';
+  if (type==='I') {
+    const H=parseFloat(p.H),Bf=parseFloat(p.Bf),Tf=parseFloat(p.Tf),Tw=parseFloat(p.Tw),hw=H-2*Tf;
+    const b_tf=Bf/(2*Tf),d_tw=hw/Tw;
+    if(b_tf<=9.4*eps&&d_tw<=84*eps){classNote='Class 1 — Plastic';classBadge='ok';}
+    else if(b_tf<=10.5*eps&&d_tw<=105*eps){classNote='Class 2 — Compact';classBadge='ok';}
+    else if(b_tf<=15.7*eps&&d_tw<=126*eps){classNote='Class 3 — Semi-compact';classBadge='warn';}
+    else{classNote='Class 4 — Slender ⚠';classBadge='err';}
+  }
+  const warns = [];
+  if (classBadge==='err') warns.push('⚠ Class 4 slender section — moment capacity Mc may be reduced per IS 800');
+
+  return {
+    status: classBadge==='err' ? 'WARN' : 'PASS',
+    warns,
+    summary: `Type: ${type} | A=${fN(A,0)} mm² | wt=${fN(wt_per_m,2)} kg/m | Mc=${fN(Mc,2)} kN·m`,
+    results: [
+      { label: 'Area A',              value: fN(A,0,'mm²'),              warn: false },
+      { label: 'Ixx (major)',         value: fN(Ixx/1e6,3,'×10⁶ mm⁴'), warn: false },
+      { label: 'Iyy (minor)',         value: fN(Iyy/1e6,3,'×10⁶ mm⁴'), warn: false },
+      { label: 'Elastic Modulus Zxx', value: fN(Zxx/1e3,2,'×10³ mm³'), warn: false },
+      { label: 'Elastic Modulus Zyy', value: fN(Zyy/1e3,2,'×10³ mm³'), warn: false },
+      { label: 'Radius of Gyration rx', value: fN(rx,2,'mm'),           warn: false },
+      { label: 'Radius of Gyration ry', value: fN(ry,2,'mm'),           warn: false },
+      { label: 'Plastic Modulus Zpx',  value: fN(Zpx/1e3,3,'×10³ mm³')+' ('+zpxLabel+')', warn: false },
+      { label: 'Section Classification', value: classNote || 'N/A for this section type', warn: classBadge==='err' },
+      { label: 'Weight per metre',     value: fN(wt_per_m,2,'kg/m'),    warn: false },
+      { label: 'Moment Capacity Mc',   value: fN(Mc,2,'kN·m') + ' (IS 800 Cl.8.2.1.2, γM0=1.10)', warn: false },
+    ]
+  };
+}
+
+// ── CALC: PIPE FLOW ────────────────────────────────────────────
+function calcPipe(p) {
+  const mode  = p.mode;
+  let D_mm    = civil_toMm(parseFloat(p.D), p.D_u);
+  if (D_mm <= 0) throw new Error('Diameter must be > 0');
+  const D = D_mm / 1000;
+
+  if (mode === 'pressure') {
+    let L   = toM(parseFloat(p.L),   p.L_u);
+    let Q_ls= toLS(parseFloat(p.Q), p.Q_u);
+    let Hlim= toM(parseFloat(p.Hlim),p.L_u);
+    const eps_mm = parseFloat(p.eps_mm);
+    const fl_data = { w:{rho:998.2,mu:1.003e-3}, wc:{rho:999.7,mu:1.307e-3}, sw:{rho:1025,mu:1.073e-3} };
+    const fl = fl_data[p.fluid] || fl_data['w'];
+    if (L<=0) throw new Error('Length must be > 0');
+    if (Q_ls<=0) throw new Error('Flow rate must be > 0');
+    const Ap = Math.PI*D*D/4;
+    const Q_m3s = Q_ls/1000, v = Q_m3s/Ap;
+    const Re = fl.rho*v*D/fl.mu;
+    const g = 9.81, eps_rel = eps_mm/D_mm;
+    const f = Re<1 ? 64/Math.max(Re,0.01) : Re<2300 ? 64/Re : 0.25/Math.pow(Math.log10(eps_rel/3.7+5.74/Math.pow(Re,0.9)),2);
+    const hf = f*(L/D)*(v*v/(2*g));
+    const vH = v*v/(2*g);
+    const hfOK = hf <= Hlim;
+    const regime = Re<2300?'Laminar':Re<4000?'Transitional':'Turbulent';
+    const warns = [];
+    if (!hfOK) warns.push('⚠ Head loss ' + fN(hf,3) + ' m exceeds limit ' + fN(Hlim,3) + ' m');
+    if (Re>=2300&&Re<4000) warns.push('⚠ Transitional flow (Re=' + Re.toFixed(0) + ') — friction factor uncertain');
+
+    return {
+      status: hfOK ? 'PASS' : 'WARN',
+      warns,
+      summary: `Pressure pipe | D=${fN(D_mm,0)} mm | Q=${fN(Q_ls,2)} L/s | v=${fN(v,2)} m/s | ${regime}`,
+      results: [
+        { label: 'Flow Velocity v',     value: fN(v,3,'m/s'),       warn: false },
+        { label: 'Reynolds Number Re',  value: Re.toFixed(0),        warn: Re>=2300&&Re<4000 },
+        { label: 'Flow Regime',         value: regime,               warn: Re>=2300&&Re<4000 },
+        { label: 'Darcy Friction Factor f', value: fN(f,5,''),      warn: false },
+        { label: 'Head Loss hf',        value: fN(hf,3,'m'),        warn: !hfOK },
+        { label: 'Head Loss Check',     value: hfOK ? '✓ hf ≤ limit' : '✗ Exceeds limit', warn: !hfOK },
+        { label: 'Hydraulic Gradient',  value: fN(hf/L,5,'m/m'),    warn: false },
+        { label: 'Velocity Head v²/2g', value: fN(vH,4,'m'),        warn: false },
+        { label: 'Flow Area A',         value: fN(Ap*1e4,2,'cm²'),  warn: false },
+        { label: 'Mass Flow ṁ',         value: fN(fl.rho*Q_m3s,3,'kg/s'), warn: false },
+      ]
+    };
+
+  } else { // gravity/manning
+    const S = parseFloat(p.S), n = parseFloat(p.n);
+    const shape = p.shape;
+    let width = toM(parseFloat(p.width)||0, p.L_u);
+    let depth = toM(parseFloat(p.depth)||0, p.L_u);
+    const z   = parseFloat(p.z)||0;
+    let Q_des_ls = toLS(parseFloat(p.Q_des)||0, p.Q_u);
+    if (S<=0) throw new Error('Slope S must be > 0');
+    if (n<=0) throw new Error('Manning n must be > 0');
+    const g=9.81;
+    let A_full,P_wet,R_h,v_full,Q_full,y_eff;
+    if (shape==='circ') {
+      A_full=Math.PI*D*D/4; P_wet=Math.PI*D; R_h=D/4;
+      v_full=(1/n)*Math.pow(R_h,2/3)*Math.pow(S,0.5); Q_full=A_full*v_full; y_eff=D;
+    } else if (shape==='rect') {
+      if(width<=0||depth<=0) throw new Error('Width and depth must be > 0');
+      A_full=width*depth; P_wet=width+2*depth; R_h=A_full/P_wet;
+      v_full=(1/n)*Math.pow(R_h,2/3)*Math.pow(S,0.5); Q_full=A_full*v_full; y_eff=depth;
+    } else {
+      if(width<=0||depth<=0) throw new Error('Width and depth must be > 0');
+      A_full=(width+z*depth)*depth; P_wet=width+2*depth*Math.sqrt(1+z*z); R_h=A_full/P_wet;
+      v_full=(1/n)*Math.pow(R_h,2/3)*Math.pow(S,0.5); Q_full=A_full*v_full; y_eff=depth;
+    }
+    const Q_des = Q_des_ls/1000;
+    const capOK = Q_full >= Q_des;
+    const S_min = Math.pow(0.6*n/Math.pow(R_h,2/3),2);
+    const Fr    = v_full/Math.sqrt(g*y_eff);
+    const frLabel = Fr<1?'Subcritical':Fr>1?'Supercritical':'Critical';
+    const warns = [];
+    if (!capOK) warns.push('⚠ Full-flow capacity insufficient — increase D, slope, or reduce n');
+    if (v_full < 0.6) warns.push('⚠ v < 0.6 m/s — below self-cleaning velocity');
+
+    return {
+      status: capOK ? 'PASS' : 'WARN',
+      warns,
+      summary: `Gravity | D=${fN(D_mm,0)} mm | S=${fN(S,5)} | n=${fN(n,4)} | Q_full=${fN(Q_full*1000,2)} L/s`,
+      results: [
+        { label: 'Full-Flow Capacity Q', value: fN(Q_full*1000,3,'L/s'), warn: !capOK },
+        { label: 'Capacity Check',       value: capOK ? '✓ Q_full ≥ Q_design' : '✗ Insufficient capacity', warn: !capOK },
+        { label: 'Full-Flow Velocity v', value: fN(v_full,3,'m/s'),      warn: v_full<0.6 },
+        { label: 'Hydraulic Radius R',   value: fN(R_h,4,'m'),           warn: false },
+        { label: 'Flow Area A',          value: fN(A_full,4,'m²'),        warn: false },
+        { label: 'Wetted Perimeter P',   value: fN(P_wet,3,'m'),          warn: false },
+        { label: 'Min Slope (v=0.6m/s)', value: fN(S_min,5,'m/m'),       warn: false },
+        { label: 'Froude Number Fr',     value: fN(Fr,3) + ' (' + frLabel + ')', warn: Fr>1 },
+      ]
+    };
+  }
+}
+
+// ── CALC: RETAINING WALL ──────────────────────────────────────
+function calcRetWall(p) {
+  let H     = toM(parseFloat(p.H), p.L_u);
+  let B     = toM(parseFloat(p.B), p.L_u);
+  let stem  = toM(parseFloat(p.stem), p.L_u);
+  let base  = toM(parseFloat(p.base), p.L_u);
+  let gamma  = toKNm3(parseFloat(p.gamma), p.g_u);
+  let gammaC = toKNm3(parseFloat(p.gammaC), p.g_u);
+  let q   = toKPa(parseFloat(p.q)||0,   p.q_u);
+  let qa  = toKPa(parseFloat(p.qa),      p.q_u);
+  const phi = parseFloat(p.phi) * Math.PI/180;
+  const mu  = parseFloat(p.mu);
+
+  if (H<=0)    throw new Error('Wall height H must be > 0');
+  if (B<=0)    throw new Error('Base width B must be > 0');
+  if (stem<=0) throw new Error('Stem thickness must be > 0');
+  if (base<=0) throw new Error('Base thickness must be > 0');
+  if (base>=H) throw new Error('Base thickness must be less than wall height H');
+  if (stem>=B) throw new Error('Stem thickness must be less than base width B');
+
+  const Hs     = H-base;
+  const Ka     = Math.pow(Math.tan(Math.PI/4-phi/2),2);
+  const Kp     = Math.pow(Math.tan(Math.PI/4+phi/2),2);
+  const Pa_soil  = 0.5*gamma*H*H*Ka;
+  const Pa_surch = q*H*Ka;
+  const Pa       = Pa_soil + Pa_surch;
+  const Mo = Pa_soil*(H/3) + Pa_surch*(H/2);
+  const W_stem = gammaC*stem*Hs, W_base = gammaC*B*base, W_soil = gamma*(B-stem)*Hs;
+  const W  = W_stem + W_base + W_soil;
+  const Mr = W_stem*(stem/2) + W_base*(B/2) + W_soil*(stem+(B-stem)/2);
+  const FSOvt = Mr/Mo, FSsl = mu*W/Pa;
+  const e  = B/2 - (Mr-Mo)/W;
+  const q_max = (W/B)*(1+6*e/B), q_min = (W/B)*(1-6*e/B);
+  const otOK = FSOvt>=1.5, slOK = FSsl>=1.5, qOK = q_max<=qa;
+  const allOK = otOK && slOK && qOK;
+  const warns = [];
+  if (!otOK) warns.push('⚠ Overturning FS=' + FSOvt.toFixed(2) + ' < 1.5 — redesign required');
+  if (!slOK) warns.push('⚠ Sliding FS=' + FSsl.toFixed(2) + ' < 1.5 — add shear key or increase base');
+  if (!qOK)  warns.push('⚠ Foundation pressure q_max exceeds allowable bearing capacity');
+
+  return {
+    status: allOK ? 'PASS' : 'WARN',
+    warns,
+    summary: `H=${fN(H,2)}m | B=${fN(B,2)}m | Ka=${fN(Ka,4)} | FSOvt=${fN(FSOvt,2)} | FSsl=${fN(FSsl,2)}`,
+    results: [
+      { label: 'Active Pressure Ka',     value: fN(Ka,4),                warn: false },
+      { label: 'Passive Pressure Kp',    value: fN(Kp,4),                warn: false },
+      { label: 'Active Force Pa',        value: fN(Pa,2,'kN/m'),         warn: false },
+      { label: 'Vertical Load W',        value: fN(W,2,'kN/m'),          warn: false },
+      { label: 'Overturning Moment Mo',  value: fN(Mo,2,'kN·m/m'),       warn: false },
+      { label: 'Stabilising Moment Mr',  value: fN(Mr,2,'kN·m/m'),       warn: false },
+      { label: 'FS Overturning (≥1.5)',  value: fN(FSOvt,2) + (otOK?' ✓ OK':' ✗ Fails'), warn: !otOK },
+      { label: 'FS Sliding (≥1.5)',      value: fN(FSsl,2)  + (slOK?' ✓ OK':' ✗ Fails — add shear key'), warn: !slOK },
+      { label: 'Eccentricity e',         value: fN(e,3,'m'),              warn: e>B/6 },
+      { label: 'Max Foundation Pressure',value: fN(q_max,2,'kN/m²'),     warn: !qOK },
+      { label: 'Min Foundation Pressure',value: fN(q_min,2,'kN/m²'),     warn: q_min<0 },
+      { label: 'Bearing Check',          value: qOK ? '✓ q_max ≤ qa' : '✗ Exceeds qa=' + qa.toFixed(0) + ' kN/m²', warn: !qOK },
+    ]
+  };
+}
+
+// ── CALC: EARTHWORK ───────────────────────────────────────────
+function calcEarth(p) {
+  const method = p.method;
+  let A1 = toM2(parseFloat(p.A1), p.A_u);
+  let A2 = toM2(parseFloat(p.A2), p.A_u);
+  let Am = toM2(parseFloat(p.Am)||0, p.A_u);
+  let L  = toM(parseFloat(p.L),   p.L_u);
+  const sw    = parseFloat(p.sw)/100;
+  const sh    = parseFloat(p.sh)/100;
+  const densB = parseFloat(p.densB);
+  const densL = parseFloat(p.densL);
+  const truck = parseFloat(p.truck);
+
+  if (A1<0||A2<0)        throw new Error('Cross-section areas must be ≥ 0');
+  if (L<=0)              throw new Error('Distance L must be > 0');
+  if (densB<=0||densL<=0) throw new Error('Densities must be > 0');
+  if (truck<=0)          throw new Error('Truck capacity must be > 0');
+
+  const Vavg  = L*(A1+A2)/2;
+  const Vprism= method==='prism' ? L*(A1+4*Am+A2)/6 : Vavg;
+  const Vb=Vprism, Vl=Vb*(1+sw), Vc=Vb*(1-sh);
+  const mass=Vb*densB, trucks=Math.ceil(Vl/truck), LF=densB/densL;
+  const prismCorr = Vprism-Vavg;
+
+  return {
+    status: 'PASS',
+    warns: [],
+    summary: `Method: ${method} | Vbank=${fN(Vb,2)} m³ | Loose=${fN(Vl,2)} m³ | Trucks=${trucks}`,
+    results: [
+      { label: 'Bank Volume',           value: fN(Vb,2,'m³'),             warn: false },
+      { label: 'Loose Volume',          value: fN(Vl,2,'m³'),             warn: false },
+      { label: 'Compacted Volume',      value: fN(Vc,2,'m³'),             warn: false },
+      { label: 'Mass of Material',      value: fN(mass,2,'t'),            warn: false },
+      { label: 'Load Factor (Bank/Loose)', value: fN(LF,3,''),            warn: false },
+      { label: 'Truck Loads Required',  value: trucks + ' loads',          warn: false },
+      { label: 'Prismoidal Correction', value: method==='prism' ? fN(prismCorr,3,'m³') : 'N/A (avg end area)', warn: false },
+    ]
+  };
+}
+
+// ── CALC: SURVEYING & ROAD GEOMETRY ──────────────────────────
+function calcSurvey(p) {
+  let R   = toM(parseFloat(p.R),   p.L_u);
+  const delta_deg = parseFloat(p.delta_deg);
+  const delta = delta_deg * Math.PI/180;
+  let V   = toKmh(parseFloat(p.V), p.V_u);
+  const e = parseFloat(p.e)/100;
+  const f_fr = parseFloat(p.f_fr);
+  let SSD = toM(parseFloat(p.SSD), p.L_u);
+  const G1 = parseFloat(p.G1), G2 = parseFloat(p.G2);
+
+  if (R<=0)         throw new Error('Radius R must be > 0');
+  if (delta_deg<=0) throw new Error('Deflection angle must be > 0');
+  if (V<=0)         throw new Error('Design speed must be > 0');
+  if (SSD<=0)       throw new Error('SSD must be > 0');
+
+  const Lc    = R*delta;
+  const T     = R*Math.tan(delta/2);
+  const M_ord = R*(1-Math.cos(delta/2));
+  const E_ext = R*(1/Math.cos(delta/2)-1);
+  const chord = 2*R*Math.sin(delta/2);
+  const DC    = 180*20/(Math.PI*R);
+  const Rmin  = V*V/(127*(e+f_fr));
+  const RminOK= R >= Rmin;
+  const A_grade = Math.abs(G1-G2);
+  const VCL_crest = A_grade>0 ? A_grade*SSD*SSD/658 : 0;
+  const VCL_sag   = A_grade>0 ? (A_grade*SSD/3.5+SSD) : 0;
+  const VCL = G2<G1 ? VCL_crest : VCL_sag;
+  const RC  = VCL>0 ? A_grade*1000/VCL : 0;
+  const warns = [];
+  if (!RminOK) warns.push('⚠ R=' + fN(R,1) + ' m < Rmin=' + fN(Rmin,1) + ' m for V=' + fN(V,0) + ' km/h — unsafe speed');
+
+  return {
+    status: RminOK ? 'PASS' : 'WARN',
+    warns,
+    summary: `R=${fN(R,1)}m | Δ=${fN(delta_deg,2)}° | V=${fN(V,0)}km/h | Lc=${fN(Lc,2)}m`,
+    results: [
+      { label: 'Curve Length Lc',       value: fN(Lc,2,'m'),   warn: false },
+      { label: 'Tangent Length T',      value: fN(T,2,'m'),    warn: false },
+      { label: 'Mid-Ordinate M',        value: fN(M_ord,3,'m'),warn: false },
+      { label: 'External Distance E',   value: fN(E_ext,3,'m'),warn: false },
+      { label: 'Chord Length C',        value: fN(chord,3,'m'),warn: false },
+      { label: 'Degree of Curvature',   value: fN(DC,4,'°'),   warn: false },
+      { label: 'Min Radius Rmin',       value: fN(Rmin,1,'m'), warn: !RminOK },
+      { label: 'Speed Check R ≥ Rmin',  value: RminOK ? '✓ R ≥ Rmin — safe' : '✗ R < Rmin — unsafe', warn: !RminOK },
+      { label: 'Grade Difference A',    value: fN(A_grade,3,'%'), warn: false },
+      { label: 'Vertical Curve Length', value: fN(VCL,1,'m'),  warn: false },
+      { label: 'Rate of Change RC',     value: fN(RC,4,'%/m'), warn: false },
+    ]
+  };
+}
+
+async function handle_civil_engineering(body, res) {
+  const { calc, params: p } = body || {};
+  if (!calc || !p)
+    return res.status(400).json({ error: 'Missing calc or params in request body' });
+  try {
+    let result;
+    switch (calc) {
+      case 'beam':    result = calcBeam(p);    break;
+      case 'col':     result = calcCol(p);     break;
+      case 'footing': result = calcFooting(p); break;
+      case 'conc':    result = calcConc(p);    break;
+      case 'steel':   result = calcSteel(p);   break;
+      case 'pipe':    result = calcPipe(p);    break;
+      case 'retwall': result = calcRetWall(p); break;
+      case 'earth':   result = calcEarth(p);   break;
+      case 'survey':  result = calcSurvey(p);  break;
+      default:
+        return res.status(400).json({ error: 'Unknown calc type: ' + calc });
+    }
+    return res.status(200).json(result);
+  } catch(err) {
+    return res.status(422).json({ error: err.message });
+  }
+}
+
+
+
 // ================================================================
 // MAIN VERCEL HANDLER — routes by URL path
 // ================================================================
@@ -5374,6 +6165,7 @@ export default async function handler(req, res) {
       case 'steam':                    return await handle_steam(body, res);
       case 'calculate':                return await handle_calculate(body, res);
       case 'npsh-calculator':          return await handle_npsh_calculator(body, res);
+      case 'civil-engineering-calculators': return await handle_civil_engineering(body, res);
       default:
         return res.status(404).json({ error: `Unknown route: "${route}". Valid routes: compressor, control-valve, cooling-tower, eos, fan, heatxpert, orifice-flow, pressure-drop-calculator, psychrometric, pump, rankine, steam-quench, steam-turbine-power, steam` });
     }
