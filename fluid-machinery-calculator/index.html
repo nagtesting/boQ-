@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pump, Compressor, Fan & Blower Calculator — NPSH | multicalci.com</title>
+<meta name="description" content="Free pump NPSH, compressor power, fan and blower sizing calculator with hydraulic power and efficiency.">
+<link rel="canonical" href="https://multicalci.com/pump-compressor-calculator/">
+<meta property="og:title" content="Pump, Compressor, Fan & Blower Calculator — NPSH | multicalci.com">
+<meta property="og:description" content="Free pump NPSH, compressor power, fan and blower sizing calculator with hydraulic power and efficiency.">
+<meta property="og:url" content="https://multicalci.com/pump-compressor-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pump, Compressor, Fan & Blower Calculator — NPSH | multicalci.com">
+<meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Pump Compressor Fan Blower Calculator","description":"Free pump, compressor, fan and blower sizing calculator with NPSH, power, efficiency and affinity law calculations.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/pump-compressor-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0f1117;--ink2:#1e2330;--ink3:#2d3347;
+  --red:#c8200a;--red2:#e8280d;--red-p:#fff0ee;--red-m:#ffc9c2;
+  --navy:#0a1628;--navy2:#162442;--navy3:#1e3a60;
+  --blue:#1a3a8c;--blue2:#2952cc;--blue-p:#eef2ff;--blue-m:#c5d2f7;
+  --teal:#0a6b5c;--teal-p:#e8f5f2;--teal-m:#a5d9ce;
+  --gold:#b06000;--gold-p:#fef4e6;--gold-m:#fddba8;
+  --green:#065f46;--green-p:#d1fae5;--green-m:#86efac;
+  --purple:#5b21b6;--purple-p:#ede9fe;
+  --bg:#f2f4f8;--sur:#ffffff;--sur2:#f8f9fc;
+  --bd:#d0d4e0;--bd2:#b8bdd0;
+  --mid:#6b7491;--light:#9aa3bf;
+  --sh-sm:0 1px 3px rgba(15,17,23,.08),0 4px 16px rgba(15,17,23,.06);
+  --sh-md:0 2px 8px rgba(15,17,23,.10),0 8px 24px rgba(15,17,23,.08);
+  --sh-lg:0 4px 20px rgba(15,17,23,.14),0 12px 40px rgba(15,17,23,.10);
+  --mono:'JetBrains Mono',monospace;
+  --head:'Syne',sans-serif;
+  --body:'DM Sans',sans-serif;
+  --bebas:'Bebas Neue',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;font-size:15px;}
+
+/* ══════════════════ TOPBAR ══════════════════ */
+.topbar{position:sticky;top:0;z-index:400;background:var(--ink);box-shadow:0 2px 20px rgba(0,0,0,.35);}
+.topbar-top{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 22px;border-bottom:1px solid rgba(255,255,255,.08);}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{background:var(--red);color:#fff;width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:0.95rem;font-weight:800;letter-spacing:1px;box-shadow:0 0 16px rgba(200,32,10,.5);}
+.brand-name{font-family:var(--head);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:2px;}
+.brand-sub{font-family:var(--mono);font-size:0.55rem;color:rgba(255,255,255,.45);letter-spacing:2.5px;text-transform:uppercase;margin-top:1px;}
+.topbar-controls{display:flex;align-items:center;gap:12px;}
+.unit-toggle{display:flex;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:6px;overflow:hidden;}
+.ut-btn{padding:7px 18px;border:none;background:transparent;font-family:var(--mono);font-size:0.72rem;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;letter-spacing:1.5px;}
+.ut-btn.on{background:var(--red);color:#fff;}
+.pdf-btn,.share-btn{display:flex;align-items:center;gap:7px;padding:8px 18px;border:none;border-radius:6px;background:rgba(255,255,255,.1);color:#fff;font-family:var(--head);font-size:0.75rem;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);}
+.pdf-btn:hover{background:var(--red);border-color:var(--red);box-shadow:0 4px 12px rgba(200,32,10,.4);}
+.share-btn:hover{background:var(--blue2);border-color:var(--blue2);box-shadow:0 4px 12px rgba(41,82,204,.4);}
+.topbar-nav{max-width:1500px;margin:0 auto;display:flex;align-items:stretch;padding:0 10px;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.topbar-nav::-webkit-scrollbar{display:none;}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:0 20px;height:44px;border:none;background:transparent;font-family:var(--head);font-size:0.8rem;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:0;white-space:nowrap;text-transform:uppercase;}
+.nav-btn:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06);}
+.nav-btn.active{color:#fff;border-bottom-color:var(--red);background:rgba(255,255,255,.07);}
+.nav-icon{font-size:1rem;}
+.nav-badge{font-family:var(--mono);font-size:0.58rem;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:3px;padding:1px 6px;letter-spacing:0.5px;}
+.nav-btn.active .nav-badge{background:var(--red);color:#fff;}
+
+/* ══════════════════ SECTIONS ══════════════════ */
+.section{display:none;animation:fadeIn 0.3s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.page{max-width:1500px;margin:0 auto;padding:26px 22px 70px;}
+
+/* ══════════════════ HERO ══════════════════ */
+.hero{display:flex;align-items:stretch;background:var(--ink2);border-radius:10px;overflow:hidden;margin-bottom:26px;box-shadow:var(--sh-lg);position:relative;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0px,rgba(255,255,255,.012) 1px,transparent 1px,transparent 12px);pointer-events:none;}
+.hero-accent{width:6px;background:var(--red);flex-shrink:0;position:relative;z-index:1;}
+.hero-body{padding:26px 30px;flex:1;position:relative;z-index:1;}
+.hero-icon-bg{position:absolute;right:220px;top:50%;transform:translateY(-50%);font-size:7rem;opacity:0.04;line-height:1;pointer-events:none;}
+.hero-tag{font-family:var(--mono);font-size:0.62rem;font-weight:600;letter-spacing:3px;color:var(--red);text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:10px;}
+.hero-tag::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+.hero h1{font-family:var(--head);font-size:1.65rem;font-weight:800;color:#fff;letter-spacing:0.3px;margin-bottom:7px;line-height:1.15;}
+.hero-desc{font-size:0.87rem;color:rgba(255,255,255,.58);max-width:680px;line-height:1.55;}
+.hero-pills{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap;}
+.pill{font-family:var(--mono);font-size:0.6rem;letter-spacing:1px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:3px 10px;border-radius:3px;}
+.hero-aside{background:rgba(0,0,0,.2);border-left:1px solid rgba(255,255,255,.07);padding:26px 28px;display:flex;flex-direction:column;gap:16px;min-width:190px;justify-content:center;position:relative;z-index:1;}
+.hero-stat{text-align:center;}
+.hs-val{font-family:var(--bebas);font-size:2.2rem;color:#fff;line-height:1;letter-spacing:1px;}
+.hs-label{font-family:var(--mono);font-size:0.6rem;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+
+/* ══════════════════ LAYOUT ══════════════════ */
+.two-col{display:grid;grid-template-columns:420px 1fr;gap:22px;align-items:start;}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr;}}
+
+/* ══════════════════ CARDS ══════════════════ */
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;box-shadow:var(--sh-sm);overflow:hidden;}
+.card+.card{margin-top:18px;}
+.card-head{display:flex;align-items:center;gap:10px;padding:13px 18px;background:var(--sur2);border-bottom:1px solid var(--bd);}
+.card-head-icon{font-size:1.05rem;}
+.card-head-title{font-family:var(--head);font-size:0.82rem;font-weight:700;color:var(--ink2);letter-spacing:0.5px;text-transform:uppercase;flex:1;}
+.card-body{padding:18px;}
+
+/* ══════════════════ FORMS ══════════════════ */
+.fsec{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--bd);}
+.fsec:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.fsec-title{font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.fsec-title::after{content:'';flex:1;height:1px;background:var(--blue-p);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.fg:last-child{margin-bottom:0;}
+label.fl{font-family:var(--body);font-size:0.74rem;font-weight:600;color:var(--ink3);}
+.hint{font-family:var(--mono);font-size:0.65rem;color:var(--mid);margin-top:2px;}
+.input-row{display:flex;}
+.input-row input{flex:1;border-radius:6px 0 0 6px!important;border-right:none!important;}
+.input-unit{padding:0 10px;background:var(--sur2);border:1.5px solid var(--bd2);border-left:none;border-radius:0 6px 6px 0;font-family:var(--mono);font-size:0.69rem;font-weight:600;color:var(--blue);display:flex;align-items:center;white-space:nowrap;min-width:56px;justify-content:center;}
+input[type=number],input[type=text],select{width:100%;padding:8px 11px;background:var(--sur);border:1.5px solid var(--bd2);border-radius:6px;color:var(--ink);font-family:var(--mono);font-size:0.84rem;transition:border-color .2s,box-shadow .2s;outline:none;}
+input:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,32,10,.09);}
+select{cursor:pointer;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7491' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+input::-webkit-inner-spin-button{opacity:0.4;}
+optgroup{font-weight:700;color:var(--ink2);}
+
+/* ══════════════════ BUTTONS ══════════════════ */
+.calc-btn{width:100%;padding:13px;border:none;border-radius:7px;background:linear-gradient(135deg,var(--ink2) 0%,var(--navy3) 100%);color:#fff;font-family:var(--head);font-size:0.92rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:8px;border-left:5px solid var(--red);box-shadow:0 2px 8px rgba(15,17,23,.2);}
+.calc-btn:hover{background:linear-gradient(135deg,var(--navy2) 0%,var(--navy3) 100%);box-shadow:0 6px 20px rgba(15,17,23,.3);transform:translateY(-1px);}
+.calc-btn:active{transform:translateY(0);}
+.calc-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+
+/* ══════════════════ ALERTS ══════════════════ */
+.alert{display:none;padding:10px 14px;border-radius:6px;font-size:0.8rem;margin-bottom:12px;font-weight:600;}
+.alert.show{display:flex;align-items:center;gap:8px;}
+.alert-err{background:var(--red-p);border:1.5px solid var(--red-m);color:var(--red);}
+.alert-warn{background:var(--gold-p);border:1.5px solid var(--gold-m);color:var(--gold);}
+
+/* ══════════════════ LOADING SPINNER ══════════════════ */
+.calc-btn .spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.calc-btn.loading .spinner{display:block;}
+.calc-btn.loading .btn-text{opacity:.6;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══════════════════ PLACEHOLDER ══════════════════ */
+.placeholder{text-align:center;padding:50px 30px;color:var(--mid);}
+.ph-icon{font-size:3rem;margin-bottom:12px;opacity:0.5;}
+.placeholder h3{font-family:var(--head);font-size:1rem;font-weight:700;color:var(--ink3);margin-bottom:8px;}
+.placeholder p{font-size:0.83rem;line-height:1.6;}
+
+/* ══════════════════ RESULTS ══════════════════ */
+.result-headline{display:flex;align-items:stretch;background:var(--ink2);border-radius:8px;overflow:hidden;margin-bottom:16px;box-shadow:var(--sh-md);}
+.rh-bar{width:6px;background:var(--red);flex-shrink:0;}
+.rh-content{padding:16px 20px;flex:1;}
+.rh-tag{font-family:var(--mono);font-size:0.62rem;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:5px;}
+.rh-number{font-family:var(--bebas);font-size:2.4rem;color:#fff;line-height:1;letter-spacing:1px;}
+.rh-unit{font-size:1rem;color:rgba(255,255,255,.5);letter-spacing:0;margin-left:6px;}
+.rh-sub{font-size:0.78rem;color:rgba(255,255,255,.45);margin-top:5px;font-family:var(--mono);}
+.rh-status{font-family:var(--mono);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:8px;padding:4px 10px;border-radius:4px;display:inline-block;}
+.status-ok{background:rgba(6,95,70,.3);color:#86efac;border:1px solid rgba(134,239,172,.2);}
+.status-warn{background:rgba(176,96,0,.3);color:#fddba8;border:1px solid rgba(253,219,168,.2);}
+.rh-aside{background:rgba(0,0,0,.2);border-left:1px solid rgba(255,255,255,.07);padding:16px 20px;display:flex;flex-direction:column;gap:12px;min-width:140px;justify-content:center;}
+.rh-aside-item{text-align:center;}
+.rh-aside-val{font-family:var(--bebas);font-size:1.5rem;color:#fff;line-height:1;}
+.rh-aside-lbl{font-family:var(--mono);font-size:0.58rem;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.result-grid.g4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.rg-card{border-radius:8px;padding:14px 16px;border:1.5px solid transparent;}
+.rg-label{font-family:var(--mono);font-size:0.64rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.rg-value{font-family:var(--bebas);font-size:1.7rem;line-height:1;letter-spacing:0.5px;}
+.rg-unit{font-family:var(--mono);font-size:0.7rem;font-weight:600;margin-left:4px;}
+.c-blue{background:var(--blue-p);border-color:var(--blue-m);}.c-blue .rg-label{color:var(--blue);}.c-blue .rg-value{color:var(--blue);}
+.c-red{background:var(--red-p);border-color:var(--red-m);}.c-red .rg-label{color:var(--red);}.c-red .rg-value{color:var(--red);}
+.c-gold{background:var(--gold-p);border-color:var(--gold-m);}.c-gold .rg-label{color:var(--gold);}.c-gold .rg-value{color:var(--gold);}
+.c-green{background:var(--green-p);border-color:var(--green-m);}.c-green .rg-label{color:var(--green);}.c-green .rg-value{color:var(--green);}
+.c-teal{background:var(--teal-p);border-color:var(--teal-m);}.c-teal .rg-label{color:var(--teal);}.c-teal .rg-value{color:var(--teal);}
+.c-purple{background:var(--purple-p);border-color:#c4b5fd;}.c-purple .rg-label{color:var(--purple);}.c-purple .rg-value{color:var(--purple);}
+
+.sum-strip{background:var(--sur2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.sum-strip-head{padding:8px 16px;background:var(--ink2);font-family:var(--mono);font-size:0.72rem;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.5px;}
+.sum-row{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--bd);gap:12px;}
+.sum-row:last-child{border-bottom:none;}
+.sum-key{font-family:var(--mono);font-size:0.76rem;color:var(--ink3);font-weight:600;}
+.sum-val{font-family:var(--mono);font-size:0.84rem;font-weight:700;color:var(--ink);text-align:right;}
+
+.sec-div{display:flex;align-items:center;gap:10px;font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin:16px 0 10px;padding-bottom:8px;border-bottom:1.5px solid var(--bd);}
+.sec-div::before{content:'';width:4px;height:15px;background:var(--red);border-radius:2px;}
+
+.badge{font-family:var(--mono);font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:3px;letter-spacing:0.5px;}
+.b-g{background:var(--green-p);color:var(--green);border:1px solid var(--green-m);}
+.b-r{background:var(--red-p);color:var(--red);border:1px solid var(--red-m);}
+.b-a{background:var(--blue-p);color:var(--blue);border:1px solid var(--blue-m);}
+.b-t{background:var(--teal-p);color:var(--teal);border:1px solid var(--teal-m);}
+.b-b{background:var(--sur2);color:var(--mid);border:1px solid var(--bd2);}
+
+.pwr-bars{margin-bottom:14px;}
+.pwr-bar-row{display:grid;grid-template-columns:180px 1fr 90px;gap:10px;align-items:center;margin-bottom:6px;}
+.pwr-bar-lbl{font-size:0.78rem;color:var(--ink3);font-weight:600;}
+.pwr-bar-track{background:var(--sur2);border-radius:4px;height:10px;overflow:hidden;border:1px solid var(--bd);}
+.pwr-bar-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.pwr-bar-val{font-family:var(--mono);font-size:0.78rem;font-weight:700;color:var(--ink);text-align:right;}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:0.83rem;margin-bottom:2px;}
+.dtbl thead tr{background:var(--ink2);}
+.dtbl th{padding:9px 12px;text-align:left;color:#fff;font-family:var(--mono);font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;}
+.dtbl td{padding:8px 12px;border-bottom:1px solid var(--bd);color:var(--ink2);font-family:var(--mono);font-size:0.82rem;}
+.dtbl tbody tr:nth-child(even) td{background:var(--sur2);}
+.dtbl tbody tr.tot-row td{background:var(--ink2);color:#fff;font-weight:700;border-bottom:none;}
+
+/* Stage cards */
+.stage-flow{display:flex;flex-direction:column;gap:8px;}
+.stage-card{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;border:1.5px solid var(--bd);background:var(--sur);}
+.stage-bar-left{width:5px;background:var(--red);flex-shrink:0;}
+.stage-card-inner{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:14px;padding:12px 16px;flex:1;align-items:center;}
+.stage-num-badge{width:36px;height:36px;border-radius:50%;background:var(--ink2);color:#fff;font-family:var(--bebas);font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stage-metric-lbl{font-family:var(--mono);font-size:0.6rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.stage-metric-val{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--ink);}
+.stage-metric-unit{color:var(--mid);font-weight:400;}
+.stage-total{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:14px;padding:12px 16px;background:var(--ink2);border-radius:8px;align-items:center;}
+.stage-total .stage-num-badge{background:rgba(255,255,255,.15);}
+.stage-total .stage-metric-lbl{color:rgba(255,255,255,.45);}
+.stage-total .stage-metric-val{color:#fff;}
+.ic-separator{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--blue-p);border:1.5px solid var(--blue-m);border-radius:8px;}
+.ic-label{font-family:var(--head);font-size:0.72rem;font-weight:700;color:var(--blue);letter-spacing:.05em;white-space:nowrap;}
+.ic-metrics{display:flex;gap:16px;flex-wrap:wrap;}
+.ic-metric{font-family:var(--mono);font-size:0.72rem;color:var(--ink3);}
+.t-arrow{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:0.78rem;}
+.t-hot{color:var(--red);font-weight:700;}
+.t-cold{color:var(--blue);font-weight:700;}
+.t-arrow-sym{color:var(--mid);}
+
+/* Intercooler input panel */
+.ic-panel{background:var(--blue-p);border:1.5px solid var(--blue-m);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.ic-panel-head{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:10px;}
+
+/* Terms */
+.terms-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:22px;}
+@media(max-width:1000px){.terms-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.terms-grid{grid-template-columns:1fr;}}
+.formula-box{background:var(--ink);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:0.78rem;color:#a8bfd8;line-height:2.1;margin:10px 0;}
+.formula-box .eq-h{color:var(--red);font-weight:700;}
+dl.term-list dt{font-family:var(--mono);font-size:0.73rem;font-weight:700;color:var(--ink2);margin-top:12px;}
+dl.term-list dd{font-size:0.82rem;color:var(--mid);line-height:1.55;margin:3px 0 0 0;}
+
+/* Share modal */
+.share-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(10,22,40,.72);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.share-overlay.open{display:flex;animation:fadeIn .2s ease;}
+.share-modal{background:var(--sur);border-radius:14px;box-shadow:0 20px 60px rgba(10,22,40,.4);width:100%;max-width:480px;overflow:hidden;border:1px solid var(--bd);}
+.share-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--ink2);}
+.share-modal-title{font-family:var(--head);font-size:0.92rem;font-weight:800;color:#fff;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+.share-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:1.3rem;cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s,background .15s;}
+.share-close:hover{color:#fff;background:rgba(255,255,255,.1);}
+.share-modal-body{padding:22px;}
+.share-section-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;font-weight:600;}
+.share-url-row{display:flex;gap:0;border:1.5px solid var(--bd2);border-radius:8px;overflow:hidden;margin-bottom:20px;}
+.share-url-input{flex:1;padding:10px 14px;border:none;outline:none;font-family:var(--mono);font-size:0.75rem;color:var(--ink2);background:var(--sur2);}
+.share-copy-btn{padding:10px 18px;border:none;background:var(--ink2);color:#fff;font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.share-copy-btn:hover{background:var(--red);}
+.share-copy-btn.copied{background:var(--green);}
+.share-divider{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:0.6rem;color:var(--light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;}
+.share-divider::before,.share-divider::after{content:'';flex:1;height:1px;background:var(--bd);}
+.share-socials{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.social-btn{display:flex;align-items:center;gap:10px;padding:11px 16px;border:1.5px solid var(--bd);border-radius:8px;background:var(--sur2);cursor:pointer;transition:all .2s;text-decoration:none;}
+.social-btn:hover{transform:translateY(-2px);box-shadow:var(--sh-sm);}
+.social-btn .s-icon{font-size:1.2rem;flex-shrink:0;}
+.social-btn .s-name{font-family:var(--head);font-size:0.78rem;font-weight:700;letter-spacing:0.5px;color:var(--ink2);}
+.social-btn .s-sub{font-family:var(--mono);font-size:0.62rem;color:var(--mid);}
+.share-report-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--sur2);border-radius:8px;border:1px solid var(--bd);gap:12px;}
+.sr-title{font-family:var(--head);font-size:0.85rem;font-weight:700;color:var(--ink2);}
+.sr-sub{font-family:var(--mono);font-size:0.65rem;color:var(--mid);margin-top:2px;}
+.share-pdf-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border:none;border-radius:6px;background:var(--red);color:#fff;font-family:var(--head);font-size:0.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase;white-space:nowrap;}
+.share-pdf-btn:hover{background:var(--red2);box-shadow:0 4px 12px rgba(200,32,10,.4);}
+
+/* Responsive */
+@media(max-width:900px){.result-grid.g4{grid-template-columns:1fr 1fr;}.result-grid{grid-template-columns:1fr 1fr;}.stage-card-inner{grid-template-columns:auto 1fr 1fr;row-gap:10px;}.stage-total{grid-template-columns:auto 1fr 1fr;}}
+@media(max-width:600px){.r2,.r3{grid-template-columns:1fr;}.hero-aside{display:none;}.result-grid{grid-template-columns:1fr 1fr;}}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ TOPBAR ══════════════════════════════════════════ -->
+<header class="topbar">
+  <div class="topbar-top">
+    <a class="brand" href="https://multicalci.com/" style="text-decoration:none;color:inherit;">
+      <div class="brand-logo" style="font-size:0.65rem;font-weight:900;">M</div>
+      <div>
+        <div class="brand-name">MULTICALCI.COM</div>
+        <div class="brand-sub">Fluid Machinery Calculator</div>
+      </div>
+    </a>
+    <div class="topbar-controls">
+      <a href="https://multicalci.com" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.18);border-radius:6px;font-family:var(--head);font-size:0.73rem;font-weight:700;letter-spacing:1px;text-decoration:none;text-transform:uppercase;transition:all .18s;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.20)'" onmouseout="this.style.background='rgba(255,255,255,0.10)'">🏠 Home</a>
+      <div class="unit-toggle">
+        <button class="ut-btn on" onclick="setUnit('SI',this)">SI</button>
+        <button class="ut-btn" onclick="setUnit('US',this)">US</button>
+      </div>
+      <button class="share-btn" onclick="openShare()">🔗&nbsp; Share</button>
+      <button class="pdf-btn" onclick="window.print()">🖨&nbsp; PDF Report</button>
+    </div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="nav-btn active" onclick="goTo('pump',this)"><span class="nav-icon">💧</span>Pump <span class="nav-badge">MULTI-STAGE</span></button>
+    <button class="nav-btn" onclick="goTo('comp',this)"><span class="nav-icon">⚙️</span>Compressor <span class="nav-badge">MULTI-STAGE</span></button>
+    <button class="nav-btn" onclick="goTo('fan',this)"><span class="nav-icon">🌀</span>Fan &amp; Blower</button>
+    <button class="nav-btn" onclick="goTo('terms',this)"><span class="nav-icon">📖</span>Terms &amp; Formulae</button>
+  </nav>
+</header>
+
+<!-- ══════════════════════════════════════════ SECTION 1: PUMP ══════════════════════════════════════════ -->
+<div class="section active" id="sec-pump">
+<div class="page">
+  <div class="hero">
+    <div class="hero-accent"></div>
+    <div class="hero-body">
+      <div class="hero-icon-bg">💧</div>
+      <div class="hero-tag">Pump Calculator</div>
+      <h1>Centrifugal &amp; Positive Displacement Pumps</h1>
+      <p class="hero-desc">Single and multi-stage pump power, head, efficiency, NPSH and specific speed. Supports series (head addition) and parallel (flow addition) multi-stage configurations.</p>
+      <div class="hero-pills">
+        <span class="pill">CENTRIFUGAL</span><span class="pill">PD PUMP</span>
+        <span class="pill">MULTI-STAGE SERIES</span><span class="pill">NPSH CHECK</span>
+        <span class="pill">SPECIFIC SPEED</span><span class="pill">VISCOSITY CORRECTION</span>
+      </div>
+    </div>
+    <div class="hero-aside">
+      <div class="hero-stat"><div class="hs-val" id="pump_stages_display">1</div><div class="hs-label">Stage(s)</div></div>
+      <div class="hero-stat"><div class="hs-val" id="pump_power_display">—</div><div class="hs-label">kW Shaft</div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">⚙️</span><span class="card-head-title">Pump Configuration</span></div>
+        <div class="card-body">
+
+          <div class="fsec">
+            <div class="fsec-title">Type &amp; Stages</div>
+            <div class="fg"><label class="fl">Pump Type</label>
+              <select id="pump_type">
+                <option value="centrifugal">Centrifugal Pump</option>
+                <option value="pd">Positive Displacement (PD)</option>
+                <option value="axial">Axial Flow Pump</option>
+              </select>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Number of Stages</label><input type="number" id="pump_stages" value="1" min="1" max="20" onchange="updatePumpStages()"></div>
+              <div class="fg"><label class="fl">Stage Configuration</label>
+                <select id="pump_stage_config">
+                  <option value="series">Series (same Q, total H = n×H)</option>
+                  <option value="parallel">Parallel (same H, total Q = n×Q)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Process Conditions</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Flow Rate Q <span style="color:var(--mid);font-weight:400">(per stage)</span></label>
+                <div class="input-row"><input type="number" id="pump_Q" value="100" step="0.1" min="0.001"><div class="input-unit" id="u_pQ">m³/h</div></div>
+              </div>
+              <div class="fg"><label class="fl">Total Head H <span style="color:var(--mid);font-weight:400">(per stage)</span></label>
+                <div class="input-row"><input type="number" id="pump_H" value="50" step="0.1" min="0.1"><div class="input-unit" id="u_pH">m</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Fluid Density ρ</label>
+                <div class="input-row"><input type="number" id="pump_rho" value="1000" step="0.1" min="0.1"><div class="input-unit" id="u_prho">kg/m³</div></div>
+              </div>
+              <div class="fg"><label class="fl">Kinematic Viscosity ν</label>
+                <div class="input-row"><input type="number" id="pump_nu" value="1.0" step="0.01" min="0.001"><div class="input-unit">cSt</div></div>
+                <div class="hint">Water=1 cSt. If ν&gt;10 cSt, efficiency correction (HI 9.6.7) applied to η_h.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Efficiencies</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Pump Hydraulic Efficiency η_h</label>
+                <div class="input-row"><input type="number" id="pump_eta_p" value="80" step="0.1" min="1" max="99"><div class="input-unit">%</div></div>
+              </div>
+              <div class="fg"><label class="fl">Mechanical Efficiency η_mec</label>
+                <div class="input-row"><input type="number" id="pump_eta_mec" value="98" step="0.1" min="1" max="99"><div class="input-unit">%</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Motor Efficiency η_motor</label>
+                <div class="input-row"><input type="number" id="pump_eta_m" value="95" step="0.1" min="1" max="99"><div class="input-unit">%</div></div>
+              </div>
+              <div class="fg"><label class="fl">Shaft Speed N</label>
+                <div class="input-row"><input type="number" id="pump_N" value="1480" step="10" min="1"><div class="input-unit">rpm</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">NPSH &amp; Suction Conditions <span style="font-size:0.65rem;font-family:var(--mono);color:var(--mid);font-weight:400;text-transform:none;letter-spacing:0">— P_s and P_v must be ABSOLUTE pressures</span></div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Suction Pressure P_s</label>
+                <div class="input-row"><input type="number" id="pump_Ps" value="1.013" step="0.01" min="0"><div class="input-unit" id="u_pPs">bar a</div></div>
+                <div class="hint">Absolute pressure at pump suction flange (gauge + atm)</div>
+              </div>
+              <div class="fg"><label class="fl">Fluid Vapour Pressure P_v</label>
+                <div class="input-row"><input type="number" id="pump_Pv" value="0.0234" step="0.001" min="0"><div class="input-unit" id="u_pPv">bar a</div></div>
+                <div class="hint">⚠ Must be ABSOLUTE. Water@20°C ≈ 0.023 bar a</div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Suction Pipe Velocity V_s</label>
+                <div class="input-row"><input type="number" id="pump_Vs" value="1.5" step="0.1" min="0"><div class="input-unit" id="u_pVs">m/s</div></div>
+              </div>
+              <div class="fg"><label class="fl">Suction Head Loss h_fs</label>
+                <div class="input-row"><input type="number" id="pump_hfs" value="1.0" step="0.1" min="0"><div class="input-unit" id="u_phfs">m</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Static Elevation z_s <span style="color:var(--mid);font-weight:400">(sump to pump)</span></label>
+                <div class="input-row"><input type="number" id="pump_zs" value="0" step="0.1"><div class="input-unit" id="u_pzs">m</div></div>
+                <div class="hint">Positive = pump above sump (reduces NPSHa).</div>
+              </div>
+              <div class="fg"><label class="fl">NPSH Required (from vendor datasheet)</label>
+                <div class="input-row"><input type="number" id="pump_NPSHr" value="3.0" step="0.1" min="0"><div class="input-unit" id="u_pNPSHr">m</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-err" id="pump_alert"><span>✕</span><span id="pump_alert_txt"></span></div>
+          <button class="calc-btn" id="pump_btn" onclick="calcPump()">
+            <div class="spinner"></div><span class="btn-text">▶&nbsp; Calculate Pump</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">📊</span><span class="card-head-title">Calculation Results</span></div>
+        <div class="card-body" id="pump_results">
+          <div class="placeholder"><div class="ph-icon">💧</div><h3>Awaiting Calculation</h3><p>Enter pump parameters and click Calculate.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════ SECTION 2: COMPRESSOR ══════════════════════════════════════════ -->
+<div class="section" id="sec-comp">
+<div class="page">
+  <div class="hero">
+    <div class="hero-accent"></div>
+    <div class="hero-body">
+      <div class="hero-icon-bg">⚙️</div>
+      <div class="hero-tag">Compressor Calculator</div>
+      <h1>Multi-Stage Compressor with Intercoolers</h1>
+      <p class="hero-desc">Isentropic and polytropic analysis for each compression stage with inter-stage coolers. Stage-by-stage temperature, pressure and power breakdown.</p>
+      <div class="hero-pills"><span class="pill">ISENTROPIC</span><span class="pill">POLYTROPIC</span><span class="pill">INTERCOOLER</span><span class="pill">STAGE POWER</span><span class="pill">25+ GASES</span></div>
+    </div>
+    <div class="hero-aside">
+      <div class="hero-stat"><div class="hs-val" id="comp_stages_display">2</div><div class="hs-label">Stage(s)</div></div>
+      <div class="hero-stat"><div class="hs-val" id="comp_power_display">—</div><div class="hs-label">kW Shaft</div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">⚙️</span><span class="card-head-title">Compressor Configuration</span></div>
+        <div class="card-body">
+
+          <div class="fsec">
+            <div class="fsec-title">Type &amp; Efficiency Mode</div>
+            <div class="fg"><label class="fl">Compressor Type</label>
+              <select id="comp_type">
+                <option value="centrifugal">Centrifugal Compressor</option>
+                <option value="axial">Axial Compressor</option>
+                <option value="recip">Reciprocating Compressor</option>
+                <option value="screw">Screw Compressor</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Efficiency Basis</label>
+              <select id="comp_eff_mode">
+                <option value="isentropic">Isentropic (Adiabatic) Efficiency η_is</option>
+                <option value="polytropic">Polytropic Efficiency η_p</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Gas Properties</div>
+            <div class="fg"><label class="fl">Gas / Medium</label>
+              <select id="comp_gas" onchange="fillGas()">
+                <optgroup label="── Common Process Gases ──">
+                  <option value="air">Air (γ=1.400, M=28.97)</option>
+                  <option value="nitrogen">Nitrogen N₂ (γ=1.400, M=28.01)</option>
+                  <option value="oxygen">Oxygen O₂ (γ=1.395, M=32.00)</option>
+                  <option value="co2">Carbon Dioxide CO₂ (γ=1.289, M=44.01)</option>
+                  <option value="co">Carbon Monoxide CO (γ=1.399, M=28.01)</option>
+                  <option value="hydrogen">Hydrogen H₂ (γ=1.405, M=2.016)</option>
+                  <option value="steam">Steam H₂O (γ=1.300, M=18.02)</option>
+                </optgroup>
+                <optgroup label="── Hydrocarbon Gases ──">
+                  <option value="methane">Methane CH₄ / Natural Gas (γ=1.307, M=16.04)</option>
+                  <option value="ethane">Ethane C₂H₆ (γ=1.187, M=30.07)</option>
+                  <option value="propane">Propane C₃H₈ (γ=1.131, M=44.10)</option>
+                  <option value="nbutane">n-Butane C₄H₁₀ (γ=1.094, M=58.12)</option>
+                  <option value="ethylene">Ethylene C₂H₄ (γ=1.241, M=28.05)</option>
+                  <option value="propylene">Propylene C₃H₆ (γ=1.148, M=42.08)</option>
+                </optgroup>
+                <optgroup label="── Refrigerant Gases ──">
+                  <option value="ammonia">Ammonia NH₃ (γ=1.310, M=17.03)</option>
+                  <option value="r22">R-22 HCFC (γ=1.184, M=86.47)</option>
+                  <option value="r134a">R-134a HFC (γ=1.143, M=102.03)</option>
+                  <option value="r410a">R-410A HFC blend (γ=1.173, M=72.58)</option>
+                  <option value="r32">R-32 HFC (γ=1.276, M=52.02)</option>
+                  <option value="r717">R-717 Ammonia (γ=1.310, M=17.03)</option>
+                  <option value="r744">R-744 CO₂ (γ=1.289, M=44.01)</option>
+                  <option value="r290">R-290 Propane (γ=1.131, M=44.10)</option>
+                </optgroup>
+                <optgroup label="── Industrial / Other ──">
+                  <option value="helium">Helium He (γ=1.667, M=4.003)</option>
+                  <option value="argon">Argon Ar (γ=1.667, M=39.95)</option>
+                  <option value="h2s">Hydrogen Sulphide H₂S (γ=1.320, M=34.08)</option>
+                  <option value="chlorine">Chlorine Cl₂ (γ=1.340, M=70.91)</option>
+                  <option value="so2">Sulphur Dioxide SO₂ (γ=1.290, M=64.06)</option>
+                  <option value="hcl">Hydrogen Chloride HCl (γ=1.410, M=36.46)</option>
+                  <option value="acetylene">Acetylene C₂H₂ (γ=1.232, M=26.04)</option>
+                </optgroup>
+                <optgroup label="── Custom ──">
+                  <option value="custom">Custom Gas — enter γ and M manually</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Ratio of Specific Heats γ</label>
+                <div class="input-row"><input type="number" id="comp_gamma" value="1.4" step="0.001" min="1.01" max="1.7"><div class="input-unit">—</div></div>
+              </div>
+              <div class="fg"><label class="fl">Molar Mass M</label>
+                <div class="input-row"><input type="number" id="comp_M" value="28.97" step="0.01" min="1"><div class="input-unit">g/mol</div></div>
+              </div>
+            </div>
+            <div class="fg"><label class="fl">Cp Override <span style="color:var(--mid);font-weight:400">(optional — overrides ideal-gas Cp)</span></label>
+              <div class="input-row"><input type="number" id="comp_Cp_override" placeholder="leave blank = ideal gas γR/(γ−1)" step="10" min="100"><div class="input-unit">J/(kg·K)</div></div>
+              <div class="hint">NH₃ ≈ 2170, CO₂ ≈ 850, propane ≈ 1670 J/(kg·K) at inlet conditions.</div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Inlet Conditions</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Inlet Temperature T₁</label>
+                <div class="input-row"><input type="number" id="comp_T1" value="25" step="0.5"><div class="input-unit" id="u_cT1">°C</div></div>
+              </div>
+              <div class="fg"><label class="fl">Inlet Pressure P₁</label>
+                <div class="input-row"><input type="number" id="comp_P1" value="1.013" step="0.001" min="0.001"><div class="input-unit" id="u_cP1">bar a</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Actual Volume Flow Q (at inlet)</label>
+                <div class="input-row"><input type="number" id="comp_Q" value="1000" step="1" min="0.001"><div class="input-unit" id="u_cQ">m³/h</div></div>
+              </div>
+              <div class="fg"><label class="fl">Final Discharge Pressure P_out</label>
+                <div class="input-row"><input type="number" id="comp_Pout" value="8.0" step="0.1" min="0.01"><div class="input-unit" id="u_cPout">bar a</div></div>
+              </div>
+            </div>
+            <div class="fg" id="fg_scfm_toggle" style="display:none;"><label class="fl">US Flow Basis</label>
+              <select id="comp_flow_basis">
+                <option value="acfm">ACFM — Actual cubic feet/min at inlet conditions</option>
+                <option value="scfm">SCFM — Standard cubic feet/min at 60°F, 14.696 psia</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Stages &amp; Efficiencies</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Number of Stages</label><input type="number" id="comp_stages" value="2" min="1" max="8" onchange="updateCompStages()"></div>
+              <div class="fg"><label class="fl">Stage Ratio Mode</label>
+                <select id="comp_ratio_mode" onchange="updateCompStages()">
+                  <option value="equal">Equal stage ratios (minimum work)</option>
+                  <option value="manual">Manual per-stage ratio (advanced)</option>
+                </select>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Stage Efficiency η</label>
+                <div class="input-row"><input type="number" id="comp_eta" value="78" step="0.5" min="30" max="99"><div class="input-unit">%</div></div>
+              </div>
+            </div>
+            <div id="comp_manual_ratios" style="display:none;"></div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Mechanical Efficiency η_mec</label>
+                <div class="input-row"><input type="number" id="comp_eta_mec" value="98" step="0.1" min="50" max="99"><div class="input-unit">%</div></div>
+              </div>
+              <div class="fg"><label class="fl">Driver / Motor Efficiency η_drv</label>
+                <div class="input-row"><input type="number" id="comp_eta_drv" value="95" step="0.1" min="50" max="99"><div class="input-unit">%</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <div class="fsec-title">Intercooler Settings</div>
+            <div id="comp_ic_panels"></div>
+            <p style="font-size:0.75rem;color:var(--mid);margin-top:4px;">💡 Intercooler cools gas back toward suction temperature — reduces next-stage compression work.</p>
+          </div>
+
+          <div class="alert alert-err" id="comp_alert"><span>✕</span><span id="comp_alert_txt"></span></div>
+          <button class="calc-btn" id="comp_btn" onclick="calcComp()">
+            <div class="spinner"></div><span class="btn-text">▶&nbsp; Calculate Compressor</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">📊</span><span class="card-head-title">Stage-by-Stage Results</span></div>
+        <div class="card-body" id="comp_results">
+          <div class="placeholder"><div class="ph-icon">⚙️</div><h3>Awaiting Calculation</h3><p>Configure stages, gas, intercoolers and efficiency.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════ SECTION 3: FAN ══════════════════════════════════════════ -->
+<div class="section" id="sec-fan">
+<div class="page">
+  <div class="hero">
+    <div class="hero-accent"></div>
+    <div class="hero-body">
+      <div class="hero-icon-bg">🌀</div>
+      <div class="hero-tag">Fan &amp; Blower Calculator</div>
+      <h1>Fans, Blowers &amp; Axial Flow Units</h1>
+      <p class="hero-desc">Static, dynamic and total pressure rise — air power, shaft power, fan laws (affinity laws). Suitable for centrifugal fans, axial fans, blowers and ventilation units.</p>
+      <div class="hero-pills"><span class="pill">CENTRIFUGAL FAN</span><span class="pill">AXIAL FAN</span><span class="pill">FAN LAWS</span><span class="pill">STATIC EFFICIENCY</span><span class="pill">SPECIFIC SPEED</span></div>
+    </div>
+    <div class="hero-aside">
+      <div class="hero-stat"><div class="hs-val" id="fan_power_display">—</div><div class="hs-label">kW Shaft</div></div>
+      <div class="hero-stat"><div class="hs-val" id="fan_eta_display">—</div><div class="hs-label">% η Total</div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">🌀</span><span class="card-head-title">Fan / Blower Parameters</span></div>
+        <div class="card-body">
+          <div class="fsec">
+            <div class="fsec-title">Type</div>
+            <div class="fg"><label class="fl">Fan / Blower Type</label>
+              <select id="fan_type">
+                <option value="centrifugal">Centrifugal Fan</option>
+                <option value="axial">Axial Flow Fan</option>
+                <option value="blower">Centrifugal Blower (High Pressure)</option>
+                <option value="roots">Roots / PD Blower</option>
+              </select>
+            </div>
+          </div>
+          <div class="fsec">
+            <div class="fsec-title">Process Conditions</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Volume Flow Q</label>
+                <div class="input-row"><input type="number" id="fan_Q" value="10000" step="100" min="1"><div class="input-unit" id="u_fQ">m³/h</div></div>
+              </div>
+              <div class="fg"><label class="fl">Static Pressure Rise ΔPs</label>
+                <div class="input-row"><input type="number" id="fan_dPs" value="500" step="10" min="1"><div class="input-unit" id="u_fdPs">Pa</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Dynamic Pressure Rise ΔPd</label>
+                <div class="input-row"><input type="number" id="fan_dPd" value="80" step="5" min="0"><div class="input-unit" id="u_fdPd">Pa</div></div>
+              </div>
+              <div class="fg"><label class="fl">Gas / Air Density ρ</label>
+                <div class="input-row"><input type="number" id="fan_rho" value="1.2" step="0.01" min="0.1"><div class="input-unit" id="u_frho">kg/m³</div></div>
+              </div>
+            </div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Fan Speed N</label>
+                <div class="input-row"><input type="number" id="fan_N" value="1450" step="10" min="1"><div class="input-unit">rpm</div></div>
+              </div>
+              <div class="fg"><label class="fl">Impeller Diameter D</label>
+                <div class="input-row"><input type="number" id="fan_D" value="800" step="10" min="50"><div class="input-unit" id="u_fD">mm</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="fsec">
+            <div class="fsec-title">Efficiencies</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">Total Fan Efficiency η_t</label>
+                <div class="input-row"><input type="number" id="fan_eta_t" value="75" step="0.5" min="10" max="95"><div class="input-unit">%</div></div>
+              </div>
+              <div class="fg"><label class="fl">Motor Efficiency η_m</label>
+                <div class="input-row"><input type="number" id="fan_eta_m" value="93" step="0.5" min="50" max="99"><div class="input-unit">%</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="fsec">
+            <div class="fsec-title">Fan Laws — Speed &amp; Diameter Change Prediction</div>
+            <div class="r2">
+              <div class="fg"><label class="fl">New Speed N₂</label>
+                <div class="input-row"><input type="number" id="fan_N2" value="1750" step="10" min="1"><div class="input-unit">rpm</div></div>
+              </div>
+              <div class="fg"><label class="fl">New Diameter D₂</label>
+                <div class="input-row"><input type="number" id="fan_D2" value="800" step="10" min="50"><div class="input-unit" id="u_fD2">mm</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-err" id="fan_alert"><span>✕</span><span id="fan_alert_txt"></span></div>
+          <button class="calc-btn" id="fan_btn" onclick="calcFan()">
+            <div class="spinner"></div><span class="btn-text">▶&nbsp; Calculate Fan / Blower</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="card-head-icon">📊</span><span class="card-head-title">Fan Results</span></div>
+        <div class="card-body" id="fan_results">
+          <div class="placeholder"><div class="ph-icon">🌀</div><h3>Awaiting Calculation</h3><p>Enter fan parameters and click Calculate.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════ SECTION 4: TERMS ══════════════════════════════════════════ -->
+<div class="section" id="sec-terms">
+<div class="page">
+  <div class="hero">
+    <div class="hero-accent"></div>
+    <div class="hero-body">
+      <div class="hero-icon-bg">📖</div>
+      <div class="hero-tag">Reference</div>
+      <h1>Terms, Formulae &amp; Definitions</h1>
+      <p class="hero-desc">Complete reference for pump, compressor, fan and blower engineering calculations — symbols, equations and design guidance.</p>
+    </div>
+  </div>
+  <div class="terms-grid">
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">💧</span><span class="card-head-title">Pump Formulae</span></div>
+      <div class="card-body">
+        <div class="formula-box">
+          <span class="eq-h">Hydraulic Power:</span><br>
+          P_hyd = ρ · g · Q · H / 1000 [kW]<br><br>
+          <span class="eq-h">Shaft Power:</span><br>
+          P_shaft = P_hyd / (η_h · η_mec) [kW]<br><br>
+          <span class="eq-h">Input Power:</span><br>
+          P_input = P_shaft / η_motor [kW]<br><br>
+          <span class="eq-h">NPSH Available (ISO 9906):</span><br>
+          NPSHa = (P_s − P_v)·10⁵/(ρg) + V_s²/2g − h_fs − z_s<br><br>
+          <span class="eq-h">Specific Speed (SI, N_rpm basis):</span><br>
+          Ns = N · √Q / H^(3/4)  [Q m³/s, H m]<br>
+          Radial: Ns &lt;25 | Mixed: 25–120 | Axial: &gt;120<br><br>
+          <span class="eq-h">Viscosity Correction (HI 9.6.7):</span><br>
+          C_η ≈ 1 − 0.0105·(ν−1)^0.60  [valid 1–3000 cSt]
+        </div>
+        <dl class="term-list">
+          <dt>Q — Flow Rate</dt><dd>Volumetric flow m³/h or m³/s. For series stages: same Q per stage, head adds. For parallel: Q adds, same head.</dd>
+          <dt>η_h — Pump Hydraulic Efficiency</dt><dd>Ratio of fluid power to impeller mechanical input. Typical: 60–90% centrifugal, 75–92% PD.</dd>
+          <dt>NPSHa — NPSH Available</dt><dd>Suction energy margin above vapour pressure. Must exceed NPSHr + 0.5 m (HI safety margin).</dd>
+          <dt>Ns — Specific Speed (SI)</dt><dd>Shape number defining impeller geometry. Evaluated at BEP. Low Ns = radial; high Ns = axial flow.</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">⚙️</span><span class="card-head-title">Compressor Formulae</span></div>
+      <div class="card-body">
+        <div class="formula-box">
+          <span class="eq-h">Isentropic Discharge Temp:</span><br>
+          T₂_is = T₁ · r^((γ−1)/γ) [K]<br><br>
+          <span class="eq-h">Actual T (isentropic eff.):</span><br>
+          T₂_act = T₁ + (T₂_is − T₁) / η_is<br><br>
+          <span class="eq-h">Actual T (polytropic eff.):</span><br>
+          n = γ / [γ − η_p·(γ−1)]<br>
+          T₂_act = T₁ · r^((n−1)/n)<br><br>
+          <span class="eq-h">Shaft Power (all stages):</span><br>
+          P_shaft = ΣP_act_stages / η_mec<br><br>
+          <span class="eq-h">Inlet Density (ideal gas, Z=1):</span><br>
+          ρ₁ = P₁·10⁵·M / (R_univ·T₁)
+        </div>
+        <dl class="term-list">
+          <dt>γ — Ratio of Specific Heats</dt><dd>Air: 1.4, NH₃: 1.31, CO₂: 1.29. Controls temperature rise and compression work per stage.</dd>
+          <dt>η_is — Isentropic Efficiency</dt><dd>Actual vs ideal power ratio. Centrifugal: 70–83%; Reciprocating: 75–88%; Screw: 65–80%.</dd>
+          <dt>η_p — Polytropic Efficiency</dt><dd>Stage efficiency independent of pressure ratio, preferred for multi-stage design.</dd>
+          <dt>Intercooler</dt><dd>Cools gas back toward inlet T between stages, reducing next-stage compression work.</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">🌀</span><span class="card-head-title">Fan &amp; Blower Formulae</span></div>
+      <div class="card-body">
+        <div class="formula-box">
+          <span class="eq-h">Total Pressure:</span><br>
+          ΔP_t = ΔP_static + ΔP_dynamic [Pa]<br><br>
+          <span class="eq-h">Air / Fluid Power:</span><br>
+          P_air = Q · ΔP_t / 1000 [kW, Q in m³/s]<br><br>
+          <span class="eq-h">Shaft Power:</span><br>
+          P_shaft = P_air / η_total [kW]<br><br>
+          <span class="eq-h">Static Efficiency:</span><br>
+          η_s = Q · ΔP_s / (P_shaft · 1000)<br><br>
+          <span class="eq-h">Fan Laws:</span><br>
+          Q₂ = Q₁·(N₂/N₁)·(D₂/D₁)³<br>
+          ΔP₂= ΔP₁·(N₂/N₁)²·(D₂/D₁)²<br>
+          P₂ = P₁·(N₂/N₁)³·(D₂/D₁)⁵
+        </div>
+        <dl class="term-list">
+          <dt>η_total — Total Efficiency</dt><dd>Ratio of total air power to shaft power. Typical: 60–85% centrifugal, 70–88% axial.</dd>
+          <dt>η_static — Static Efficiency</dt><dd>Preferred for open-outlet fans where dynamic pressure is not recovered.</dd>
+          <dt>Fan Laws</dt><dd>Affinity laws: Q∝N, ΔP∝N², P∝N³ (cube law) for same density. Valid near design point only.</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════ SHARE MODAL ══════════════════════════════════════════ -->
+<div class="share-overlay" id="shareOverlay" onclick="closeShareIfBg(event)">
+  <div class="share-modal">
+    <div class="share-modal-head">
+      <div class="share-modal-title"><span class="icon">🔗</span>Share This Tool</div>
+      <button class="share-close" onclick="closeShare()">✕</button>
+    </div>
+    <div class="share-modal-body">
+      <div class="share-section-label">Tool Link</div>
+      <div class="share-url-row">
+        <input class="share-url-input" id="shareUrlInput" type="text" readonly value="">
+        <button class="share-copy-btn" id="shareCopyBtn" onclick="copyShareUrl()">Copy Link</button>
+      </div>
+      <div class="share-divider">Share on</div>
+      <div class="share-socials">
+        <a class="social-btn" id="shareTwitter" href="#" target="_blank" rel="noopener"><span class="s-icon">𝕏</span><div><div class="s-name">Twitter / X</div><div class="s-sub">Post to followers</div></div></a>
+        <a class="social-btn" id="shareLinkedIn" href="#" target="_blank" rel="noopener"><span class="s-icon">💼</span><div><div class="s-name">LinkedIn</div><div class="s-sub">Share with network</div></div></a>
+        <a class="social-btn" id="shareWhatsApp" href="#" target="_blank" rel="noopener"><span class="s-icon">💬</span><div><div class="s-name">WhatsApp</div><div class="s-sub">Send to contacts</div></div></a>
+        <a class="social-btn" id="shareEmail" href="#" target="_blank" rel="noopener"><span class="s-icon">✉️</span><div><div class="s-name">Email</div><div class="s-sub">Send via email</div></div></a>
+      </div>
+      <div class="share-report-row">
+        <div><div class="sr-title">📄 PDF Calculation Report</div><div class="sr-sub">Export full results as a printable PDF</div></div>
+        <button class="share-pdf-btn" onclick="closeShare();window.print();">🖨 Export PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ CLIENT JAVASCRIPT ══════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── State ──────────────────────────────────────────────────────────── */
+let unitMode = 'SI';
+let lastCalc = {};
+
+/* ─── Local gas table (for UI fill only — gamma/M used in display;
+       actual calculation is done server-side with the full gas library) ─ */
+const GAS_DATA = {
+  air:{gamma:1.400,M:28.970},nitrogen:{gamma:1.400,M:28.014},oxygen:{gamma:1.395,M:32.000},
+  co2:{gamma:1.289,M:44.010},co:{gamma:1.399,M:28.010},hydrogen:{gamma:1.405,M:2.016},
+  steam:{gamma:1.300,M:18.015},methane:{gamma:1.307,M:16.043},ethane:{gamma:1.187,M:30.069},
+  propane:{gamma:1.131,M:44.096},nbutane:{gamma:1.094,M:58.123},ethylene:{gamma:1.241,M:28.054},
+  propylene:{gamma:1.148,M:42.081},ammonia:{gamma:1.310,M:17.031},r22:{gamma:1.184,M:86.468},
+  r134a:{gamma:1.143,M:102.032},r410a:{gamma:1.173,M:72.585},r32:{gamma:1.276,M:52.024},
+  r717:{gamma:1.310,M:17.031},r744:{gamma:1.289,M:44.010},r290:{gamma:1.131,M:44.096},
+  helium:{gamma:1.667,M:4.003},argon:{gamma:1.667,M:39.948},h2s:{gamma:1.320,M:34.081},
+  chlorine:{gamma:1.340,M:70.906},so2:{gamma:1.290,M:64.065},hcl:{gamma:1.410,M:36.461},
+  acetylene:{gamma:1.232,M:26.038}
+};
+
+/* ─── Navigation ─────────────────────────────────────────────────────── */
+function goTo(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─── Unit toggle ────────────────────────────────────────────────────── */
+function setUnit(m, btn) {
+  unitMode = m;
+  document.querySelectorAll('.ut-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const si = m === 'SI';
+  const pu = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
+  pu('u_pQ',  si?'m³/h':'GPM');  pu('u_pH',   si?'m':'ft');
+  pu('u_prho',si?'kg/m³':'lb/ft³'); pu('u_pPs',si?'bar a':'psia');
+  pu('u_pPv', si?'bar a':'psia'); pu('u_pVs',  si?'m/s':'ft/s');
+  pu('u_phfs',si?'m':'ft');       pu('u_pNPSHr',si?'m':'ft');
+  pu('u_pzs', si?'m':'ft');
+  pu('u_cT1', si?'°C':'°F');      pu('u_cP1',   si?'bar a':'psia');
+  pu('u_cQ',  si?'m³/h':'ACFM'); pu('u_cPout', si?'bar a':'psia');
+  const scfmEl = document.getElementById('fg_scfm_toggle');
+  if (scfmEl) scfmEl.style.display = si ? 'none' : 'block';
+  pu('u_fQ',  si?'m³/h':'CFM');  pu('u_fdPs',  si?'Pa':'in WG');
+  pu('u_fdPd',si?'Pa':'in WG'); pu('u_frho',  si?'kg/m³':'lb/ft³');
+  pu('u_fD',  si?'mm':'in');     pu('u_fD2',   si?'mm':'in');
+}
+
+/* ─── Gas fill (UI only) ─────────────────────────────────────────────── */
+function fillGas() {
+  const key = document.getElementById('comp_gas').value;
+  const gd  = GAS_DATA[key];
+  if (gd) {
+    document.getElementById('comp_gamma').value = gd.gamma;
+    document.getElementById('comp_M').value     = gd.M;
+  }
+}
+
+/* ─── Compressor stage UI ────────────────────────────────────────────── */
+function updateCompStages() {
+  const n = parseInt(document.getElementById('comp_stages').value) || 2;
+  document.getElementById('comp_stages_display').textContent = n;
+  const ratioMode = document.getElementById('comp_ratio_mode')?.value || 'equal';
+  const panel = document.getElementById('comp_ic_panels');
+  panel.innerHTML = '';
+  for (let i = 1; i < n; i++) {
+    panel.innerHTML += `
+      <div class="ic-panel">
+        <div class="ic-panel-head">🧊 Intercooler — After Stage ${i} → Before Stage ${i+1}</div>
+        <div class="r2">
+          <div class="fg"><label class="fl">Cooled Outlet Temperature T_ic (°C)</label>
+            <div class="input-row"><input type="number" id="ic_T_${i}" value="40" step="1" min="-50" max="400"><div class="input-unit">°C</div></div>
+          </div>
+          <div class="fg"><label class="fl">Pressure Drop in Cooler ΔP_ic</label>
+            <div class="input-row"><input type="number" id="ic_dP_${i}" value="0.05" step="0.01" min="0" max="5"><div class="input-unit">bar</div></div>
+          </div>
+        </div>
+      </div>`;
+  }
+  const manualDiv = document.getElementById('comp_manual_ratios');
+  if (ratioMode === 'manual') {
+    manualDiv.style.display = 'block';
+    manualDiv.innerHTML = `<div class="fsec-title" style="margin-top:10px;">Manual Stage Pressure Ratios</div>
+      <div class="hint" style="margin-bottom:8px;">Product of all stage ratios must equal P_out/P_in.</div>`;
+    for (let i = 1; i <= n; i++) {
+      manualDiv.innerHTML += `<div class="fg"><label class="fl">Stage ${i} Pressure Ratio r_${i}</label>
+        <div class="input-row"><input type="number" id="comp_r_stage_${i}" value="2.0" step="0.01" min="1.01"><div class="input-unit">—</div></div></div>`;
+    }
+  } else { manualDiv.style.display = 'none'; manualDiv.innerHTML = ''; }
+}
+
+function updatePumpStages() {
+  const n = parseInt(document.getElementById('pump_stages').value) || 1;
+  document.getElementById('pump_stages_display').textContent = n;
+}
+
+/* ─── Button loading state ───────────────────────────────────────────── */
+function setLoading(btnId, on) {
+  const btn = document.getElementById(btnId);
+  if (on) btn.classList.add('loading'), btn.disabled = true;
+  else    btn.classList.remove('loading'), btn.disabled = false;
+}
+
+/* ─── API caller ─────────────────────────────────────────────────────── */
+async function apiCall(endpoint, payload) {
+  const res = await fetch('/api/' + endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'API error');
+  return data;
+}
+
+/* ─── Input helpers ──────────────────────────────────────────────────── */
+function val(id)    { return parseFloat(document.getElementById(id)?.value); }
+function intVal(id) { return parseInt(document.getElementById(id)?.value) || 1; }
+function strVal(id) { return document.getElementById(id)?.value || ''; }
+
+/* ─── Validation helper ──────────────────────────────────────────────── */
+function showErr(alertEl, txtEl, msg) {
+  txtEl.textContent = msg;
+  alertEl.classList.add('show');
+}
+function hideErr(alertEl) { alertEl.classList.remove('show'); }
+
+/* ════════════════════════════════════════════
+   PUMP CALCULATOR  — sends to /api/pump
+════════════════════════════════════════════ */
+async function calcPump() {
+  const alertEl = document.getElementById('pump_alert');
+  const alertTx = document.getElementById('pump_alert_txt');
+  hideErr(alertEl);
+
+  const payload = {
+    Q: val('pump_Q'), H: val('pump_H'), rho: val('pump_rho'),
+    n_stages: intVal('pump_stages'), config: strVal('pump_stage_config'),
+    eta_h: val('pump_eta_p') / 100, eta_mec: val('pump_eta_mec') / 100,
+    eta_m: val('pump_eta_m') / 100, N_rpm: val('pump_N'),
+    nu_cSt: val('pump_nu') || 1.0,
+    Ps: val('pump_Ps'), Pv: val('pump_Pv'),
+    Vs: val('pump_Vs'), hfs: val('pump_hfs'),
+    zs: val('pump_zs') || 0, NPSHr: val('pump_NPSHr'),
+    pump_type: strVal('pump_type'), unitMode
+  };
+
+  // Client-side validation — numeric presence, positivity, and efficiency range
+  const nums = [payload.Q, payload.H, payload.rho, payload.eta_h, payload.eta_mec,
+                payload.eta_m, payload.N_rpm, payload.Ps, payload.Pv,
+                payload.Vs, payload.hfs, payload.NPSHr];
+  if (nums.some(isNaN)) { return showErr(alertEl, alertTx, 'Please fill in all fields with valid numbers.'); }
+  if (payload.Q <= 0 || payload.H <= 0 || payload.rho <= 0)
+    { return showErr(alertEl, alertTx, 'Flow, head and density must be positive.'); }
+  if (payload.eta_h   <= 0 || payload.eta_h   > 1) { return showErr(alertEl, alertTx, 'Hydraulic efficiency must be between 1% and 100%.'); }
+  if (payload.eta_mec <= 0 || payload.eta_mec > 1) { return showErr(alertEl, alertTx, 'Mechanical efficiency must be between 1% and 100%.'); }
+  if (payload.eta_m   <= 0 || payload.eta_m   > 1) { return showErr(alertEl, alertTx, 'Motor efficiency must be between 1% and 100%.'); }
+  if (payload.N_rpm   <= 0) { return showErr(alertEl, alertTx, 'Pump speed N must be > 0.'); }
+
+  setLoading('pump_btn', true);
+  try {
+    const r = await apiCall('pump', payload);
+    renderPumpResults(r, payload);
+    document.getElementById('pump_power_display').textContent = r.P_shaft.toFixed(1);
+    document.getElementById('pump_stages_display').textContent = r.n_stages;
+  } catch(e) {
+    showErr(alertEl, alertTx, e.message);
+  } finally {
+    setLoading('pump_btn', false);
+  }
+}
+
+function renderPumpResults(r, p) {
+  const cavOk = r.cavOk;
+  const cavStatus = cavOk
+    ? `<span class="badge b-g">✓ SAFE — Margin ${r.margin.toFixed(2)} m</span>`
+    : `<span class="badge b-r">⚠ CAVITATION RISK — Margin ${r.margin.toFixed(2)} m</span>`;
+  const maxP = r.P_input;
+  const barHyd   = (r.P_hyd_total / maxP * 100).toFixed(1);
+  const barShaft = (r.P_shaft     / maxP * 100).toFixed(1);
+
+  let stageRows = '';
+  for (const s of r.stages) {
+    stageRows += `<tr><td>Stage ${s.stage}</td><td>${s.Q.toFixed(2)} m³/h</td><td>${s.H.toFixed(2)} m</td>
+      <td>${s.P_hyd.toFixed(3)} kW</td><td>${s.P_shaft.toFixed(3)} kW</td><td>${(s.eta_h*100).toFixed(1)}%</td></tr>`;
+  }
+  stageRows += `<tr class="tot-row"><td>TOTAL</td><td>${r.Q_total.toFixed(2)} m³/h</td>
+    <td>${r.H_total.toFixed(2)} m</td><td>${r.P_hyd_total.toFixed(3)} kW</td>
+    <td>${r.P_shaft.toFixed(3)} kW</td><td>—</td></tr>`;
+
+  document.getElementById('pump_results').innerHTML = `
+    <div class="result-headline">
+      <div class="rh-bar"></div>
+      <div class="rh-content">
+        <div class="rh-tag">Total Shaft Power Required</div>
+        <div class="rh-number">${r.P_shaft.toFixed(2)}<span class="rh-unit">kW</span></div>
+        <div class="rh-sub">${r.n_stages}-stage ${r.config} · Head ${r.H_total.toFixed(1)} m · Flow ${r.Q_total.toFixed(1)} m³/h</div>
+        <div class="rh-status ${r.P_shaft < 150 ? 'status-ok' : 'status-warn'}">
+          ${r.n_stages > 1 ? 'MULTI-STAGE ' + r.config.toUpperCase() : 'SINGLE STAGE'} · η_wire-to-water = ${(r.eta_h * r.eta_mec * r.eta_m * 100).toFixed(1)}%
+        </div>
+      </div>
+      <div class="rh-aside">
+        <div class="rh-aside-item"><div class="rh-aside-val">${r.P_input.toFixed(2)}</div><div class="rh-aside-lbl">kW Motor Input</div></div>
+        <div class="rh-aside-item"><div class="rh-aside-val">${r.NPSHa.toFixed(2)}</div><div class="rh-aside-lbl">m NPSHa</div></div>
+      </div>
+    </div>
+
+    <div class="result-grid g4">
+      <div class="rg-card c-blue"><div class="rg-label">Hydraulic Power</div><div class="rg-value">${r.P_hyd_total.toFixed(3)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-red"><div class="rg-label">Shaft Power</div><div class="rg-value">${r.P_shaft.toFixed(3)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-gold"><div class="rg-label">Motor Input Power</div><div class="rg-value">${r.P_input.toFixed(3)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-${cavOk?'green':'red'}"><div class="rg-label">NPSH Margin</div><div class="rg-value">${r.margin.toFixed(2)}<span class="rg-unit">m</span></div></div>
+    </div>
+
+    <div class="sec-div">Power Breakdown</div>
+    <div class="pwr-bars" style="margin-bottom:16px;">
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Hydraulic Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${barHyd}%;background:var(--blue);"></div></div><div class="pwr-bar-val">${r.P_hyd_total.toFixed(2)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Shaft Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${barShaft}%;background:var(--red);"></div></div><div class="pwr-bar-val">${r.P_shaft.toFixed(2)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Motor Input</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:100%;background:var(--gold);"></div></div><div class="pwr-bar-val">${r.P_input.toFixed(2)} kW</div></div>
+    </div>
+
+    <div class="sec-div">Stage-by-Stage Analysis</div>
+    <div style="margin-bottom:16px;">
+      <table class="dtbl">
+        <thead><tr><th>Stage</th><th>Flow (m³/h)</th><th>Head (m)</th><th>Hyd. Power</th><th>Shaft Power</th><th>η_hyd</th></tr></thead>
+        <tbody>${stageRows}</tbody>
+      </table>
+    </div>
+
+    <div class="sec-div">NPSH &amp; Suction Analysis</div>
+    ${r.pvWarn ? '<div class="alert alert-warn show" style="margin-bottom:10px;"><span>⚠</span><span><strong>Vapour Pressure Warning:</strong> P_v entered is ≥ P_s. Verify that P_v is ABSOLUTE pressure. e.g. Water at 20°C: P_v = 0.023 bar a.</span></div>' : ''}
+    <div class="sum-strip" style="margin-bottom:16px;">
+      <div class="sum-row"><span class="sum-key">NPSH Available (NPSHa)</span><span class="sum-val">${r.NPSHa.toFixed(3)} m</span></div>
+      <div class="sum-row"><span class="sum-key">NPSH Required (NPSHr)</span><span class="sum-val">${r.NPSHr.toFixed(3)} m</span></div>
+      <div class="sum-row"><span class="sum-key">NPSH Margin (NPSHa − NPSHr)</span><span class="sum-val">${cavStatus}</span></div>
+      <div class="sum-row"><span class="sum-key">Recommendation</span><span class="sum-val" style="font-size:0.78rem;">${cavOk ? 'OK — NPSHa exceeds NPSHr with margin ≥ 0.5 m (HI standard)' : 'INCREASE suction pressure, lower pump elevation, or reduce friction losses'}</span></div>
+    </div>
+
+    <div class="sec-div">Performance Summary</div>
+    <div class="sum-strip">
+      ${r.config === 'parallel' ? '<div class="sum-row"><span class="sum-key" style="color:var(--gold)">⚠ Parallel Staging — Preliminary Sizing Only</span></div>' : ''}
+      <div class="sum-row"><span class="sum-key">Impeller Type (from Ns)</span><span class="sum-val">${r.impType}</span></div>
+      <div class="sum-row"><span class="sum-key">Specific Speed Ns (N·√Q/H^0.75)</span><span class="sum-val">${r.Ns.toFixed(4)}</span></div>
+      ${r.viscCorr ? `<div class="sum-row"><span class="sum-key" style="color:var(--gold)">⚠ Viscosity Correction Applied (ν = ${r.nu_cSt.toFixed(1)} cSt)</span><span class="sum-val" style="color:var(--gold)">C_η = ${r.viscCorrFactor.toFixed(4)} → η_h corrected to ${(r.eta_h*100).toFixed(1)}%</span></div>` : ''}
+      <div class="sum-row"><span class="sum-key">Pump Hydraulic Efficiency η_h</span><span class="sum-val">${(r.eta_h * 100).toFixed(1)}%</span></div>
+      <div class="sum-row"><span class="sum-key">Mechanical Efficiency η_mec</span><span class="sum-val">${(r.eta_mec * 100).toFixed(1)}%</span></div>
+      <div class="sum-row"><span class="sum-key">Motor Efficiency η_motor</span><span class="sum-val">${(r.eta_m * 100).toFixed(1)}%</span></div>
+      <div class="sum-row"><span class="sum-key">Overall Wire-to-Water Efficiency</span><span class="sum-val">${(r.eta_h * r.eta_mec * r.eta_m * 100).toFixed(2)}%</span></div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════
+   COMPRESSOR CALCULATOR — sends to /api/compressor
+════════════════════════════════════════════ */
+async function calcComp() {
+  const alertEl = document.getElementById('comp_alert');
+  const alertTx = document.getElementById('comp_alert_txt');
+  hideErr(alertEl);
+
+  const n_stages  = intVal('comp_stages');
+  const ratioMode = strVal('comp_ratio_mode');
+  let stageRatios_manual = null;
+  if (ratioMode === 'manual') {
+    stageRatios_manual = [];
+    for (let i = 1; i <= n_stages; i++) {
+      const rv = val(`comp_r_stage_${i}`);
+      if (isNaN(rv) || rv <= 1) { return showErr(alertEl, alertTx, `Stage ${i} pressure ratio must be > 1.0.`); }
+      stageRatios_manual.push(rv);
+    }
+  }
+
+  const intercoolers = [];
+  for (let i = 1; i < n_stages; i++) {
+    // Use isNaN fallback — NOT || — so that 0 °C / 0 bar are valid user entries
+    const icT  = val(`ic_T_${i}`);
+    const icdP = val(`ic_dP_${i}`);
+    intercoolers.push({
+      T_out_C: isNaN(icT)  ? 40   : icT,
+      dP_bar:  isNaN(icdP) ? 0.05 : icdP,
+    });
+  }
+
+  const Cp_raw = val('comp_Cp_override');
+  const payload = {
+    n_stages, T1: val('comp_T1'), P1: val('comp_P1'),
+    Q: val('comp_Q'), Pout: val('comp_Pout'),
+    gamma: val('comp_gamma'), M: val('comp_M'),
+    eta: val('comp_eta') / 100, eta_mec: val('comp_eta_mec') / 100,
+    eta_drv: val('comp_eta_drv') / 100,
+    eff_mode: strVal('comp_eff_mode'),
+    Cp_override: (!isNaN(Cp_raw) && Cp_raw > 100) ? Cp_raw : null,
+    gas: strVal('comp_gas'),
+    ratioMode, stageRatios_manual,
+    intercoolers, unitMode,
+    flowBasis: strVal('comp_flow_basis') || 'acfm'
+  };
+
+  // Client-side efficiency range check
+  if (payload.eta <= 0 || payload.eta > 1)     { return showErr(alertEl, alertTx, 'Stage efficiency must be between 1% and 100%.'); }
+  if (payload.eta_mec <= 0 || payload.eta_mec > 1) { return showErr(alertEl, alertTx, 'Mechanical efficiency must be between 1% and 100%.'); }
+  if (payload.eta_drv <= 0 || payload.eta_drv > 1) { return showErr(alertEl, alertTx, 'Driver efficiency must be between 1% and 100%.'); }
+  if (payload.P1 <= 0 || payload.Pout <= 0)    { return showErr(alertEl, alertTx, 'Pressures P1 and Pout must be positive.'); }
+  if (payload.Pout <= payload.P1)              { return showErr(alertEl, alertTx, 'Outlet pressure Pout must be greater than inlet P1.'); }
+  if (payload.Q <= 0)                          { return showErr(alertEl, alertTx, 'Flow Q must be positive.'); }
+
+  setLoading('comp_btn', true);
+  try {
+    const r = await apiCall('compressor', payload);
+    renderCompResults(r);
+    document.getElementById('comp_stages_display').textContent = r.n_stages;
+    document.getElementById('comp_power_display').textContent  = r.P_shaft_total.toFixed(1);
+  } catch(e) {
+    showErr(alertEl, alertTx, e.message);
+  } finally {
+    setLoading('comp_btn', false);
+  }
+}
+
+function renderCompResults(r) {
+  const maxPwr = r.P_input_total;
+  const bIs  = (r.totalIsPower  / maxPwr * 100).toFixed(1);
+  const bAct = (r.totalActPower / maxPwr * 100).toFixed(1);
+  const bSh  = (r.P_shaft_total / maxPwr * 100).toFixed(1);
+
+  let stageFlowHTML = '';
+  for (const d of r.stageData) {
+    if (d.isIC) {
+      stageFlowHTML += `
+        <div class="ic-separator">
+          <div class="ic-label">🧊 Intercooler ${d.icNum} → ${d.icNum+1}</div>
+          <div class="ic-metrics">
+            <div class="ic-metric"><div class="t-arrow"><span class="t-hot">${d.T_in_C.toFixed(1)} °C</span><span class="t-arrow-sym"> → </span><span class="t-cold">${d.T_out_C.toFixed(1)} °C</span></div></div>
+            <div class="ic-metric">ΔP = −<strong>${d.dP_ic.toFixed(3)}</strong> bar</div>
+            <div class="ic-metric">P out = <strong>${d.P_out_IC.toFixed(3)}</strong> bar a</div>
+            <div class="ic-metric">ΔT = <strong>${(d.T_in_C - d.T_out_C).toFixed(1)}</strong> °C removed</div>
+          </div>
+        </div>`;
+    } else {
+      const pct = (d.P_act_kW / r.totalActPower * 100).toFixed(0);
+      stageFlowHTML += `
+        <div class="stage-card">
+          <div class="stage-bar-left"></div>
+          <div class="stage-card-inner">
+            <div class="stage-num-badge">${d.stage}</div>
+            <div class="stage-metric"><div class="stage-metric-lbl">Pressure</div><div class="stage-metric-val">${d.P_in.toFixed(3)} <span class="stage-metric-unit">→</span> ${d.P_out.toFixed(3)} <span class="stage-metric-unit">bar a</span></div><div style="font-size:0.65rem;color:var(--mid);margin-top:2px;font-family:var(--mono);">r = ${d.r.toFixed(4)}</div></div>
+            <div class="stage-metric"><div class="stage-metric-lbl">Temperature</div><div class="stage-metric-val" style="color:var(--red);">${d.T_in_C.toFixed(1)} <span class="stage-metric-unit" style="color:var(--mid);">→</span> ${d.T_out_C.toFixed(1)} <span class="stage-metric-unit">°C</span></div><div style="font-size:0.65rem;color:var(--mid);margin-top:2px;font-family:var(--mono);">ΔT = +${(d.T_out_C - d.T_in_C).toFixed(1)} °C</div></div>
+            <div class="stage-metric"><div class="stage-metric-lbl">Stage Power</div><div class="stage-metric-val">${d.P_act_kW.toFixed(2)} <span class="stage-metric-unit">kW</span></div><div style="font-size:0.65rem;color:var(--mid);margin-top:2px;font-family:var(--mono);">${pct}% of total</div></div>
+          </div>
+        </div>`;
+    }
+  }
+  stageFlowHTML += `
+    <div class="stage-total">
+      <div class="stage-num-badge">Σ</div>
+      <div class="stage-metric"><div class="stage-metric-lbl">Total Pressure Range</div><div class="stage-metric-val">${r.P1.toFixed(3)} → ${r.actual_Pout !== undefined ? r.actual_Pout.toFixed(3) : r.Pout.toFixed(3)} <span class="stage-metric-unit">bar a</span>${r.PoutWarn ? ' <span style="color:var(--gold);font-size:0.7rem;">⚠ target was '+r.Pout.toFixed(3)+'</span>' : ''}</div></div>
+      <div class="stage-metric"><div class="stage-metric-lbl">Inlet → Final T</div><div class="stage-metric-val" style="color:#fca5a5;">${r.T1.toFixed(1)} → ${r.finalT.toFixed(1)} <span class="stage-metric-unit">°C</span></div></div>
+      <div class="stage-metric"><div class="stage-metric-lbl">Compression Power Σ</div><div class="stage-metric-val">${r.totalActPower.toFixed(2)} <span class="stage-metric-unit">kW</span></div></div>
+    </div>`;
+
+  document.getElementById('comp_results').innerHTML = `
+    ${r.PoutWarn ? `<div class="alert alert-warn show" style="margin-bottom:10px;"><span>⚠</span><span><strong>Outlet Pressure Warning:</strong> ${r.PoutWarn}</span></div>` : ''}
+    ${r.icWarnings && r.icWarnings.length ? r.icWarnings.map(w => `<div class="alert alert-warn show" style="margin-bottom:10px;"><span>⚠</span><span><strong>Intercooler Warning:</strong> ${w}</span></div>`).join('') : ''}
+    ${r.realGasWarn ? `<div class="alert alert-warn show" style="margin-bottom:14px;"><span>⚠</span><span><strong>Real-Gas Warning:</strong> ${r.isRealGasRisk ? r.gasName + ' deviates from ideal gas. ' : ''}${r.P_ratio_high ? 'High pressure ratio — Z may differ from 1. ' : ''}Cp, density and discharge T use ideal-gas law (Z=1). Actual results may differ by 5–25%. Use real-gas EOS for accurate sizing.</span></div>` : ''}
+    <div class="result-headline">
+      <div class="rh-bar"></div>
+      <div class="rh-content">
+        <div class="rh-tag">Total Shaft Power Required</div>
+        <div class="rh-number">${r.P_shaft_total.toFixed(2)}<span class="rh-unit">kW</span></div>
+        <div class="rh-sub">${r.n_stages} stage${r.n_stages>1?'s':''} · r_total = ${r.r_total.toFixed(3)} · ṁ = ${r.mdot.toFixed(4)} kg/s (${(r.mdot*3600).toFixed(1)} kg/h)</div>
+        <div class="rh-status status-ok">${r.eff_mode.toUpperCase()} BASIS · η = ${(r.eta*100).toFixed(1)}% · n_poly = ${r.n_poly.toFixed(4)}</div>
+      </div>
+      <div class="rh-aside">
+        <div class="rh-aside-item"><div class="rh-aside-val">${r.P_input_total.toFixed(1)}</div><div class="rh-aside-lbl">kW Driver Input</div></div>
+        <div class="rh-aside-item"><div class="rh-aside-val">${r.finalT.toFixed(0)}</div><div class="rh-aside-lbl">°C Final Discharge</div></div>
+      </div>
+    </div>
+
+    <div class="result-grid g4">
+      <div class="rg-card c-blue"><div class="rg-label">Isentropic Power Σ</div><div class="rg-value">${r.totalIsPower.toFixed(2)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-red"><div class="rg-label">Actual Compression Σ</div><div class="rg-value">${r.totalActPower.toFixed(2)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-gold"><div class="rg-label">Shaft Power (÷ η_mec)</div><div class="rg-value">${r.P_shaft_total.toFixed(2)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-purple"><div class="rg-label">Driver Input Power</div><div class="rg-value">${r.P_input_total.toFixed(2)}<span class="rg-unit">kW</span></div></div>
+    </div>
+
+    <div class="sec-div">Stage-by-Stage Detail</div>
+    <div class="stage-flow" style="margin-bottom:18px;">${stageFlowHTML}</div>
+
+    <div class="sec-div">Power Breakdown</div>
+    <div class="pwr-bars" style="margin-bottom:16px;">
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Isentropic (ideal)</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${bIs}%;background:var(--blue);"></div></div><div class="pwr-bar-val">${r.totalIsPower.toFixed(2)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Actual Compression</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${bAct}%;background:var(--red);"></div></div><div class="pwr-bar-val">${r.totalActPower.toFixed(2)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Shaft Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${bSh}%;background:var(--gold);"></div></div><div class="pwr-bar-val">${r.P_shaft_total.toFixed(2)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Driver Input Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:100%;background:var(--purple);"></div></div><div class="pwr-bar-val">${r.P_input_total.toFixed(2)} kW</div></div>
+    </div>
+
+    <div class="sec-div">Compressor Summary</div>
+    <div class="sum-strip">
+      <div class="sum-row"><span class="sum-key">Gas / Medium</span><span class="sum-val">${r.gasName}</span></div>
+      <div class="sum-row"><span class="sum-key">γ (Cp/Cv) / Molar Mass M</span><span class="sum-val">${r.gamma.toFixed(3)} / ${r.M.toFixed(3)} g/mol</span></div>
+      <div class="sum-row"><span class="sum-key">Cp (specific heat at const. pressure)</span><span class="sum-val">${r.Cp.toFixed(2)} J/(kg·K) <span class="badge ${r.Cp_overridden?'b-t':'b-a'}">${r.Cp_overridden?'User override':'Ideal gas'}</span></span></div>
+      <div class="sum-row"><span class="sum-key">Inlet Density ρ₁ (ideal gas, Z=1)</span><span class="sum-val">${r.rho1.toFixed(4)} kg/m³</span></div>
+      <div class="sum-row"><span class="sum-key">Overall Pressure Ratio r_total</span><span class="sum-val">${r.r_total.toFixed(4)}</span></div>
+      <div class="sum-row"><span class="sum-key">Per-Stage Pressure Ratio r_stage</span><span class="sum-val">${r.r_stage.toFixed(4)} (${r.n_stages > 1 ? 'equal stages' : 'single stage'})</span></div>
+      <div class="sum-row"><span class="sum-key">Polytropic Index n</span><span class="sum-val">${r.n_poly.toFixed(5)}</span></div>
+      <div class="sum-row"><span class="sum-key">Stage Efficiency η</span><span class="sum-val">${(r.eta*100).toFixed(1)}% (${r.eff_mode})</span></div>
+      <div class="sum-row"><span class="sum-key">Overall Compression Efficiency (is/shaft)</span><span class="sum-val">${(r.totalIsPower/r.P_shaft_total*100).toFixed(2)}%</span></div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════════
+   FAN CALCULATOR — sends to /api/fan
+════════════════════════════════════════════ */
+async function calcFan() {
+  const alertEl = document.getElementById('fan_alert');
+  const alertTx = document.getElementById('fan_alert_txt');
+  hideErr(alertEl);
+
+  const payload = {
+    Q: val('fan_Q'), dPs: val('fan_dPs'), dPd: val('fan_dPd'),
+    rho: val('fan_rho'), N1: val('fan_N'), D1: val('fan_D'),
+    eta_t: val('fan_eta_t') / 100, eta_m: val('fan_eta_m') / 100,
+    N2: val('fan_N2'), D2: val('fan_D2'), unitMode
+  };
+
+  setLoading('fan_btn', true);
+  try {
+    const r = await apiCall('fan', payload);
+    renderFanResults(r);
+    document.getElementById('fan_power_display').textContent = r.P_shaft.toFixed(1);
+    document.getElementById('fan_eta_display').textContent   = (r.eta_t * 100).toFixed(0);
+  } catch(e) {
+    showErr(alertEl, alertTx, e.message);
+  } finally {
+    setLoading('fan_btn', false);
+  }
+}
+
+function renderFanResults(r) {
+  const maxP = r.P_input;
+  const bAir = (r.P_air   / maxP * 100).toFixed(1);
+  const bSh  = (r.P_shaft / maxP * 100).toFixed(1);
+  const aff  = r.affinity;
+
+  document.getElementById('fan_results').innerHTML = `
+    <div class="result-headline">
+      <div class="rh-bar"></div>
+      <div class="rh-content">
+        <div class="rh-tag">Shaft Power Required</div>
+        <div class="rh-number">${r.P_shaft.toFixed(3)}<span class="rh-unit">kW</span></div>
+        <div class="rh-sub">ΔP_total = ${r.dPt.toFixed(1)} Pa · Q = ${r.Q.toFixed(0)} m³/h · η_total = ${(r.eta_t*100).toFixed(1)}% · ρ = ${r.rho.toFixed(3)} kg/m³</div>
+        <div class="rh-status status-ok">${r.fanType.toUpperCase()}</div>
+      </div>
+      <div class="rh-aside">
+        <div class="rh-aside-item"><div class="rh-aside-val">${r.P_input.toFixed(2)}</div><div class="rh-aside-lbl">kW Motor Input</div></div>
+        <div class="rh-aside-item"><div class="rh-aside-val">${(r.eta_s*100).toFixed(1)}</div><div class="rh-aside-lbl">% η Static</div></div>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="rg-card c-blue"><div class="rg-label">Total Air / Fluid Power</div><div class="rg-value">${r.P_air.toFixed(4)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-red"><div class="rg-label">Shaft Power</div><div class="rg-value">${r.P_shaft.toFixed(4)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-gold"><div class="rg-label">Motor Input Power</div><div class="rg-value">${r.P_input.toFixed(4)}<span class="rg-unit">kW</span></div></div>
+      <div class="rg-card c-teal"><div class="rg-label">Static Efficiency η_s</div><div class="rg-value">${(r.eta_s*100).toFixed(2)}<span class="rg-unit">%</span></div></div>
+      <div class="rg-card c-green"><div class="rg-label">Tip Speed</div><div class="rg-value">${r.tip_speed.toFixed(2)}<span class="rg-unit">m/s</span></div></div>
+      <div class="rg-card c-purple"><div class="rg-label">Specific Speed Ω_s</div><div class="rg-value">${r.Ns_fan.toFixed(4)}</div></div>
+    </div>
+
+    <div class="sec-div">Power Breakdown</div>
+    <div class="pwr-bars" style="margin-bottom:16px;">
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Total Air Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${bAir}%;background:var(--blue);"></div></div><div class="pwr-bar-val">${r.P_air.toFixed(3)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Shaft Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:${bSh}%;background:var(--red);"></div></div><div class="pwr-bar-val">${r.P_shaft.toFixed(3)} kW</div></div>
+      <div class="pwr-bar-row"><div class="pwr-bar-lbl">Motor Input Power</div><div class="pwr-bar-track"><div class="pwr-bar-fill" style="width:100%;background:var(--gold);"></div></div><div class="pwr-bar-val">${r.P_input.toFixed(3)} kW</div></div>
+    </div>
+
+    <div class="sec-div">Fan Laws — Speed &amp; Diameter Change Prediction <span style="font-size:0.7rem;font-family:var(--mono);color:var(--mid);font-weight:400;text-transform:none;letter-spacing:0">(valid near design point, constant density)</span></div>
+    ${r.densityDeviates ? `<div class="alert alert-warn show" style="margin-bottom:10px;"><span>⚠</span><span><strong>Density Warning:</strong> Gas density (${r.rho.toFixed(3)} kg/m³) differs from standard air (1.2 kg/m³) by &gt;10%. Fan laws assume constant density.</span></div>` : ''}
+    <div class="sum-strip" style="margin-bottom:16px;">
+      <div class="sum-strip-head">N₁ = ${r.N1} rpm, D₁ = ${r.D1.toFixed(0)} mm → N₂ = ${r.N2} rpm, D₂ = ${r.D2.toFixed(0)} mm</div>
+      <div class="sum-row"><span class="sum-key">Flow Q₂</span><span class="sum-val">${aff.Q2.toFixed(1)} m³/h (was ${r.Q.toFixed(0)} m³/h) — ratio ${(aff.Q2/r.Q).toFixed(3)}×</span></div>
+      <div class="sum-row"><span class="sum-key">Total Pressure ΔP₂</span><span class="sum-val">${aff.dP2.toFixed(1)} Pa (was ${r.dPt.toFixed(1)} Pa) — ratio ${(aff.dP2/r.dPt).toFixed(3)}×</span></div>
+      <div class="sum-row"><span class="sum-key">Shaft Power P₂</span><span class="sum-val">${aff.P2_shaft.toFixed(3)} kW (was ${r.P_shaft.toFixed(3)} kW) — ratio ${(aff.P2_shaft/r.P_shaft).toFixed(3)}×</span></div>
+      <div class="sum-row"><span class="sum-key">Speed Ratio N₂/N₁</span><span class="sum-val">${aff.rN.toFixed(4)} × | Diameter Ratio D₂/D₁ = ${aff.rD.toFixed(4)} ×</span></div>
+    </div>
+
+    <div class="sec-div">Summary &amp; Fan Type</div>
+    <div class="sum-strip">
+      <div class="sum-row"><span class="sum-key">Static Pressure Rise ΔPs</span><span class="sum-val">${r.dPs.toFixed(1)} Pa</span></div>
+      <div class="sum-row"><span class="sum-key">Dynamic Pressure Rise ΔPd</span><span class="sum-val">${r.dPd.toFixed(1)} Pa</span></div>
+      <div class="sum-row"><span class="sum-key">Total Pressure Rise ΔPt</span><span class="sum-val">${r.dPt.toFixed(1)} Pa</span></div>
+      <div class="sum-row"><span class="sum-key">Fan Type (from Ω_s)</span><span class="sum-val">${r.fanType} <span class="badge b-b">Ω_s = ${r.Ns_fan.toFixed(4)}</span></span></div>
+      <div class="sum-row"><span class="sum-key">Impeller Tip Speed</span><span class="sum-val">${r.tip_speed.toFixed(2)} m/s — ${r.tipWarn}</span></div>
+      <div class="sum-row"><span class="sum-key">Total Efficiency η_total</span><span class="sum-val">${(r.eta_t*100).toFixed(1)}%</span></div>
+    </div>`;
+}
+
+/* ─── Share modal ─────────────────────────────────────────────────────── */
+function openShare() {
+  const url = window.location.href;
+  document.getElementById('shareUrlInput').value = url;
+  const enc = encodeURIComponent(url);
+  const msg = encodeURIComponent('Free Pump, Compressor & Fan Calculator — multicalci.com');
+  document.getElementById('shareTwitter').href  = `https://twitter.com/intent/tweet?text=${msg}&url=${enc}`;
+  document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/sharing/share-offsite/?url=${enc}`;
+  document.getElementById('shareWhatsApp').href = `https://wa.me/?text=${msg}%20${enc}`;
+  document.getElementById('shareEmail').href    = `mailto:?subject=Fluid%20Machinery%20Calculator&body=${msg}%20${enc}`;
+  document.getElementById('shareOverlay').classList.add('open');
+}
+function closeShare() { document.getElementById('shareOverlay').classList.remove('open'); }
+function closeShareIfBg(e) { if (e.target === document.getElementById('shareOverlay')) closeShare(); }
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  const btn   = document.getElementById('shareCopyBtn');
+  navigator.clipboard.writeText(input.value).then(() => {
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeShare(); });
+
+/* ─── Init ───────────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => { updateCompStages(); });
+</script>
+</body>
+</html>
