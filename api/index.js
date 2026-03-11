@@ -6434,7 +6434,7 @@ async function handle_instrumentation(body, res) {
     }
     return res.status(200).json({ ok: true, result });
   } catch(e) {
-    return res.status(500).json({ ok: false, error: e.message });
+    return res.status(200).json({ ok: false, error: e.message });
   }
 }
 
@@ -7000,10 +7000,10 @@ async function handle_electrical(body, res) {
   if (!fn) return res.status(400).json({ ok: false, error: `Unknown calculator: "${calc}"` });
   try {
     const results = fn(inputs || {});
-    if (results && results.error) return res.status(422).json({ ok: false, error: results.error });
+    if (results && results.error) return res.status(200).json({ ok: false, error: results.error });
     return res.status(200).json({ ok: true, results });
   } catch(err) {
-    return res.status(500).json({ ok: false, error: 'Calculation failed: ' + err.message });
+    return res.status(200).json({ ok: false, error: 'Calculation failed: ' + err.message });
   }
 }
 
