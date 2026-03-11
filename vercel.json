@@ -1,160 +1,50 @@
 {
   "trailingSlash": true,
   "functions": {
-    "api/steam.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/cooling-tower.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/eos.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/control-valve.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/heatxpert.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/orifice-flow.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/psychrometric.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/steam-turbine-power.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/rankine.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/steam-quench.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/pressure-drop-calculator.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/pump.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/compressor.js": {
-      "maxDuration": 10,
-      "memory": 256
-    },
-    "api/fan.js": {
+    "api/index.js": {
       "maxDuration": 10,
       "memory": 256
     }
   },
   "rewrites": [
-    {
-      "source": "/steam-properties-calculator",
-      "destination": "/steam-properties-calculator/index.html"
-    },
-    {
-      "source": "/steam-properties-calculator/",
-      "destination": "/steam-properties-calculator/index.html"
-    },
-    {
-      "source": "/cooling-tower-performance",
-      "destination": "/cooling-tower-performance/index.html"
-    },
-    {
-      "source": "/cooling-tower-performance/",
-      "destination": "/cooling-tower-performance/index.html"
-    },
-    {
-      "source": "/gas-equation-of-state",
-      "destination": "/gas-equation-of-state/index.html"
-    },
-    {
-      "source": "/gas-equation-of-state/",
-      "destination": "/gas-equation-of-state/index.html"
-    },
-    {
-      "source": "/control-valve-sizing",
-      "destination": "/control-valve-sizing/index.html"
-    },
-    {
-      "source": "/control-valve-sizing/",
-      "destination": "/control-valve-sizing/index.html"
-    },
-    {
-      "source": "/heat-exchanger-design",
-      "destination": "/heat-exchanger-design/index.html"
-    },
-    {
-      "source": "/heat-exchanger-design/",
-      "destination": "/heat-exchanger-design/index.html"
-    },
-    {
-      "source": "/orifice-flow-calculator",
-      "destination": "/orifice-flow-calculator/index.html"
-    },
-    {
-      "source": "/orifice-flow-calculator/",
-      "destination": "/orifice-flow-calculator/index.html"
-    },
-    {
-      "source": "/psychrometric-calculator",
-      "destination": "/psychrometric-calculator/index.html"
-    },
-    {
-      "source": "/psychrometric-calculator/",
-      "destination": "/psychrometric-calculator/index.html"
-    },
-    {
-      "source": "/steam-turbine-power-calculator",
-      "destination": "/steam-turbine-power-calculator/index.html"
-    },
-    {
-      "source": "/steam-turbine-power-calculator/",
-      "destination": "/steam-turbine-power-calculator/index.html"
-    },
-    {
-      "source": "/rankine-cycle-calculator",
-      "destination": "/rankine-cycle-calculator/index.html"
-    },
-    {
-      "source": "/rankine-cycle-calculator/",
-      "destination": "/rankine-cycle-calculator/index.html"
-    },
-    {
-      "source": "/steam-quench-calculator",
-      "destination": "/steam-quench-calculator/index.html"
-    },
-    {
-      "source": "/steam-quench-calculator/",
-      "destination": "/steam-quench-calculator/index.html"
-    },
-    {
-      "source": "/pressure-drop-calculator",
-      "destination": "/pressure-drop-calculator/index.html"
-    },
-    {
-      "source": "/pressure-drop-calculator/",
-      "destination": "/pressure-drop-calculator/index.html"
-    },
-    {
-      "source": "/fluid-machinery-calculator",
-      "destination": "/fluid-machinery-calculator/index.html"
-    },
-    {
-      "source": "/fluid-machinery-calculator/",
-      "destination": "/fluid-machinery-calculator/index.html"
-    }
+    { "source": "/api/compressor",               "destination": "/api/index" },
+    { "source": "/api/control-valve",            "destination": "/api/index" },
+    { "source": "/api/cooling-tower",            "destination": "/api/index" },
+    { "source": "/api/eos",                      "destination": "/api/index" },
+    { "source": "/api/fan",                      "destination": "/api/index" },
+    { "source": "/api/heatxpert",                "destination": "/api/index" },
+    { "source": "/api/orifice-flow",             "destination": "/api/index" },
+    { "source": "/api/pressure-drop-calculator", "destination": "/api/index" },
+    { "source": "/api/psychrometric",            "destination": "/api/index" },
+    { "source": "/api/pump",                     "destination": "/api/index" },
+    { "source": "/api/rankine",                  "destination": "/api/index" },
+    { "source": "/api/steam-quench",             "destination": "/api/index" },
+    { "source": "/api/steam-turbine-power",      "destination": "/api/index" },
+    { "source": "/api/steam",                    "destination": "/api/index" },
+    { "source": "/steam-properties-calculator",         "destination": "/steam-properties-calculator/index.html" },
+    { "source": "/steam-properties-calculator/",        "destination": "/steam-properties-calculator/index.html" },
+    { "source": "/cooling-tower-performance",           "destination": "/cooling-tower-performance/index.html" },
+    { "source": "/cooling-tower-performance/",          "destination": "/cooling-tower-performance/index.html" },
+    { "source": "/gas-equation-of-state",               "destination": "/gas-equation-of-state/index.html" },
+    { "source": "/gas-equation-of-state/",              "destination": "/gas-equation-of-state/index.html" },
+    { "source": "/control-valve-sizing",                "destination": "/control-valve-sizing/index.html" },
+    { "source": "/control-valve-sizing/",               "destination": "/control-valve-sizing/index.html" },
+    { "source": "/heat-exchanger-design",               "destination": "/heat-exchanger-design/index.html" },
+    { "source": "/heat-exchanger-design/",              "destination": "/heat-exchanger-design/index.html" },
+    { "source": "/orifice-flow-calculator",             "destination": "/orifice-flow-calculator/index.html" },
+    { "source": "/orifice-flow-calculator/",            "destination": "/orifice-flow-calculator/index.html" },
+    { "source": "/psychrometric-calculator",            "destination": "/psychrometric-calculator/index.html" },
+    { "source": "/psychrometric-calculator/",           "destination": "/psychrometric-calculator/index.html" },
+    { "source": "/steam-turbine-power-calculator",      "destination": "/steam-turbine-power-calculator/index.html" },
+    { "source": "/steam-turbine-power-calculator/",     "destination": "/steam-turbine-power-calculator/index.html" },
+    { "source": "/rankine-cycle-calculator",            "destination": "/rankine-cycle-calculator/index.html" },
+    { "source": "/rankine-cycle-calculator/",           "destination": "/rankine-cycle-calculator/index.html" },
+    { "source": "/steam-quench-calculator",             "destination": "/steam-quench-calculator/index.html" },
+    { "source": "/steam-quench-calculator/",            "destination": "/steam-quench-calculator/index.html" },
+    { "source": "/pressure-drop-calculator",            "destination": "/pressure-drop-calculator/index.html" },
+    { "source": "/pressure-drop-calculator/",           "destination": "/pressure-drop-calculator/index.html" },
+    { "source": "/fluid-machinery-calculator",          "destination": "/fluid-machinery-calculator/index.html" },
+    { "source": "/fluid-machinery-calculator/",         "destination": "/fluid-machinery-calculator/index.html" }
   ],
   "headers": [
     {
@@ -162,7 +52,7 @@
       "headers": [
         { "key": "Access-Control-Allow-Origin",  "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, x-api-key" },
         { "key": "Access-Control-Max-Age",       "value": "86400" },
         { "key": "X-Content-Type-Options",       "value": "nosniff" },
         { "key": "X-Frame-Options",              "value": "DENY" }
