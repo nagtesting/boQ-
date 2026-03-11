@@ -4326,6 +4326,1007 @@ function convertToImperial(r) {
 }
 
 
+
+
+// ================================================================
+// VESSEL & SEPARATOR CALCULATOR — api/calculate.js
+// ================================================================
+
+// ============================================================
+// Vercel Serverless API — Vessel & Separator Sizing Calculator
+// Repo: github.com/nagtesting/nagtesting
+// Path: /api/calculate.js
+// ============================================================
+
+// ── UNIT CONVERSION LIBRARY ──────────────────────────────────
+function toM3h(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'm3h')    return val;
+  if (u === 'm3s')    return val * 3600;
+  if (u === 'ft3min') return val * 1.69901;
+  if (u === 'mmscfd') return val * 1179.869;
+  if (u === 'bpd')    return val * 0.00662458;
+  if (u === 'gpm')    return val * 0.227125;
+  return val;
+}
+
+function toKgm3(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'kgm3')  return val;
+  if (u === 'lbft3') return val * 16.01846;
+  return val;
+}
+
+function toMPag(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'MPa')  return val;
+  if (u === 'barg') return val * 0.1;
+  if (u === 'psi')  return val * 0.00689476;
+  if (u === 'kPa')  return val * 0.001;
+  if (u === 'ksi')  return val * 6.89476;
+  return val;
+}
+
+function toBara(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'bara') return val;
+  if (u === 'barg') return val + 1.01325;
+  if (u === 'psia') return val * 0.0689476;
+  if (u === 'psig') return (val + 14.696) * 0.0689476;
+  if (u === 'MPa')  return val * 10;
+  if (u === 'MPag') return val * 10 + 1.01325;
+  return val;
+}
+
+function toMm(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'mm') return val;
+  if (u === 'm')  return val * 1000;
+  if (u === 'in') return val * 25.4;
+  if (u === 'ft') return val * 304.8;
+  return val;
+}
+
+function toMPaStress(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'MPa') return val;
+  if (u === 'psi') return val * 0.00689476;
+  if (u === 'ksi') return val * 6.89476;
+  return val;
+}
+
+function toC(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'C') return val;
+  if (u === 'F') return (val - 32) / 1.8;
+  if (u === 'K') return val - 273.15;
+  return val;
+}
+
+function toMs(val, u) {
+  if (!isFinite(val)) return NaN;
+  if (u === 'ms')  return val;
+  if (u === 'fts') return val * 0.3048;
+  return val;
+}
+
+// ── PRESSURE CORRECTION (GPSA Fig.7-3) ───────────────────────
+function kPcorr(K_base, P_bara) {
+  if (!isFinite(P_bara) || P_bara <= 7.0) return K_base;
+  const corr = Math.max(0.45, 1 - 0.0040 * (P_bara - 7.0));
+  return K_base * corr;
+}
+
+// ── STANDARD DIAMETERS ────────────────────────────────────────
+const STD_D = [.30,.40,.50,.61,.762,.914,1.067,1.219,1.372,1.524,1.676,1.829,2.032,2.134,2.438,2.743,3.048,3.658,4.267];
+function nearestStd(d) {
+  if (!isFinite(d) || d <= 0) return STD_D[0];
+  const f = STD_D.find(x => x >= d);
+  return f !== undefined ? f : Math.ceil(d * 100) / 100;
+}
+
+const NPS = [
+  [15,15.8,'½"'],[20,20.9,'¾"'],[25,26.6,'1"'],[40,40.9,'1½"'],[50,52.5,'2"'],
+  [80,77.9,'3"'],[100,102.3,'4"'],[150,154.1,'6"'],[200,202.7,'8"'],[250,254.5,'10"'],
+  [300,304.8,'12"'],[350,333.3,'14"'],[400,381,'16"'],[450,428.7,'18"'],
+  [500,477.9,'20"'],[600,574.7,'24"'],[750,720,'30"']
+];
+function nearestNPS(dmm) {
+  if (!isFinite(dmm) || dmm <= 0) return NPS[0];
+  return NPS.find(n => n[1] >= dmm) || NPS[NPS.length - 1];
+}
+
+// ── CALC 1: HORIZONTAL 2-PHASE ────────────────────────────────
+function calcH2P(p) {
+  const Qg      = toM3h(p.Qg, p.Qg_u);
+  const Ql      = toM3h(p.Ql, p.Ql_u);
+  const rhog    = toKgm3(p.rhog, p.rhog_u);
+  const rhol    = toKgm3(p.rhol, p.rhol_u);
+  const T_C     = toC(p.T, p.T_u);
+  const P_bara  = toBara(p.P, p.P_u);
+  const tr      = parseFloat(p.tr);
+  const LD      = parseFloat(p.LD);
+  const K       = parseFloat(p.K);
+  const surge   = parseFloat(p.surge);
+  const margPct = parseFloat(p.margin) / 100;
+  const llfrac  = parseFloat(p.llfrac);
+  const svcFactor = parseFloat(p.svcFactor);
+
+  if ([Qg,Ql,rhog,rhol,tr,LD,K].some(x => !isFinite(x) || x <= 0))
+    return { error: 'Fill all flow, density and sizing fields with positive values.' };
+  if (rhog >= rhol)
+    return { error: 'Gas density must be less than liquid density.' };
+  if (LD < 1.5 || LD > 8)
+    return { error: 'L/D must be between 1.5 and 8 for a horizontal separator.' };
+
+  const K_pcorr  = isFinite(P_bara) && P_bara > 0 ? kPcorr(K, P_bara) : K;
+  const K_eff    = K_pcorr * svcFactor;
+  const Uterm    = K_eff * Math.sqrt((rhol - rhog) / rhog);
+  const Udesign  = margPct * Uterm;
+  if (Udesign <= 0) return { error: 'Udesign ≤ 0 — check K and densities.' };
+
+  const Qg_s      = Qg / 3600;
+  const Ql_s      = Ql / 3600;
+  const Vl_surge  = Ql_s * tr * 60 * surge;
+  const D_liq     = Math.cbrt(Vl_surge / (llfrac * Math.PI / 4 * LD));
+  const A_gas_req = Qg_s / Udesign;
+  const D_gas     = Math.sqrt(A_gas_req / ((1 - llfrac) * Math.PI / 4));
+  const D_calc    = Math.max(D_liq, D_gas);
+  const D_std     = nearestStd(D_calc);
+  const L         = Math.ceil(LD * D_std * 2) / 2;
+  const A_gas_act = (1 - llfrac) * Math.PI * D_std * D_std / 4;
+  const Uact      = Qg_s / A_gas_act;
+  const ratio     = Uact / Uterm;
+  const V_vessel  = Math.PI * D_std * D_std / 4 * L;
+  const governs   = D_gas >= D_liq ? 'Gas velocity' : 'Liquid retention';
+
+  let warns = [], status = 'PASS';
+  if (ratio > margPct)   { warns.push(`⚠ Gas velocity ratio ${(ratio*100).toFixed(1)}% exceeds margin ${(margPct*100).toFixed(0)}%. Upsize vessel.`); status = 'WARN'; }
+  if (LD < 2 || LD > 5)   warns.push(`⚠ L/D=${LD.toFixed(1)} outside typical 2–5 range for horizontal separators.`);
+  if (svcFactor < 1.0)     warns.push(`⚠ Service derating applied (×${svcFactor}). Verify K with separator internals vendor.`);
+  if (K_pcorr < K)         warns.push(`ℹ P-correction applied: K ${K.toFixed(4)} → K_pcorr ${K_pcorr.toFixed(4)} m/s.`);
+  if (isFinite(T_C)) {
+    if (T_C > 260) warns.push('⚠ T>260°C: Verify allowable stress S at operating temp (ASME Sec.II Part D).');
+    if (T_C < -29) warns.push('⚠ T<−29°C: MDMT and Charpy impact testing per ASME UCS-66 may apply.');
+  }
+  if (D_std > 4.0) warns.push(`⚠ D=${D_std.toFixed(2)} m exceeds 4.0 m shop fabrication limit. Field fabrication or special transport required.`);
+
+  return {
+    status, warns,
+    results: [
+      { label:'Calc. Min. D',         value: D_calc.toFixed(3)+' m', warn: false },
+      { label:'Std. Vessel D',         value: D_std.toFixed(3)+' m ('+( D_std*39.37).toFixed(0)+'")', warn: false },
+      { label:'Seam–Seam Length',      value: L.toFixed(1)+' m', warn: false },
+      { label:'Actual L/D',            value: (L/D_std).toFixed(2), warn: (L/D_std)<2||(L/D_std)>5 },
+      { label:'K_eff (P×svc)',         value: K_eff.toFixed(4)+' m/s', warn: K_eff<K },
+      { label:'Uterm',                 value: Uterm.toFixed(3)+' m/s', warn: false },
+      { label:'Udesign',               value: Udesign.toFixed(3)+' m/s', warn: false },
+      { label:'Actual Gas Vel.',       value: Uact.toFixed(3)+' m/s', warn: ratio>margPct },
+      { label:'Velocity Ratio',        value: (ratio*100).toFixed(1)+'%', warn: ratio>margPct },
+      { label:'Liq. Hold-up (surged)', value: Vl_surge.toFixed(3)+' m³', warn: false },
+      { label:'Vessel Volume',         value: V_vessel.toFixed(2)+' m³', warn: false },
+      { label:'Governs',               value: governs, warn: false },
+    ],
+    summary: `Qg=${Qg.toFixed(1)} m³/h | Ql=${Ql.toFixed(1)} m³/h | ρg=${rhog.toFixed(2)} kg/m³ | ρl=${rhol.toFixed(1)} kg/m³${isFinite(T_C)?' | T='+T_C.toFixed(0)+'°C':''} | tr=${tr}min | surge×${surge} | llfrac=${(llfrac*100).toFixed(0)}%`
+  };
+}
+
+// ── CALC 2: VERTICAL 2-PHASE ──────────────────────────────────
+function calcV2P(p) {
+  const Qg       = toM3h(p.Qg, p.Qg_u);
+  const Ql       = toM3h(p.Ql, p.Ql_u);
+  const rhog     = toKgm3(p.rhog, p.rhog_u);
+  const rhol     = toKgm3(p.rhol, p.rhol_u);
+  const T_C      = toC(p.T, p.T_u);
+  const P_bara   = toBara(p.P, p.P_u);
+  const tr       = parseFloat(p.tr);
+  const K        = parseFloat(p.K);
+  const surge    = parseFloat(p.surge);
+  const margPct  = parseFloat(p.margin) / 100;
+  const boot     = parseFloat(p.boot) || 0.3;
+  const intern   = parseFloat(p.intern) || 0.4;
+  const svcFactor = parseFloat(p.svcFactor);
+
+  if ([Qg,Ql,rhog,rhol,tr,K].some(x => !isFinite(x) || x <= 0))
+    return { error: 'Fill all fields with positive values.' };
+  if (rhog >= rhol)
+    return { error: 'Gas density must be less than liquid density.' };
+
+  const K_pcorr  = isFinite(P_bara) && P_bara > 0 ? kPcorr(K, P_bara) : K;
+  const K_eff    = K_pcorr * svcFactor;
+  const Uterm    = K_eff * Math.sqrt((rhol - rhog) / rhog);
+  const Udesign  = margPct * Uterm;
+  if (Udesign <= 0) return { error: 'Udesign ≤ 0.' };
+
+  const Qg_s       = Qg / 3600;
+  const Ql_s       = Ql / 3600;
+  const A_req      = Qg_s / Udesign;
+  const D_min      = Math.sqrt(4 * A_req / Math.PI);
+  const D_std      = nearestStd(D_min);
+  const A_std      = Math.PI * D_std * D_std / 4;
+  const Uact       = Qg_s / A_std;
+  const ratio      = Uact / Uterm;
+  const Vl_surge   = Ql_s * tr * 60 * surge;
+  const H_liq_bare = Vl_surge / A_std;
+  const H_liq_design = H_liq_bare + boot + 0.15;
+  const H_shell    = H_liq_design + 0.6 * D_std + intern;
+  const HD         = H_shell / D_std;
+
+  let warns = [], status = 'PASS';
+  if (ratio > margPct) { warns.push(`⚠ Gas velocity ${(ratio*100).toFixed(1)}% of Uterm exceeds ${(margPct*100).toFixed(0)}% margin.`); status = 'WARN'; }
+  if (HD < 2 || HD > 6) { warns.push(`⚠ H/D=${HD.toFixed(2)} outside typical range 2–6. Check vessel proportions.`); if (HD > 6) status = 'WARN'; }
+  if (svcFactor < 1.0) warns.push(`⚠ Service derating ×${svcFactor} applied.`);
+  if (K_pcorr < K)     warns.push(`ℹ P-correction: K ${K.toFixed(4)} → ${K_pcorr.toFixed(4)} m/s.`);
+  if (isFinite(T_C)) {
+    if (T_C > 260) warns.push('⚠ T>260°C: Verify S at operating temp.');
+    if (T_C < -29) warns.push('⚠ T<−29°C: MDMT check per ASME UCS-66.');
+  }
+  if (D_std > 4.0) warns.push(`⚠ D=${D_std.toFixed(2)} m: field fabrication required.`);
+
+  return {
+    status, warns,
+    results: [
+      { label:'Min. Calc. D',           value: D_min.toFixed(3)+' m', warn: false },
+      { label:'Std. Vessel D',           value: D_std.toFixed(3)+' m ('+( D_std*39.37).toFixed(0)+'")', warn: false },
+      { label:'Uterm',                   value: Uterm.toFixed(3)+' m/s', warn: false },
+      { label:'Actual Gas Vel.',         value: Uact.toFixed(3)+' m/s', warn: ratio>margPct },
+      { label:'Velocity Ratio',          value: (ratio*100).toFixed(1)+'%', warn: ratio>margPct },
+      { label:'Liq. Hold-up (surged)',   value: Vl_surge.toFixed(3)+' m³', warn: false },
+      { label:'Liq. Height (bare)',      value: H_liq_bare.toFixed(3)+' m', warn: false },
+      { label:'Liq. Section (design)',   value: H_liq_design.toFixed(2)+' m', warn: false },
+      { label:'Min. Shell Height',       value: H_shell.toFixed(2)+' m', warn: false },
+      { label:'H/D Ratio',               value: HD.toFixed(2), warn: HD>6 },
+    ],
+    summary: `K_eff=${K_eff.toFixed(4)} | ρg=${rhog.toFixed(2)} | ρl=${rhol.toFixed(1)} kg/m³${isFinite(T_C)?' | T='+T_C.toFixed(0)+'°C':''} | tr=${tr}min | surge×${surge} | boot=${boot}m`
+  };
+}
+
+// ── CALC 3: 3-PHASE HORIZONTAL ────────────────────────────────
+function calc3P(p) {
+  const Qg    = toM3h(p.Qg, p.Qg_u);
+  const Qo    = toM3h(p.Qo, p.Qo_u);
+  const Qw    = toM3h(p.Qw, p.Qw_u);
+  const rhog  = toKgm3(p.rhog, p.rhog_u);
+  const rhoo  = toKgm3(p.rhoo, p.rhoo_u);
+  const rhow  = toKgm3(p.rhow, p.rhow_u);
+  const P_bara = toBara(p.P, p.P_u);
+  const tro   = parseFloat(p.tro);
+  const trw   = parseFloat(p.trw);
+  const LD    = parseFloat(p.LD);
+  const K     = parseFloat(p.K);
+  const surge = parseFloat(p.surge);
+  const dp_um = parseFloat(p.dp_um);
+  const mu_cP = parseFloat(p.mu_cP);
+  const boot  = parseFloat(p.boot) || 0.3;
+  const icm   = parseFloat(p.icm)  || 0.15;
+  const svcFactor = parseFloat(p.svcFactor);
+
+  if ([Qg,Qo,Qw,rhog,rhoo,rhow,tro,trw,LD,K].some(x => !isFinite(x)) || Qg<=0 || Qo<=0 || Qw<=0)
+    return { error: 'Fill all fields with positive values.' };
+  if (rhog >= rhoo || rhog >= rhow)
+    return { error: 'Gas density must be less than both liquid densities.' };
+  if (rhoo >= rhow)
+    return { error: 'Oil density must be less than water density for normal separation.' };
+
+  const Qg_s = Qg/3600, Qo_s = Qo/3600, Qw_s = Qw/3600;
+  const K_pcorr  = isFinite(P_bara) && P_bara > 0 ? kPcorr(K, P_bara) : K;
+  const K_eff    = K_pcorr * svcFactor;
+  const Uterm    = K_eff * Math.sqrt((rhoo - rhog) / rhog);
+  const Udesign  = 0.85 * Uterm;
+  const Vo       = Qo_s * tro * 60 * surge;
+  const Vw       = Qw_s * trw * 60 * surge;
+  const Vliq     = Vo + Vw;
+  const fo       = Vliq > 0 ? Vo / Vliq : 0;
+  const D_liq    = Math.cbrt(Vliq / (0.5 * Math.PI / 4 * LD));
+  const A_gas_req = Qg_s / Udesign;
+  const D_gas    = Math.sqrt(8 * A_gas_req / Math.PI);
+  const D        = Math.max(D_liq, D_gas);
+  const D_std    = nearestStd(D);
+  const L        = Math.ceil(LD * D_std * 2) / 2;
+  const A_std    = Math.PI * D_std * D_std / 4;
+  const A_gas_avail = 0.5 * A_std;
+  const Uact     = Qg_s / A_gas_avail;
+  const ratio    = Uact / Uterm;
+
+  let stokesInfo = null;
+  let stokesOk   = null;
+  if (isFinite(dp_um) && dp_um > 0 && isFinite(mu_cP) && mu_cP > 0) {
+    const dp_m    = dp_um * 1e-6;
+    const mu_Pas  = mu_cP * 1e-3;
+    const Vs      = dp_m * dp_m * (rhow - rhoo) * 9.81 / (18 * mu_Pas);
+    const vLiq_fwd = (Qo_s + Qw_s) / (0.5 * A_std);
+    const tDwell  = vLiq_fwd > 0 ? L / vLiq_fwd : 0;
+    const H_settle_avail = Vs * tDwell;
+    const H_water_layer  = Vw / (A_std * 0.5);
+    stokesOk  = H_settle_avail >= H_water_layer;
+    stokesInfo = { Vs: Vs.toFixed(5), tDwell: tDwell.toFixed(0), H_settle_avail: H_settle_avail.toFixed(3), H_water_layer: H_water_layer.toFixed(3), ok: stokesOk };
+  }
+
+  const H_oil  = fo > 0 ? Vo / (A_std * 0.5) : 0;
+  const H_water_calc  = Vw > 0 ? Vw / (A_std * 0.5) : 0;
+  const H_boot_design = H_water_calc + boot + icm;
+
+  let warns = [], status = 'PASS';
+  if (ratio > 0.85) { warns.push(`⚠ Gas velocity ${(ratio*100).toFixed(1)}% of Uterm. Upsize or add internals.`); status = 'WARN'; }
+  if (stokesOk === false) { warns.push('⚠ Stokes check: oil droplet may NOT settle in available time. Increase L/D, reduce dp requirement, or add coalescer pack.'); status = 'WARN'; }
+  if (svcFactor < 1.0) warns.push(`⚠ Service derating ×${svcFactor} applied to K.`);
+  warns.push('ℹ 3-phase sized by retention time + Stokes check only. Emulsion, dynamic interface and upset behaviour require engineer review.');
+
+  return {
+    status, warns, stokesInfo,
+    results: [
+      { label:'Std. Vessel D',           value: D_std.toFixed(3)+' m ('+( D_std*39.37).toFixed(0)+'")', warn: false },
+      { label:'Vessel Length',           value: L.toFixed(2)+' m', warn: false },
+      { label:'Oil Hold-up (surged)',    value: Vo.toFixed(3)+' m³', warn: false },
+      { label:'Water Hold-up (surged)',  value: Vw.toFixed(3)+' m³', warn: false },
+      { label:'Total Liquid Vol.',       value: Vliq.toFixed(3)+' m³', warn: false },
+      { label:'Gas Uterm',               value: Uterm.toFixed(3)+' m/s', warn: false },
+      { label:'Actual Gas Vel.',         value: Uact.toFixed(3)+' m/s', warn: ratio>0.85 },
+      { label:'Oil Pad Height (est.)',   value: H_oil.toFixed(3)+' m', warn: false },
+      { label:'Water Boot (design)',     value: H_boot_design.toFixed(3)+' m', warn: false },
+      { label:'Oil Fraction',            value: (fo*100).toFixed(1)+'%', warn: false },
+    ],
+    summary: `K_eff=${K_eff.toFixed(4)} | ρg=${rhog.toFixed(2)} | ρo=${rhoo.toFixed(1)} | ρw=${rhow.toFixed(1)} kg/m³ | tro=${tro} | trw=${trw} min | icm=${icm}m`
+  };
+}
+
+// ── CALC 4: PRESSURE VESSEL THICKNESS (ASME VIII) ─────────────
+function calcPV(p) {
+  const P      = toMPag(p.P, p.P_u);
+  const D_mm   = toMm(p.D, p.D_u);
+  const S      = toMPaStress(p.S, p.S_u);
+  const E      = parseFloat(p.E);
+  const CA     = toMm(p.CA, p.CA_u);
+  const head   = p.head;
+  const minT   = parseFloat(p.minT);
+  const T_C    = toC(p.T, p.T_u);
+  const cat    = p.cat;
+
+  if ([P,D_mm,S,E,CA].some(x => !isFinite(x) || isNaN(x)) || P<=0 || D_mm<=0 || S<=0 || E<=0)
+    return { error: 'Fill all design parameters with valid positive values.' };
+  if (E > 1.0 || E < 0.1)
+    return { error: 'Joint efficiency E must be 0.10 to 1.00.' };
+
+  const R = D_mm / 2;
+  if ((S*E - 0.6*P) <= 0)
+    return { error: 'S×E−0.6×P ≤ 0: pressure exceeds allowable for this material/joint. Check inputs.' };
+
+  // Shell UG-27
+  const t_sh_calc = (P * R) / (S * E - 0.6 * P);
+  const t_sh_net  = t_sh_calc + CA;
+  const t_sh_nom  = Math.max(minT, Math.ceil(t_sh_net * 2) / 2);
+
+  // Head
+  let t_hd_calc = 0, head_label = '', headOk = true;
+  if (head === 'ellipsoidal') {
+    const d2 = 2*S*E - 0.2*P; headOk = d2 > 0;
+    if (headOk) t_hd_calc = (P * D_mm) / d2;
+    head_label = '2:1 Ellipsoidal [UG-32(d)]';
+  } else if (head === 'hemispherical') {
+    const d2 = 2*S*E - 0.2*P; headOk = d2 > 0;
+    if (headOk) t_hd_calc = (P * R) / d2;
+    head_label = 'Hemispherical [UG-32(f)]';
+  } else if (head === 'conical30') {
+    const a = 30*Math.PI/180, d2 = 2*Math.cos(a)*(S*E - 0.6*P); headOk = d2 > 0;
+    if (headOk) t_hd_calc = (P * D_mm) / d2;
+    head_label = 'Conical α=30° [UG-32(g)]';
+  } else if (head === 'conical45') {
+    const a = 45*Math.PI/180, d2 = 2*Math.cos(a)*(S*E - 0.6*P); headOk = d2 > 0;
+    if (headOk) t_hd_calc = (P * D_mm) / d2;
+    head_label = 'Conical α=45° [UG-32(g)]';
+  } else {
+    t_hd_calc = D_mm * Math.sqrt(0.162 * P / (S * E));
+    head_label = 'Flat Cover [UG-34 simplified]';
+    headOk = true;
+  }
+  const t_hd_net = headOk ? t_hd_calc + CA : 0;
+  const t_hd_nom = headOk ? Math.max(minT, Math.ceil(t_hd_net * 2) / 2) : 0;
+
+  const MAWP       = (S * E * t_sh_nom) / (R + 0.6 * t_sh_nom);
+  const P_hyd      = 1.3 * MAWP;
+  const thick_ratio = P / (S * E);
+
+  let warns = [], status = 'PASS';
+  if (head === 'flat') warns.push('⚠ Flat cover: UG-34 simplified formula only. Real flat covers require full UG-34 analysis including attachment weld classification, bolt loading, and effective gasket seating width. Engineer review mandatory.');
+  if (head === 'conical45') warns.push('⚠ α=45° conical: approaching practical limit. Knuckle reinforcement per UG-33 likely required.');
+  if (!headOk) warns.push('⚠ Head denominator ≤ 0 — head calculation invalid. Pressure exceeds allowable.');
+  if (thick_ratio > 0.385) { warns.push('⚠ P/(S×E) > 0.385 — ASME UG-27 thin-wall formula is no longer valid. Use ASME Appendix 1-2 thick-wall formula: t = R[e^(P/SE) − 1]. Consult a certified PV engineer.'); status = 'WARN'; }
+  else if (thick_ratio > 0.3) warns.push('⚠ P/(S×E) > 0.3 — approaching thin-wall formula limit (0.385). Consider ASME App.1-2 thick-wall analysis for accuracy.');
+  if (isFinite(T_C)) {
+    if (T_C > 260) warns.push('⚠ T>260°C: Verify allowable stress S at operating temperature from ASME Sec.II Part D. Tabulated S may be lower than ambient value.');
+    if (T_C < -29) warns.push('⚠ T<−29°C: MDMT and Charpy impact testing per ASME UCS-66 apply. Do not use standard CS at this temperature without impact test verification.');
+  }
+  warns.push('ℹ UG-37 nozzle reinforcement NOT calculated. All nozzles, manholes and openings require separate UG-37 pad reinforcement analysis or FEA for Code compliance.');
+  if (cat === 'detailed') warns.push('ℹ Detailed design category selected — this tool gives preliminary sizing only. Full ASME Sec.VIII Div.1 review by a qualified PV engineer required.');
+  if (!headOk || thick_ratio > 0.5) status = 'WARN';
+
+  return {
+    status, warns,
+    results: [
+      { label:'Shell: t_calc',           value: t_sh_calc.toFixed(2)+' mm  ('+( t_sh_calc/25.4).toFixed(3)+'")', warn: false },
+      { label:'Shell: t + CA',           value: t_sh_net.toFixed(2)+' mm', warn: false },
+      { label:'Shell: t_nominal',        value: t_sh_nom.toFixed(1)+' mm  ('+( t_sh_nom/25.4).toFixed(3)+'")', warn: t_sh_nom<minT },
+      { label:head_label+': t_calc',     value: headOk ? t_hd_calc.toFixed(2)+' mm' : 'INVALID', warn: !headOk, cls: headOk ? '' : 'f' },
+      { label:head_label+': t_nom',      value: headOk ? t_hd_nom.toFixed(1)+' mm' : '—', warn: false },
+      { label:'MAWP (shell nom.)',        value: MAWP.toFixed(3)+' MPag  ('+( MAWP/0.1).toFixed(1)+' barg)', warn: false },
+      { label:'Design Pressure',         value: P.toFixed(3)+' MPag  ('+( P/0.1).toFixed(1)+' barg)', warn: false },
+      { label:'P/(S×E) ratio',           value: thick_ratio.toFixed(4), warn: thick_ratio>0.385 },
+      { label:'Hydrotest (~1.3×MAWP)',   value: P_hyd.toFixed(3)+' MPag', warn: false },
+      { label:'Corrosion Allow.',        value: CA.toFixed(1)+' mm', warn: false },
+    ],
+    summary: `ASME Sec.VIII Div.1 | ID=${D_mm.toFixed(0)} mm (${(D_mm/25.4).toFixed(2)}") | S=${S.toFixed(1)} MPa | E=${E.toFixed(2)}${isFinite(T_C)?' | T='+T_C.toFixed(0)+'°C':''}`
+  };
+}
+
+// ── CALC 5: DEMISTER / MIST ELIMINATOR ───────────────────────
+function calcMist(p) {
+  const Qg     = toM3h(p.Qg, p.Qg_u);
+  const rhog   = toKgm3(p.rhog, p.rhog_u);
+  const rhol   = toKgm3(p.rhol, p.rhol_u);
+  const margin = parseFloat(p.margin) / 100;
+  const mtype  = p.mtype;
+  const Km     = { wiremesh:0.107, vane:0.18, cyclonic:0.25 };
+  let K_base   = mtype === 'custom' ? parseFloat(p.K) : (Km[mtype] || 0.107);
+  const svcFactor  = parseFloat(p.svcFactor);
+  const pcorrMode  = p.pcorrMode;
+  const orient     = p.orient;
+
+  if ([Qg, rhog, rhol, K_base, margin].some(x => !isFinite(x) || x <= 0))
+    return { error: 'Fill all fields with positive values.' };
+  if (rhog >= rhol)
+    return { error: 'Gas density must be less than liquid density.' };
+
+  const Qg_s = Qg / 3600;
+  let K_pcorr_val = K_base;
+  if (pcorrMode === 'auto') {
+    const Pbara = toBara(p.P, p.P_u);
+    if (isFinite(Pbara) && Pbara > 0) K_pcorr_val = kPcorr(K_base, Pbara);
+  }
+  const K_eff   = K_pcorr_val * svcFactor;
+  const Uterm   = K_eff * Math.sqrt((rhol - rhog) / rhog);
+  const Udesign = margin * Uterm;
+  if (Udesign <= 0) return { error: 'Udesign ≤ 0.' };
+
+  const A_req  = Qg_s / Udesign;
+  const D_min  = Math.sqrt(4 * A_req / Math.PI);
+  const D_std  = nearestStd(D_min);
+  const A_std  = Math.PI * D_std * D_std / 4;
+  const Uact   = Qg_s / A_std;
+  const ratio  = Uact / Uterm;
+
+  let warns = [], status = 'PASS';
+  if (ratio > margin) { warns.push(`⚠ Velocity ratio ${(ratio*100).toFixed(1)}% exceeds margin ${(margin*100).toFixed(0)}%.`); status = 'WARN'; }
+  if (K_pcorr_val < K_base) warns.push(`ℹ P-correction: K_base=${K_base.toFixed(4)} → K_pcorr=${K_pcorr_val.toFixed(4)} m/s (GPSA Fig.7-3).`);
+  if (svcFactor < 1.0) warns.push(`ℹ Service factor ×${svcFactor} applied.`);
+
+  return {
+    status, warns,
+    results: [
+      { label:'K_base',              value: K_base.toFixed(4)+' m/s', warn: false },
+      { label:'K_pcorr (pressure)',  value: K_pcorr_val.toFixed(4)+' m/s', warn: K_pcorr_val<K_base },
+      { label:'K_eff (P+service)',   value: K_eff.toFixed(4)+' m/s', warn: K_eff<K_base },
+      { label:'Uterm',               value: Uterm.toFixed(3)+' m/s', warn: false },
+      { label:'Udesign',             value: Udesign.toFixed(3)+' m/s', warn: false },
+      { label:'Required Area',       value: A_req.toFixed(4)+' m²', warn: false },
+      { label:'Min. Diameter',       value: D_min.toFixed(3)+' m', warn: false },
+      { label:'Std. Vessel D',       value: D_std.toFixed(3)+' m', warn: false },
+      { label:'Actual Velocity',     value: Uact.toFixed(3)+' m/s', warn: ratio>margin },
+      { label:'Velocity Ratio',      value: (ratio*100).toFixed(1)+'%', warn: ratio>margin },
+      { label:'Service Factor',      value: '×'+svcFactor, warn: false },
+      { label:'Orientation',         value: orient, warn: false },
+    ],
+    summary: `Type=${mtype} | K_eff=${K_eff.toFixed(4)} m/s | Margin=${(margin*100).toFixed(0)}% | ρg=${rhog.toFixed(2)} | ρl=${rhol.toFixed(1)} kg/m³`
+  };
+}
+
+// ── CALC 6: NOZZLE SIZING ─────────────────────────────────────
+const NZ_SVC = {
+  'gas-inlet':  { vel:25,  rhov2:4000 },
+  'gas-outlet': { vel:20,  rhov2:4000 },
+  'liq-inlet':  { vel:2,   rhov2:15000 },
+  'liq-outlet': { vel:1.5, rhov2:15000 },
+  'manway':     { vel:20,  rhov2:4000 },
+  'drain':      { vel:1,   rhov2:10000 },
+};
+
+function calcNozzle(p) {
+  const Q_m3h   = toM3h(p.Q, p.Q_u);
+  const vel     = toMs(p.vel, p.vel_u);
+  const rho     = toKgm3(p.rho, p.rho_u);
+  const svc     = p.svc;
+  const rhov2_lim = parseFloat(p.rhov2) || (NZ_SVC[svc]?.rhov2 || 4000);
+
+  if ([Q_m3h, vel, rho].some(x => !isFinite(x) || x <= 0))
+    return { error: 'Fill flow rate, velocity and density with positive values.' };
+
+  const Q_m3s    = Q_m3h / 3600;
+  const A_req    = Q_m3s / vel;
+  const D_calc_mm = Math.sqrt(4 * A_req / Math.PI) * 1000;
+  const nps      = nearestNPS(D_calc_mm);
+  const D_sel_m  = nps[1] / 1000;
+  const A_sel    = Math.PI * D_sel_m * D_sel_m / 4;
+  const v_act    = Q_m3s / A_sel;
+  const rhov2_act = rho * v_act * v_act;
+  const rhov2_ok  = rhov2_act <= rhov2_lim;
+
+  let warns = [], status = 'OK';
+  if (!rhov2_ok) { warns.push(`⚠ ρv²=${rhov2_act.toFixed(0)} Pa exceeds ${rhov2_lim.toFixed(0)} Pa limit for ${svc}. Upsize nozzle.`); status = 'WARN'; }
+  if (v_act > vel) { warns.push(`⚠ Actual vel ${v_act.toFixed(2)} m/s exceeds design ${vel.toFixed(2)} m/s. Consider next NPS up.`); status = 'WARN'; }
+  warns.push('ℹ UG-37 nozzle reinforcement analysis NOT performed. Required for all pressure vessel nozzles per ASME Sec.VIII.');
+
+  return {
+    status, warns,
+    results: [
+      { label:'Min. Calc. ID',           value: D_calc_mm.toFixed(1)+' mm', warn: false },
+      { label:'Selected NPS',            value: nps[2]+' (DN '+nps[0]+')', warn: false },
+      { label:'Selected ID (Sch40)',     value: nps[1].toFixed(1)+' mm ('+( nps[1]/25.4).toFixed(2)+'")', warn: false },
+      { label:'Design Velocity',         value: vel.toFixed(2)+' m/s', warn: false },
+      { label:'Actual Velocity',         value: v_act.toFixed(3)+' m/s', warn: v_act>vel*1.05 },
+      { label:'Fluid Density',           value: rho.toFixed(2)+' kg/m³', warn: false },
+      { label:'ρv² Actual',              value: rhov2_act.toFixed(0)+' Pa', warn: !rhov2_ok },
+      { label:'ρv² Limit',               value: rhov2_lim.toFixed(0)+' Pa', warn: false },
+      { label:'Momentum Check',          value: rhov2_ok ? '✅ PASS' : '⚠ EXCEED', warn: !rhov2_ok },
+    ],
+    summary: `Service: ${svc} | Q=${Q_m3h.toFixed(2)} m³/h | ρ=${rho.toFixed(2)} kg/m³ | Sch: ${p.sch}`
+  };
+}
+
+
+// ================================================================
+// NPSH CALCULATOR — api/npsh-calculator.js
+// ================================================================
+
+// ── NPSH sanitisation helpers (shared) ──
+function sNum(v, def = null) { const n = parseFloat(v); return isFinite(n) ? n : def; }
+function sInt(v, def = 0)    { const n = parseInt(v);   return isFinite(n) ? n : def; }
+function sStr(v, allowed, def) { return allowed.includes(v) ? v : def; }
+
+/* ===================================================================
+   NPSH CALCULATOR API — multicalci.com
+   Vercel serverless function: api/npsh-calculator.js
+
+   Algorithm: Hydraulic Institute 9.6.1 / AFT Fathom grade
+   All internal units: Pa, m, m³/s, kg/m³
+
+   ACTIONS (POST):
+     fluidList      → returns all 31 fluids [{index, id, name}]
+     fluidProps     → {fluidIndex, T_C} → {rho, mu_mPas, pv_kPa, pv_bar, hvp}
+     estimateNpshr  → {fluidIndex, T_C, N_rpm, Q_raw, H_total, stages, pumpType, unitMode}
+                   → {npshr_m, npshr_bar, sigma, Ns, Nss, method}
+     calculate      → full NPSHa calc payload → all results
+=================================================================== */
+
+/* ═══════════════════════════════════════════════════════════════
+   FLUID DATABASE — 31 fluids (SECURED — not exposed to browser)
+   Each: {id, name, rho20, mu20, vp:[[T_C, kPa],...], muF(T)->mPa·s}
+═══════════════════════════════════════════════════════════════ */
+const NPSH_FLUIDS = [
+  {id:'water',name:'Water (H₂O)',rho20:998.2,mu20:1.002,
+   vp:[[0,.611],[5,.872],[10,1.228],[15,1.706],[20,2.338],[25,3.169],[30,4.243],[40,7.384],[50,12.35],[60,19.94],[70,31.18],[80,47.39],[90,70.11],[100,101.3],[110,143.3],[120,198.5],[150,476.2],[200,1554]],
+   muF:t=>2.414e-5*Math.pow(10,247.8/(t+133.15))*1000, rhoF:t=>999.842*(1-3.85e-5*(t-4)*(t-4)/(t+288))},
+  {id:'seawater',name:'Seawater (3.5% NaCl)',rho20:1025,mu20:1.07,vp:[[0,.54],[10,1.08],[20,2.10],[30,3.81],[50,10.9],[80,44.3],[100,97.0]],muF:t=>Math.max(.5,1.07*Math.exp(-.018*(t-20)))},
+  {id:'ethanol',name:'Ethanol (C₂H₅OH)',rho20:789,mu20:1.17,vp:[[0,1.63],[10,3.12],[20,5.95],[30,10.5],[40,17.7],[50,29.4],[60,47.1],[78.3,101.3]],muF:t=>Math.max(.05,1.17*Math.exp(-.02*(t-20)))},
+  {id:'methanol',name:'Methanol (CH₃OH)',rho20:791,mu20:.59,vp:[[0,4.06],[10,6.97],[20,12.9],[30,21.9],[40,35.4],[64.7,101.3]],muF:t=>Math.max(.02,.59*Math.exp(-.022*(t-20)))},
+  {id:'acetone',name:'Acetone',rho20:791,mu20:.32,vp:[[0,9.9],[20,24.5],[40,53.7],[56,101.3]],muF:t=>Math.max(.01,.32*Math.exp(-.025*(t-20)))},
+  {id:'toluene',name:'Toluene',rho20:867,mu20:.59,vp:[[0,1.57],[20,3.79],[40,9.87],[60,23.4],[110.6,101.3]],muF:t=>Math.max(.01,.59*Math.exp(-.018*(t-20)))},
+  {id:'benzene',name:'Benzene (C₆H₆)',rho20:879,mu20:.65,vp:[[0,3.52],[20,10.0],[40,24.4],[60,52.0],[80.1,101.3]],muF:t=>Math.max(.01,.65*Math.exp(-.019*(t-20)))},
+  {id:'diesel',name:'Diesel Fuel',rho20:835,mu20:3.5,vp:[[20,.01],[40,.03],[60,.07],[80,.15],[100,.3]],muF:t=>Math.max(.5,3.5*Math.exp(-.028*(t-20)))},
+  {id:'petrol',name:'Petrol / Gasoline',rho20:720,mu20:.45,vp:[[0,10],[10,16],[20,25],[30,38.5],[40,57],[50,82],[60,115]],muF:t=>Math.max(.05,.45*Math.exp(-.02*(t-20)))},
+  {id:'hfo',name:'Heavy Fuel Oil (HFO 380)',rho20:991,mu20:700,vp:[[50,.001],[80,.005],[100,.01],[150,.1]],muF:t=>Math.max(10,700*Math.exp(-.055*(t-20)))},
+  {id:'lube',name:'Lube Oil (ISO VG 46)',rho20:870,mu20:46,vp:[[50,.001],[80,.003],[100,.006]],muF:t=>Math.max(1,46*Math.exp(-.05*(t-20)))},
+  {id:'glycol33',name:'Ethylene Glycol-Water 33%',rho20:1060,mu20:2.8,vp:[[0,.45],[20,1.65],[50,9.5],[80,38],[100,85]],muF:t=>Math.max(.3,2.8*Math.exp(-.028*(t-20)))},
+  {id:'glycol50',name:'Ethylene Glycol-Water 50%',rho20:1070,mu20:5.0,vp:[[0,.3],[20,1.2],[50,8.0],[80,34],[100,78]],muF:t=>Math.max(.3,5.0*Math.exp(-.035*(t-20)))},
+  {id:'milk',name:'Milk (whole)',rho20:1030,mu20:2.0,vp:[[5,.872],[20,2.33],[40,7.38],[80,47.4],[100,101.3]],muF:t=>Math.max(.3,2.0*Math.exp(-.025*(t-20)))},
+  {id:'honey',name:'Honey',rho20:1420,mu20:6000,vp:[[20,.5],[40,2.0],[60,7.0]],muF:t=>Math.max(50,6000*Math.exp(-.09*(t-20)))},
+  {id:'hcl30',name:'Hydrochloric Acid 30%',rho20:1149,mu20:2.1,vp:[[10,25],[20,42],[30,65],[50,120]],muF:t=>Math.max(.5,2.1*Math.exp(-.022*(t-20)))},
+  {id:'h2so4',name:'Sulphuric Acid 98%',rho20:1840,mu20:24.5,vp:[[20,3e-5],[100,.01],[200,.5]],muF:t=>Math.max(2,24.5*Math.exp(-.04*(t-20)))},
+  {id:'naoh20',name:'Sodium Hydroxide 20%',rho20:1220,mu20:4.0,vp:[[10,1.0],[20,1.8],[50,9.0],[80,38],[100,87]],muF:t=>Math.max(.5,4.0*Math.exp(-.03*(t-20)))},
+  {id:'ipa',name:'Isopropyl Alcohol (IPA)',rho20:785,mu20:2.37,vp:[[0,1.33],[20,4.38],[40,13.2],[82.3,101.3]],muF:t=>Math.max(.1,2.37*Math.exp(-.033*(t-20)))},
+  {id:'glycerol',name:'Glycerol (Glycerine)',rho20:1261,mu20:1480,vp:[[20,2e-4],[60,.004],[100,.05]],muF:t=>Math.max(5,1480*Math.exp(-.11*(t-20)))},
+  {id:'ammonia',name:'Ammonia (liquid)',rho20:610,mu20:.14,vp:[[-33,101.3],[-20,190],[0,430],[20,857],[50,2033]],muF:t=>Math.max(.05,.14*Math.exp(-.025*(t+33)))},
+  {id:'styrene',name:'Styrene',rho20:906,mu20:.72,vp:[[0,.3],[20,.81],[60,5.05],[100,23.1],[145,101.3]],muF:t=>Math.max(.05,.72*Math.exp(-.022*(t-20)))},
+  {id:'xylene',name:'Xylene (mixed)',rho20:864,mu20:.62,vp:[[0,.48],[20,1.05],[60,6.48],[100,27.8],[140,101.3]],muF:t=>Math.max(.05,.62*Math.exp(-.018*(t-20)))},
+  {id:'brine',name:'Brine (NaCl 25%)',rho20:1193,mu20:2.4,vp:[[0,.45],[20,1.6],[50,9.0],[80,37],[100,84]],muF:t=>Math.max(.5,2.4*Math.exp(-.025*(t-20)))},
+  {id:'palm',name:'Palm Oil',rho20:912,mu20:60,vp:[[40,.001],[80,.01],[100,.03]],muF:t=>Math.max(2,60*Math.exp(-.055*(t-20)))},
+  {id:'crude',name:'Crude Oil (light, API 35)',rho20:847,mu20:12,vp:[[20,.05],[40,.16],[80,1.0]],muF:t=>Math.max(.5,12*Math.exp(-.04*(t-20)))},
+  {id:'kerosene',name:'Kerosene / Jet A',rho20:800,mu20:1.5,vp:[[20,.15],[50,.6],[100,4.0]],muF:t=>Math.max(.1,1.5*Math.exp(-.028*(t-20)))},
+  {id:'mercury',name:'Mercury (Hg)',rho20:13600,mu20:1.55,vp:[[20,2.27e-4],[100,.016],[200,.279],[356.7,101.3]],muF:t=>Math.max(.8,1.55*Math.exp(-.003*(t-20)))},
+  {id:'freon22',name:'Refrigerant R-22 (liquid)',rho20:1194,mu20:.21,vp:[[-40,101.3],[0,499],[20,909],[40,1535]],muF:t=>Math.max(.05,.21*Math.exp(-.018*(t-20)))},
+  {id:'co2',name:'CO₂ (liquid, pressurised)',rho20:773,mu20:.07,vp:[[-40,1006],[-20,1969],[0,3484],[20,5729],[30,7176]],muF:t=>Math.max(.02,.07*Math.exp(-.02*(t+40)))},
+  {id:'coconut',name:'Coconut Oil',rho20:924,mu20:28,vp:[[30,.001],[80,.01],[100,.02]],muF:t=>Math.max(1,28*Math.exp(-.05*(t-20)))}
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   CORE PHYSICS — ALL SECURED ON SERVER
+═══════════════════════════════════════════════════════════════ */
+
+/** Log-linear vapour pressure interpolation — accurate above 80°C */
+function npshVpI(f, T) {
+  const d = f.vp;
+  if (!d || !d.length) return 101.325;
+  if (T <= d[0][0]) return d[0][1];
+  if (T >= d[d.length-1][0]) return d[d.length-1][1];
+  for (let i = 0; i < d.length-1; i++) {
+    if (T >= d[i][0] && T < d[i+1][0]) {
+      const r = (T - d[i][0]) / (d[i+1][0] - d[i][0]);
+      const lv1 = Math.log(Math.max(d[i][1], 1e-10));
+      const lv2 = Math.log(Math.max(d[i+1][1], 1e-10));
+      return Math.exp(lv1 + r * (lv2 - lv1));
+    }
+  }
+  return d[d.length-1][1];
+}
+
+function rhoAt(f, T) { return f.rhoF ? f.rhoF(T) : f.rho20 * (1 - 6.5e-4 * (T - 20)); }
+function muAt(f, T)  { return f.muF  ? f.muF(T) / 1000 : f.mu20 / 1000 * (1 - 0.02 * (T - 20)); }
+
+/**
+ * Colebrook-White friction factor (industry standard)
+ * Laminar: Hagen-Poiseuille  f = 64/Re
+ * Transitional: blended continuously
+ * Turbulent: iterative Colebrook-White (8–12 iterations)
+ */
+function frictionFactor(Re, eps_mm, D_m) {
+  if (Re < 1)    return 64;
+  if (Re < 2300) return 64 / Re;
+  if (Re < 4000) {
+    const f_lam  = 64 / 2300;
+    const r      = eps_mm / (D_m * 1000);
+    const f_turb = 0.25 / Math.pow(Math.log10(r / 3.7 + 5.74 / Math.pow(4000, 0.9)), 2);
+    const blend  = (Re - 2300) / (4000 - 2300);
+    return f_lam + (f_turb - f_lam) * blend;
+  }
+  // Turbulent — Colebrook-White iterative
+  const r = eps_mm / (D_m * 1000);
+  let f = 0.02;
+  for (let i = 0; i < 12; i++) {
+    const rhs = 1 / (-2 * Math.log10(r / 3.7 + 2.51 / (Re * Math.sqrt(f))));
+    f = rhs * rhs;
+  }
+  return Math.max(0.008, Math.min(0.1, f));
+}
+
+/**
+ * NPSHr estimation — Thoma cavitation number σ method
+ * Per Hydraulic Institute 9.6.1 + HI suction specific speed check
+ * Returns the MORE CONSERVATIVE of two methods:
+ *   1. Thoma σ model:  NPSHr = σ × H_stage
+ *   2. Nss limit method: NPSHr from Nss_max = 210 (SI)
+ */
+function calcEstimateNpshr(inputs) {
+  const { N, Q_m3s, H_total, stages, pumpType } = inputs;
+  const H_stage = H_total / Math.max(1, stages);
+
+  // Dimensionless specific speed (SI: rpm, m³/s, m)
+  const Ns = N * Math.sqrt(Q_m3s) / Math.pow(Math.max(H_stage, 1), 0.75);
+
+  // Thoma sigma from specific speed — HI empirical correlation
+  const CsMap = {
+    centrifugal_low:  0.30,
+    centrifugal_med:  0.45,
+    centrifugal_high: 0.65,
+    mixed:            0.85,
+    axial:            1.20,
+    multistage:       0.40,
+  };
+  const Cs    = CsMap[pumpType] || 0.40;
+  const sigma = Cs * Math.pow(Ns / 1000, 4/3);
+  const npshr_sigma = Math.max(0.3, sigma * H_stage);
+
+  // Suction specific speed limit method (Nss_max = 210 SI)
+  const Nss_limit    = 210;
+  const npshr_nss    = Math.pow(N * Math.sqrt(Q_m3s) / Nss_limit, 4/3);
+  const npshr_nss_safe = Math.max(0.3, npshr_nss);
+
+  // Conservative: take higher of the two
+  const npshr_m   = Math.max(npshr_sigma, npshr_nss_safe);
+  const Nss_actual = N * Math.sqrt(Q_m3s) / Math.pow(Math.max(npshr_m, 0.1), 0.75);
+  const npshr_bar  = npshr_m * 9810 / 1e5;
+
+  return { npshr_m, npshr_bar, sigma, Ns, Nss: Nss_actual, H_stage };
+}
+
+/**
+ * Main NPSHa calculation engine
+ * Algorithm: Aspen HYSYS / AFT Fathom grade — HI 9.6.1
+ *
+ * NPSHa = P_abs/(ρg) + z − h_f − Pv/(ρg)
+ *
+ * CRITICAL: All pressure-to-head conversions use ACTUAL fluid density.
+ * This is the #1 source of error in inferior calculators.
+ */
+function calcNPSH(inputs) {
+  const {
+    fluidIndex, T_C, unitMode,
+    D_mm, Q_raw, L_m, Lf_m, eps_mm,
+    upType, baro_bar, vessel_pg_raw,
+    z_raw_user, npshrMethod, npshr_direct_user,
+    N_rpm, H_total_user, stages, pumpType,
+    margin_req,
+  } = inputs;
+
+  const isImp   = unitMode === 'IMP';
+  const isAbove = upType.endsWith('above');
+  const isVessel = upType.startsWith('vessel');
+
+  // ── Fluid ──
+  const f   = NPSH_FLUIDS[fluidIndex] || NPSH_FLUIDS[0];
+  const T   = T_C; // always SI internally
+  const rho = rhoAt(f, T);
+  const mu  = muAt(f, T);           // Pa·s
+  const pv_kPa = npshVpI(f, T);         // kPa
+  const pv_Pa  = pv_kPa * 1000;     // Pa
+  const pv_bar = pv_kPa / 100;
+  const g   = 9.81;
+  const rg  = rho * g;              // Pa/m — ACTUAL fluid
+
+  // ── Pipe ──
+  const D = D_mm / 1000;            // m
+  const A = Math.PI * D * D / 4;   // m²
+
+  // ── Flow → m³/s ──
+  const Q = isImp ? Q_raw / 264.172 / 60 : Q_raw / 3600;
+
+  // ── Velocity ──
+  const v  = (Q > 0 && A > 0) ? Q / A : 0;
+  const vh = v * v / (2 * g);
+
+  // ── Pipe length (always in metres from user — unit conversion done in HTML) ──
+  const L  = L_m;
+  const Lf = Lf_m;
+  const Le = L + Lf;
+
+  // ── Friction ──
+  const Re = (mu > 0 && D > 0) ? rho * v * D / mu : 0;
+  const ff = frictionFactor(Re, eps_mm, D);
+  const hf = (Le > 0 && D > 0) ? ff * (Le / D) * vh : 0;
+
+  // ── Upstream pressure → Pa ──
+  let P_abs_Pa = 0;
+  if (isVessel) {
+    const pg_Pa = isImp ? vessel_pg_raw * 6894.76 : vessel_pg_raw * 1e5;
+    P_abs_Pa    = baro_bar * 1e5 + pg_Pa;
+  } else {
+    P_abs_Pa = baro_bar * 1e5;
+  }
+
+  // ── CRITICAL: H_abs uses ACTUAL fluid density ──
+  const H_abs = P_abs_Pa / rg;
+
+  // ── Static head (magnitude in metres, sign applied by config) ──
+  const z_raw = z_raw_user; // already metres
+  const z     = isAbove ? z_raw : -z_raw;
+
+  // ── Vapour pressure head ──
+  const h_vp = pv_Pa / rg;
+
+  // ── NPSHa (HI 9.6.1) ──
+  const npsha = H_abs + z - hf - h_vp;
+
+  // ── NPSHa pressure equivalents ──
+  const npsha_deltaP_Pa  = rg * npsha;
+  const npsha_deltaP_bar = npsha_deltaP_Pa / 1e5;
+  const npsha_Ps_bar     = (pv_Pa + npsha_deltaP_Pa) / 1e5;
+  const npsha_ft         = npsha * 3.281;
+  const npsha_psi        = npsha_deltaP_bar * 14.504;
+
+  // ── NPSHr ──
+  let npshr_m = 0;
+  let npshrEstimate = null;
+  if (npshrMethod === 'direct') {
+    npshr_m = isImp ? npshr_direct_user / 3.281 : npshr_direct_user;
+  } else {
+    const Q_m3s = Q;
+    const H_total = isImp ? H_total_user / 3.281 : H_total_user;
+    npshrEstimate = calcEstimateNpshr({ N: N_rpm, Q_m3s, H_total, stages, pumpType });
+    npshr_m = npshrEstimate.npshr_m;
+  }
+
+  // ── Safety margin ──
+  const margin_actual   = npsha - (npshr_m + margin_req);
+  const npsha_required  = npshr_m + margin_req;
+
+  // ── Engineering warnings ──
+  const warnings = [];
+  if (v > 3.0)
+    warnings.push({cls:'err', msg:'⛔ Pipe velocity '+v.toFixed(2)+' m/s exceeds 3 m/s. Risk of erosion, excessive losses and noise. Upsize suction pipe by at least one DN size.'});
+  else if (v > 1.5)
+    warnings.push({cls:'warn', msg:'⚠ Pipe velocity '+v.toFixed(2)+' m/s is above recommended 1.5 m/s for suction piping. Consider upsizing.'});
+  if (Re > 2300 && Re < 4000)
+    warnings.push({cls:'warn', msg:'⚠ Transition flow regime (Re = '+Re.toFixed(0)+'). Friction factor is uncertain (range 0.02–0.05). System may be unstable. Redesign to achieve Re > 4000 or < 2300.'});
+  if (!isAbove && z_raw > 5.0)
+    warnings.push({cls:'warn', msg:'⚠ Suction lift '+z_raw.toFixed(1)+' m exceeds practical limit of 5 m for most pump/fluid combinations at sea level. Maximum theoretical = P_atm/ρg.'});
+  if (npsha < npshr_m && npsha > 0)
+    warnings.push({cls:'err', msg:'⛔ NPSHa ('+npsha.toFixed(2)+' m) < NPSHr ('+npshr_m.toFixed(2)+' m). Cavitation will occur. Redesign suction system.'});
+  if (margin_actual < 1.0 && margin_actual >= 0)
+    warnings.push({cls:'warn', msg:'⚠ NPSHa margin '+margin_actual.toFixed(2)+' m is below recommended 1.0 m. Use ≥1.5 m for hot fluids or critical services (HI 9.6.1).'});
+  if (npsha < 0)
+    warnings.push({cls:'err', msg:'⛔ NPSHa is NEGATIVE ('+npsha.toFixed(2)+' m). Fluid will flash in suction pipe. Immediate redesign required — raise tank, lower pump, or reduce temperature.'});
+  if (T > 80)
+    warnings.push({cls:'warn', msg:'⚠ High temperature '+T.toFixed(0)+'°C: vapour pressure is rising steeply. Small temperature increases cause large NPSHa reductions. Check worst-case temperature.'});
+
+  // ── Status classification ──
+  let sc, st;
+  if (npsha < 0) {
+    sc='err'; st='⛔ Critical — NPSHa negative. Fluid flashing in suction pipe.';
+  } else if (npsha < npshr_m) {
+    sc='err'; st='⛔ Cavitation — NPSHa ('+npsha.toFixed(2)+' m) < NPSHr ('+npshr_m.toFixed(2)+' m). Pump will cavitate.';
+  } else if (margin_actual < 0) {
+    sc='warn'; st='⚠ Marginal — NPSHa > NPSHr but safety margin of '+margin_req.toFixed(1)+' m not satisfied (HI 9.6.1).';
+  } else if (margin_actual < 1.0) {
+    sc='warn'; st='⚠ Acceptable — Margin '+margin_actual.toFixed(2)+' m meets minimum. Use ≥1 m for critical service.';
+  } else if (margin_actual >= 3) {
+    sc='ok'; st='✔ Excellent — NPSHa = '+npsha.toFixed(2)+' m. Margin = '+margin_actual.toFixed(2)+' m. Very low cavitation risk.';
+  } else {
+    sc='ok'; st='✔ Adequate — NPSHa = '+npsha.toFixed(2)+' m. Margin = '+margin_actual.toFixed(2)+' m exceeds safety requirement.';
+  }
+
+  // ── Cavitation check ──
+  const cavPmin_Pa  = pv_Pa + npshr_m * rg;
+  const cavPmin_bar = cavPmin_Pa / 1e5;
+  const cavPs_Pa    = pv_Pa + npsha * rg;
+  const cavPs_bar   = cavPs_Pa / 1e5;
+  const cavMargin_bar = cavPs_bar - cavPmin_bar;
+  const cavS         = cavPs_bar > 0 ? pv_bar / cavPs_bar : 0;
+
+  // ── Net ΔP calculation note ──
+  const netDP_bar = (P_abs_Pa - pv_Pa) / 1e5;
+  const netDP_m   = (P_abs_Pa - pv_Pa) / rg;
+
+  // ── NPSHr pressure equivalents ──
+  const npshr_bar_fluid = npshr_m * rg / 1e5;
+  const npshr_bar_water = npshr_m * 9810 / 1e5;
+
+  return {
+    ok: true,
+    // Fluid
+    fluidName: f.name,
+    fluidShort: f.name.replace(/\s*\(.*\)/, ''),
+    T, rho, mu_mPas: mu * 1000,
+    pv_Pa, pv_kPa, pv_bar,
+    // Pipe / flow
+    D_mm, D, A, Q, v, vh, Re, ff, hf, Le, eps_mm,
+    // Heads
+    H_abs, P_abs_Pa, z, z_raw,
+    h_vp,
+    // NPSHa
+    npsha, npsha_deltaP_Pa, npsha_deltaP_bar,
+    npsha_Ps_bar, npsha_ft, npsha_psi,
+    // NPSHr
+    npshr_m, npshr_bar_fluid, npshr_bar_water,
+    npshrEstimate,
+    // Margin
+    margin_req, margin_actual, npsha_required,
+    // Status
+    sc, st,
+    warnings,
+    // Cavitation
+    cavPmin_Pa, cavPmin_bar, cavPs_Pa, cavPs_bar,
+    cavMargin_bar, cavS,
+    // Helpers
+    netDP_bar, netDP_m,
+    rg, g,
+    tp: upType, isAbove, isVessel,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUT SANITISATION
+═══════════════════════════════════════════════════════════════ */
+
+async function handle_calculate(body, res) {
+  const { calc, params } = body || {};
+  if (!calc || !params) {
+    return res.status(400).json({ error: 'Missing calc type or params.' });
+  }
+  let result;
+  try {
+    switch (calc) {
+      case 'h2p':    result = calcH2P(params);    break;
+      case 'v2p':    result = calcV2P(params);    break;
+      case '3ph':    result = calc3P(params);     break;
+      case 'pv':     result = calcPV(params);     break;
+      case 'mist':   result = calcMist(params);   break;
+      case 'nozzle': result = calcNozzle(params); break;
+      default:
+        return res.status(400).json({ error: `Unknown calc type: ${calc}` });
+    }
+  } catch (err) {
+    return res.status(500).json({ error: 'Calculation error: ' + err.message });
+  }
+  return res.status(200).json(result);
+}
+
+async function handle_npsh_calculator(body, res) {
+  const action = (body.action || '').trim();
+
+  /* ── fluidList ── */
+  if (action === 'fluidList') {
+    return res.status(200).json({
+      ok: true,
+      fluids: NPSH_FLUIDS.map((f, i) => ({ index: i, id: f.id, name: f.name })),
+    });
+  }
+
+  /* ── fluidProps ── */
+  if (action === 'fluidProps') {
+    const idx = sInt(body.fluidIndex, 0);
+    const T   = sNum(body.T_C, 20);
+    if (idx < 0 || idx >= NPSH_FLUIDS.length) return res.status(400).json({ ok: false, error: 'Invalid fluidIndex' });
+    const f       = NPSH_FLUIDS[idx];
+    const rho     = rhoAt(f, T);
+    const mu_mPas = muAt(f, T) * 1000;
+    const pv_kPa  = npshVpI(f, T);
+    const pv_bar  = pv_kPa / 100;
+    const rg      = rho * 9.81;
+    const hvp     = pv_kPa * 1000 / rg;
+    return res.status(200).json({
+      ok: true, name: f.name,
+      rho:     parseFloat(rho.toFixed(3)),
+      mu_mPas: parseFloat(mu_mPas.toFixed(4)),
+      pv_kPa:  parseFloat(pv_kPa.toFixed(5)),
+      pv_bar:  parseFloat(pv_bar.toFixed(6)),
+      hvp:     parseFloat(hvp.toFixed(4)),
+    });
+  }
+
+  /* ── estimateNpshr ── */
+  if (action === 'estimateNpshr') {
+    const idx      = sInt(body.fluidIndex, 0);
+    const T_C      = sNum(body.T_C, 20);
+    const unitMode = sStr(body.unitMode, ['SI','IMP'], 'SI');
+    const isImp    = unitMode === 'IMP';
+    const N_rpm    = sNum(body.N_rpm, 1450);
+    const Q_raw    = sNum(body.Q_raw, 50);
+    const H_user   = sNum(body.H_total, 30);
+    const stages   = Math.max(1, sInt(body.stages, 1));
+    const pumpType = sStr(body.pumpType, ['centrifugal_low','centrifugal_med','centrifugal_high','mixed','axial','multistage'], 'centrifugal_med');
+    const Q_m3s    = isImp ? Q_raw / 264.172 / 60 : Q_raw / 3600;
+    const H_total  = isImp ? H_user / 3.281 : H_user;
+    const result   = calcEstimateNpshr({ N: N_rpm, Q_m3s, H_total, stages, pumpType });
+    const f        = NPSH_FLUIDS[idx] || NPSH_FLUIDS[0];
+    const rho      = rhoAt(f, T_C);
+    const rg       = rho * 9.81;
+    const npshr_bar_fluid = result.npshr_m * rg / 1e5;
+    return res.status(200).json({ ok: true, ...result, npshr_bar_fluid });
+  }
+
+  /* ── calculate (main NPSHa) ── */
+  if (action === 'calculate') {
+    const VALID_UP    = ['open_above','open_below','vessel_above','vessel_below'];
+    const VALID_NPSHR = ['direct','estimate'];
+    const VALID_PUMP  = ['centrifugal_low','centrifugal_med','centrifugal_high','mixed','axial','multistage'];
+    const VALID_UNIT  = ['SI','IMP'];
+    const inputs = {
+      fluidIndex:         Math.max(0, Math.min(NPSH_FLUIDS.length-1, sInt(body.fluidIndex, 0))),
+      T_C:                Math.max(-50, Math.min(250, sNum(body.T_C, 20))),
+      unitMode:           sStr(body.unitMode,   VALID_UNIT,  'SI'),
+      D_mm:               Math.max(5, Math.min(2000, sNum(body.D_mm, 154.1))),
+      Q_raw:              Math.max(0.001, sNum(body.Q_raw, 50)),
+      L_m:                Math.max(0, sNum(body.L_m, 5)),
+      Lf_m:               Math.max(0, sNum(body.Lf_m, 2.5)),
+      eps_mm:             Math.max(0.0001, Math.min(10, sNum(body.eps_mm, 0.046))),
+      upType:             sStr(body.upType, VALID_UP, 'open_above'),
+      baro_bar:           Math.max(0.5, Math.min(1.1, sNum(body.baro_bar, 1.01325))),
+      vessel_pg_raw:      sNum(body.vessel_pg_raw, 1.5),
+      z_raw_user:         sNum(body.z_raw_user, 3.0),
+      npshrMethod:        sStr(body.npshrMethod, VALID_NPSHR, 'direct'),
+      npshr_direct_user:  Math.max(0, sNum(body.npshr_direct_user, 3.0)),
+      N_rpm:              Math.max(100, Math.min(10000, sNum(body.N_rpm, 1450))),
+      H_total_user:       Math.max(1, sNum(body.H_total_user, 30)),
+      stages:             Math.max(1, Math.min(20, sInt(body.stages, 1))),
+      pumpType:           sStr(body.pumpType, VALID_PUMP, 'centrifugal_med'),
+      margin_req:         Math.max(0, Math.min(10, sNum(body.margin_req, 0.6))),
+    };
+    const result = calcNPSH(inputs);
+    return res.status(200).json(result);
+  }
+
+  return res.status(400).json({ ok: false, error: 'Unknown action: ' + action });
+}
+
+
+
 // ================================================================
 // MAIN VERCEL HANDLER — routes by URL path
 // ================================================================
@@ -4371,6 +5372,8 @@ export default async function handler(req, res) {
       case 'steam-quench':             return await handle_steam_quench(req, body, res);
       case 'steam-turbine-power':      return await handle_steam_turbine(body, res);
       case 'steam':                    return await handle_steam(body, res);
+      case 'calculate':                return await handle_calculate(body, res);
+      case 'npsh-calculator':          return await handle_npsh_calculator(body, res);
       default:
         return res.status(404).json({ error: `Unknown route: "${route}". Valid routes: compressor, control-valve, cooling-tower, eos, fan, heatxpert, orifice-flow, pressure-drop-calculator, psychrometric, pump, rankine, steam-quench, steam-turbine-power, steam` });
     }
