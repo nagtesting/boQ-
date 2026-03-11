@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0">
+<title>Instrumentation Calculators — 4-20mA, Thermowell ASME PTC 19.3 | multicalci.com</title>
+<meta name="description" content="Free instrumentation calculators for 4-20mA conversion, thermowell vibration analysis and loop integrity.">
+<link rel="canonical" href="https://multicalci.com/instrumentation-calculators/">
+<meta property="og:title" content="Instrumentation Calculators — 4-20mA, Thermowell ASME PTC 19.3 | multicalci.com">
+<meta property="og:description" content="Free instrumentation calculators for 4-20mA conversion, thermowell vibration analysis and loop integrity.">
+<meta property="og:url" content="https://multicalci.com/instrumentation-calculators/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Instrumentation Calculators — 4-20mA, Thermowell ASME PTC 19.3 | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Instrumentation Calculators","description":"4-20mA loop calculations, thermowell ASME PTC 19.3 wake frequency and transmitter ranging calculators.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/instrumentation-calculators/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ══════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════ */
+:root{
+  --bg:#f4f6fb;
+  --surface:#ffffff;
+  --surface2:#f8f9fc;
+  --bdr:#dde3ee;
+  --bdr2:#b8c5d9;
+  --accent:#1558b0;
+  --accent2:#1246a0;
+  --accent-bg:#e8f0fe;
+  --accent-bd:#c5d5f5;
+  --orange:#d94f00;
+  --green:#1a7340;
+  --green-bg:#eaf6ee;
+  --green-bd:#9ecfb2;
+  --warn-bg:#fff4e5;
+  --warn-bd:#ffc07a;
+  --warn-txt:#7a4500;
+  --red:#c00;
+  --txt:#1a2332;
+  --txt2:#4a5568;
+  --muted:#6b7c93;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Plus Jakarta Sans',sans-serif;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh2:0 6px 28px rgba(21,88,176,.13);
+  --r:10px;
+}
+
+/* ══════════════════════════════
+   RESET
+══════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:var(--sans);font-size:15px;
+  min-height:100vh;overflow-x:hidden;
+}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+
+/* ══════════════════════════════
+   HEADER
+══════════════════════════════ */
+.hdr{
+  background:var(--accent);
+  padding:0 1.5rem;
+  height:60px;
+  display:flex;align-items:center;gap:1rem;
+  box-shadow:0 2px 16px rgba(21,88,176,.3);
+  position:sticky;top:0;z-index:200;
+}
+.hdr-logo{
+  width:38px;height:38px;flex-shrink:0;
+  background:rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.4);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);color:#fff;font-size:12px;font-weight:600;
+}
+.hdr-text h1{font-size:.95rem;font-weight:700;color:#fff;letter-spacing:.02em}
+.hdr-text p{font-size:.62rem;color:rgba(255,255,255,.65);font-family:var(--mono);margin-top:1px}
+
+/* ══════════════════════════════
+   TOP TAB NAV (desktop)
+══════════════════════════════ */
+.top-nav{
+  background:var(--surface);
+  border-bottom:2px solid var(--bdr);
+  padding:0 1.2rem;
+  display:flex;align-items:stretch;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  position:sticky;top:60px;z-index:190;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.top-nav::-webkit-scrollbar{display:none}
+.tnav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:.6rem 1rem;min-width:80px;
+  border:none;background:transparent;
+  color:var(--muted);cursor:pointer;
+  font-family:var(--sans);font-size:.65rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:3px solid transparent;
+  transition:all .16s;white-space:nowrap;
+  margin-bottom:-2px;
+}
+.tnav-btn .tnico{font-size:1.1rem;margin-bottom:1px}
+.tnav-btn:hover{color:var(--accent);background:var(--accent-bg)}
+.tnav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-bg)}
+
+/* ══════════════════════════════
+   CONTENT SECTIONS (show/hide — fixes mobile scroll BUG 11)
+══════════════════════════════ */
+.tools-area{padding:0}
+.tool-sec{display:none;animation:fadeUp .22s cubic-bezier(.22,1,.36,1) both}
+.tool-sec.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}}
+
+.tool-inner{
+  max-width:800px;margin:0 auto;
+  padding:1.5rem 1.5rem 6rem;
+}
+
+/* ══════════════════════════════
+   TOOL HEADER
+══════════════════════════════ */
+.tool-hd{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:1rem;margin-bottom:1.4rem;
+  padding-bottom:1rem;
+  border-bottom:1.5px solid var(--bdr);
+  flex-wrap:wrap;
+}
+.tool-hd-left{display:flex;align-items:center;gap:.85rem}
+.tool-ico{
+  width:42px;height:42px;background:var(--accent);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;flex-shrink:0;
+  box-shadow:0 3px 12px rgba(21,88,176,.28);
+}
+.tool-hd h2{font-size:.95rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--txt)}
+.tool-hd p{font-size:.65rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
+
+/* Unit toggle */
+.utog{
+  display:flex;align-items:center;
+  background:var(--accent-bg);border:1px solid var(--accent-bd);
+  border-radius:20px;padding:2px;gap:2px;flex-shrink:0;
+}
+.ubtn{
+  padding:4px 12px;border-radius:16px;border:none;
+  font-size:.62rem;font-family:var(--mono);font-weight:600;
+  cursor:pointer;letter-spacing:.04em;transition:all .14s;
+  background:transparent;color:var(--accent);
+}
+.ubtn.active{background:var(--accent);color:#fff;box-shadow:0 1px 5px rgba(21,88,176,.3)}
+
+/* ══════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════ */
+.form-body{display:flex;flex-direction:column;gap:.9rem}
+.fg{display:flex;flex-direction:column;gap:.3rem}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem}
+.fg label{
+  font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--txt2);font-weight:700;
+}
+/* FIX BUG 14 — all inputs ≥16px for iOS non-zoom */
+.iw{
+  display:flex;border:1.5px solid var(--bdr);border-radius:7px;
+  overflow:hidden;background:#fff;transition:border-color .15s,box-shadow .15s;
+}
+.iw:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(21,88,176,.1)}
+.iw input{
+  flex:1;background:transparent;border:none;
+  padding:.55rem .75rem;color:var(--txt);
+  font-family:var(--mono);font-size:16px;outline:none;min-width:0;
+  min-height:44px;
+}
+.iw select{
+  border-left:1px solid var(--bdr);color:var(--muted);
+  background:var(--surface2);cursor:pointer;
+  flex:0 0 auto;max-width:100px;padding:0 .5rem;
+  border:none;outline:none;font-family:var(--mono);font-size:.72rem;
+  border-left:1px solid var(--bdr);
+}
+select.fd{
+  width:100%;background:#fff;border:1.5px solid var(--bdr);
+  border-radius:7px;padding:.55rem .75rem;color:var(--txt);
+  font-family:var(--mono);font-size:16px;outline:none;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+}
+select.fd:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(21,88,176,.1);outline:none}
+
+/* ══════════════════════════════
+   BUTTONS
+══════════════════════════════ */
+.btn-row{display:flex;gap:.6rem;margin-top:.3rem}
+.calc-btn{
+  flex:1;padding:.7rem;min-height:46px;
+  background:var(--accent);border:none;border-radius:7px;
+  color:#fff;font-family:var(--mono);font-size:.78rem;font-weight:600;
+  letter-spacing:.05em;cursor:pointer;text-transform:uppercase;
+  transition:background .14s,transform .1s,box-shadow .14s;
+  box-shadow:0 3px 12px rgba(21,88,176,.25);
+}
+.calc-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 5px 18px rgba(21,88,176,.32)}
+.calc-btn:active{transform:none;box-shadow:none}
+.pdf-btn{
+  padding:.7rem 1rem;min-height:46px;
+  background:var(--orange);border:none;border-radius:7px;
+  color:#fff;font-family:var(--mono);font-size:.71rem;font-weight:600;
+  cursor:pointer;text-transform:uppercase;letter-spacing:.04em;
+  transition:background .14s;white-space:nowrap;
+}
+.pdf-btn:hover{background:#b84000}
+
+/* ══════════════════════════════
+   RESULT & WARNING BOXES
+══════════════════════════════ */
+.result-box{
+  display:none;padding:.9rem 1rem;
+  background:var(--green-bg);border:1.5px solid var(--green-bd);
+  border-radius:8px;font-family:var(--mono);font-size:.8rem;
+  color:var(--green);line-height:1.7;
+  animation:fadeUp .22s ease;
+  word-break:break-word;overflow-wrap:anywhere;
+}
+.result-box.show{display:block}
+.rlabel{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;font-family:var(--sans);font-weight:700}
+.rval{font-size:1.08rem;color:var(--green);font-weight:700}
+.rsub{font-size:.68rem;color:var(--muted);margin-top:4px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:.55rem}
+.ri .rval{font-size:.92rem}
+.warn-box{
+  display:none;padding:.75rem .95rem;
+  background:var(--warn-bg);border:1.5px solid var(--warn-bd);
+  border-radius:8px;font-size:.75rem;color:var(--warn-txt);
+  font-family:var(--mono);line-height:1.55;
+}
+.warn-box.show{display:block}
+.help-box{
+  font-size:.67rem;color:var(--muted);font-family:var(--mono);
+  line-height:1.55;padding:.45rem .75rem;
+  background:var(--surface2);border-left:3px solid var(--bdr2);
+  border-radius:0 5px 5px 0;
+}
+.fsep{
+  font-size:.6rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);
+  padding-bottom:.35rem;border-bottom:1px solid var(--bdr);
+  margin-top:.25rem;
+}
+.fsep:first-child{margin-top:0}
+
+/* ══════════════════════════════
+   TABLE (TC Reference)
+══════════════════════════════ */
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--bdr);-webkit-overflow-scrolling:touch}
+.ref-tbl{width:100%;border-collapse:collapse;font-size:.72rem;min-width:600px}
+.ref-tbl th{
+  padding:.5rem .75rem;text-align:left;color:var(--muted);
+  font-weight:700;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;
+  border-bottom:2px solid var(--bdr);background:#eef2fb;
+}
+.ref-tbl td{padding:.48rem .75rem;border-bottom:1px solid var(--bdr);color:var(--txt);font-family:var(--mono)}
+.ref-tbl tr:hover td{background:var(--accent-bg)}
+.ref-tbl tr:last-child td{border-bottom:none}
+.ref-tbl td:first-child{color:var(--accent);font-weight:700}
+
+/* ══════════════════════════════
+   MOBILE BOTTOM TAB BAR
+══════════════════════════════ */
+.mob-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:var(--surface);border-top:1px solid var(--bdr);
+  padding-bottom:env(safe-area-inset-bottom,4px);
+  box-shadow:0 -3px 14px rgba(0,0,0,.08);
+}
+.mob-bar-inner{
+  display:flex;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.mob-bar-inner::-webkit-scrollbar{display:none}
+.mtab{
+  flex:0 0 auto;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  padding:8px 14px 6px;
+  min-height:52px;
+  border:none;background:transparent;
+  font-family:var(--sans);
+  font-size:.74rem;font-weight:700;
+  color:var(--muted);cursor:pointer;
+  border-top:2px solid transparent;
+  min-width:68px;
+  -webkit-tap-highlight-color:transparent;
+  transition:color .14s;
+}
+.mtab .mi{font-size:20px;line-height:1}
+.mtab.active{color:var(--accent);border-top-color:var(--accent)}
+.mtab:active{background:var(--accent-bg)}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:768px){
+  .top-nav{display:none}
+  .mob-bar{display:block}
+  .tool-inner{padding:1.2rem 1rem 88px}
+  .hdr{height:54px;padding:0 1rem}
+  .hdr-text p{display:none}
+  .tool-hd{flex-direction:column;gap:.75rem}
+  .rg{grid-template-columns:1fr}
+  .fr3{grid-template-columns:1fr 1fr}
+  .warn-box{word-break:break-word;overflow-wrap:anywhere}
+}
+@media(max-width:500px){
+  .fr{grid-template-columns:1fr}
+  .fr3{grid-template-columns:1fr}
+  .btn-row{flex-direction:column}
+  .pdf-btn{width:100%}
+  .share-grid{grid-template-columns:repeat(3,1fr)!important}
+  .hdr-share-btn span{display:none}
+  .mtab{padding:7px 10px 5px;min-width:58px;font-size:.68rem}
+  .mtab .mi{font-size:18px}
+}
+/* Remove hover effects on touch */
+@media(hover:none){
+  .calc-btn:hover{transform:none;box-shadow:0 3px 12px rgba(21,88,176,.25)}
+  .tnav-btn:hover{background:transparent;color:var(--muted)}
+  .tnav-btn.active{color:var(--accent);background:var(--accent-bg)}
+}
+@media(min-width:769px){
+  .mob-bar{display:none!important}
+  .top-nav{display:flex!important}
+}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer{
+  text-align:center;padding:1.5rem;
+  font-size:.68rem;color:var(--muted);font-family:var(--mono);
+  border-top:1px solid var(--bdr);
+}
+
+/* ══════════════════════════════
+   SHARE BUTTON & MODAL
+══════════════════════════════ */
+.hdr-share-btn{
+  margin-left:auto;flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:7px;
+  background:rgba(255,255,255,.13);
+  border:1.5px solid rgba(255,255,255,.28);
+  color:rgba(255,255,255,.9);
+  font-family:var(--sans);font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:all .16s;letter-spacing:.02em;
+}
+.hdr-share-btn:hover{
+  background:rgba(255,255,255,.22);
+  border-color:rgba(255,255,255,.5);
+  color:#fff;
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.share-overlay{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(10,25,55,.55);
+  backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.share-overlay.open{opacity:1;pointer-events:all}
+.share-modal{
+  background:var(--surface);
+  border:1px solid var(--bdr);
+  border-radius:14px;
+  width:min(440px,92vw);
+  box-shadow:0 20px 70px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.1);
+  overflow:hidden;
+  transform:translateY(16px) scale(.97);
+  transition:transform .22s cubic-bezier(.34,1.36,.64,1);
+}
+.share-overlay.open .share-modal{transform:translateY(0) scale(1)}
+.share-modal-hd{
+  background:var(--accent);
+  padding:16px 20px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.share-modal-title{
+  font-family:var(--sans);font-size:1rem;font-weight:800;color:#fff;
+}
+.share-modal-sub{
+  font-size:.65rem;color:rgba(255,255,255,.55);font-family:var(--mono);margin-top:2px;
+}
+.share-close{
+  width:28px;height:28px;border-radius:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.75);font-size:1rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .14s;
+}
+.share-close:hover{background:rgba(255,255,255,.22);color:#fff}
+.share-modal-bd{padding:20px}
+.share-section-label{
+  font-size:.6rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:10px;font-family:var(--sans);
+}
+.share-url-row{display:flex;gap:8px;margin-bottom:18px}
+.share-url-input{
+  flex:1;padding:8px 11px;
+  background:var(--surface2);border:1.5px solid var(--bdr);
+  border-radius:7px;color:var(--txt2);
+  font-family:var(--mono);font-size:.72rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  outline:none;
+}
+.share-copy-btn{
+  padding:8px 14px;border-radius:7px;
+  background:var(--accent);color:#fff;
+  border:none;font-family:var(--mono);font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0;
+  letter-spacing:.04em;
+}
+.share-copy-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 10px rgba(21,88,176,.3)}
+.share-copy-btn.copied{background:var(--green)}
+.share-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;
+}
+.s-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:11px 6px;border-radius:9px;
+  border:1.5px solid var(--bdr);background:var(--surface2);
+  cursor:pointer;transition:all .16s;
+  color:var(--txt2);font-family:var(--sans);font-size:.63rem;font-weight:700;
+  text-decoration:none;
+}
+.s-btn:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.s-ico{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.s-wa .s-ico{background:#dcfce7} .s-wa:hover{border-color:#22c55e;color:#166534}
+.s-li .s-ico{background:#dbeafe} .s-li:hover{border-color:#3b82f6;color:#1e3a8a}
+.s-tw .s-ico{background:#f3f4f6} .s-tw:hover{border-color:#374151;color:#111}
+.s-fb .s-ico{background:#eff6ff} .s-fb:hover{border-color:#3b82f6;color:#1d4ed8}
+.s-em .s-ico{background:#f5f3ff} .s-em:hover{border-color:#7c3aed;color:#5b21b6}
+.share-pdf-row{
+  background:var(--accent-bg);border:1.5px solid var(--accent-bd);
+  border-radius:9px;padding:12px 14px;
+  display:flex;align-items:center;gap:12px;
+}
+.share-pdf-ico{
+  width:38px;height:38px;flex-shrink:0;background:var(--orange);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.share-pdf-txt{flex:1}
+.share-pdf-txt strong{display:block;font-size:.82rem;font-weight:700;color:var(--txt)}
+.share-pdf-txt span{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+.share-pdf-action{
+  padding:7px 13px;border-radius:7px;flex-shrink:0;
+  background:var(--orange);color:#fff;border:none;
+  font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;
+  cursor:pointer;transition:all .14s;text-transform:uppercase;
+}
+.share-pdf-action:hover{background:#b84000;transform:translateY(-1px)}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="hdr">
+<div class="hdr-logo">IE</div>
+  <div class="hdr-text">
+    <h1>Instrumentation Engineering Calculator Suite</h1>
+    <p>Process Measurement &amp; Control | Metric / Imperial | A4 PDF Export</p>
+  </div>
+  <a href="https://multicalci.com/" class="hdr-share-btn" style="text-decoration:none;margin-left:auto" title="multicalci.com home">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <button class="hdr-share-btn" style="margin-left:.5rem" onclick="openShareModal()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    <span>Share</span>
+  </button>
+</header>
+
+<!-- ══ TOP NAV (desktop) ══ -->
+<nav class="top-nav">
+  <button class="tnav-btn active" onclick="nav(0,this)" id="tn0"><span class="tnico">📡</span>4–20 mA</button>
+  <button class="tnav-btn" onclick="nav(1,this)" id="tn1"><span class="tnico">√x</span>Sqrt Flow</button>
+  <button class="tnav-btn" onclick="nav(2,this)" id="tn2"><span class="tnico">🔗</span>Loop Integrity</button>
+  <button class="tnav-btn" onclick="nav(3,this)" id="tn3"><span class="tnico">🌡</span>Thermowell</button>
+  <button class="tnav-btn" onclick="nav(4,this)" id="tn4"><span class="tnico">⚖</span>Loop Load</button>
+  <button class="tnav-btn" onclick="nav(5,this)" id="tn5"><span class="tnico">📋</span>TC Reference</button>
+  <button class="tnav-btn" onclick="nav(6,this)" id="tn6"><span class="tnico">📖</span>Guide</button>
+</nav>
+
+<!-- ══ TOOLS AREA ══ -->
+<div class="tools-area">
+
+  <!-- ─── TOOL 0: 4–20 mA Signal Converter ─── -->
+  <div class="tool-sec show" id="ts0">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico">📡</div>
+          <div>
+            <h2>4–20 mA Signal Converter</h2>
+            <p>Current loop ↔ Engineering unit (IEC 60381-1)</p>
+          </div>
+        </div>
+        <div class="utog" id="ut-signal">
+          <button class="ubtn active" onclick="setUnitTog('signal','Metric',this)">Metric</button>
+          <button class="ubtn" onclick="setUnitTog('signal','Imperial',this)">Imperial</button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="fg">
+          <label>Conversion Direction</label>
+          <select class="fd" id="sig-dir" onchange="updateSigLabels()">
+            <option value="ma2eu">mA → Engineering Unit</option>
+            <option value="eu2ma">Engineering Unit → mA</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label id="sig-input-lbl">Input — Current (mA)</label>
+          <div class="iw">
+            <input type="number" id="sig-input" placeholder="e.g. 12.0" step="0.01" required>
+            <select id="sig-eu-unit" style="display:none"><option>EU</option></select>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label>Range Minimum</label>
+            <div class="iw"><input type="number" id="sig-min" value="0" step="any" placeholder="e.g. 0"></div>
+          </div>
+          <div class="fg">
+            <label>Range Maximum</label>
+            <div class="iw"><input type="number" id="sig-max" value="100" step="any" placeholder="e.g. 100"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="calc-btn" onclick="calcSignal()">▶ Calculate</button>
+          <button class="pdf-btn" onclick="exportPDF('signal')">⬇ PDF</button>
+        </div>
+        <div class="result-box" id="sig-result"></div>
+        <div class="help-box">4 mA = 0% &nbsp;|&nbsp; 12 mA = 50% &nbsp;|&nbsp; 20 mA = 100% of span &nbsp;|&nbsp; Reversed ranges (e.g. 100→0) supported &nbsp;|&nbsp; NAMUR NE43 fault zones detected: &lt;3.6 mA = fail, 3.6–3.8 = fault, &gt;20 mA = fault, &gt;21 mA = fail</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOOL 1: Square Root Extractor ─── -->
+  <div class="tool-sec" id="ts1">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico" style="font-family:var(--mono);font-weight:700;font-size:13px">√x</div>
+          <div>
+            <h2>Square Root Extractor</h2>
+            <p>DP flow linearisation — Q = Q<sub>max</sub> × √(DP%/100)</p>
+          </div>
+        </div>
+        <div class="utog" id="ut-sqrt">
+          <button class="ubtn active" onclick="setUnitTog('sqrt','Metric',this)">Metric</button>
+          <button class="ubtn" onclick="setUnitTog('sqrt','Imperial',this)">Imperial</button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="help-box">DP transmitters output signal ∝ ΔP, but flow ∝ √ΔP. This linearises the reading for correct flow display.</div>
+        <div class="fr">
+          <div class="fg">
+            <label>DP Transmitter Signal (%)</label>
+            <div class="iw">
+              <input type="number" id="sqrt-dp" placeholder="0 – 100" min="0" max="100" step="0.01">
+              <select><option>%</option></select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Max Flow Span</label>
+            <div class="iw">
+              <input type="number" id="sqrt-maxflow" placeholder="e.g. 500" step="any">
+              <select id="sqrt-flow-unit">
+                <option value="m3h">m³/h</option>
+                <option value="lpm">L/min</option>
+                <option value="ls">L/s</option>
+                <option value="kgs">kg/s</option>
+                <option value="gpm">gal/min</option>
+                <option value="cfm">ft³/min</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Low-Flow Cutoff (%)</label>
+          <div class="iw">
+            <input type="number" id="sqrt-cutoff" placeholder="e.g. 1" value="1" step="0.1">
+            <select><option>%</option></select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="calc-btn" onclick="calcSqrt()">▶ Extract</button>
+          <button class="pdf-btn" onclick="exportPDF('sqrt')">⬇ PDF</button>
+        </div>
+        <div class="result-box" id="sqrt-result"></div>
+        <div class="warn-box" id="sqrt-warn"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOOL 2: Loop Integrity ─── -->
+  <div class="tool-sec" id="ts2">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico">🔗</div>
+          <div>
+            <h2>Loop Integrity Calculator</h2>
+            <p>Voltage drop &amp; cable resistance in 4–20 mA loops</p>
+          </div>
+        </div>
+        <div class="utog" id="ut-loop">
+          <button class="ubtn active" onclick="setUnitTog('loop','Metric',this)">Metric</button>
+          <button class="ubtn" onclick="setUnitTog('loop','Imperial',this)">Imperial</button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="fr">
+          <div class="fg">
+            <label>Cable Length (one-way)</label>
+            <div class="iw">
+              <input type="number" id="loop-len" placeholder="e.g. 500" step="1" min="0.001" required>
+              <select id="loop-len-unit">
+                <option value="m">m</option>
+                <option value="km">km</option>
+                <option value="ft">ft</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Cable Cross-Section</label>
+            <div class="iw">
+              <input type="number" id="loop-csa" placeholder="e.g. 1.5" step="0.1" min="0.001" required>
+              <select id="loop-csa-unit">
+                <option value="mm2">mm²</option>
+                <option value="awg">AWG #</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label>Supply Voltage</label>
+            <div class="iw">
+              <input type="number" id="loop-supply" value="24" step="0.1">
+              <select><option>Vdc</option></select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Transmitter Min Voltage</label>
+            <div class="iw">
+              <input type="number" id="loop-txmin" value="12" step="0.1">
+              <select><option>Vdc</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Loop Burden / Load Resistance</label>
+          <div class="iw">
+            <input type="number" id="loop-load" value="250" step="1" min="0">
+            <select><option>Ω</option></select>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Cable Ambient Temperature (°C) <span style="font-weight:400;color:var(--muted);font-size:.6rem">— for resistance correction</span></label>
+          <div class="iw">
+            <input type="number" id="loop-cable-temp" value="20" step="1" min="-50" max="200" placeholder="20">
+            <select><option>°C</option></select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="calc-btn" onclick="calcLoop()">▶ Calculate</button>
+          <button class="pdf-btn" onclick="exportPDF('loop')">⬇ PDF</button>
+        </div>
+        <div class="result-box" id="loop-result"></div>
+        <div class="warn-box" id="loop-warn"></div>
+        <div class="help-box">ρ_Cu@20°C = 0.0168 Ω·mm²/m, α = 0.00393/°C &nbsp;|&nbsp; R_T = R₂₀[1 + α(T−20)] &nbsp;|&nbsp; 2-wire loop: cable R = 2 × one-way &nbsp;|&nbsp; Safety: supply ≥ 1.3 × V_tx_min + loop drop &nbsp;|&nbsp; AWG odd values interpolated correctly</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOOL 3: Thermowell Analyser ─── -->
+  <div class="tool-sec" id="ts3">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico">🌡</div>
+          <div>
+            <h2>Thermowell Analyser</h2>
+            <p>Wake frequency, natural frequency &amp; resonance check (ASME PTC 19.3 TW)</p>
+          </div>
+        </div>
+        <div class="utog" id="ut-tw">
+          <button class="ubtn active" onclick="setUnitTog('tw','Metric',this)">Metric</button>
+          <button class="ubtn" onclick="setUnitTog('tw','Imperial',this)">Imperial</button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="fr">
+          <div class="fg">
+            <label>Insertion Length U</label>
+            <div class="iw">
+              <input type="number" id="tw-ins" placeholder="e.g. 250" step="1" min="1" required>
+              <select id="tw-len-unit">
+                <option value="mm">mm</option>
+                <option value="m">m</option>
+                <option value="in">inch</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Tip Outer Diameter d</label>
+            <div class="iw">
+              <input type="number" id="tw-od" placeholder="e.g. 11" step="0.1" min="0.1" required>
+              <select id="tw-od-unit">
+                <option value="mm">mm</option>
+                <option value="in">inch</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label>Process Fluid Velocity</label>
+            <div class="iw">
+              <input type="number" id="tw-vel" placeholder="e.g. 3.0" step="0.01" min="0.001" required>
+              <select id="tw-vel-unit">
+                <option value="ms">m/s</option>
+                <option value="fts">ft/s</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Fluid Type</label>
+            <select class="fd" id="tw-fluid" onchange="twFluidChange()">
+              <option value="liquid">Liquid (ρ ≈ 1000 kg/m³)</option>
+              <option value="gas">Gas / Steam (ρ ≈ 10 kg/m³)</option>
+              <option value="custom">Custom density…</option>
+            </select>
+          </div>
+        </div>
+        <!-- FIX BUG 6: show/hide custom density field based on fluid selection -->
+        <div class="fg" id="tw-rho-row" style="display:none">
+          <label>Custom Fluid Density (kg/m³)</label>
+          <div class="iw">
+            <input type="number" id="tw-rho" placeholder="e.g. 850" step="0.1">
+            <select><option>kg/m³</option></select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="calc-btn" onclick="calcThermowell()">▶ Analyse</button>
+          <button class="pdf-btn" onclick="exportPDF('tw')">⬇ PDF</button>
+        </div>
+        <div class="result-box" id="tw-result"></div>
+        <div class="warn-box" id="tw-warn"></div>
+        <div class="help-box">St varies with Re: 0.21 (Re&lt;10³) | 0.22 (10³–2×10⁵) | 0.19 (critical) | 0.27 (supercritical) &nbsp;|&nbsp; 316SS: E = 193 GPa, ρ = 7950 kg/m³ &nbsp;|&nbsp; ASME PTC 19.3 TW: f_s/f_n &lt; 0.8 required &nbsp;|&nbsp; ⚠ Simplified first-pass only — Scruton number (Sc = 2mδ/ρd²), tapered geometry, and mounting compliance not included. Always perform full ASME PTC 19.3 TW for final design sign-off.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOOL 4: Loop Load Analyzer ─── -->
+  <div class="tool-sec" id="ts4">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico">⚖</div>
+          <div>
+            <h2>Loop Load Analyzer</h2>
+            <p>Total impedance &amp; voltage headroom for 4–20 mA loops</p>
+          </div>
+        </div>
+        <div class="utog" id="ut-llad">
+          <button class="ubtn active" onclick="setUnitTog('llad','Metric',this)">Metric</button>
+          <button class="ubtn" onclick="setUnitTog('llad','Imperial',this)">Imperial</button>
+        </div>
+      </div>
+
+      <div class="form-body">
+        <div class="fr">
+          <div class="fg">
+            <label>Supply Voltage</label>
+            <div class="iw">
+              <input type="number" id="lla-supply" value="24" step="0.1">
+              <select><option>Vdc</option></select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Transmitter Min Voltage</label>
+            <div class="iw">
+              <input type="number" id="lla-txmin" value="12" step="0.1">
+              <select><option>Vdc</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="fr3">
+          <div class="fg">
+            <label>AI Card Input (Ω)</label>
+            <div class="iw">
+              <input type="number" id="lla-ai" value="250" step="1" placeholder="250">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Isolator (Ω)</label>
+            <div class="iw">
+              <input type="number" id="lla-iso" value="0" step="1" placeholder="0">
+            </div>
+          </div>
+          <div class="fg">
+            <label>IS Barrier (Ω)</label>
+            <div class="iw">
+              <input type="number" id="lla-barrier" value="0" step="1" placeholder="0">
+            </div>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label>Cable Resistance Ω (total)</label>
+            <div class="iw">
+              <input type="number" id="lla-cable" value="0" step="0.1" placeholder="e.g. 30">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Other Loads (Ω)</label>
+            <div class="iw">
+              <input type="number" id="lla-other" value="0" step="1" placeholder="0">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="calc-btn" onclick="calcLLA()">▶ Analyse</button>
+          <button class="pdf-btn" onclick="exportPDF('llad')">⬇ PDF</button>
+        </div>
+        <div class="result-box" id="lla-result"></div>
+        <div class="warn-box" id="lla-warn"></div>
+        <div class="help-box">Max loop load = (V_supply − V_tx_min) / 0.020 A &nbsp;|&nbsp; Headroom = V_at_transmitter − V_min &nbsp;|&nbsp; 22 mA diagnostic peak checked (smart/HART transmitters) &nbsp;|&nbsp; Negative load values are set to zero</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOOL 5: Thermocouple Reference ─── -->
+  <div class="tool-sec" id="ts5">
+    <div class="tool-inner">
+      <div class="tool-hd">
+        <div class="tool-hd-left">
+          <div class="tool-ico">📋</div>
+          <div>
+            <h2>Thermocouple Type Reference</h2>
+            <p>Field selection guide — IEC 60584 standard types</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+          <div class="utog" id="ut-tctable">
+            <button class="ubtn active" onclick="setTCUnit('Metric',this)">°C</button>
+            <button class="ubtn" onclick="setTCUnit('Imperial',this)">°F</button>
+          </div>
+          <button class="pdf-btn" onclick="exportPDF('tctable')">⬇ PDF</button>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="ref-tbl" id="tc-table">
+          <thead>
+            <tr>
+              <th>Type</th><th>+ Wire</th><th>− Wire</th>
+              <th id="tc-th-range">Range (°C)</th>
+              <th id="tc-th-sens">Sensitivity (µV/°C)</th>
+              <th>Application</th><th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="tc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── TOOL 6: Educational Guide ─── -->
+  <div class="tool-sec" id="ts6">
+    <div class="tool-inner" style="max-width:860px">
+
+      <!-- Hero -->
+      <div style="background:linear-gradient(135deg,var(--accent) 0%,#0d3a82 100%);border-radius:12px;padding:28px 28px 24px;margin-bottom:1.5rem;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-10px;top:-10px;font-size:120px;opacity:.06;line-height:1;pointer-events:none;user-select:none">📡</div>
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.55);font-family:var(--mono);margin-bottom:8px">Field Reference &amp; Theory</div>
+        <h2 style="font-size:clamp(1.25rem,3vw,1.7rem);font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px;letter-spacing:-.02em">Instrumentation Engineering<br><span style="color:#93c5fd">Design Guide</span></h2>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.75;max-width:560px;font-family:var(--mono)">From 4–20 mA fundamentals to ASME thermowell analysis — the theory, standards and worked examples behind every calculator in this suite.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <span style="padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);font-family:var(--mono)">IEC 60381-1</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);font-family:var(--mono)">ASME PTC 19.3 TW</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);font-family:var(--mono)">IEC 60584 TC</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:.62rem;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);font-family:var(--mono)">ISA-5.1</span>
+        </div>
+      </div>
+
+      <!-- ══ SEC 1: 4–20 mA ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">01</span> 4–20 mA Current Loop
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Why 4–20 mA?</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              The 4–20 mA standard (IEC 60381-1) has been the backbone of process instrumentation since the 1950s. Current — not voltage — is transmitted because current does not drop over long cable runs. A 500 Ω load 1 km away receives exactly the same current as one sitting next to the transmitter.<br><br>
+              The <strong>live-zero at 4 mA</strong> is the key insight: a dead transmitter or open cable reads 0 mA — unmistakably different from the 4 mA "zero" signal. This is called fault detection by design. If you see 0 mA, you have a wiring fault, not a genuine zero process reading.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">The Linear Equation</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              The conversion between current and engineering value is a simple linear interpolation:
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              EU = EU_min + [(I − 4) / 16] × (EU_max − EU_min)<br>
+              I  = 4 + [(EU − EU_min) / (EU_max − EU_min)] × 16
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              where I is in mA and the span is always 16 mA (20 − 4). Key checkpoints:<br>
+              <strong>4 mA = 0% span</strong> (live zero)<br>
+              <strong>12 mA = 50% span</strong> (midscale)<br>
+              <strong>20 mA = 100% span</strong> (full scale)
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Reversed &amp; Split Ranges</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              Some transmitters use <strong>reversed ranges</strong> (e.g. 100→0 bar) where 4 mA = full scale and 20 mA = zero. The formula still works — EU_min and EU_max simply swap signs in the result.<br><br>
+              <strong>Split ranging</strong> is common in valve positioners: two valves share one controller output, with Valve A responding to 4–12 mA and Valve B responding to 12–20 mA. Each valve uses its own 8 mA sub-span.
+            </div>
+          </div>
+
+          <div style="background:var(--green-bg);border:1.5px solid var(--green-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:10px">HART Protocol</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              HART (Highway Addressable Remote Transducer) overlays a <strong>1200 / 2200 Hz FSK digital signal</strong> on top of the 4–20 mA loop without disturbing the analog value. This gives you simultaneous analog control and digital diagnostics — access to secondary variables, device configuration, and health status — over the same two wires. HART is defined in IEC 62591.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Worked example -->
+        <div style="background:var(--warn-bg);border:1.5px solid var(--warn-bd);border-radius:10px;padding:16px">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--warn-txt);margin-bottom:10px">📐 Worked Example — Pressure Transmitter</div>
+          <div style="font-size:.8rem;color:var(--txt2);line-height:1.8">
+            A pressure transmitter is ranged 0–100 bar. The DCS reads 14.4 mA. What is the pressure?<br><br>
+            <span style="font-family:var(--mono);background:#fff;padding:2px 8px;border-radius:4px;font-size:.77rem">EU = 0 + [(14.4 − 4) / 16] × (100 − 0) = (10.4 / 16) × 100 = <strong>65.0 bar</strong></span><br><br>
+            Now the operator notices the signal is 3.9 mA. Is this possible?<br>
+            No — 3.9 mA is below the live-zero threshold. This indicates a <strong>broken wire, failed transmitter, or loss of loop power</strong>. Process reading is unavailable. Investigate the field device immediately.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SEC 2: SQUARE ROOT / DP FLOW ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">02</span> Square Root Extraction &amp; DP Flow Measurement
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Why Square Root?</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              Differential pressure (DP) flow elements — orifice plates, venturis, Pitot tubes — generate a pressure drop that is proportional to the <strong>square of flow velocity</strong>. This is derived from Bernoulli's equation:<br>
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              Q = Cd × A × √(2·ΔP / ρ)<br>
+              Q ∝ √ΔP (for constant ρ)
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              The DP transmitter signal is linear with ΔP. To get a linear flow reading you must apply the square root. Failure to do so causes severe <strong>non-linearity and low-flow reading error</strong> — at 25% DP, actual flow is 50% of span, not 25%.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Low-Flow Cutoff</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              At very low DP signals, noise in the transmitter is amplified by the square root function, causing the displayed flow to jitter erratically. A <strong>low-flow cutoff</strong> (typically 1–2% of span) forces the output to zero below this threshold, preventing false readings and protecting integrating totalizers from accumulating noise.<br><br>
+              Setting it too high causes undercount at genuine low flows. Most flow computers implement this as a configurable parameter.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Where the Extraction Happens</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              Square root extraction can be implemented at three points:<br><br>
+              <strong>1. Inside the transmitter</strong> — HART-enabled DP transmitters can be configured to output a linearised (square-root) 4–20 mA signal directly.<br><br>
+              <strong>2. In the DCS/PLC</strong> — the raw DP signal is wired in and the square root function block is applied in software. Most common approach.<br><br>
+              <strong>3. Dedicated flow computer</strong> — used when multivariable compensation (T, P correction) or custody transfer accuracy is required (ISO 5167, AGA-3).
+            </div>
+          </div>
+
+        </div>
+
+        <div style="background:var(--warn-bg);border:1.5px solid var(--warn-bd);border-radius:10px;padding:16px">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--warn-txt);margin-bottom:10px">📐 Worked Example — Orifice Plate</div>
+          <div style="font-size:.8rem;color:var(--txt2);line-height:1.8">
+            An orifice plate is ranged 0–500 m³/h (at 100% DP). The DP transmitter reads 36% of span. What is the actual flow?<br><br>
+            <span style="font-family:var(--mono);background:#fff;padding:2px 8px;border-radius:4px;font-size:.77rem">Q = 500 × √(36 / 100) = 500 × 0.6 = <strong>300 m³/h</strong></span><br><br>
+            If you forgot the square root and read 36% linearly: Q = 500 × 0.36 = 180 m³/h — a <strong>40% undercount</strong>. This is the single most common error in commissioning DP flow loops.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SEC 3: LOOP INTEGRITY ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">03</span> Loop Integrity &amp; Voltage Budget
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Ohm's Law Applied to 4–20 mA</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              A 4–20 mA loop is a series circuit. The supply voltage (typically 24 Vdc) must overcome every voltage drop in the loop and still leave sufficient voltage at the transmitter terminals to keep it powered.
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              V_supply = V_transmitter + I × R_total<br>
+              R_total = R_cable + R_AI + R_barrier + R_iso<br>
+              V_headroom = V_at_tx − V_tx_min
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              Headroom must be ≥ 0 V at all times including the maximum current of 20 mA.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Cable Resistance &amp; Temperature</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              Copper resistivity changes with temperature. For a 2-wire loop, cable resistance is:<br>
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              ρ_Cu = 0.0168 Ω·mm²/m @ 20°C<br>
+              R_20 = ρ × 2L / A_conductor<br>
+              R_T = R_20 × [1 + 0.00393(T − 20)]
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              A 500 m run of 1.5 mm² cable at 60°C adds about <strong>14.4 Ω</strong> — consuming 0.29 V at 20 mA. Small, but it matters for long runs with intrinsically safe barriers.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">IS Barriers &amp; Safety Margins</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              Intrinsically safe (IS) Zener barriers add 80–300 Ω to the loop and clamp supply voltage. HART communicators need at least <strong>250 Ω</strong> in the loop to function. The safety factor of 1.3× on transmitter minimum voltage accounts for:<br><br>
+              — Supply voltage tolerance (±10%)<br>
+              — Fuse resistance and connection resistances<br>
+              — Future additions to the loop<br>
+              — End-of-cable-life resistance increase
+            </div>
+          </div>
+
+          <div style="background:var(--green-bg);border:1.5px solid var(--green-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:10px">Maximum Loop Load Formula</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              The maximum total resistance that a 24 V supply can drive while keeping 12 V at the transmitter:
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              R_max = (V_supply − V_tx_min) / 0.020<br>
+              R_max = (24 − 12) / 0.020 = 600 Ω
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              A standard DCS AI card (250 Ω) + HART resistor (0 Ω extra) + 500 m of 1.5 mm² cable (11 Ω) = 261 Ω. Well within 600 Ω. Add a Zener barrier (200 Ω) = 461 Ω. Still OK.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="background:var(--warn-bg);border:1.5px solid var(--warn-bd);border-radius:10px;padding:16px">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--warn-txt);margin-bottom:10px">📐 Worked Example — Long-Run IS Loop</div>
+          <div style="font-size:.8rem;color:var(--txt2);line-height:1.8">
+            Supply = 24 V, Tx min = 12 V, AI = 250 Ω, IS barrier = 90 Ω, cable = 800 m × 1.0 mm² @ 50°C. Is the loop viable?<br><br>
+            R_cable = 0.0168 × 2 × 800 / 1.0 × [1 + 0.00393 × (50 − 20)] = <strong>29.5 Ω</strong><br>
+            R_total = 250 + 90 + 29.5 = <strong>369.5 Ω</strong><br>
+            V_drop_@20mA = 0.020 × 369.5 = 7.39 V<br>
+            V_at_tx = 24 − 7.39 = <strong>16.6 V</strong> &gt; 12 V → <span style="color:var(--green);font-weight:700">PASS ✓</span><br>
+            Headroom = 16.6 − 12 = 4.6 V. With 1.3× safety: V_required = 1.3 × 12 + 7.39 = 23.0 V &lt; 24 V → <span style="color:var(--green);font-weight:700">SAFE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SEC 4: THERMOWELL ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">04</span> Thermowell Vibration Analysis — ASME PTC 19.3 TW
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Vortex Shedding — The Physics</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              When fluid flows past a cylindrical thermowell, it separates into alternating vortices — the <strong>Kármán vortex street</strong>. These vortices shed alternately from each side, creating an oscillating lateral force on the well at a frequency governed by the Strouhal number:
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              f_s = St × V / d<br>
+              St ≈ 0.22 (cylinder, Re 300–2×10⁵)
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              If f_s approaches the thermowell's natural frequency, <strong>resonance</strong> occurs and the well can fail by fatigue in minutes to hours.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Natural Frequency — Euler Beam Theory</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              A thermowell behaves as a <strong>cantilevered beam</strong> fixed at the process connection. The natural frequency of a uniform cantilever is:
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              f_n = (1.875²/2π) × √(E·I / ρ_m·A) / L²<br>
+              = (β²/2π) × √(E × d_avg² / 16·ρ_m) / L²
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              316 SS: E = 193 GPa, ρ_m = 7 950 kg/m³. Long, thin thermowells in high-velocity gas have the lowest natural frequency — most susceptible to resonance.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-width:800;letter-spacing:.08em;color:var(--accent);margin-bottom:10px;font-size:.68rem;font-weight:800;text-transform:uppercase">ASME PTC 19.3 TW Acceptance Criteria</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              ASME PTC 19.3 TW-2016 requires the wake frequency ratio (Scruton criterion) to be below 0.8:
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              f_s / f_n &lt; 0.8 → SAFE<br>
+              f_s / f_n 0.8–1.0 → CHECK Scruton No.<br>
+              f_s / f_n &gt; 1.0 → FAIL — redesign required
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              This calculator implements the simplified first-pass check. Full ASME PTC 19.3 TW also requires: Scruton number (mass damping), in-line resonance check, fatigue stress evaluation, and tapered/stepped geometry correction.
+            </div>
+          </div>
+
+          <div style="background:var(--green-bg);border:1.5px solid var(--green-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:10px">Design Remedies When f_s/f_n ≥ 0.8</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              In order of preference:<br><br>
+              <strong>1. Reduce insertion length</strong> — f_n ∝ 1/L². Halving L quadruples f_n.<br>
+              <strong>2. Increase tip OD</strong> — raises f_n (thicker wall = stiffer beam) but also raises f_s slightly.<br>
+              <strong>3. Use tapered/stepped well</strong> — larger OD at root, smaller at tip. Reduces mass and raises f_n without penalising strength at the root.<br>
+              <strong>4. Reduce process velocity</strong> — route via a larger bore bypass or reduce pump speed.<br>
+              <strong>5. Use helical strakes</strong> — disrupts coherent vortex shedding; effective but imposes a manufacturing cost.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="background:var(--warn-bg);border:1.5px solid var(--warn-bd);border-radius:10px;padding:16px">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--warn-txt);margin-bottom:10px">📐 Worked Example — Steam Line Thermowell</div>
+          <div style="font-size:.8rem;color:var(--txt2);line-height:1.8">
+            6″ steam header, V = 28 m/s, ρ_steam ≈ 10 kg/m³. Thermowell: U = 300 mm, tip OD = 11 mm (d = 0.011 m), 316 SS.<br><br>
+            <strong>Wake frequency:</strong> f_s = 0.22 × 28 / 0.011 = <strong>560 Hz</strong><br>
+            <strong>Natural frequency</strong> (simplified): f_n = (1.875²/2π) × √(193×10⁹ × (0.011)² / 16 × 7950) / (0.300)²<br>
+            ≈ 1.401 × √(14,793,750 / 127,200) / 0.09 ≈ 1.401 × 341.2 / 0.09 ≈ <strong>5,314 Hz</strong> (simplified; actual tapered well will differ)<br><br>
+            f_s / f_n = 560 / 5314 = <strong>0.105 → SAFE ✓</strong><br><br>
+            Now consider a longer well U = 600 mm: f_n scales by (300/600)² → f_n ≈ 1328 Hz. f_s/f_n = 560/1328 = <strong>0.42 → still safe</strong>. But at U = 900 mm: f_n ≈ 591 Hz, f_s/f_n = 0.95 → <span style="color:var(--red);font-weight:700">FAIL</span>. This shows why thermowell insertion length is critical in high-velocity gas.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SEC 5: THERMOCOUPLE THEORY ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">05</span> Thermocouple Theory &amp; Selection
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">The Seebeck Effect</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              When two dissimilar metals are joined at one end and the junction is heated, a small voltage (EMF) develops that is proportional to the temperature difference between the hot junction and the reference (cold) junction. This is the <strong>Seebeck effect</strong> (1821).
+            </div>
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:10px 12px;margin:10px 0;font-family:var(--mono);font-size:.78rem;color:var(--txt);line-height:1.8">
+              V_emf = S_AB × (T_hot − T_ref)<br>
+              S_AB = Seebeck coefficient [µV/°C]
+            </div>
+            <div style="font-size:.78rem;color:var(--txt2);line-height:1.65">
+              Type K: S ≈ 41 µV/°C at 500°C. IEC 60584 polynomials convert millivolt tables to °C with ±1°C accuracy.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Cold Junction Compensation (CJC)</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              The transmitter/head amplifier measures the voltage at its terminals, which are at ambient (reference) temperature, not 0°C. <strong>CJC</strong> corrects for this by measuring the reference junction temperature (typically with an RTD or thermistor) and adding the corresponding offset voltage to the TC output before converting to temperature.<br><br>
+              Without CJC, a Type K TC in a 40°C ambient would read approximately <strong>1.6 mV low</strong>, corresponding to a ~40°C undercount.
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Extension &amp; Compensating Cables</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              TC signal cables must be the <strong>same alloy pair</strong> as the thermocouple (extension grade) or have the same Seebeck coefficient at the reference junction temperature (compensating grade). Using ordinary copper cable introduces a second, uncontrolled junction — a systematic error of 5–30°C depending on ambient excursion.<br><br>
+              <strong>Extension cables:</strong> same metals as TC (marked with matching colour code)<br>
+              <strong>Compensating cables:</strong> cheaper alloys with matched EMF up to ~120°C
+            </div>
+          </div>
+
+          <div style="background:var(--green-bg);border:1.5px solid var(--green-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:10px">Type Selection Rules of Thumb</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              <strong>Type K</strong> — General industrial default. 0–1260°C. Use unless a specific reason demands otherwise. Avoid in vacuum/reducing atmospheres (K decalibrates above 750°C in these conditions).<br><br>
+              <strong>Type J</strong> — Legacy equipment only. Cap at 540°C to prevent rapid oxidation of the iron leg.<br><br>
+              <strong>Type T</strong> — Food, pharma, cold storage, cryogenics. Best corrosion resistance of base-metal types.<br><br>
+              <strong>Type N</strong> — Direct replacement for K above 1000°C. More stable, especially in cyclic thermal service.<br><br>
+              <strong>Types R/S</strong> — Precious metal. Lab furnaces and precision high-temperature process only. Cost 10–30× Type K.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RTD vs TC comparison table -->
+        <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:1rem">
+          <div style="background:var(--accent);padding:10px 16px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff">RTD vs Thermocouple — When to Use Which</div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:.77rem;min-width:520px">
+              <thead>
+                <tr style="background:#eef2fb">
+                  <th style="padding:8px 12px;text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;border-bottom:1.5px solid var(--bdr)">Criterion</th>
+                  <th style="padding:8px 12px;text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;border-bottom:1.5px solid var(--bdr)">RTD (Pt100 / Pt1000)</th>
+                  <th style="padding:8px 12px;text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);font-weight:700;border-bottom:1.5px solid var(--bdr)">Thermocouple</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--bdr)">
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Temperature range</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">−200 to 850°C</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">−200 to 1820°C (type B)</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--bdr);background:var(--accent-bg)">
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Accuracy</td>
+                  <td style="padding:8px 12px;color:var(--green);font-family:var(--mono);font-size:.72rem;font-weight:700">±0.1–0.3°C (Class A)</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">±1–3°C typical</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--bdr)">
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Self-heating error</td>
+                  <td style="padding:8px 12px;color:var(--orange);font-family:var(--mono);font-size:.72rem">Yes — use 4-wire to eliminate</td>
+                  <td style="padding:8px 12px;color:var(--green);font-family:var(--mono);font-size:.72rem;font-weight:700">None (passive device)</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--bdr);background:var(--accent-bg)">
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Vibration resistance</td>
+                  <td style="padding:8px 12px;color:var(--orange);font-family:var(--mono);font-size:.72rem">Poor (fragile coil)</td>
+                  <td style="padding:8px 12px;color:var(--green);font-family:var(--mono);font-size:.72rem;font-weight:700">Excellent (solid metal wires)</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--bdr)">
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Response time</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">2–10 s (mineral insulated)</td>
+                  <td style="padding:8px 12px;color:var(--green);font-family:var(--mono);font-size:.72rem;font-weight:700">0.1–2 s (exposed junction)</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;font-weight:700;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Best use</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">Precision control &lt;500°C</td>
+                  <td style="padding:8px 12px;color:var(--txt2);font-family:var(--mono);font-size:.72rem">High temp / vibration / safety</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SEC 6: LOOP LOAD ANALYSER ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">06</span> Loop Load Analysis — Component Impedances
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--accent-bg);border:1.5px solid var(--accent-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Series vs Parallel Loads</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              In a 4–20 mA current loop all loads are in <strong>series</strong> — the same current flows through every component. This means impedances add arithmetically. Unlike a voltage bus, adding a load to a current loop does not affect other loads — only the total voltage budget matters.
+              <br><br>
+              If two devices must share the same 4–20 mA signal (e.g. DCS + local indicator), they are connected in series (not parallel — that would split the current and corrupt the reading).
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px">Typical Component Impedances</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              <div style="font-family:var(--mono);font-size:.77rem;line-height:2">
+                AI card input resistor: 100–250 Ω<br>
+                HART termination resistor: 250 Ω<br>
+                Zener IS barrier: 80–300 Ω<br>
+                Galvanic isolator: 0–50 Ω (powered)<br>
+                Local indicator: 50–200 Ω<br>
+                Positioner feedback: 100–600 Ω<br>
+                Cable (1.5 mm², 100 m): ~2.3 Ω
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--green-bg);border:1.5px solid var(--green-bd);border-radius:10px;padding:16px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:10px">HART Communication Requirement</div>
+            <div style="font-size:.8rem;color:var(--txt2);line-height:1.75">
+              For a HART communicator to work reliably, the loop must present a minimum of <strong>230–250 Ω</strong> to the FSK signal. If the AI card has only a 100 Ω input (some older systems), you must add an external 150 Ω HART resistor in series. Most modern DCS AI cards include 250 Ω internally. Check the hardware manual before commissioning.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══ SEC 7: STANDARDS & FURTHER READING ══ -->
+      <div style="margin-bottom:1.4rem">
+        <div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);border-bottom:2px solid var(--accent-bd);padding-bottom:.4rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <span style="background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.58rem">07</span> Standards, Codes &amp; Further Reading
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1rem">
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden">
+            <div style="background:var(--accent);padding:8px 14px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff">Key Standards</div>
+            <div style="padding:14px;font-family:var(--mono);font-size:.75rem;color:var(--txt2);line-height:2.1">
+              <strong style="color:var(--accent)">IEC 60381-1</strong> — Analogue signals: 4–20 mA<br>
+              <strong style="color:var(--accent)">IEC 60584</strong> — Thermocouple tables (TC types)<br>
+              <strong style="color:var(--accent)">IEC 60751</strong> — Pt100 RTD specifications<br>
+              <strong style="color:var(--accent)">IEC 61511</strong> — Functional safety (SIS / SIL)<br>
+              <strong style="color:var(--accent)">IEC 60079</strong> — Equipment for explosive atmospheres (ATEX / IECEx)<br>
+              <strong style="color:var(--accent)">ASME PTC 19.3 TW</strong> — Thermowell design standard<br>
+              <strong style="color:var(--accent)">ISA-5.1</strong> — Instrumentation symbols &amp; identification<br>
+              <strong style="color:var(--accent)">ISO 5167</strong> — DP flow measurement (orifice, venturi)<br>
+              <strong style="color:var(--accent)">API RP 551</strong> — Process measurement instrumentation
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden">
+            <div style="background:var(--orange);padding:8px 14px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff">Common Field Mistakes</div>
+            <div style="padding:14px;font-size:.78rem;color:var(--txt2);line-height:1.85">
+              <strong>1.</strong> Forgetting square-root on DP flow → 40% undercount at midscale<br>
+              <strong>2.</strong> Using copper cable for TC extension → systematic temperature error<br>
+              <strong>3.</strong> No HART resistor on old AI cards → communicator won't connect<br>
+              <strong>4.</strong> Ignoring cable temperature correction on long IS loops → voltage margin error<br>
+              <strong>5.</strong> Excessive thermowell insertion in high-velocity gas → fatigue failure<br>
+              <strong>6.</strong> Paralleling 4–20 mA loads → signal corruption and DCS reading error<br>
+              <strong>7.</strong> Ignoring live-zero — treating 0 mA as "zero flow" rather than fault condition<br>
+              <strong>8.</strong> Specifying Type J TC without temperature ceiling → iron oxidation above 540°C
+            </div>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden">
+            <div style="background:var(--green);padding:8px 14px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#fff">Glossary</div>
+            <div style="padding:14px;font-family:var(--mono);font-size:.73rem;color:var(--txt2);line-height:2.1">
+              <strong>4–20 mA</strong> — Analogue current signal standard<br>
+              <strong>Live zero</strong> — 4 mA = 0% span, enabling fault detection<br>
+              <strong>HART</strong> — Digital overlay on 4–20 mA loop (FSK)<br>
+              <strong>CJC</strong> — Cold junction compensation (TC reference)<br>
+              <strong>f_n</strong> — Natural frequency of thermowell [Hz]<br>
+              <strong>f_s</strong> — Vortex shedding (wake) frequency [Hz]<br>
+              <strong>St</strong> — Strouhal number (≈ 0.22 for cylinders)<br>
+              <strong>IS barrier</strong> — Intrinsic safety energy limiting device<br>
+              <strong>MAWP</strong> — Maximum Allowable Working Pressure<br>
+              <strong>EMF</strong> — Electromotive force (thermocouple voltage)<br>
+              <strong>Cv</strong> — Valve flow coefficient [US gal/min @ 1 psi ΔP]<br>
+              <strong>AI / AO</strong> — Analogue Input / Analogue Output (DCS)
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Calculator accuracy notice -->
+        <div style="background:var(--warn-bg);border:1.5px solid var(--warn-bd);border-radius:10px;padding:16px">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--warn-txt);margin-bottom:10px">⚠ Calculator Scope &amp; Engineering Limitations</div>
+          <div style="font-size:.78rem;color:var(--txt2);line-height:1.85">
+            All calculators in this suite are <strong>first-pass sizing and checking tools</strong>. They should be used to identify feasibility, catch gross errors, and guide early design decisions. They do not replace rigorous engineering analysis or code compliance sign-off. Specific limitations:<br><br>
+            <strong>4–20 mA / Loop Load:</strong> Resistances are treated as purely real (no inductive/capacitive effects). In practice, cable capacitance can limit HART bandwidth on very long runs (&gt;1 km).<br>
+            <strong>Thermowell:</strong> Uniform cross-section assumed. Reynolds number correction to Strouhal number (0.19–0.22 range), Scruton number (mass damping), and tapered/stepped geometry are not modelled. ASME PTC 19.3 TW software (e.g. REOTEMP TW Pro, STS TW) should be used for final qualification.<br>
+            <strong>Square root / DP flow:</strong> Ideal fluid, incompressible single-phase assumed. No compensation for gas expansion factor Y, velocity approach factor, or discharge coefficient Cd variation with Reynolds number.<br>
+            <strong>All results are indicative</strong> — verify with certified engineering documents and applicable standards before ordering equipment or signing off designs.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /tools-area -->
+
+<!-- ══ MOBILE BOTTOM TAB BAR ══ -->
+<nav class="mob-bar">
+  <div class="mob-bar-inner">
+    <button class="mtab active" onclick="nav(0,this)"><span class="mi">📡</span>4–20 mA</button>
+    <button class="mtab" onclick="nav(1,this)"><span class="mi">√x</span>Sqrt</button>
+    <button class="mtab" onclick="nav(2,this)"><span class="mi">🔗</span>Loop</button>
+    <button class="mtab" onclick="nav(3,this)"><span class="mi">🌡</span>T-well</button>
+    <button class="mtab" onclick="nav(4,this)"><span class="mi">⚖</span>Load</button>
+    <button class="mtab" onclick="nav(5,this)"><span class="mi">📋</span>TC Ref</button>
+    <button class="mtab" onclick="nav(6,this)"><span class="mi">📖</span>Guide</button>
+  </div>
+</nav>
+
+<footer>
+  <div style="background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;text-align:left;max-width:800px;margin-left:auto;margin-right:auto;font-size:.65rem;color:var(--warn-txt);line-height:1.6">
+    <strong>⚠ Engineering Limitations Notice:</strong> These tools provide simplified first-pass calculations. The following factors are <em>not</em> modelled and should be assessed separately for final designs:
+    <br>• <strong>Thermowell</strong>: Strouhal number is Reynolds-corrected (0.19–0.27 range). Scruton number, tapered/stepped geometry, mounting compliance and fluid damping are not modelled — use full ASME PTC 19.3 TW software for final sign-off.
+    <br>• <strong>Control valve Cv</strong>: FL liquid pressure recovery factor, vapor pressure correction, choked flow, and gas expansion factor Y are not implemented
+    <br>• <strong>Gas calculations</strong>: Ideal gas law assumed — real gas EOS (Peng-Robinson, etc.) required for high-pressure or mixed-gas service
+    <br>• <strong>Flow transmitter</strong>: Ideal incompressible single-phase fluid assumed. Discharge coefficient Cd, gas expansion factor Y, and velocity approach factor E not applied — for primary element sizing refer to ISO 5167.
+    <br>• <strong>Cable resistance</strong>: Linear temperature correction applied (α_Cu = 0.00393/°C, valid to ~100°C); non-linear behaviour above 100°C not modelled
+    <br>• <strong>4–20 mA</strong>: NAMUR NE43 fault current zones detected and flagged. Cable capacitance effects on HART bandwidth (relevant on runs &gt;1 km) not modelled.
+    <br>• <strong>Loop Load</strong>: 22 mA smart transmitter diagnostic peak checked in addition to 20 mA nominal. Inductive/capacitive impedance not modelled.
+  </div>
+  Instrumentation Engineering Calculator Suite &nbsp;|&nbsp;
+  Results are indicative — verify with certified engineering documents and applicable standards &nbsp;|&nbsp; © 2025
+</footer>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════
+   API ENDPOINT
+══════════════════════════════ */
+const API = '/api/instrumentation-calculators';
+
+/* ══════════════════════════════
+   NAVIGATION
+══════════════════════════════ */
+let currentTool = 0;
+const TOTAL = 7;
+
+function nav(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  currentTool = idx;
+  document.querySelectorAll('.tool-sec').forEach((s, i) => s.classList.toggle('show', i === idx));
+  document.querySelectorAll('.tnav-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.mtab').forEach((b, i) => b.classList.toggle('active', i === idx));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const tBtn = document.getElementById('tn' + idx);
+  if (tBtn) tBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (['INPUT','SELECT'].includes(e.target.tagName)) {
+    const actions = [calcSignal, calcSqrt, calcLoop, calcThermowell, calcLLA, null, null];
+    const fn = actions[currentTool];
+    if (fn) { e.preventDefault(); fn(); }
+  }
+});
+
+let swipeStartX = 0, swipeTarget = null;
+document.querySelector('.tools-area').addEventListener('touchstart', e => {
+  swipeTarget = e.target;
+  swipeStartX = e.touches[0].clientX;
+}, { passive: true });
+document.querySelector('.tools-area').addEventListener('touchend', e => {
+  const tag = swipeTarget ? swipeTarget.tagName : '';
+  if (['INPUT','SELECT','TEXTAREA','TABLE','TH','TD'].includes(tag)) return;
+  const dx = e.changedTouches[0].clientX - swipeStartX;
+  if (Math.abs(dx) > 60) nav(currentTool + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+/* ══════════════════════════════
+   UNIT SYSTEM STATE
+══════════════════════════════ */
+const unitSys = {};
+function setUnitTog(tool, system, btn) {
+  unitSys[tool] = system;
+  const tgl = document.getElementById('ut-' + tool);
+  if (tgl) tgl.querySelectorAll('.ubtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+/* ══════════════════════════════
+   THERMOCOUPLE TABLE (reference data — no formula)
+══════════════════════════════ */
+const tcData = [
+  ['K','Chromel (Ni-Cr)','Alumel (Ni-Al)',-200,1260,'~41','General purpose, HVAC, oil & gas','Most widely used type'],
+  ['J','Iron (Fe)','Constantan (Cu-Ni)',-40,750,'~52','Older equipment, plastics industry','Avoid above 540°C (rusting)'],
+  ['T','Copper (Cu)','Constantan (Cu-Ni)',-200,350,'~43','Low temp, food & pharma','Good corrosion resistance'],
+  ['E','Chromel (Ni-Cr)','Constantan (Cu-Ni)',-200,900,'~68','Cryogenics, highest sensitivity','Highest EMF of all types'],
+  ['N','Nicrosil (Ni-Cr-Si)','Nisil (Ni-Si)',-200,1300,'~39','High-temp industry, replaces K','More stable above 1000°C'],
+  ['R','Pt-13%Rh','Pure Platinum',0,1480,'~10','Lab, precision furnaces','Expensive — platinum group'],
+  ['S','Pt-10%Rh','Pure Platinum',0,1480,'~10','Steel industry, kilns','ITS-90 reference standard'],
+  ['B','Pt-30%Rh','Pt-6%Rh',0,1820,'~6','Ceramics, steel foundry','Unreliable below 50°C'],
+];
+let tcUnit = 'Metric';
+const cToF = c => Math.round(c * 9 / 5 + 32);
+
+function renderTCTable() {
+  const th4 = document.getElementById('tc-th-range');
+  const th5 = document.getElementById('tc-th-sens');
+  if (th4) th4.textContent = tcUnit === 'Metric' ? 'Range (°C)' : 'Range (°F)';
+  if (th5) th5.textContent = tcUnit === 'Metric' ? 'Sensitivity (µV/°C)' : 'Sensitivity (µV/°F)';
+  document.getElementById('tc-tbody').innerHTML = tcData.map(r => {
+    const range = tcUnit === 'Metric' ? `${r[3]} to ${r[4]}` : `${cToF(r[3])} to ${cToF(r[4])}`;
+    const sv = parseFloat(r[5].replace('~', ''));
+    const sens = tcUnit === 'Metric' ? r[5] : `~${(sv * 5 / 9).toFixed(1)}`;
+    return `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${range}</td><td>${sens}</td><td>${r[6]}</td><td>${r[7]}</td></tr>`;
+  }).join('');
+}
+function setTCUnit(unit, btn) {
+  tcUnit = unit;
+  document.querySelectorAll('#ut-tctable .ubtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderTCTable();
+}
+renderTCTable();
+
+/* ══════════════════════════════
+   DOM HELPERS
+══════════════════════════════ */
+const $ = id => document.getElementById(id);
+const gv = id => { const el = $(id); if (!el) return NaN; return parseFloat(el.value); };
+const gs = id => { const el = $(id); return el ? (el.value || '') : ''; };
+function show(id, html, cls = 'result-box show') {
+  const el = $(id); if (!el) return;
+  el.innerHTML = html; el.className = cls;
+}
+function hide(id) { const el = $(id); if (el) el.classList.remove('show'); }
+function err(id, msg) { show(id, `<span style="color:var(--red)">⚠ ${msg}</span>`); }
+function setLoading(id) { show(id, `<span style="color:var(--muted)">⏳ Calculating…</span>`); }
+
+/* ══════════════════════════════
+   API CALL WRAPPER
+══════════════════════════════ */
+async function apiCalc(tool, inputs) {
+  const res = await fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tool, inputs })
+  });
+  if (!res.ok) throw new Error(`Server error ${res.status}`);
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || 'Calculation failed');
+  return data.result;
+}
+
+/* ══════════════════════════════
+   SIGNAL LABELS (UI only, no calc)
+══════════════════════════════ */
+function updateSigLabels() {
+  const dir = gs('sig-dir');
+  $('sig-input-lbl').textContent = dir === 'ma2eu' ? 'Input — Current (mA)' : 'Input — Engineering Unit Value';
+  $('sig-eu-unit').style.display = dir === 'eu2ma' ? 'block' : 'none';
+}
+updateSigLabels();
+
+/* ══════════════════════════════
+   TOOL 0: 4–20 mA Signal Converter
+══════════════════════════════ */
+async function calcSignal() {
+  hide('sig-result');
+  setLoading('sig-result');
+  try {
+    const r = await apiCalc('signal', {
+      v: gv('sig-input'), mn: gv('sig-min'), mx: gv('sig-max'), dir: gs('sig-dir')
+    });
+    if (r.type === 'fault') {
+      const c = r.nz.color === 'red' ? 'var(--red)' : r.nz.color === 'orange' ? 'var(--orange)' : 'var(--green)';
+      show('sig-result', `
+        <div class="rlabel">NAMUR NE43 Signal Diagnostic</div>
+        <div class="rval" style="color:${c};font-size:.9rem">${r.nz.label}</div>
+        <div class="rsub" style="margin-top:.5rem">Input: ${r.mA} mA — This current level indicates a transmitter fault or cable break, not a process value. Do not use for control decisions.</div>
+        <div style="margin-top:.65rem;padding:.55rem .75rem;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:6px;font-size:.72rem;color:var(--warn-txt);font-family:var(--mono);line-height:1.6">
+          <strong>NAMUR NE43 zones:</strong><br>
+          &lt; 3.6 mA — Device failure (low)<br>
+          3.6 – 3.8 mA — Maintenance / Out of spec<br>
+          3.8 – 4.0 mA — Below live-zero<br>
+          4.0 – 20.0 mA — ✅ Normal operating range<br>
+          20.0 – 21.0 mA — Above span / maintenance<br>
+          &gt; 21.0 mA — Device failure (high)
+        </div>`, 'result-box show');
+      return;
+    }
+    if (r.type === 'ma2eu') {
+      const nc = 'var(--green)';
+      show('sig-result', `
+        <div class="rlabel">Engineering Unit Output</div>
+        <div class="rval">${r.result}</div>
+        <div class="rg" style="margin-top:.55rem">
+          <div class="ri"><div class="rlabel">Input Current</div><div class="rval">${r.mA} mA</div></div>
+          <div class="ri"><div class="rlabel">% of Span</div><div class="rval">${r.pct}%</div></div>
+          <div class="ri"><div class="rlabel">Range</div><div class="rval">${r.mn} → ${r.mx}</div></div>
+          <div class="ri"><div class="rlabel">Span</div><div class="rval">${r.span}</div></div>
+        </div>
+        <div class="rsub" style="color:${nc}">${r.nz.label}</div>`);
+    } else {
+      const c = r.nz.color === 'red' ? 'var(--red)' : r.nz.color === 'orange' ? 'var(--orange)' : 'var(--green)';
+      show('sig-result', `
+        <div class="rlabel">Current Output</div>
+        <div class="rval">${r.result} mA</div>
+        <div class="rg" style="margin-top:.55rem">
+          <div class="ri"><div class="rlabel">Input EU</div><div class="rval">${r.eu}</div></div>
+          <div class="ri"><div class="rlabel">% of Span</div><div class="rval">${r.pct}%</div></div>
+          <div class="ri"><div class="rlabel">Range</div><div class="rval">${r.mn} → ${r.mx}</div></div>
+          <div class="ri"><div class="rlabel">4–20 mA</div><div class="rval">${r.result}</div></div>
+        </div>
+        <div class="rsub" style="color:${c}">${r.nz.label}</div>`);
+    }
+  } catch(e) { err('sig-result', e.message); }
+}
+
+/* ══════════════════════════════
+   TOOL 1: Square Root Extractor
+══════════════════════════════ */
+async function calcSqrt() {
+  hide('sqrt-result'); hide('sqrt-warn');
+  setLoading('sqrt-result');
+  const uMap = { m3h:'m³/h', lpm:'L/min', ls:'L/s', kgs:'kg/s', gpm:'gal/min', cfm:'ft³/min' };
+  try {
+    const r = await apiCalc('sqrt', {
+      dp: gv('sqrt-dp'), qmax: gv('sqrt-maxflow'),
+      cutoff: gv('sqrt-cutoff'), funit: gs('sqrt-flow-unit')
+    });
+    const u = uMap[r.funit] || r.funit;
+    if (r.cutoffActive) {
+      show('sqrt-warn', `⚠ DP (${r.dp}%) is below low-flow cutoff (${r.cutoff}%). Flow forced to zero — cutoff active. Will recover above ${r.hysteresisHigh}% (hysteresis band prevents oscillation at threshold).`, 'warn-box show');
+      show('sqrt-result', `
+        <div class="rlabel">Linearised Flow</div>
+        <div class="rval">0.0000 ${u}</div>
+        <div class="rsub">Low-flow cutoff active at ${r.cutoff}% | Hysteresis recovery: ${r.hysteresisHigh}%</div>`);
+    } else {
+      show('sqrt-result', `
+        <div class="rlabel">Linearised Flow Output</div>
+        <div class="rval">${r.flow} ${u}</div>
+        <div class="rg">
+          <div class="ri"><div class="rlabel">DP Signal</div><div class="rval">${r.dp} %</div></div>
+          <div class="ri"><div class="rlabel">% of Max Flow</div><div class="rval">${r.pct} %</div></div>
+          <div class="ri"><div class="rlabel">√(DP/100)</div><div class="rval">${r.sqrtVal}</div></div>
+          <div class="ri"><div class="rlabel">Max Flow Span</div><div class="rval">${r.qmax} ${u}</div></div>
+        </div>
+        <div class="rsub">Model: Q = Q_max × √(DP/100) — simplified linearisation. Ideal incompressible fluid assumed. For full accuracy with real fluid corrections (Cd, Re, Y-factor) refer to ISO 5167.</div>`);
+    }
+  } catch(e) { err('sqrt-result', e.message); }
+}
+
+/* ══════════════════════════════
+   TOOL 2: Loop Integrity Calculator
+══════════════════════════════ */
+async function calcLoop() {
+  hide('loop-result'); hide('loop-warn');
+  setLoading('loop-result');
+  try {
+    const r = await apiCalc('loop', {
+      len: gv('loop-len'), lenU: gs('loop-len-unit'),
+      csaRaw: gv('loop-csa'), csaU: gs('loop-csa-unit'),
+      supply: gv('loop-supply'), txmin: gv('loop-txmin'),
+      load: gv('loop-load'), cableTemp: gv('loop-cable-temp')
+    });
+    if (r.warns.length) show('loop-warn', r.warns.join('<br><br>'), 'warn-box show');
+    show('loop-result', `
+      <div class="rlabel">Loop Analysis at 20 mA (worst case)</div>
+      <div class="rg">
+        <div class="ri"><div class="rlabel">Cable R (2-way, ${r.T}°C)</div><div class="rval">${r.cable_r} Ω</div></div>
+        <div class="ri"><div class="rlabel">Total Loop Z</div><div class="rval">${r.total_r} Ω</div></div>
+        <div class="ri"><div class="rlabel">Cable Voltage Drop</div><div class="rval">${r.vDrop_cable} V</div></div>
+        <div class="ri"><div class="rlabel">Load Voltage Drop</div><div class="rval">${r.vDrop_load} V</div></div>
+        <div class="ri"><div class="rlabel">Transmitter Voltage</div><div class="rval">${r.vAtTx} V</div></div>
+        <div class="ri"><div class="rlabel">Headroom</div>
+          <div class="rval" style="color:${r.headroom>=2?'var(--green)':'var(--red)'}">
+            ${r.headroom} V
+          </div>
+        </div>
+        <div class="ri"><div class="rlabel">Max Allowable Load</div><div class="rval">${r.maxLoad} Ω</div></div>
+        <div class="ri"><div class="rlabel">Load Used</div>
+          <div class="rval" style="color:${parseFloat(r.loadUsed)<80?'var(--green)':'var(--red)'}">
+            ${r.loadUsed}%
+          </div>
+        </div>
+      </div>
+      <div class="rsub">CSA: ${r.csa} mm² ${r.csaU==='awg'?'(converted from AWG '+r.csaRaw_rounded+')':''} | ρ@${r.T}°C = ${r.rho_cu} Ω·mm²/m | Safe supply ≥ ${r.vRequired_safe} V</div>`);
+  } catch(e) { err('loop-result', e.message); }
+}
+
+/* ══════════════════════════════
+   TOOL 3: Thermowell Analyser
+══════════════════════════════ */
+function twFluidChange() {
+  $('tw-rho-row').style.display = gs('tw-fluid') === 'custom' ? 'block' : 'none';
+}
+
+async function calcThermowell() {
+  hide('tw-result'); hide('tw-warn');
+  setLoading('tw-result');
+  try {
+    const r = await apiCalc('thermowell', {
+      U: gv('tw-ins'), d: gv('tw-od'), vel: gv('tw-vel'),
+      lenU: gs('tw-len-unit'), odU: gs('tw-od-unit'), velU: gs('tw-vel-unit'),
+      fluid: gs('tw-fluid'), rho: gv('tw-rho')
+    });
+    const sc = r.statusLevel === 'ok' ? 'var(--green)' : r.statusLevel === 'warn' ? '#b85000' : 'var(--red)';
+    if (r.warns.length) show('tw-warn', r.warns.join('<br><br>'), 'warn-box show');
+    show('tw-result', `
+      <div class="rlabel">Thermowell Wake Frequency Analysis (Re-corrected St = ${r.St})</div>
+      <div class="rg">
+        <div class="ri"><div class="rlabel">Reynolds Number</div><div class="rval">${r.Re_str}</div></div>
+        <div class="ri"><div class="rlabel">Strouhal No. St</div><div class="rval">${r.St} (${r.regime.split(' ')[0]})</div></div>
+        <div class="ri"><div class="rlabel">Shedding Freq f_s</div><div class="rval">${r.fs_str} Hz</div></div>
+        <div class="ri"><div class="rlabel">Natural Freq f_n</div><div class="rval">${r.fn_str} Hz</div></div>
+        <div class="ri"><div class="rlabel">Freq Ratio f_s/f_n</div>
+          <div class="rval" style="color:${sc}">${r.fr_str}</div>
+        </div>
+        <div class="ri"><div class="rlabel">Status</div>
+          <div class="rval" style="font-size:.72rem;color:${sc}">${r.status}</div>
+        </div>
+        <div class="ri"><div class="rlabel">Insertion U</div><div class="rval">${r.U_mm} mm</div></div>
+        <div class="ri"><div class="rlabel">Tip OD d</div><div class="rval">${r.d_mm} mm</div></div>
+        <div class="ri"><div class="rlabel">Velocity</div><div class="rval">${r.vel_ms} m/s</div></div>
+        <div class="ri"><div class="rlabel">Fluid ρ</div><div class="rval">${r.rho} kg/m³</div></div>
+      </div>
+      <div class="rsub">316SS: E=193 GPa, ρ=7950 kg/m³ | I = πr⁴/4 = ${r.I_e10_str}×10⁻¹⁰ m⁴ | μ ≈ ${r.mu_str} Pa·s</div>`);
+  } catch(e) { err('tw-result', e.message); }
+}
+
+/* ══════════════════════════════
+   TOOL 4: Loop Load Analyzer
+══════════════════════════════ */
+async function calcLLA() {
+  hide('lla-result'); hide('lla-warn');
+  setLoading('lla-result');
+  try {
+    const r = await apiCalc('lla', {
+      supply: gv('lla-supply'), txmin: gv('lla-txmin'),
+      ai: gv('lla-ai'), iso: gv('lla-iso'),
+      barrier: gv('lla-barrier'), cable: gv('lla-cable'), other: gv('lla-other')
+    });
+    if (r.warns.length) show('lla-warn', r.warns.join('<br><br>'), 'warn-box show');
+    show('lla-result', `
+      <div class="rlabel">Loop Load Analysis — V_required = V_tx_min + I_max × R_total</div>
+      <div class="rg">
+        <div class="ri"><div class="rlabel">Total Loop Z</div><div class="rval">${r.total} Ω</div></div>
+        <div class="ri"><div class="rlabel">Max Allowable @ 20 mA</div><div class="rval">${r.maxLoad} Ω</div></div>
+        <div class="ri"><div class="rlabel">V_required (formula)</div><div class="rval">${r.vRequired} V</div></div>
+        <div class="ri"><div class="rlabel">V_required (1.3× margin)</div><div class="rval">${r.vRequired_safe} V</div></div>
+        <div class="ri"><div class="rlabel">Voltage Drop @ 20 mA</div><div class="rval">${r.vDrop} V</div></div>
+        <div class="ri"><div class="rlabel">Transmitter Voltage</div>
+          <div class="rval" style="color:${r.headroom>=2?'var(--green)':'var(--red)'}">
+            ${r.vAtTx} V
+          </div>
+        </div>
+        <div class="ri"><div class="rlabel">Headroom @ 20 mA</div>
+          <div class="rval" style="color:${r.headroom>=2?'var(--green)':'var(--red)'}">
+            ${r.headroom} V
+          </div>
+        </div>
+        <div class="ri"><div class="rlabel">Headroom @ 22 mA</div>
+          <div class="rval" style="color:${r.headroom_diag>=1?'var(--green)':'var(--red)'}">
+            ${r.headroom_diag} V
+          </div>
+        </div>
+        <div class="ri"><div class="rlabel">Load Used</div>
+          <div class="rval" style="color:${parseFloat(r.usedPct)<80?'var(--green)':'var(--red)'}">
+            ${r.usedPct}%
+          </div>
+        </div>
+        <div class="ri"><div class="rlabel">PASS / FAIL @ 20 mA</div>
+          <div class="rval" style="color:${r.pass20mA?'var(--green)':'var(--red)'}">
+            ${r.pass20mA ? '✅ PASS' : '🚨 FAIL'}
+          </div>
+        </div>
+      </div>
+      <div class="rsub">AI: ${r.ai}Ω | Isolator: ${r.iso}Ω | Barrier: ${r.barrier}Ω | Cable: ${r.cable}Ω | Other: ${r.other}Ω | 22 mA diagnostic check applied</div>`);
+  } catch(e) { err('lla-result', e.message); }
+}
+
+/* ══════════════════════════════
+   PDF EXPORT
+   Uses structured data re-computation — NOT DOM scraping.
+   Mirrors the original design: reads input values directly,
+   re-runs the same formulas the API uses so numbers always match.
+══════════════════════════════ */
+function exportPDF(tool) {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF library failed to load. Check your internet connection and reload the page, then try again.');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, M = 18, UW = W - M * 2;
+
+  // Header
+  doc.setFillColor(21, 88, 176); doc.rect(0, 0, W, 22, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(255, 255, 255);
+  doc.text('Instrumentation Engineering Calculator Suite  |  multicalci.com', M, 14);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+  doc.text('Generated: ' + new Date().toLocaleString(), W - M, 14, { align: 'right' });
+
+  const TITLES = {
+    signal: '4–20 mA Signal Converter',
+    sqrt:   'Square Root Extractor — DP Flow Linearisation',
+    loop:   'Loop Integrity Calculator — Voltage Drop & Cable Resistance',
+    tw:     'Thermowell Analyser — Wake Frequency & Resonance Check',
+    llad:   'Loop Load Analyzer — Total Impedance & Voltage Headroom',
+    tctable:'Thermocouple Type Reference Table (IEC 60584)'
+  };
+  doc.setFillColor(232, 240, 254); doc.rect(0, 22, W, 14, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(21, 88, 176);
+  doc.text(TITLES[tool] || tool, M, 32);
+
+  let y = 46;
+
+  function secHead(txt) {
+    doc.setFillColor(245, 247, 250); doc.rect(M, y - 5, UW, 9, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(80, 95, 115);
+    doc.text(txt.toUpperCase(), M + 2, y + 0.5); y += 9;
+  }
+  function rowKV(label, val) {
+    if (y > H - 28) { doc.addPage(); y = 25; }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+    doc.text(label + ':', M + 2, y);
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(21, 88, 176);
+    doc.text(String(val), M + 85, y);
+    y += 7;
+  }
+  function hrule() { doc.setDrawColor(210, 220, 235); doc.line(M, y, W - M, y); y += 4; }
+
+  // ── Inputs ──
+  secHead('Input Parameters');
+  rowKV('Unit System', unitSys[tool] || 'Metric');
+
+  if (tool === 'signal') {
+    rowKV('Direction', gs('sig-dir') === 'ma2eu' ? 'mA → EU' : 'EU → mA');
+    rowKV('Input Value', $('sig-input')?.value || '—');
+    rowKV('Range Min', $('sig-min')?.value || '—');
+    rowKV('Range Max', $('sig-max')?.value || '—');
+  } else if (tool === 'sqrt') {
+    rowKV('DP Signal', ($('sqrt-dp')?.value || '—') + ' %');
+    rowKV('Max Flow Span', ($('sqrt-maxflow')?.value || '—') + ' ' + gs('sqrt-flow-unit'));
+    rowKV('Low-Flow Cutoff', ($('sqrt-cutoff')?.value || '—') + ' %');
+  } else if (tool === 'loop') {
+    rowKV('Cable Length (one-way)', ($('loop-len')?.value || '—') + ' ' + gs('loop-len-unit'));
+    rowKV('Cable CSA', ($('loop-csa')?.value || '—') + ' ' + gs('loop-csa-unit'));
+    rowKV('Cable Temp', ($('loop-cable-temp')?.value || '20') + ' °C');
+    rowKV('Supply Voltage', ($('loop-supply')?.value || '—') + ' Vdc');
+    rowKV('Tx Min Voltage', ($('loop-txmin')?.value || '—') + ' Vdc');
+    rowKV('Loop Burden', ($('loop-load')?.value || '—') + ' Ω');
+  } else if (tool === 'tw') {
+    rowKV('Insertion Length U', ($('tw-ins')?.value || '—') + ' ' + gs('tw-len-unit'));
+    rowKV('Tip OD d', ($('tw-od')?.value || '—') + ' ' + gs('tw-od-unit'));
+    rowKV('Velocity', ($('tw-vel')?.value || '—') + ' ' + gs('tw-vel-unit'));
+    const fd = $('tw-fluid');
+    rowKV('Fluid Type', fd?.options[fd.selectedIndex]?.text || '—');
+    if ($('tw-rho')?.value) rowKV('Custom Density', $('tw-rho').value + ' kg/m³');
+  } else if (tool === 'llad') {
+    rowKV('Supply Voltage', ($('lla-supply')?.value || '—') + ' Vdc');
+    rowKV('Tx Min Voltage', ($('lla-txmin')?.value || '—') + ' Vdc');
+    rowKV('AI Card', ($('lla-ai')?.value || '0') + ' Ω');
+    rowKV('Isolator', ($('lla-iso')?.value || '0') + ' Ω');
+    rowKV('IS Barrier', ($('lla-barrier')?.value || '0') + ' Ω');
+    rowKV('Cable Resistance', ($('lla-cable')?.value || '0') + ' Ω');
+    rowKV('Other Loads', ($('lla-other')?.value || '0') + ' Ω');
+  } else if (tool === 'tctable') {
+    rowKV('Unit Display', tcUnit === 'Metric' ? '°C' : '°F');
+  }
+
+  hrule();
+  secHead('Results');
+
+  // Results — re-compute from inputs (same formulas as API, no DOM scraping)
+  if (tool === 'signal') {
+    const el = $('sig-result');
+    if (el?.classList.contains('show')) {
+      const v = gv('sig-input'), mn = gv('sig-min'), mx = gv('sig-max'), dir = gs('sig-dir');
+      if (!isNaN(v) && !isNaN(mn) && !isNaN(mx) && mn !== mx) {
+        if (dir === 'ma2eu' && v >= 4 && v <= 20) {
+          const result = mn + ((v - 4) / 16) * (mx - mn);
+          rowKV('Input Current', v + ' mA');
+          rowKV('Engineering Unit Output', result.toFixed(4));
+          rowKV('% of Span', ((v - 4) / 16 * 100).toFixed(1) + ' %');
+        } else if (dir === 'eu2ma') {
+          const result = 4 + ((v - mn) / (mx - mn)) * 16;
+          rowKV('Input EU Value', String(v));
+          rowKV('Current Output', result.toFixed(4) + ' mA');
+          rowKV('% of Span', ((result - 4) / 16 * 100).toFixed(1) + ' %');
+        } else {
+          doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150);
+          doc.text('Signal is in fault zone — no EU value computed.', M+2, y); y+=8;
+        }
+      }
+    } else { doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.text('Run calculation first.', M+2, y); y+=8; }
+  } else if (tool === 'sqrt') {
+    const el = $('sqrt-result');
+    if (el?.classList.contains('show')) {
+      const dp = gv('sqrt-dp'), qmax = gv('sqrt-maxflow'), u = gs('sqrt-flow-unit');
+      const cutoff = isNaN(gv('sqrt-cutoff')) ? 1 : gv('sqrt-cutoff');
+      if (!isNaN(dp) && !isNaN(qmax)) {
+        if (dp < cutoff) {
+          rowKV('Linearised Flow', '0.0000 (cutoff active at ' + cutoff + '%)');
+        } else {
+          const flow = qmax * Math.sqrt(dp / 100);
+          rowKV('DP Signal', dp.toFixed(2) + ' %');
+          rowKV('Linearised Flow', flow.toFixed(4) + ' ' + u);
+          rowKV('% of Max Flow', (flow / qmax * 100).toFixed(2) + ' %');
+          rowKV('√(DP/100)', Math.sqrt(dp / 100).toFixed(5));
+        }
+      }
+    } else { doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.text('Run calculation first.', M+2, y); y+=8; }
+  } else if (tool === 'loop') {
+    const el = $('loop-result');
+    if (el?.classList.contains('show')) {
+      let len = gv('loop-len'); const lenU = gs('loop-len-unit');
+      if (lenU === 'km') len *= 1000; else if (lenU === 'ft') len *= 0.3048;
+      let csaRaw = gv('loop-csa'); const csaU = gs('loop-csa-unit');
+      // Inline AWG lookup (same as API) — no formula leakage, just standard conversion
+      const AWG_T = {10:5.261,12:3.309,14:2.081,16:1.309,18:0.8231,20:0.5176,22:0.3255,24:0.2047,26:0.1288,28:0.0810};
+      const a = Math.round(csaRaw);
+      const csa = csaU === 'awg' ? (AWG_T[a] || (()=>{ const d_in=0.005*Math.pow(92,(36-csaRaw)/39); const dm=d_in*25.4; return Math.PI/4*dm*dm; })()) : csaRaw;
+      const T = isNaN(gv('loop-cable-temp')) ? 20 : gv('loop-cable-temp');
+      const rho_cu = 0.0168 * (1 + 0.00393 * (T - 20));
+      const cable_r = rho_cu * (2 * len) / csa;
+      const load = gv('loop-load'), supply = gv('loop-supply'), txmin = gv('loop-txmin');
+      const total_r = load + cable_r;
+      const vAtTx = supply - total_r * 0.020;
+      const headroom = vAtTx - txmin;
+      const vRequired_safe = 1.3 * txmin + 0.020 * total_r;
+      rowKV('Cable R (2-way, @' + T + '°C)', cable_r.toFixed(3) + ' Ω');
+      rowKV('Total Loop Z', total_r.toFixed(3) + ' Ω');
+      rowKV('Cable Voltage Drop', (cable_r * 0.020).toFixed(3) + ' V');
+      rowKV('Load Voltage Drop', (load * 0.020).toFixed(3) + ' V');
+      rowKV('Transmitter Voltage', vAtTx.toFixed(3) + ' V');
+      rowKV('Voltage Headroom', headroom.toFixed(3) + ' V');
+      rowKV('Max Allowable Load', ((supply - txmin) / 0.020).toFixed(1) + ' Ω');
+      rowKV('Safe Supply (1.3× margin)', vRequired_safe.toFixed(2) + ' V');
+      rowKV('PASS / FAIL', headroom >= 0 ? 'PASS' : 'FAIL');
+    } else { doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.text('Run calculation first.', M+2, y); y+=8; }
+  } else if (tool === 'tw') {
+    const el = $('tw-result');
+    if (el?.classList.contains('show')) {
+      let U = gv('tw-ins'), d = gv('tw-od'), vel = gv('tw-vel');
+      const lenU = gs('tw-len-unit'), odU = gs('tw-od-unit'), velU = gs('tw-vel-unit');
+      const fluid = gs('tw-fluid');
+      let rho = gv('tw-rho');
+      if (lenU === 'mm') U /= 1000; else if (lenU === 'in') U *= 0.0254;
+      if (odU  === 'mm') d /= 1000; else if (odU  === 'in') d *= 0.0254;
+      if (velU === 'fts') vel *= 0.3048;
+      if (fluid === 'liquid' && (isNaN(rho)||rho<=0)) rho = 1000;
+      else if (fluid === 'gas' && (isNaN(rho)||rho<=0)) rho = 10;
+      const mu = fluid === 'liquid' ? 0.001 : fluid === 'gas' ? 1.8e-5 : (rho > 100 ? 0.001 : 1.8e-5);
+      const Re = (rho * vel * d) / mu;
+      let St;
+      if (Re < 1000) St = 0.21; else if (Re < 200000) St = 0.22; else if (Re < 500000) St = 0.19; else St = 0.27;
+      const fs = St * vel / d;
+      const r2 = d / 2;
+      const fn = (3.52 / (2 * Math.PI * U * U)) * Math.sqrt((193e9 * Math.PI * Math.pow(r2,4) / 4) / (7950 * Math.PI * r2 * r2));
+      const fr = fs / fn;
+      rowKV('Reynolds Number', Re.toExponential(3));
+      rowKV('Strouhal Number St', String(St));
+      rowKV('Shedding Freq f_s', fs.toFixed(3) + ' Hz');
+      rowKV('Natural Freq f_n', fn.toFixed(3) + ' Hz');
+      rowKV('Frequency Ratio f_s/f_n', fr.toFixed(4));
+      rowKV('Status', fr < 0.6 ? 'ACCEPTABLE' : fr < 0.8 ? 'MARGINAL' : 'CRITICAL');
+      rowKV('Fluid Density', rho + ' kg/m³');
+    } else { doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.text('Run calculation first.', M+2, y); y+=8; }
+  } else if (tool === 'llad') {
+    const el = $('lla-result');
+    if (el?.classList.contains('show')) {
+      const supply = gv('lla-supply'), txmin = gv('lla-txmin');
+      const ai      = isNaN(gv('lla-ai'))      ? 0 : Math.max(0, gv('lla-ai'));
+      const iso     = isNaN(gv('lla-iso'))     ? 0 : Math.max(0, gv('lla-iso'));
+      const barrier = isNaN(gv('lla-barrier')) ? 0 : Math.max(0, gv('lla-barrier'));
+      const cable   = isNaN(gv('lla-cable'))   ? 0 : Math.max(0, gv('lla-cable'));
+      const other   = isNaN(gv('lla-other'))   ? 0 : Math.max(0, gv('lla-other'));
+      const total = ai + iso + barrier + cable + other;
+      const maxLoad = (supply - txmin) / 0.020;
+      const vRequired = txmin + 0.020 * total;
+      const vRequired_safe = 1.3 * txmin + 0.020 * total;
+      const vAtTx = supply - total * 0.020;
+      const headroom = vAtTx - txmin;
+      const vAtTx_diag = supply - total * 0.022;
+      const headroom_diag = vAtTx_diag - txmin;
+      rowKV('Total Loop Z', total.toFixed(2) + ' Ω');
+      rowKV('Max Allowable Load', maxLoad.toFixed(1) + ' Ω');
+      rowKV('V_required (formula)', vRequired.toFixed(3) + ' V');
+      rowKV('V_required (1.3× safety)', vRequired_safe.toFixed(3) + ' V');
+      rowKV('Voltage Drop @ 20 mA', (total * 0.020).toFixed(3) + ' V');
+      rowKV('Transmitter Voltage', vAtTx.toFixed(3) + ' V');
+      rowKV('Headroom @ 20 mA', headroom.toFixed(3) + ' V');
+      rowKV('Headroom @ 22 mA', headroom_diag.toFixed(3) + ' V');
+      rowKV('Load Used', (total / maxLoad * 100).toFixed(1) + ' %');
+      rowKV('PASS / FAIL @ 20 mA', headroom >= 0 ? 'PASS' : 'FAIL');
+      rowKV('PASS / FAIL @ 22 mA', headroom_diag >= 0 ? 'PASS' : 'FAIL (diagnostic overload)');
+    } else { doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.text('Run calculation first.', M+2, y); y+=8; }
+  } else if (tool === 'tctable') {
+    const colW = [10, 35, 32, 26, 22, 42, 27];
+    const heads = ['Type', '+Wire', '-Wire', 'Range', 'Sens.', 'Application', 'Notes'];
+    doc.setFillColor(230, 240, 255); doc.rect(M, y - 5, UW, 8, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(21, 88, 176);
+    let xc = M;
+    heads.forEach((h, i) => { doc.text(h, xc + 1, y); xc += colW[i]; });
+    y += 6;
+    tcData.forEach((t, ri) => {
+      if (y > H - 20) { doc.addPage(); y = 25; }
+      if (ri % 2 === 0) { doc.setFillColor(247, 249, 252); doc.rect(M, y - 4, UW, 7, 'F'); }
+      xc = M;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(40, 40, 40);
+      const range = tcUnit === 'Metric' ? `${t[3]} to ${t[4]}°C` : `${cToF(t[3])} to ${cToF(t[4])}°F`;
+      const sv = parseFloat(t[5].replace('~',''));
+      const sens = tcUnit === 'Metric' ? t[5] : `~${(sv * 5/9).toFixed(1)}`;
+      const vals = [t[0], t[1].substring(0,17), t[2].substring(0,17), range, sens, t[6].substring(0,20), t[7].substring(0,18)];
+      vals.forEach((v, i) => { doc.text(String(v), xc + 1, y); xc += colW[i]; });
+      y += 7;
+    });
+  }
+
+  // Footer
+  doc.setDrawColor(21, 88, 176); doc.setLineWidth(0.3);
+  doc.line(M, H - 18, W - M, H - 18);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(120, 130, 145);
+  doc.text('multicalci.com  |  Results are indicative only — verify with certified engineering documents and applicable standards.', M, H - 12);
+  doc.text('Page 1', W - M, H - 12, { align: 'right' });
+  doc.save('IE_' + tool + '_report.pdf');
+}
+
+/* ══════════════════════════════
+   SHARE MODAL
+══════════════════════════════ */
+function openShareModal() {
+  document.getElementById('shareOverlay').classList.add('open');
+  document.getElementById('shareUrlInput').value = window.location.href;
+}
+function closeShareModal() {
+  document.getElementById('shareOverlay').classList.remove('open');
+}
+function copyShareLink() {
+  const inp = document.getElementById('shareUrlInput');
+  const btn = document.getElementById('shareCopyBtn');
+  navigator.clipboard.writeText(inp.value).then(() => showCopied(btn)).catch(() => {
+    inp.select(); document.execCommand('copy'); showCopied(btn);
+  });
+}
+function showCopied(btn) {
+  btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+}
+function shareToSocial(platform) {
+  const url = encodeURIComponent(window.location.href);
+  const msg = encodeURIComponent('Check out this Instrumentation Engineering Calculator Suite — 4-20mA, Flow, Loop Integrity, Thermowell & more!');
+  const title = encodeURIComponent('Instrumentation Engineering Tools');
+  const links = {
+    whatsapp: `https://wa.me/?text=${msg}%20${url}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+    twitter:  `https://twitter.com/intent/tweet?text=${msg}&url=${url}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    email:    `mailto:?subject=${title}&body=${msg}%20${url}`
+  };
+  window.open(links[platform], '_blank', 'noopener,noreferrer');
+}
+function shareCurrentPDF() {
+  const toolMap = { 0:'signal', 1:'sqrt', 2:'loop', 3:'tw', 4:'llad', 5:'tctable', 6:'signal' };
+  closeShareModal();
+  exportPDF(toolMap[currentTool] || 'signal');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('shareOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeShareModal();
+  });
+});
+</script>
+<!-- ══ SHARE MODAL ══ -->
+<div class="share-overlay" id="shareOverlay">
+  <div class="share-modal">
+    <div class="share-modal-hd">
+      <div>
+        <div class="share-modal-title">🔗 Share This Tool</div>
+        <div class="share-modal-sub">Share the app or export your current report</div>
+      </div>
+      <button class="share-close" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="share-modal-bd">
+      <div class="share-section-label">Page Link</div>
+      <div class="share-url-row">
+        <input class="share-url-input" id="shareUrlInput" type="text" readonly value="">
+        <button class="share-copy-btn" id="shareCopyBtn" onclick="copyShareLink()">Copy</button>
+      </div>
+      <div class="share-section-label">Share on Social</div>
+      <div class="share-grid">
+        <button class="s-btn s-wa" onclick="shareToSocial('whatsapp')">
+          <div class="s-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#22c55e"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413A11.815 11.815 0 0012.05 0zm0 21.785a9.864 9.864 0 01-5.032-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.871 9.871 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+          </div>
+          WhatsApp
+        </button>
+        <button class="s-btn s-li" onclick="shareToSocial('linkedin')">
+          <div class="s-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+          LinkedIn
+        </button>
+        <button class="s-btn s-tw" onclick="shareToSocial('twitter')">
+          <div class="s-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.737-8.857-8.168-10.643h7.137l4.258 5.639L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          X / Twitter
+        </button>
+        <button class="s-btn s-fb" onclick="shareToSocial('facebook')">
+          <div class="s-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          Facebook
+        </button>
+        <button class="s-btn s-em" onclick="shareToSocial('email')">
+          <div class="s-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          Email
+        </button>
+      </div>
+      <div class="share-pdf-row">
+        <div class="share-pdf-ico">📄</div>
+        <div class="share-pdf-txt">
+          <strong>Export Current Report</strong>
+          <span>Download PDF of the active calculator</span>
+        </div>
+        <button class="share-pdf-action" onclick="shareCurrentPDF()">PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
