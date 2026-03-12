@@ -1086,6 +1086,51 @@ let _lastApiResult   = {};          // cache last API response for PDF
 
 const API_URL = '/api/orifice-flow';
 
+// ─── Fluid library (orifice: gases, key liquids, steam) ───────────────────
+const FLUID_DB = {
+  // ── Gases ──
+  'Air':            {t:'g',sg:1.000,M:28.964,k:1.400,mu:1.82e-5,Z:1.000,Tc:132.5,Pc:3.77},
+  'Nitrogen (N₂)':  {t:'g',sg:0.967,M:28.014,k:1.400,mu:1.76e-5,Z:1.000,Tc:126.2,Pc:3.39},
+  'Oxygen (O₂)':    {t:'g',sg:1.105,M:32.000,k:1.395,mu:2.01e-5,Z:1.000,Tc:154.6,Pc:5.04},
+  'Hydrogen (H₂)':  {t:'g',sg:0.070,M:2.016, k:1.405,mu:8.90e-6,Z:1.000,Tc:33.2, Pc:1.30},
+  'CO₂':            {t:'g',sg:1.519,M:44.010,k:1.289,mu:1.48e-5,Z:0.994,Tc:304.1,Pc:7.38},
+  'CO':             {t:'g',sg:0.967,M:28.010,k:1.400,mu:1.77e-5,Z:1.000,Tc:132.9,Pc:3.50},
+  'Methane (CH₄)':  {t:'g',sg:0.554,M:16.043,k:1.304,mu:1.10e-5,Z:0.998,Tc:190.6,Pc:4.60},
+  'Propane (C₃H₈)': {t:'g',sg:1.522,M:44.097,k:1.130,mu:8.20e-6,Z:0.981,Tc:369.8,Pc:4.25},
+  'Butane (C₄H₁₀)': {t:'g',sg:2.009,M:58.124,k:1.100,mu:7.40e-6,Z:0.960,Tc:425.1,Pc:3.80},
+  'Natural Gas':    {t:'g',sg:0.620,M:17.967,k:1.310,mu:1.10e-5,Z:0.990,Tc:203.3,Pc:4.64},
+  'Ammonia (NH₃)':  {t:'g',sg:0.588,M:17.031,k:1.310,mu:1.00e-5,Z:0.995,Tc:405.6,Pc:11.28},
+  'Chlorine':       {t:'g',sg:2.448,M:70.906,k:1.340,mu:1.33e-5,Z:0.990,Tc:417.2,Pc:7.71},
+  'Argon':          {t:'g',sg:1.380,M:39.948,k:1.667,mu:2.27e-5,Z:1.000,Tc:150.9,Pc:4.87},
+  'Helium':         {t:'g',sg:0.138,M:4.003, k:1.667,mu:1.99e-5,Z:1.000,Tc:5.2,  Pc:0.23},
+  'SO₂':            {t:'g',sg:2.264,M:64.065,k:1.290,mu:1.25e-5,Z:0.990,Tc:430.8,Pc:7.88},
+  'H₂S':            {t:'g',sg:1.189,M:34.081,k:1.320,mu:1.22e-5,Z:0.990,Tc:373.2,Pc:8.94},
+  'Ethane (C₂H₆)':  {t:'g',sg:1.049,M:30.069,k:1.200,mu:9.10e-6,Z:0.988,Tc:305.3,Pc:4.87},
+  'Ethylene':       {t:'g',sg:0.968,M:28.054,k:1.240,mu:1.02e-5,Z:0.993,Tc:282.4,Pc:5.04},
+  'Acetylene':      {t:'g',sg:0.897,M:26.038,k:1.232,mu:1.03e-5,Z:0.990,Tc:308.3,Pc:6.14},
+  'Flue Gas':       {t:'g',sg:1.000,M:28.964,k:1.350,mu:1.90e-5,Z:1.000,Tc:132.5,Pc:3.77},
+  // ── Liquids ──
+  'Water':          {t:'l',sg:1.000,mu:1.00e-3,Pv:0.023},
+  'Seawater':       {t:'l',sg:1.025,mu:1.07e-3,Pv:0.022},
+  'Crude Oil (30API)':{t:'l',sg:0.876,mu:2.0e-2,Pv:0.008},
+  'Diesel / Gas Oil':{t:'l',sg:0.840,mu:3.5e-3,Pv:0.003},
+  'Kerosene':       {t:'l',sg:0.800,mu:1.8e-3,Pv:0.007},
+  'Gasoline':       {t:'l',sg:0.720,mu:5.5e-4,Pv:0.55},
+  'Methanol':       {t:'l',sg:0.791,mu:5.9e-4,Pv:0.129},
+  'Ethanol':        {t:'l',sg:0.789,mu:1.2e-3,Pv:0.059},
+  'Toluene':        {t:'l',sg:0.867,mu:5.9e-4,Pv:0.038},
+  'Benzene':        {t:'l',sg:0.879,mu:6.5e-4,Pv:0.100},
+  'Acetone':        {t:'l',sg:0.791,mu:3.2e-4,Pv:0.247},
+  'Sulfuric Acid 98%':{t:'l',sg:1.836,mu:2.67e-2,Pv:0.0},
+  'HCl 32%':        {t:'l',sg:1.157,mu:1.9e-3,Pv:0.085},
+  'NaOH 50%':       {t:'l',sg:1.525,mu:7.8e-2,Pv:0.005},
+  'MEA':            {t:'l',sg:1.018,mu:2.41e-2,Pv:0.0005},
+  'Glycerol':       {t:'l',sg:1.261,mu:1.412, Pv:0.0001},
+  'Ethylene Glycol':{t:'l',sg:1.113,mu:2.10e-2,Pv:0.0001},
+  // ── Steam ──
+  'Steam':          {t:'s',sg:0.6/1.205,mu:1.3e-5,Pv:0,k:1.135},
+};
+
 // Pipe schedule lookup [NPS, sched, OD_mm, ID_mm]
 const PIPE_SCHEDULES = [
   ['1"',   40, 33.40, 26.64], ['1.5"', 40, 48.26, 40.89],
