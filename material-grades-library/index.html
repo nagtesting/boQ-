@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Material Grades Library — ASME, ASTM | multicalci.com</title>
+<meta name="description" content="Free engineering materials database with ASME/ASTM grades, composition and mechanical properties.">
+<link rel="canonical" href="https://multicalci.com/material-grades-library/">
+<meta property="og:title" content="Engineering Material Grades Library — ASME, ASTM | multicalci.com">
+<meta property="og:description" content="Free engineering materials database with ASME/ASTM grades, composition and mechanical properties.">
+<meta property="og:url" content="https://multicalci.com/material-grades-library/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Engineering Material Grades Library — ASME, ASTM | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Engineering Material Grades Library","description":"ASME and ASTM material grades reference library for process engineers and piping designers.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/material-grades-library/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --copper:#b5600a; --copper2:#d4720c; --copper-pale:#fdf3e8;
+  --slate:#1e2832; --slate2:#2d3b4a; --slate3:#3d5166;
+  --ink:#121820; --ink2:#1e2832; --ink3:#384553;
+  --mid:#5a6b7a; --light:#8a9aaa;
+  --paper:#ffffff; --paper2:#f7f9fb; --paper3:#edf1f5;
+  --rule:#dde3e9; --rule2:#ccd3da;
+  --green:#0d6b3a; --green2:#12945a; --green-pale:#e8f7f0;
+  --blue:#0952a0; --blue2:#1268c8; --blue-pale:#e6f0fb;
+  --red:#b01c28; --red-pale:#fde8ea;
+  --amber:#9a5a00; --amber-pale:#fef3e2;
+  --mono:'JetBrains Mono',monospace;
+  --head:'Playfair Display',serif;
+  --body:'Nunito Sans',sans-serif;
+}
+[data-theme="dark"]:root,
+[data-theme="dark"] {
+  --copper:#d4720c; --copper2:#e8960e; --copper-pale:#2a1800;
+  --slate:#0d1318; --slate2:#141e26; --slate3:#1e2d3a;
+  --ink:#e8eef4; --ink2:#cdd5dc; --ink3:#a0b0be;
+  --mid:#7a8fa0; --light:#5a6b7a;
+  --paper:#121a22; --paper2:#0d1318; --paper3:#1a2530;
+  --rule:#1e2d3a; --rule2:#253545;
+  --green:#12945a; --green2:#1ab870; --green-pale:#0a2018;
+  --blue:#1268c8; --blue2:#2880e0; --blue-pale:#0a1830;
+  --red:#d42030; --red-pale:#200810;
+  --amber:#d4900a; --amber-pale:#201000;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--paper2);color:var(--ink);min-height:100vh;font-size:16px;transition:background 0.3s,color 0.3s;}
+
+.topbar{position:sticky;top:0;z-index:300;background:var(--slate);border-bottom:3px solid var(--copper);box-shadow:0 3px 20px rgba(0,0,0,0.2);height:60px;display:flex;align-items:center;padding:0 24px;gap:0;}
+.brand{display:flex;align-items:center;gap:12px;padding-right:28px;border-right:1px solid rgba(255,255,255,0.1);flex-shrink:0;}
+.brand-mark{width:42px;height:42px;background:var(--copper);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:1.05rem;font-weight:700;color:#fff;}
+.brand-name{font-family:var(--head);font-size:1.2rem;font-weight:700;color:#fff;line-height:1.15;}
+.brand-sub{font-family:var(--mono);font-size:0.88rem;color:rgba(255,255,255,0.45);letter-spacing:2px;text-transform:uppercase;}
+.nav{display:flex;flex:1;align-items:center;padding:0 16px;gap:4px;}
+.nav-btn{padding:8px 18px;border:none;background:transparent;border-radius:4px;font-family:var(--body);font-size:0.94rem;font-weight:700;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.18s;white-space:nowrap;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.nav-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-btn.active{background:var(--copper);color:#fff;}
+.nav-step{font-family:var(--mono);font-size:0.88rem;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);border-radius:2px;padding:1px 5px;}
+.nav-btn.active .nav-step{background:rgba(0,0,0,0.2);color:#fff;}
+.nav-sep{width:1px;height:32px;background:rgba(255,255,255,0.1);margin:0 4px;}
+.nav-end{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.dark-toggle{width:36px;height:36px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.18s;flex-shrink:0;}
+.dark-toggle:hover{background:rgba(255,255,255,0.14);color:#fff;}
+
+/* ── TAB SECTIONS ── */
+.section{display:none;}
+.section.active{display:block;animation:rise 0.3s ease;}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── PAGE ── */
+.page{max-width:1440px;margin:0 auto;padding:24px 24px 80px;}/* 80px bottom ensures compare bar never obscures last card */
+.pg-hero{background:linear-gradient(135deg,var(--slate) 0%,var(--slate2) 50%,var(--slate3) 100%);border-radius:10px;padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.12);}
+.pg-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper),var(--copper2),#e8960e);}
+.pg-hero-tag{font-family:var(--mono);font-size:1.00rem;color:var(--copper2);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;}
+.pg-hero h1{font-family:var(--head);font-size:2.0rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;}
+.pg-hero p{font-size:1.00rem;color:rgba(255,255,255,0.6);max-width:680px;}
+.pg-hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.pg-pill{font-family:var(--mono);font-size:1.00rem;letter-spacing:0.8px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);padding:3px 11px;border-radius:2px;}
+
+/* ── TAB ROW ── */
+.tab-row{display:flex;gap:0;border-bottom:2px solid var(--rule);margin-bottom:24px;overflow-x:auto;background:var(--paper);border-radius:8px 8px 0 0;padding:0 8px;}
+.tab-btn{padding:12px 22px;border:none;background:transparent;font-family:var(--body);font-size:1.04rem;font-weight:700;color:var(--mid);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.18s;white-space:nowrap;}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--copper);border-bottom-color:var(--copper);}
+
+/* ── SEARCH + FILTER ── */
+.lib-controls{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.lib-search-wrap{position:relative;flex:1;min-width:220px;}
+.lib-search{width:100%;padding:8px 36px 8px 12px;background:var(--paper);border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:0.94rem;outline:none;transition:border-color 0.2s;color:var(--ink);}
+.lib-search:focus{border-color:var(--copper);box-shadow:0 0 0 3px rgba(181,96,10,0.1);}
+.lib-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--light);font-size:1.00rem;display:none;padding:2px 4px;border-radius:2px;line-height:1;}
+.lib-search-clear:hover{color:var(--mid);}
+.lib-search-clear.visible{display:block;}
+.lib-sort{padding:8px 10px;border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:1.00rem;color:var(--ink);background:var(--paper);outline:none;cursor:pointer;}
+.lib-sort:focus{border-color:var(--copper);}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;}
+.fb{padding:6px 13px;border-radius:4px;border:1.5px solid var(--rule2);font-size:0.87rem;font-weight:700;color:var(--mid);background:var(--paper);cursor:pointer;transition:all 0.15s;}
+.fb:hover{border-color:var(--copper);color:var(--copper);}
+.fb.active{background:var(--copper);border-color:var(--copper);color:#fff;}
+
+/* ── LIBRARY CARDS ── */
+.lib-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:1100px){.lib-cards{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.lib-cards{grid-template-columns:1fr;}}
+.lib-card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,0.06);transition:all 0.2s;}
+.lib-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.10);transform:translateY(-3px);border-color:var(--rule2);}
+.lib-card-top{display:flex;align-items:stretch;}
+.lib-card-bar{width:6px;flex-shrink:0;}
+.lib-card-title-block{padding:12px 14px;flex:1;}
+.lib-card-group{font-family:var(--mono);font-size:0.87rem;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:3px;}
+.lib-card-name{font-family:var(--head);font-size:1.05rem;font-weight:700;color:var(--ink);line-height:1.2;}
+.lib-card-grade{font-family:var(--mono);font-size:1.00rem;color:var(--blue);margin-top:3px;}
+.lib-card-body{padding:12px 14px;border-top:1px solid var(--rule);}
+.lib-prop{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--rule);}
+.lib-prop:last-of-type{border-bottom:none;}
+.lib-prop-k{font-size:0.87rem;color:var(--mid);}
+.lib-prop-v{font-family:var(--mono);font-size:0.85rem;font-weight:600;color:var(--ink);}
+.lib-desc{font-size:0.88rem;color:var(--mid);line-height:1.65;margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule);}
+.lib-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.tag{font-family:var(--mono);font-size:0.88rem;padding:2px 6px;border-radius:2px;border:1px solid;font-weight:600;}
+
+/* ── PROS CONS ── */
+.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.pros-list,.cons-list{font-size:0.88rem;line-height:1.8;}
+.pros-list{color:var(--green);}
+.cons-list{color:var(--red);}
+.pros-list div::before{content:'✓ ';}
+.cons-list div::before{content:'✗ ';}
+
+/* ── COMPOSITION EXPANDABLE ── */
+.expand-btn{display:flex;align-items:center;gap:6px;padding:5px 0;font-family:var(--mono);font-size:1.00rem;font-weight:600;color:var(--copper);cursor:pointer;border:none;background:none;margin-top:6px;letter-spacing:0.5px;}
+.expand-btn:hover{color:var(--copper2);}
+.comp-detail{display:none;margin-top:6px;background:var(--paper3);border-radius:4px;padding:9px 11px;}
+.comp-detail.open{display:block;animation:rise 0.2s ease;}
+.comp-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--rule);font-size:0.85rem;}
+.comp-row:last-child{border-bottom:none;}
+.comp-row span:first-child{color:var(--mid);}
+.comp-row span:last-child{font-family:var(--mono);font-weight:600;color:var(--ink);}
+
+/* ── COMPARISON MATRIX ── */
+.matrix-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.ml-item{display:flex;align-items:center;gap:6px;font-size:1.00rem;color:var(--mid);}
+.matrix-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,0.05);}
+.matrix-table{border-collapse:collapse;min-width:900px;width:100%;}
+.matrix-table th.fluid-col{font-size:0.85rem;padding:9px 14px;background:var(--slate);color:#fff;text-align:left;font-family:var(--mono);letter-spacing:0.5px;font-weight:600;white-space:nowrap;position:sticky;left:0;z-index:2;}
+.matrix-table th.mat-col{font-size:1.00rem;padding:10px 5px;background:var(--slate2);color:#fff;text-align:center;font-family:var(--mono);letter-spacing:0.5px;font-weight:600;min-width:76px;line-height:1.3;}
+.matrix-table td.fluid-name{font-size:0.92rem;padding:9px 14px;border-bottom:1px solid var(--rule);font-weight:700;color:var(--ink3);white-space:nowrap;background:var(--paper);position:sticky;left:0;z-index:1;}
+.matrix-table td.cell{padding:5px;border-bottom:1px solid var(--rule);text-align:center;vertical-align:middle;}
+.matrix-table tbody tr:nth-child(even) td{background:var(--paper2);}
+.matrix-table tbody tr:nth-child(even) td.fluid-name{background:var(--paper2);}
+.matrix-table tbody tr:hover td{background:var(--copper-pale)!important;}
+.compat{display:inline-flex;align-items:center;justify-content:center;width:38px;height:22px;border-radius:3px;font-family:var(--mono);font-size:1.00rem;font-weight:700;cursor:help;}
+.c-exc{background:#e8f7f0;color:#0d6b3a;border:1px solid #86efac;}
+.c-ok {background:#e6f0fb;color:#0952a0;border:1px solid #93c5fd;}
+.c-marg{background:#fef3e2;color:#9a5a00;border:1px solid #fcd34d;}
+.c-no {background:#fde8ea;color:#b01c28;border:1px solid #fca5a5;}
+
+/* ── GRADE REFERENCE TABLE ── */
+.grade-table{width:100%;border-collapse:collapse;font-size:1.04rem;}
+.grade-table thead th{background:var(--slate);color:#fff;padding:9px 13px;font-family:var(--mono);font-size:1.00rem;letter-spacing:1.2px;text-align:left;font-weight:600;text-transform:uppercase;}
+.grade-table tbody td{padding:9px 13px;border-bottom:1px solid var(--rule);color:var(--ink2);}
+.grade-table tbody tr:nth-child(even) td{background:var(--paper2);}
+.grade-table tbody tr:hover td{background:var(--copper-pale);}
+.grade-table td:first-child{font-family:var(--head);font-weight:700;font-size:1.00rem;}
+.grade-table td:nth-child(2){font-family:var(--mono);font-size:0.87rem;color:var(--blue);}
+
+/* ── P1 BACK BANNER ── */
+.p1-banner{display:flex;align-items:center;justify-content:space-between;background:var(--slate);border-radius:8px;padding:14px 20px;margin-bottom:20px;border-left:5px solid var(--copper);}
+.p1-banner-text .tit{font-family:var(--head);font-size:1.04rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.p1-banner-text .sub{font-size:0.89rem;color:rgba(255,255,255,0.55);}
+.p1-link-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--copper);color:#fff;border-radius:5px;font-family:var(--body);font-size:1.02rem;font-weight:800;text-decoration:none;letter-spacing:0.5px;transition:all 0.2s;white-space:nowrap;}
+.p1-link-btn:hover{background:var(--copper2);box-shadow:0 4px 14px rgba(181,96,10,0.4);}
+
+/* ── STAT CARDS ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;text-align:center;}
+.stat-card-val{font-family:var(--head);font-size:1.8rem;font-weight:700;color:var(--copper);}
+.stat-card-lbl{font-size:0.87rem;color:var(--mid);margin-top:3px;}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .page{padding:14px 14px 80px;}
+}
+@media(max-width:420px){
+  .stat-row{grid-template-columns:1fr;}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--rule2);border-radius:3px;}
+
+/* ── NO RESULTS ── */
+.no-results{text-align:center;padding:40px 20px;color:var(--light);grid-column:1/-1;}
+.no-results-icon{font-size:2.5rem;opacity:0.3;margin-bottom:10px;}
+
+/* ── DISCLAIMER BANNER ── */
+.disclaimer-banner{background:#fef3e2;border:2px solid #f59e0b;border-radius:8px;padding:12px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;}
+.disclaimer-icon{font-size:1.4rem;flex-shrink:0;margin-top:1px;}
+.disclaimer-text{font-size:1.00rem;color:#78350f;line-height:1.6;}
+.disclaimer-text strong{color:#92400e;font-size:1.02rem;}
+
+/* ── CONDITION INPUTS ── */
+.condition-bar{background:var(--paper);border:1.5px solid var(--rule2);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;}
+.cond-group{display:flex;flex-direction:column;gap:4px;}
+.cond-label{font-family:var(--mono);font-size:0.88rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);}
+.cond-input{padding:6px 10px;border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:1.02rem;color:var(--ink);width:110px;outline:none;transition:border-color 0.2s;background:var(--paper);}
+.cond-input:focus{border-color:var(--copper);}
+.cond-select{padding:6px 10px;border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:1.02rem;color:var(--ink);background:var(--paper);outline:none;}
+.cond-apply-btn{padding:7px 18px;background:var(--copper);color:#fff;border:none;border-radius:4px;font-family:var(--body);font-size:1.00rem;font-weight:700;cursor:pointer;transition:background 0.18s;white-space:nowrap;}
+.cond-apply-btn:hover{background:var(--copper2);}
+.cond-note{font-family:var(--mono);font-size:1.00rem;color:var(--mid);margin-top:6px;padding:6px 10px;background:var(--paper3);border-radius:4px;border-left:3px solid var(--amber);width:100%;}
+/* Matrix fluid search */
+.matrix-search-wrap{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;}
+.matrix-search{padding:7px 12px;border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:1.02rem;color:var(--ink);background:var(--paper);outline:none;min-width:220px;}
+.matrix-search:focus{border-color:var(--copper);}
+.matrix-industry-filter{display:flex;gap:5px;flex-wrap:wrap;}
+.mif{padding:4px 10px;border-radius:4px;border:1px solid var(--rule2);font-size:0.85rem;font-weight:700;color:var(--mid);background:var(--paper);cursor:pointer;transition:all 0.15s;}
+.mif:hover{border-color:var(--copper);color:var(--copper);}
+.mif.active{background:var(--copper);border-color:var(--copper);color:#fff;}
+/* Grade search */
+.grade-search-wrap{margin-bottom:16px;}
+.grade-search{width:100%;padding:8px 12px;border:1.5px solid var(--rule2);border-radius:4px;font-family:var(--mono);font-size:0.94rem;color:var(--ink);background:var(--paper);outline:none;}
+.grade-search:focus{border-color:var(--copper);}
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--slate);color:#fff;padding:10px 20px;border-radius:6px;font-family:var(--mono);font-size:0.89rem;z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Back to top */
+.back-top{position:fixed;bottom:90px;right:24px;width:40px;height:40px;background:var(--copper);color:#fff;border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:199;opacity:0;pointer-events:none;transition:all 0.3s;box-shadow:0 3px 12px rgba(181,96,10,0.4);display:flex;align-items:center;justify-content:center;}
+.back-top.visible{opacity:1;pointer-events:all;}
+.back-top:hover{background:var(--copper2);transform:translateY(-2px);}
+/* Copy button on grade table */
+.copy-grade-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;font-family:var(--mono);font-size:1.00rem;background:var(--paper2);border:1px solid var(--rule2);border-radius:3px;color:var(--mid);cursor:pointer;transition:all 0.15s;margin-left:8px;}
+.copy-grade-btn:hover{border-color:var(--copper);color:var(--copper);}
+/* Print */
+@media print{
+  .topbar,.compare-bar,.back-top,.toast,.disclaimer-banner{display:none!important;}
+  .section{display:block!important;}
+  .tab-row{display:none!important;}
+  body{background:#fff;color:#000;}
+}
+
+/* ── CONFIDENCE BADGE ── */
+.conf-badge{display:inline-block;font-family:var(--mono);font-size:0.87rem;padding:2px 6px;border-radius:2px;font-weight:700;letter-spacing:0.5px;margin-top:4px;}
+.conf-field{background:#e8f7f0;color:#0d6b3a;border:1px solid #86efac;}
+.conf-lab{background:#e6f0fb;color:#0952a0;border:1px solid #93c5fd;}
+.conf-heur{background:#fef3e2;color:#9a5a00;border:1px solid #fcd34d;}
+
+/* ── COMPARE BAR ── */
+.compare-bar{position:fixed;bottom:0;left:0;right:0;background:var(--slate);border-top:3px solid var(--copper);padding:10px 24px;display:flex;align-items:center;gap:14px;z-index:200;transform:translateY(100%);transition:transform 0.3s;}
+.compare-bar.show{transform:translateY(0);}
+.compare-bar-items{display:flex;gap:8px;flex:1;flex-wrap:wrap;}
+.compare-tag{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 10px;color:#fff;font-size:0.89rem;font-family:var(--mono);}
+.compare-tag-x{cursor:pointer;opacity:0.6;margin-left:4px;}
+.compare-tag-x:hover{opacity:1;}
+.compare-btn{padding:9px 20px;background:var(--copper);color:#fff;border:none;border-radius:4px;font-family:var(--body);font-size:1.02rem;font-weight:800;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.compare-btn:hover{background:var(--copper2);}
+.compare-clear{padding:9px 16px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);border-radius:4px;font-family:var(--body);font-size:1.00rem;cursor:pointer;}
+.compare-clear:hover{color:#fff;}
+.add-compare-btn{display:block;width:100%;margin-top:8px;padding:5px;border:1.5px dashed var(--rule2);background:transparent;color:var(--mid);font-family:var(--mono);font-size:1.00rem;letter-spacing:0.5px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+.add-compare-btn:hover{border-color:var(--copper);color:var(--copper);}
+.add-compare-btn.added{background:var(--copper-pale);border-color:var(--copper);color:var(--copper);}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--paper);border-radius:10px;max-width:880px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--paper);z-index:1;}
+.modal-hd-title{font-family:var(--head);font-size:1.2rem;font-weight:700;}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--mid);padding:4px;}
+.modal-close:hover{color:var(--ink);}
+.modal-bd{padding:20px;}
+.compare-grid{display:grid;gap:14px;overflow-x:auto;}
+.compare-col{min-width:160px;}
+.compare-prop-row{display:flex;border-bottom:1px solid var(--rule);}
+.compare-prop-key{padding:7px 12px;font-size:0.88rem;color:var(--mid);min-width:160px;flex-shrink:0;background:var(--paper3);border-right:1px solid var(--rule);}
+.compare-prop-val{padding:7px 12px;font-family:var(--mono);font-size:0.87rem;font-weight:600;color:var(--ink);flex:1;min-width:140px;border-right:1px solid var(--rule);}
+.compare-prop-val:last-child{border-right:none;}
+.compare-prop-val.best{color:var(--green);background:var(--green-pale);}
+.compare-prop-val.worst{color:var(--red);background:var(--red-pale);}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ── -->
+<header class="topbar">
+<div class="brand">
+    <div class="brand-mark">M</div>
+    <div>
+      <div class="brand-name">MOC Selector</div>
+      <div class="brand-sub">Material of Construction</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <a class="nav-btn" href="https://multicalci.com/" title="All Calculators — multicalci.com">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+      Home
+    </a>
+    <div class="nav-sep"></div>
+    <button class="nav-btn active">
+      <span class="nav-step">P2</span>Material Library &amp; Comparison
+    </button>
+    <div class="nav-end">
+      <button class="dark-toggle" id="dark-toggle" title="Toggle dark mode (D)" onclick="toggleDark()" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </nav>
+</header>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compare-bar">
+  <div style="font-family:var(--mono);font-size:0.94rem;color:rgba(255,255,255,0.6);letter-spacing:1px;flex-shrink:0;">COMPARING:</div>
+  <div class="compare-bar-items" id="compare-bar-items"></div>
+  <button class="compare-clear" onclick="clearCompare()">Clear</button>
+  <button class="compare-btn" onclick="openCompareModal()">⚖️ Compare Now</button>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-bg" id="compare-modal" role="dialog" aria-modal="true" aria-labelledby="compare-modal-title" onclick="if(event.target===this)closeCompareModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title" id="compare-modal-title">⚖️ Material Comparison</span>
+      <button class="modal-close" onclick="closeCompareModal()" aria-label="Close comparison modal">✕</button>
+    </div>
+    <div class="modal-bd" id="compare-modal-body"></div>
+  </div>
+</div>
+
+<!-- ════════════════════ MAIN PAGE ════════════════════ -->
+<main class="page">
+
+  <div class="p1-banner">
+    <div class="p1-banner-text">
+      <div class="tit">🏠 multicalci.com — Engineering Calculators</div>
+      <div class="sub">Browse all free engineering calculators, tools, and reference libraries</div>
+    </div>
+    <a class="p1-link-btn" href="https://multicalci.com/">🏠 Go to Home</a>
+  </div>
+
+  <div class="pg-hero">
+    <div class="pg-hero-tag">Page 2 of 2 — Reference Data</div>
+    <h1>Material Library, Grades &amp; Compatibility</h1>
+    <p>Browse all materials with full composition data, grade variants, and compatibility ratings. Select up to 4 materials to compare side-by-side. Use the tabs below to switch views.</p>
+    <div class="pg-hero-pills">
+      <span class="pg-pill">CARBON &amp; LOW ALLOY STEEL</span>
+      <span class="pg-pill">HP BOILER TUBE MATERIALS</span>
+      <span class="pg-pill">REFORMER TUBE ALLOYS</span>
+      <span class="pg-pill">AUSTENITIC SS · DUPLEX · SDSS</span>
+      <span class="pg-pill">HASTELLOY FAMILY</span>
+      <span class="pg-pill">INCONEL · INCOLOY</span>
+      <span class="pg-pill">MONEL · CUPRO-NICKEL</span>
+      <span class="pg-pill">TITANIUM · ZIRCONIUM · TANTALUM</span>
+      <span class="pg-pill">HX TUBE MATERIALS</span>
+      <span class="pg-pill">CLADDING · OVERLAY</span>
+      <span class="pg-pill">POLYMER · FRP</span>
+    </div>
+  </div>
+
+  <!-- ⚠ ENGINEERING DISCLAIMER -->
+  <div class="disclaimer-banner">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-text">
+      <strong>Engineering Disclaimer — Not a Substitute for Metallurgical Review.</strong>
+      Compatibility ratings in this tool are heuristic-based references using simplified scoring. They do not replace site-specific corrosion engineering, vendor datasheets, NACE MR0175/ISO 15156, API 941 Nelson Curves, or a qualified metallurgist's review. High-risk services including chlorine, HF alkylation, ammonia reformers, sour gas, and seawater systems must always be verified with a corrosion specialist before material selection is finalized.
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-card-val">55+</div><div class="stat-card-lbl">Materials in Library</div></div>
+    <div class="stat-card"><div class="stat-card-val">13</div><div class="stat-card-lbl">Material Categories</div></div>
+    <div class="stat-card"><div class="stat-card-val">10</div><div class="stat-card-lbl">Corrosion Mechanisms</div></div>
+    <div class="stat-card"><div class="stat-card-val">1,200+</div><div class="stat-card-lbl">Compatibility Data Points</div></div>
+  </div>
+
+  <!-- TAB ROW -->
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('library',this)">📚 Material Library</button>
+    <button class="tab-btn" onclick="switchTab('matrix',this)">📊 Compatibility Matrix</button>
+    <button class="tab-btn" onclick="switchTab('grades',this)">📋 Grade Reference</button>
+    <button class="tab-btn" onclick="switchTab('corr',this)">🧪 Corrosion Guide</button>
+  </div>
+
+  <!-- ════════ TAB 1: LIBRARY ════════ -->
+  <div class="section active" id="tab-library">
+    <div class="lib-controls">
+      <div class="lib-search-wrap">
+        <input type="text" class="lib-search" id="lib-search" placeholder="🔍 Search materials, grades, tags…" oninput="onLibSearch()" aria-label="Search materials">
+        <button class="lib-search-clear" id="lib-search-clear" onclick="clearLibSearch()" title="Clear search" aria-label="Clear search">✕</button>
+      </div>
+      <select class="lib-sort" id="lib-sort" onchange="buildLibCards()" aria-label="Sort materials">
+        <option value="default">Sort: Default</option>
+        <option value="name">Sort: Name A–Z</option>
+        <option value="temp_asc">Sort: Max Temp ↑</option>
+        <option value="temp_desc">Sort: Max Temp ↓</option>
+        <option value="cost_asc">Sort: Cost Low–High</option>
+        <option value="cost_desc">Sort: Cost High–Low</option>
+      </select>
+      <div class="filter-row" id="lib-filter-row"><!-- JS --></div>
+    </div>
+    <div id="lib-count" style="font-family:var(--mono);font-size:1.02rem;color:var(--mid);margin-bottom:12px;letter-spacing:0.5px;"></div>
+    <div class="lib-cards" id="lib-cards"><!-- JS --></div>
+  </div>
+
+  <!-- ════════ TAB 2: MATRIX ════════ -->
+  <div class="section" id="tab-matrix">
+    <div class="matrix-legend">
+      <div class="ml-item"><span class="compat c-exc">✓✓</span> Excellent — recommended</div>
+      <div class="ml-item"><span class="compat c-ok">✓</span> Acceptable — verify</div>
+      <div class="ml-item"><span class="compat c-marg">~</span> Marginal — with caution</div>
+      <div class="ml-item"><span class="compat c-no">✗</span> Not suitable</div>
+    </div>
+
+    <!-- OPERATING CONDITIONS INPUT -->
+    <div class="condition-bar">
+      <div class="cond-group">
+        <label class="cond-label">Operating Temp (°C)</label>
+        <input type="number" class="cond-input" id="cond-temp" value="80" min="-196" max="1200" placeholder="°C">
+      </div>
+      <div class="cond-group">
+        <label class="cond-label">Operating Pressure (bar)</label>
+        <input type="number" class="cond-input" id="cond-press" value="10" min="0" max="1000" placeholder="bar">
+      </div>
+      <div class="cond-group">
+        <label class="cond-label">Chloride (ppm)</label>
+        <input type="number" class="cond-input" id="cond-cl" value="50" min="0" max="200000" placeholder="ppm">
+      </div>
+      <div class="cond-group">
+        <label class="cond-label">pH</label>
+        <input type="number" class="cond-input" id="cond-ph" value="7" min="0" max="14" step="0.1" placeholder="0–14">
+      </div>
+      <div class="cond-group">
+        <label class="cond-label">H₂S Present</label>
+        <select class="cond-select" id="cond-h2s">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div class="cond-group">
+        <label class="cond-label">Phase</label>
+        <select class="cond-select" id="cond-phase">
+          <option value="wet">Wet / Aqueous</option>
+          <option value="dry">Dry / Vapour</option>
+        </select>
+      </div>
+      <button class="cond-apply-btn" onclick="buildMatrix()">▶ Apply Conditions</button>
+      <div class="cond-note">⚠ Results are heuristic estimates. Verify all selections against NACE MR0175, API 941, and vendor corrosion data before finalising MOC.</div>
+    </div>
+
+    <!-- FLUID SEARCH + INDUSTRY FILTER -->
+    <div class="matrix-search-wrap">
+      <input type="text" class="matrix-search" id="matrix-fluid-search" placeholder="🔍 Filter fluids…" oninput="buildMatrix()" aria-label="Filter process fluids">
+      <div class="matrix-industry-filter" id="matrix-industry-filter"><!-- JS --></div>
+    </div>
+
+    <div style="margin-bottom:14px;font-size:1.04rem;color:var(--mid);background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:10px 14px;">
+      Compatibility shown for the operating conditions entered above. Temperature, chloride, pH and H₂S presence significantly affect material suitability — adjust conditions and reapply. Binary suit/avoid data from material library is used as a baseline; always verify with site-specific corrosion data.
+    </div>
+    <div class="matrix-wrap" id="matrix-wrap"><!-- JS --></div>
+  </div>
+
+  <!-- ════════ TAB 3: GRADE REFERENCE ════════ -->
+  <div class="section" id="tab-grades">
+    <div style="margin-bottom:12px;font-size:1.05rem;color:var(--mid);line-height:1.6;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:10px 14px;">
+      Comprehensive grade reference for all material groups. Select the actual grade based on the required product form (pipe, plate, forging, casting) and the applicable design standard.
+    </div>
+    <div class="grade-search-wrap">
+      <input type="text" class="grade-search" id="grade-search" placeholder="🔍 Search grades, descriptions, forms…" oninput="buildGradeRef()" aria-label="Search grade reference">
+    </div>
+    <div id="grade-ref-content"><!-- JS --></div>
+  </div>
+
+  <!-- ════════ TAB 4: CORROSION GUIDE ════════ -->
+  <div class="section" id="tab-corr">
+    <div id="corr-guide"><!-- JS --></div>
+  </div>
+
+</main><!-- /page -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+<!-- Back to top -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" aria-label="Back to top">↑</button>
+
+<!-- ════════════════════ DATA + JS ════════════════════ -->
+<script>
+'use strict';
+
+/* ── SHARED DATA ── */
+const FLUIDS = [
+  {id:'crude',       name:'Crude Oil',            corr:'moderate', ind:'Oil & Gas'},
+  {id:'h2s_gas',     name:'Sour Gas / H₂S',        corr:'severe',   ind:'Oil & Gas'},
+  {id:'nat_gas',     name:'Natural Gas',            corr:'low',      ind:'Oil & Gas'},
+  {id:'diesel',      name:'Diesel / HFO',           corr:'low',      ind:'Oil & Gas'},
+  {id:'h2so4',       name:'Sulfuric Acid H₂SO₄',   corr:'severe',   ind:'Chemical'},
+  {id:'hcl',         name:'Hydrochloric Acid HCl',  corr:'severe',   ind:'Chemical'},
+  {id:'hno3',        name:'Nitric Acid HNO₃',       corr:'severe',   ind:'Chemical'},
+  {id:'naoh',        name:'Caustic Soda NaOH',      corr:'moderate', ind:'Chemical'},
+  {id:'cl2',         name:'Chlorine Gas Cl₂',       corr:'severe',   ind:'Chemical'},
+  {id:'nh3',         name:'Ammonia NH₃',            corr:'moderate', ind:'Chemical'},
+  {id:'hf',          name:'Hydrofluoric Acid HF',   corr:'severe',   ind:'Petrochemical'},
+  {id:'h3po4',       name:'Phosphoric Acid H₃PO₄',  corr:'severe',   ind:'Chemical'},
+  {id:'water_sw',    name:'Seawater',               corr:'severe',   ind:'Water'},
+  {id:'water_fw',    name:'Fresh Water',             corr:'low',      ind:'Water'},
+  {id:'water_bw',    name:'Boiler Feed Water',       corr:'moderate', ind:'Power'},
+  {id:'steam',       name:'Steam (Process)',         corr:'low',      ind:'Power'},
+  {id:'milk',        name:'Milk / Dairy',            corr:'low',      ind:'Food & Bev'},
+  {id:'pharma',      name:'WFI / Pharma Media',      corr:'low',      ind:'Pharma'},
+  {id:'benzene',     name:'Benzene / Aromatics',     corr:'low',      ind:'Petrochemical'},
+  {id:'fgd',         name:'FGD Slurry',             corr:'moderate', ind:'Power'},
+  {id:'brine',       name:'Produced Water / Brine',  corr:'severe',   ind:'Oil & Gas'},
+  {id:'co2',         name:'Wet CO₂',                corr:'moderate', ind:'Oil & Gas'},
+  {id:'acid_mine',   name:'Acid Mine Drainage',      corr:'severe',   ind:'Mining'},
+  {id:'amine',       name:'Amine (MEA/DEA/MDEA)',   corr:'moderate', ind:'Oil & Gas'},
+  {id:'lng',         name:'LNG / LPG',               corr:'low',      ind:'Oil & Gas'},
+];
+
+const MATERIALS = {
+
+  /* ─────── CARBON STEEL ─────── */
+  CS_A106:   {id:'CS_A106',   group:'Carbon Steel',          color:'#7a5200',name:'Carbon Steel A106 Gr.B',     grade:'ASTM A106 Gr.B / IS 2062 Gr.B',      t_min:-29,  t_max:425,  p_max:400, cost_idx:1.0,  std:'ASTM A106, A53, IS:2062',          composition:{C:'0.30 max',Mn:'0.29–1.06',P:'0.048 max',S:'0.058 max',Si:'0.10 min',Fe:'Balance'},                            pros:['Lowest cost','Widely available','Easy to weld','Good for dry non-corrosive service'],cons:['Not for wet/corrosive service','Not for acids/alkalis','Corrosion allowance required'],suits:['nat_gas','diesel','steam','lng'],avoids:['h2so4','hcl','hno3','water_sw','cl2','acid_mine'],desc:'Standard seamless CS pipe for non-corrosive service at moderate temperature. Most economical MOC for dry gas and hydrocarbon service.',tags:['Weldable','General Service','ASME B31.3']},
+  CS_A516:   {id:'CS_A516',   group:'Carbon Steel',          color:'#7a5200',name:'Carbon Steel A516 Gr.70',    grade:'ASTM A516 Gr.70 (Pressure Vessel)',   t_min:-29,  t_max:425,  p_max:400, cost_idx:1.1,  std:'ASTM A516, ASME Section VIII',     composition:{C:'0.28 max',Mn:'0.85–1.20',P:'0.035 max',S:'0.035 max',Si:'0.15–0.40',Fe:'Balance'},                            pros:['Good notch toughness','Standard PV plate','Wide availability'],cons:['Not for corrosive service','Not for acid or caustic','PWHT may be required'],suits:['nat_gas','diesel','steam','lng'],avoids:['h2so4','hcl','water_sw','cl2'],desc:'Workhorse pressure vessel plate for moderate temperatures. Used for drums, separators, column shells in O&G and chemical plants.',tags:['PV Plate','ASME VIII','Notch Tough']},
+  MS_Fe410:  {id:'MS_Fe410',  group:'Carbon Steel',          color:'#8a6600',name:'Mild Steel IS 2062 Fe410',   grade:'IS 2062 E250/E350 (Fe410)',            t_min:-10,  t_max:350,  p_max:150, cost_idx:0.9,  std:'IS:2062, BS EN 10025',             composition:{C:'0.23 max',Mn:'1.50 max',P:'0.045 max',S:'0.045 max',Si:'0.40 max',Fe:'Balance'},                             pros:['Very low cost','Excellent weldability','Easy machinability'],cons:['Very prone to corrosion','Not for corrosive media','Structural use only'],suits:['nat_gas','diesel'],avoids:['h2so4','hcl','water_sw','water_fw'],desc:'General structural steel to Indian standard. Lowest cost but poorest corrosion resistance. For structural, non-process fabrication.',tags:['Structural','IS Standard','Low Cost']},
+
+  /* ─────── LOW ALLOY STEEL / HIGH TEMP ─────── */
+  LAS_P11:   {id:'LAS_P11',   group:'Low Alloy Steel',       color:'#5a3a00',name:'1¼Cr-½Mo (P11 / P22)',       grade:'ASTM A335 P11 / ASTM A335 P22',       t_min:-29,  t_max:600,  p_max:600, cost_idx:2.5,  std:'ASTM A335, A387, API 941',         composition:{C:'0.05–0.15',Cr:'1.00–1.50',Mo:'0.44–0.65',Mn:'0.30–0.60',Si:'0.50–1.00',Fe:'Balance'},                      pros:['High temperature creep resistance','HTHA resistance per API 941 Nelson curves','Good high-pressure service'],cons:['PWHT mandatory','Not for corrosive media','Specialist welding procedure needed'],suits:['steam','nat_gas','diesel'],avoids:['h2so4','hcl','water_sw'],desc:'1¼Cr-½Mo (P11) and 2¼Cr-1Mo (P22) alloy steel pipes for high-temp service in refinery heaters, reformers, and steam piping above 400°C.',tags:['High Temp','Cr-Mo','Creep Resistant','API 941']},
+  LAS_P91:   {id:'LAS_P91',   group:'Low Alloy Steel',       color:'#4a3000',name:'9Cr-1Mo-V (P91 / P92)',       grade:'ASTM A335 P91 / ASTM A335 P92',       t_min:-29,  t_max:650,  p_max:700, cost_idx:4.5,  std:'ASTM A335, A387, ASME B31.1',     composition:{C:'0.08–0.12',Cr:'8.0–9.5',Mo:'0.85–1.05',V:'0.18–0.25',Nb:'0.06–0.10',Fe:'Balance'},                       pros:['Excellent creep strength to 650°C','High-temp steam service','Thinner walls vs P22'],cons:['Complex PWHT and welding procedure','PWHT temp critical (760°C ±14°C)','Not for corrosive service'],suits:['steam','nat_gas'],avoids:['h2so4','hcl','water_sw'],desc:'Modified 9Cr-1Mo-V-Nb steel for ultra-supercritical steam, high-temp reformer piping, and power boiler applications above 600°C.',tags:['Ultra Supercritical','9Cr Steel','Power Gen','Creep']},
+
+  /* ─────── HIGH PRESSURE BOILER TUBE MATERIALS ─────── */
+  BT_SA210:  {id:'BT_SA210',  group:'HP Boiler Tube',        color:'#3a4a00',name:'SA-210 Gr.A1 / Gr.C',        grade:'ASME SA-210 Gr.A1 / Gr.C',           t_min:-29,  t_max:480,  p_max:500, cost_idx:1.4,  std:'ASME SA-210, IS:6392',             composition:{C:'0.35 max',Mn:'0.29–1.06',P:'0.035 max',S:'0.035 max',Si:'0.10 min',Fe:'Balance'},                           pros:['Standard boiler water-wall tube','Excellent weldability','Low cost'],cons:['Not for superheater service','Max 480°C','Corrosion allowance required'],suits:['steam','water_bw'],avoids:['h2so4','hcl','water_sw'],desc:'Medium-carbon seamless steel tube for steam boilers, water walls, and economisers up to 480°C. Industry workhorse for utility and package boilers.',tags:['Boiler Tube','Water Wall','Economiser','ASME Sec I']},
+  BT_SA213T11:{id:'BT_SA213T11',group:'HP Boiler Tube',      color:'#4a5a00',name:'SA-213 T11 (1¼Cr-½Mo)',      grade:'ASME SA-213 T11 (UNS K11597)',        t_min:-29,  t_max:580,  p_max:600, cost_idx:3.0,  std:'ASME SA-213, ASTM A213',           composition:{C:'0.05–0.15',Cr:'1.00–1.50',Mo:'0.44–0.65',Mn:'0.30–0.60',Si:'0.50–1.00',Fe:'Balance'},                      pros:['Superheater/reheater tube','Good oxidation resistance','Better creep than CS'],cons:['PWHT required','Higher cost than CS tube','Careful welding needed'],suits:['steam'],avoids:['h2so4','hcl','water_sw'],desc:'1¼Cr-½Mo alloy tube for high-temperature superheaters and reheaters in utility boilers and HRSGs. Superior oxidation resistance to 580°C.',tags:['Superheater','Cr-Mo Tube','HRSG','Boiler']},
+  BT_SA213T22:{id:'BT_SA213T22',group:'HP Boiler Tube',      color:'#5a6a00',name:'SA-213 T22 (2¼Cr-1Mo)',      grade:'ASME SA-213 T22 (UNS K21590)',        t_min:-29,  t_max:620,  p_max:700, cost_idx:3.5,  std:'ASME SA-213, ASTM A213',           composition:{C:'0.05–0.15',Cr:'1.90–2.60',Mo:'0.87–1.13',Mn:'0.30–0.60',Si:'0.50 max',Fe:'Balance'},                       pros:['Higher Cr-Mo: better HTHA margin','Standard for HP superheater','Nelson curve advantage over T11'],cons:['PWHT critical','Stricter welding controls','Costlier than T11'],suits:['steam'],avoids:['h2so4','hcl','water_sw'],desc:'2¼Cr-1Mo alloy tube for high-pressure superheaters, reheaters, and hydrogen service per API 941 Nelson curves. Used in refinery fired heaters and boilers.',tags:['Superheater','HP Boiler','Hydrogen Service','HTHA']},
+  BT_SA213T91:{id:'BT_SA213T91',group:'HP Boiler Tube',      color:'#3a5a20',name:'SA-213 T91 (9Cr-1Mo-V)',     grade:'ASME SA-213 T91 (UNS K90901)',        t_min:-29,  t_max:650,  p_max:800, cost_idx:5.5,  std:'ASME SA-213, ASTM A213',           composition:{C:'0.08–0.12',Cr:'8.0–9.5',Mo:'0.85–1.05',V:'0.18–0.25',Nb:'0.06–0.10',N:'0.030–0.070',Fe:'Balance'},        pros:['Highest creep strength in ferritic class','Ultra-supercritical steam service','Allows thinner tube walls'],cons:['Very strict PWHT (760°C ±14°C)','Sensitive to PWHT deviation','Not for corrosive media'],suits:['steam'],avoids:['h2so4','hcl','water_sw'],desc:'Modified 9Cr-1Mo-V-Nb alloy tube for ultra-supercritical boilers and HRSGs up to 650°C. Preferred for advanced USC power plants and high-temp reheaters.',tags:['USC Boiler','T91 Tube','High Creep Strength','HRSG']},
+  BT_SA213TP304H:{id:'BT_SA213TP304H',group:'HP Boiler Tube',color:'#8a9aaa',name:'SA-213 TP304H (18Cr-8Ni)',  grade:'ASME SA-213 TP304H (UNS S30409)',     t_min:-196, t_max:900,  p_max:600, cost_idx:6.0,  std:'ASME SA-213, ASTM A213',           composition:{C:'0.04–0.10',Cr:'18.0–20.0',Ni:'8.0–11.0',Mn:'2.0 max',Si:'0.75 max',N:'0.10 max',Fe:'Balance'},             pros:['Austenitic: far better oxidation resistance','Used in final superheaters','No creep risk in austenitic range'],cons:['Higher cost than ferritic grades','Thermal fatigue risk at cycling service','Different weld techniques to ferritic'],suits:['steam'],avoids:['hcl','water_sw','cl2'],desc:'High-carbon austenitic SS tube for high-temperature final superheaters and reheaters above 600°C. Better oxidation/scale resistance than ferritic grades.',tags:['Austenitic Tube','High Temp','Final Superheater','SS Boiler']},
+  BT_SA213TP347H:{id:'BT_SA213TP347H',group:'HP Boiler Tube',color:'#9aacb8',name:'SA-213 TP347H (Nb-Stabilised)',grade:'ASME SA-213 TP347H (UNS S34709)',  t_min:-196, t_max:900,  p_max:600, cost_idx:7.0,  std:'ASME SA-213, ASTM A213',           composition:{C:'0.04–0.10',Cr:'17.0–20.0',Ni:'9.0–13.0',Nb:'10×C–1.10',Mn:'2.0 max',Fe:'Balance'},                        pros:['Nb-stabilised: excellent resistance to sensitisation','Better creep than 304H','Standard for modern USC final superheaters'],cons:['Higher cost','Sensitive to sigma phase above 540°C','Careful PWHT needed'],suits:['steam'],avoids:['hcl','water_sw','cl2'],desc:'Niobium-stabilised austenitic SS tube with exceptional high-temperature creep strength. Preferred for final superheaters in advanced ultra-supercritical (A-USC) boilers.',tags:['Nb-Stabilised','A-USC Boiler','Creep Resistant','Final Superheater']},
+
+  /* ─────── REFORMER TUBE / RADIANT TUBE ALLOYS ─────── */
+  HP_Alloy:  {id:'HP_Alloy',  group:'Reformer Tube',         color:'#2a4a6a',name:'HP Modified (HK/HP Alloy)',  grade:'ASTM A608 (HP mod. / HK40)',          t_min:20,   t_max:1050, p_max:80,  cost_idx:22.0, std:'ASTM A608, ISO 1922',              composition:{C:'0.35–0.45',Cr:'24.0–26.0',Ni:'34.0–36.0',Si:'1.5 max',Mn:'1.5 max',Fe:'Balance'},                           pros:['Standard reformer tube material','Excellent carburisation resistance','Good creep strength to 1000°C'],cons:['Centrifugal cast only','Not suitable for corrosive environments','High cost'],suits:['nat_gas','steam'],avoids:['h2so4','hcl','h2s_gas'],desc:'Centrifugally cast HP Modified (HK40 variant) used extensively as primary reformer furnace tubes, hydrogen plant radiant tubes, and ammonia plant reformers. Operates at 800–1000°C skin temperature.',tags:['Reformer Tube','HP Mod','Centrifugal Cast','Ammonia Plant']},
+  Micro_Alloy:{id:'Micro_Alloy',group:'Reformer Tube',       color:'#1a3a5a',name:'Micro-Alloyed HP (HP Nb/Ti)', grade:'ASTM A608 — Micro-Alloyed variants',  t_min:20,   t_max:1100, p_max:80,  cost_idx:28.0, std:'ASTM A608, Manuf. Spec',           composition:{C:'0.35–0.50',Cr:'24.0–26.0',Ni:'34.0–38.0',Nb:'0.5–1.5',Ti:'0–0.5',Si:'1.5 max',Fe:'Balance'},              pros:['Enhanced creep strength vs HP Mod','Better carburisation resistance','Longer tube life cycle'],cons:['Higher cost than HP Mod','Specialist foundry needed','Limited supply chain'],suits:['nat_gas','steam'],avoids:['h2so4','hcl'],desc:'Micro-alloyed reformer tubes with Nb/Ti/W additions for enhanced creep strength at 950–1100°C skin temperature. Used in higher-duty reformer duty or where longer campaign life is required.',tags:['Advanced Reformer Tube','Nb Micro-Alloyed','High Duty','H2 Plant']},
+  IN_800HT:  {id:'IN_800HT',  group:'Reformer Tube',         color:'#305060',name:'Alloy 800H/HT (Incoloy 800H)',grade:'ASTM B407 UNS N08810 / N08811',       t_min:-196, t_max:980,  p_max:200, cost_idx:20.0, std:'ASTM B407, B515, B564',            composition:{C:'0.05–0.10',Ni:'30.0–35.0',Cr:'19.0–23.0',Al:'0.15–0.60',Ti:'0.15–0.60',Fe:'Balance'},                     pros:['Excellent carburisation and nitriding resistance','Good creep strength','Preferred for reformer outlet manifolds'],cons:['High cost','Not for acid service','Lower strength than HP alloy at very high temps'],suits:['steam','nat_gas'],avoids:['hcl','h2so4','cl2'],desc:'Fe-Ni-Cr alloy with Al+Ti for outstanding carburisation resistance in reformer outlet/transfer lines, pyrolysis coils, and steam methane reformer headers. Ideal from 650–980°C.',tags:['Incoloy 800HT','Carburisation Resistant','Reformer Header','Pyrolysis']},
+  Alloy_HK40:{id:'Alloy_HK40',group:'Reformer Tube',         color:'#204050',name:'HK40 Cast Alloy',            grade:'ASTM A351 Gr. HK40 (UNS J94204)',     t_min:20,   t_max:1050, p_max:80,  cost_idx:18.0, std:'ASTM A351, A608',                  composition:{C:'0.35–0.45',Cr:'24.0–28.0',Ni:'18.0–22.0',Si:'2.0 max',Mn:'2.0 max',Fe:'Balance'},                           pros:['Established reformer tube grade','Good oxidation resistance','Lower cost than HP mod'],cons:['Lower creep strength than HP mod','Only centrifugally cast form','Not for corrosive media'],suits:['nat_gas','steam'],avoids:['h2so4','hcl'],desc:'Classic austenitic heat-resistant cast alloy for primary reformer tubes and radiant coils. Predecessor to HP Modified. Still used in older ammonia and methanol plants.',tags:['HK40','Cast Alloy','Reformer','Classic Grade']},
+  Alloy_601: {id:'Alloy_601', group:'Reformer Tube',         color:'#183048',name:'Inconel 601 (Alloy 601)',     grade:'ASTM B167 UNS N06601',                t_min:-196, t_max:1150, p_max:200, cost_idx:26.0, std:'ASTM B167, B168, B564',            composition:{C:'0.10 max',Ni:'58.0–63.0',Cr:'21.0–25.0',Al:'1.0–1.7',Fe:'Balance'},                                          pros:['Excellent oxidation resistance to 1150°C','Good for cyclic high temp service','Al₂O₃ forming — excellent scaling resistance'],cons:['Very high cost','Lower strength than HP at very high temps','Specialist material'],suits:['steam','nat_gas'],avoids:['h2so4','hcl','h2s_gas'],desc:'Ni-Cr-Al alloy with outstanding oxidation and scaling resistance up to 1150°C. Used for combustion chambers, thermal oxidiser liners, radiant heater tubes, and reformer convection section tubing.',tags:['Inconel 601','Oxidation Resistant','1150°C Service','Radiant Tube']},
+
+  /* ─────── STAINLESS STEEL — AUSTENITIC ─────── */
+  SS_304:    {id:'SS_304',    group:'Stainless Steel',        color:'#9ab0bc',name:'Stainless Steel 304',         grade:'ASTM A312 TP304 / UNS S30400',        t_min:-196, t_max:870,  p_max:400, cost_idx:4.5,  std:'ASTM A312, A240, IS:6913',         composition:{C:'0.08 max',Cr:'18.0–20.0',Ni:'8.0–10.5',Mn:'2.0 max',Si:'0.75 max',N:'0.10 max',Fe:'Balance'},              pros:['Good general corrosion resistance','Food/pharma grade','Wide temperature range'],cons:['Cl SCC above ~60°C','Not for HCl or HF','Sensitisation risk at 450–850°C'],suits:['water_fw','steam','milk','pharma','naoh','nh3','nat_gas'],avoids:['hcl','hf','water_sw','brine','cl2','acid_mine'],desc:'Most widely used austenitic SS for moderate corrosion, food, pharma, and general process service. Avoid chloride-rich environments at elevated temperature.',tags:['Austenitic','Food Grade','General','18-8']},
+  SS_316L:   {id:'SS_316L',   group:'Stainless Steel',        color:'#80a0b0',name:'Stainless Steel 316L',        grade:'ASTM A312 TP316L / UNS S31603',       t_min:-196, t_max:870,  p_max:400, cost_idx:5.5,  std:'ASTM A312, A240, IS:6913',         composition:{C:'0.035 max',Cr:'16.0–18.0',Ni:'10.0–14.0',Mo:'2.0–3.0',Mn:'2.0 max',S:'0.03 max',Fe:'Balance'},             pros:['Better chloride resistance than 304 (Mo)','Low carbon — no sensitisation risk','Pharma/food grade'],cons:['Cl SCC >60°C','Not for concentrated HCl/HF'],suits:['water_fw','steam','milk','pharma','naoh','nh3','co2','amine'],avoids:['hcl','hf','water_sw','cl2','acid_mine'],desc:'Mo-bearing austenitic SS. Industry standard for moderate chloride, pharma, food, and marine process. Low carbon for welded construction without sensitisation.',tags:['Austenitic','Mo-Bearing','Low C','Pharma','316 MOD']},
+  SS_317L:   {id:'SS_317L',   group:'Stainless Steel',        color:'#6090a8',name:'Stainless Steel 317L',        grade:'ASTM A312 TP317L / UNS S31703',       t_min:-196, t_max:870,  p_max:400, cost_idx:6.5,  std:'ASTM A312, A240',                  composition:{C:'0.035 max',Cr:'18.0–20.0',Ni:'11.0–15.0',Mo:'3.0–4.0',Mn:'2.0 max',Fe:'Balance'},                          pros:['Higher Mo than 316L — better chloride resistance','Good for dilute acids','FGD absorber standard'],cons:['Higher cost than 316L','Still susceptible to Cl SCC at high Cl⁻'],suits:['fgd','co2','h3po4','amine'],avoids:['hcl','water_sw','cl2','hf','acid_mine'],desc:'Higher Mo than 316L for moderately aggressive chloride environments. FGD systems, phosphoric acid plants, scrubber internals.',tags:['High Mo','FGD','Phosphoric Acid','3Mo Grade']},
+  SS_321:    {id:'SS_321',    group:'Stainless Steel',        color:'#b0c0c8',name:'Stainless Steel 321',         grade:'ASTM A312 TP321 / UNS S32100',        t_min:-196, t_max:900,  p_max:400, cost_idx:5.8,  std:'ASTM A312, A240',                  composition:{C:'0.08 max',Cr:'17.0–19.0',Ni:'9.0–12.0',Ti:'5×C min',Mn:'2.0 max',Fe:'Balance'},                             pros:['Ti-stabilised — excellent sensitisation resistance','Preferred for welded high-temp assemblies','Used in refinery HX'],cons:['Similar Cl SCC risk to 304','Not for highly corrosive media'],suits:['steam','nat_gas','diesel','co2'],avoids:['hcl','water_sw','cl2','hf'],desc:'Ti-stabilised austenitic SS for welded construction at elevated temperatures. Refinery heat exchangers, furnace tubing, HRSG components.',tags:['Ti-Stabilised','Weld Service','High Temp','Refinery HX']},
+  SS_347:    {id:'SS_347',    group:'Stainless Steel',        color:'#a0b8c4',name:'Stainless Steel 347/347H',    grade:'ASTM A312 TP347/347H / UNS S34700',   t_min:-196, t_max:900,  p_max:400, cost_idx:6.2,  std:'ASTM A312, A240',                  composition:{C:'0.08 max (H: 0.04–0.10)',Cr:'17.0–20.0',Ni:'9.0–13.0',Nb:'10×C min',Mn:'2.0 max',Fe:'Balance'},             pros:['Nb-stabilised — best sensitisation resistance','Excellent high-temp creep (H grade)','Preferred for welded refinery piping'],cons:['Cl SCC risk similar to 304','Higher cost than 321'],suits:['steam','nat_gas','co2'],avoids:['hcl','water_sw','cl2','hf'],desc:'Nb-stabilised austenitic SS. Preferred over 321 for high-temp welded service. Used for catalytic reformer and hydrocracker piping. 347H grade for creep service.',tags:['Nb-Stabilised','347H','Refinery Piping','Catalytic Reformer']},
+  SS_904L:   {id:'SS_904L',   group:'Stainless Steel',        color:'#608898',name:'SS 904L (6% Mo equivalent)',  grade:'ASTM B649 / UNS N08904',              t_min:-196, t_max:400,  p_max:400, cost_idx:14.0, std:'ASTM B649, DIN 1.4539',            composition:{C:'0.02 max',Cr:'19.0–23.0',Ni:'23.0–28.0',Mo:'4.0–5.0',Cu:'1.0–2.0',Mn:'2.0 max',Fe:'Balance'},              pros:['High Mo+Cu: excellent H₂SO₄ resistance','PREN ~36: good pitting resistance','Good for phosphoric acid'],cons:['High cost','Max 400°C practical','Not for HCl or HF'],suits:['h2so4','h3po4','water_sw','co2'],avoids:['hcl','hf','cl2'],desc:'Super-austenitic SS with high Mo, Cu and Ni for sulfuric acid, phosphoric acid, and seawater service. Often cost-effective alternative to Alloy 20 or duplex SS.',tags:['Super Austenitic','H₂SO₄','High Mo','Phosphoric Acid']},
+  Alloy_20:  {id:'Alloy_20',  group:'Stainless Steel',        color:'#507888',name:'Alloy 20 (Carpenter 20)',     grade:'ASTM B464 / UNS N08020',              t_min:-196, t_max:450,  p_max:400, cost_idx:16.0, std:'ASTM B464, B729, B473',            composition:{C:'0.07 max',Cr:'19.0–21.0',Ni:'32.0–38.0',Mo:'2.0–3.0',Cu:'3.0–4.0',Nb:'8×C min',Fe:'Balance'},               pros:['Excellent H₂SO₄ resistance','Nb-stabilised — weldable','Good for dilute/concentrated sulfuric acid'],cons:['Max 450°C','High cost','Not for HCl or HF'],suits:['h2so4','h3po4'],avoids:['hcl','hf','cl2'],desc:'Nb-stabilised austenitic alloy specifically engineered for sulfuric acid service in chemical and fertiliser plants. Good resistance to hot dilute and concentrated H₂SO₄.',tags:['Alloy 20','H₂SO₄','Sulphuric Acid','Chemical Plant']},
+
+  /* ─────── DUPLEX SS ─────── */
+  DSS_2205:  {id:'DSS_2205',  group:'Duplex SS',              color:'#5070a0',name:'Duplex SS 2205',              grade:'ASTM A790 UNS S31803/S32205',         t_min:-50,  t_max:315,  p_max:500, cost_idx:8.5,  std:'ASTM A790, A928',                  composition:{C:'0.03 max',Cr:'21.0–23.0',Ni:'4.5–6.5',Mo:'2.5–3.5',N:'0.08–0.20',Fe:'Balance'},                           pros:['Excellent Cl SCC resistance (PREN~35)','High strength — thinner walls','Seawater and brine service'],cons:['Max 315°C (sigma phase)','Higher cost than austenitic','Welding care needed'],suits:['water_sw','brine','crude','co2','h3po4'],avoids:['hcl','hf','cl2','h2so4'],desc:'Standard duplex SS for seawater, brine, and chloride-rich environments where austenitic grades fail by SCC. Used in offshore topsides, oil & gas, and chemical plant pipework.',tags:['Duplex','Seawater','PREN 35','SCC Resistant']},
+  SDSS_2507: {id:'SDSS_2507', group:'Duplex SS',              color:'#304880',name:'Super Duplex 2507',           grade:'ASTM A790 UNS S32750',                t_min:-50,  t_max:300,  p_max:500, cost_idx:12.0, std:'ASTM A790, A928',                  composition:{C:'0.03 max',Cr:'24.0–26.0',Ni:'6.0–8.0',Mo:'3.0–5.0',N:'0.24–0.32',Fe:'Balance'},                           pros:['Highest PREN ~42','Extreme Cl and seawater resistance','Very high strength'],cons:['Most expensive SS grade','Strict welding controls','Max 300°C'],suits:['water_sw','brine','crude','h2s_gas'],avoids:['hcl','hf','cl2'],desc:'Super Duplex 2507 for the most aggressive chloride environments including subsea flowlines, offshore topside manifolds, and high Cl⁻ production environments.',tags:['Super Duplex','Subsea','PREN 42','Offshore']},
+  LDX_2101:  {id:'LDX_2101',  group:'Duplex SS',              color:'#607898',name:'Lean Duplex 2101',            grade:'ASTM A240 UNS S32101',                t_min:-60,  t_max:280,  p_max:400, cost_idx:5.0,  std:'ASTM A240, EN 1.4162',             composition:{C:'0.04 max',Cr:'21.0–22.0',Ni:'1.35–1.70',Mo:'0.10–0.80',Mn:'4.0–6.0',N:'0.20–0.25',Fe:'Balance'},          pros:['Low nickel — more stable price','PREN ~26: moderate Cl resistance','Good substitute for 316L in mild Cl service'],cons:['Lower PREN than 2205','Not for high Cl⁻ environments','Limited availability vs 2205'],suits:['water_sw','co2','water_fw'],avoids:['hcl','hf','cl2','h2so4'],desc:'Lean duplex with reduced Ni content (Mn substituted). Lower cost than 2205 while providing better SCC and pitting resistance than 316L for moderate chloride service.',tags:['Lean Duplex','Low Nickel','Cost Effective','Moderate Cl']},
+
+  /* ─────── HASTELLOY FAMILY ─────── */
+  Hast_C276: {id:'Hast_C276', group:'Hastelloy Family',       color:'#0a3050',name:'Hastelloy C-276 (N10276)',    grade:'ASTM B574 UNS N10276',                t_min:-196, t_max:1040, p_max:500, cost_idx:30.0, std:'ASTM B574, B619, B622',            composition:{Ni:'57 min',Mo:'15.0–17.0',Cr:'14.5–16.5',W:'3.0–4.5',Fe:'4.0–7.0',Co:'2.5 max'},                            pros:['Best all-round corrosion resistance','Excellent HCl, H₂SO₄, HF','Immune to pitting, crevice, SCC','Chlorine service'],cons:['Extremely high cost','Long lead times','Specialist fabrication'],suits:['hcl','h2so4','hno3','cl2','acid_mine','hf','h2s_gas'],avoids:[],desc:'Gold standard Ni-Mo-Cr alloy for the most severe corrosion environments. Mixed acids, hot HCl, halogen service, pharmaceutical reactors, and pollution control equipment.',tags:['Hastelloy','Best Corrosion','Severe Duty','All Acids']},
+  Hast_C22:  {id:'Hast_C22',  group:'Hastelloy Family',       color:'#0a2840',name:'Hastelloy C-22 (N06022)',    grade:'ASTM B574 UNS N06022',                t_min:-196, t_max:1040, p_max:500, cost_idx:32.0, std:'ASTM B574, B619, B622',            composition:{Ni:'56 min',Mo:'12.5–14.5',Cr:'20.0–22.5',W:'2.5–3.5',Fe:'2.0–6.0',Co:'2.5 max'},                            pros:['Better oxidising acid resistance than C-276','Higher Cr: excellent HNO₃ resistance','Good for mixed acid/oxidising-reducing transitions'],cons:['Very high cost','Less resistant to reducing acids than C-276','Specialist procurement'],suits:['hno3','h2so4','hcl','cl2','acid_mine'],avoids:[],desc:'Improved Hastelloy with higher Cr for better oxidising acid environments. Preferred where C-276 may be attacked by oxidising media such as wet chlorine or hot HNO₃.',tags:['Hastelloy','Oxidising Acid','C-22','FGD Scrubber']},
+  Hast_C2000:{id:'Hast_C2000',group:'Hastelloy Family',       color:'#0a2030',name:'Hastelloy C-2000 (N06200)',  grade:'ASTM B574 UNS N06200',                t_min:-196, t_max:1040, p_max:500, cost_idx:35.0, std:'ASTM B574',                         composition:{Ni:'59 min',Cr:'22.0–24.0',Mo:'15.0–17.0',Cu:'1.3–1.9',Fe:'3.0 max'},                                          pros:['High Cr+Mo+Cu: best all-round','Excellent HCl and H₂SO₄ resistance','Good for reducing and oxidising acids'],cons:['Highest cost in C-family','Very limited availability'],suits:['hcl','h2so4','hno3','acid_mine','cl2'],avoids:[],desc:'Next-generation Hastelloy with added Cu for further improved sulfuric acid resistance over C-276 and C-22. For the most demanding mixed acid and reducing/oxidising service.',tags:['Hastelloy','Premium Grade','H₂SO₄','Mixed Acid']},
+  Hast_B3:   {id:'Hast_B3',   group:'Hastelloy Family',       color:'#0a1828',name:'Hastelloy B-3 (N10665)',     grade:'ASTM B333 UNS N10665',                t_min:-196, t_max:870,  p_max:400, cost_idx:28.0, std:'ASTM B333, B622',                  composition:{Ni:'65 min',Mo:'27.0–32.0',Cr:'1.0–3.0',Fe:'1.0–3.0',Co:'3.0 max'},                                            pros:['Excellent HCl resistance (all conc. and temps)','Best for reducing acids','Good for acetic, formic, phosphoric acid'],cons:['Not for oxidising acids (no Cr)','Attack by oxidising contaminants','High cost'],suits:['hcl','h2so4','h3po4','acid_mine'],avoids:['hno3','cl2'],desc:'Ni-Mo alloy without significant Cr for maximum resistance to reducing environments, particularly hot concentrated HCl of all concentrations. Phosphoric acid service and reducing acid pickling baths.',tags:['Hastelloy B-3','HCl Resistance','Reducing Acid','Ni-Mo']},
+  Hast_G30:  {id:'Hast_G30',  group:'Hastelloy Family',       color:'#183858',name:'Hastelloy G-30 (N06030)',    grade:'ASTM B582 UNS N06030',                t_min:-196, t_max:760,  p_max:400, cost_idx:26.0, std:'ASTM B582, B619',                  composition:{Ni:'43 min',Cr:'28.0–31.5',Mo:'4.0–6.0',Cu:'1.0–2.4',Co:'5.0 max',W:'1.5–4.0',Nb:'0.3–1.5',Fe:'13–17'},      pros:['Excellent for wet phosphoric acid','Good for sulfuric acid mixtures','FGD and fertiliser plant standard'],cons:['Not for strong reducing acids','Lower pitting resistance than C-276'],suits:['h3po4','h2so4','fgd'],avoids:['hcl','hf'],desc:'High Cr Ni alloy specially developed for phosphoric and sulfuric acid. The industry benchmark for wet-process phosphoric acid plants, fertiliser production, and FGD scrubbers.',tags:['Hastelloy G-30','Phosphoric Acid','Fertiliser','FGD']},
+
+  /* ─────── INCONEL / INCOLOY FAMILY ─────── */
+  Inconel625:{id:'Inconel625',group:'Inconel / Incoloy',      color:'#306880',name:'Alloy 625 (Inconel 625)',    grade:'ASTM B444 UNS N06625',                t_min:-196, t_max:980,  p_max:500, cost_idx:25.0, std:'ASTM B444, B705, B443',            composition:{Ni:'58 min',Cr:'20.0–23.0',Mo:'8.0–10.0',Nb:'3.15–4.15',Fe:'5.0 max',Co:'1.0 max'},                           pros:['Exceptional corrosion resistance','Wide temperature range','No Cl SCC','Excellent fatigue strength'],cons:['Very high cost','Limited availability','Precipitation hardening at 650°C'],suits:['hcl','h2so4','water_sw','brine','cl2','acid_mine','hf'],avoids:[],desc:'Ni-Cr-Mo-Nb superalloy — premium MOC for aggressive acids, seawater, and high-temperature corrosive service. FGD, offshore, and subsea applications. Also used as cladding overlay on CS.',tags:['Inconel 625','All Corrosives','Cladding','Offshore']},
+  Inconel600:{id:'Inconel600',group:'Inconel / Incoloy',      color:'#254a60',name:'Alloy 600 (Inconel 600)',    grade:'ASTM B167 UNS N06600',                t_min:-196, t_max:1100, p_max:300, cost_idx:18.0, std:'ASTM B167, B168, B163',            composition:{Ni:'72 min',Cr:'14.0–17.0',Fe:'6.0–10.0',Mn:'1.0 max',Si:'0.5 max'},                                           pros:['Excellent oxidation resistance to 1100°C','Good high-temp strength','Resistance to carburisation'],cons:['Not for reducing acid service','Moderate chloride resistance only','SCC in polythionic acid'],suits:['steam','nat_gas'],avoids:['h2so4','hcl','hf'],desc:'Classic Ni-Cr alloy for high-temperature oxidising service. Used in heat treatment baskets, thermocouple tubes, industrial furnace components, and nuclear steam generators.',tags:['Inconel 600','High Temp Oxidation','Furnace Tube','Heat Treatment']},
+  IN_718:    {id:'IN_718',    group:'Inconel / Incoloy',      color:'#1a3850',name:'Alloy 718 (Inconel 718)',    grade:'ASTM B637 UNS N07718',                t_min:-196, t_max:700,  p_max:600, cost_idx:35.0, std:'ASTM B637, AMS 5663, API 6A718',  composition:{Ni:'50–55',Cr:'17.0–21.0',Mo:'2.8–3.3',Nb:'4.75–5.5',Ti:'0.65–1.15',Al:'0.20–0.80',Fe:'Balance'},             pros:['Highest strength Ni alloy','Good H₂S/sour service (NACE)','Standard for HP wellhead and completion equipment'],cons:['Very high cost','Not for severe acid service','Heat treatment critical'],suits:['h2s_gas','crude','nat_gas','brine'],avoids:['h2so4','hcl','hf'],desc:'Precipitation-hardened Ni superalloy with excellent strength and corrosion resistance. API 6A718 compliant for wellhead equipment, pressure-containing parts in sour service, and HP completion tools.',tags:['Inconel 718','Wellhead','HP Equipment','NACE Sour']},
+  Incoloy825:{id:'Incoloy825',group:'Inconel / Incoloy',      color:'#2a5870',name:'Alloy 825 (Incoloy 825)',   grade:'ASTM B423 UNS N08825',                t_min:-196, t_max:450,  p_max:400, cost_idx:20.0, std:'ASTM B423, B424, B564',            composition:{Ni:'38.0–46.0',Cr:'19.5–23.5',Mo:'2.5–3.5',Cu:'1.5–3.0',Ti:'0.6–1.2',Fe:'Balance'},                          pros:['Good H₂SO₄ resistance','Seawater and brine service','NACE compliant — sour service','Mid-cost between SS and C-276'],cons:['Max 450°C practical','Not for HCl or HF','Higher cost than DS SS'],suits:['h2so4','h3po4','water_sw','brine','co2','amine'],avoids:['hcl','hf','cl2'],desc:'Ni-Fe-Cr alloy with Mo, Cu and Ti. Excellent sulfuric and phosphoric acid resistance with good sour service credentials. Used in oil country tubular goods, acid gas scrubbers, and nuclear waste processing.',tags:['Incoloy 825','H₂SO₄','Sour Service','Oil Country Tube']},
+
+  /* ─────── MONEL / COPPER ALLOY ─────── */
+  Monel_400: {id:'Monel_400', group:'Monel / Copper Alloy',   color:'#508060',name:'Monel 400 (N04400)',         grade:'ASTM B165 UNS N04400',                t_min:-196, t_max:480,  p_max:400, cost_idx:18.0, std:'ASTM B165, B127, B163',            composition:{Ni:'63 min',Cu:'28.0–34.0',Fe:'2.5 max',Mn:'2.0 max'},                                                          pros:['Excellent HF acid resistance (all conc.)','Good seawater resistance','HF alkylation unit standard'],cons:['SCC in moist aerated HF vapour','Not for oxidising acids','High cost'],suits:['hf','water_sw','crude','nat_gas'],avoids:['hno3','cl2'],desc:'Classic Ni-Cu alloy — the industry standard for HF alkylation units in petroleum refining. Also excellent seawater, reducing acid, and marine service.',tags:['Monel','HF Service','Alkylation','Ni-Cu']},
+  Monel_K500:{id:'Monel_K500',group:'Monel / Copper Alloy',   color:'#406850',name:'Monel K-500 (N05500)',       grade:'ASTM B865 UNS N05500',                t_min:-196, t_max:480,  p_max:400, cost_idx:22.0, std:'ASTM B865',                         composition:{Ni:'63–70',Cu:'27–33',Al:'2.30–3.15',Ti:'0.35–0.85',Fe:'2.0 max'},                                              pros:['Higher strength than Monel 400 (precipitation hardened)','Same HF/seawater resistance as Monel 400','Good for pump shafts, marine fasteners'],cons:['SCC susceptibility higher than 400','Strict heat treatment needed'],suits:['hf','water_sw','nat_gas'],avoids:['hno3','cl2'],desc:'Age-hardened Ni-Cu alloy with the same corrosion resistance as Monel 400 but with 3× the strength. Used for pump impellers, marine propeller shafts, and valve stems in seawater and HF service.',tags:['Monel K500','HF','Marine','High Strength']},
+  CuNi_9010: {id:'CuNi_9010', group:'Monel / Copper Alloy',   color:'#d08030',name:'Cupro-Nickel 90/10',         grade:'ASTM B466 UNS C70600',                t_min:-196, t_max:200,  p_max:150, cost_idx:10.0, std:'ASTM B466, B111, B171',            composition:{Cu:'86.5 min',Ni:'9.0–11.0',Fe:'1.0–1.8',Mn:'1.0 max'},                                                         pros:['Good seawater resistance','Biofouling resistant','Lower cost than 70/30','Condensate lines standard'],cons:['Max 200°C','Not for acids','Lower strength than 70/30'],suits:['water_sw','water_fw'],avoids:['h2so4','hcl','nh3'],desc:'10% Ni copper alloy for seawater cooling systems, fire protection lines, HVAC condensers, and ship hulls. Standard choice for seawater piping where moderate service is acceptable.',tags:['Cu-Ni','90/10','Seawater Piping','Marine Condensate']},
+  CuNi_7030: {id:'CuNi_7030', group:'Monel / Copper Alloy',   color:'#c07030',name:'Cupro-Nickel 70/30',         grade:'ASTM B466 UNS C71500',                t_min:-196, t_max:260,  p_max:200, cost_idx:15.0, std:'ASTM B466, B111',                  composition:{Cu:'65–70',Ni:'29–33',Fe:'0.40–1.0',Mn:'1.0 max'},                                                               pros:['Best seawater/brine resistance in Cu family','Excellent biofouling resistance','HX tube standard for seawater condenser'],cons:['Not for oxidising acids','NH₃/amine attack','Higher cost than 90/10'],suits:['water_sw','water_fw'],avoids:['h2so4','hcl','nh3','h2s_gas','crude'],desc:'Premium copper-nickel for high-velocity seawater service. Standard for seawater-cooled heat exchanger tubes, naval condensers, and offshore desalination. Better erosion resistance than 90/10.',tags:['Cu-Ni','70/30','Seawater HX','Desalination']},
+
+  /* ─────── TITANIUM ─────── */
+  Ti_Gr2:    {id:'Ti_Gr2',    group:'Titanium',               color:'#606070',name:'Titanium Grade 2 (CP Ti)',   grade:'ASTM B338 Grade 2 / UNS R50400',      t_min:-196, t_max:260,  p_max:300, cost_idx:20.0, std:'ASTM B338, B265',                  composition:{Ti:'99.2 min',Fe:'0.30 max',O:'0.25 max',C:'0.08 max',N:'0.03 max'},                                             pros:['Immune to chloride SCC','Excellent seawater/oxidising acid resistance','Lightweight (4.5 g/cm³)'],cons:['High cost','Max 260°C','Not for reducing acids (HCl, HF) or alkalis'],suits:['water_sw','brine','cl2','hno3'],avoids:['hf','hcl'],desc:'Commercially pure titanium — the standard for seawater HX tubes, offshore condensers, and chlorine/sodium hypochlorite environments. Completely immune to chloride SCC.',tags:['Titanium','Seawater','SCC Immune','Lightweight']},
+  Ti_Gr7:    {id:'Ti_Gr7',    group:'Titanium',               color:'#707080',name:'Titanium Grade 7 (Ti-0.2Pd)', grade:'ASTM B338 Grade 7 / UNS R52400',    t_min:-196, t_max:260,  p_max:300, cost_idx:26.0, std:'ASTM B338, B265',                  composition:{Ti:'Balance',Pd:'0.12–0.25',Fe:'0.30 max',O:'0.25 max'},                                                         pros:['Better reducing acid resistance than Gr.2','Pd addition suppresses hydrogen evolution','Good for dilute HCl and H₂SO₄'],cons:['Higher cost than Gr.2','Pd is precious metal','Max 260°C'],suits:['water_sw','brine','hcl','h2so4'],avoids:['hf'],desc:'Ti-0.2Pd alloy with markedly improved crevice corrosion and reducing acid resistance over Grade 2. Bleaching plant, paper mill, dilute HCl/H₂SO₄ environments.',tags:['Ti-Pd','Reducing Acid','Paper Mill','Crevice Resistant']},
+  Ti_Gr12:   {id:'Ti_Gr12',   group:'Titanium',               color:'#505060',name:'Titanium Grade 12 (Ti-0.3Mo-0.8Ni)',grade:'ASTM B338 Grade 12 / UNS R53400',t_min:-196, t_max:315,  p_max:300, cost_idx:24.0, std:'ASTM B338, B265',                  composition:{Ti:'Balance',Mo:'0.2–0.4',Ni:'0.6–0.9',Fe:'0.30 max',O:'0.25 max'},                                              pros:['Better crevice corrosion resistance','Higher strength than Gr.2','Wider service temperature to 315°C'],cons:['Higher cost than Gr.2','Still sensitive to HF/reducing HCl','Specialist material'],suits:['water_sw','brine','cl2'],avoids:['hf','hcl'],desc:'Ti-Mo-Ni alloy with enhanced crevice corrosion and slightly higher temperature capability. Used for heat exchanger shells, flanges, and components requiring better crevice performance than Grade 2.',tags:['Titanium','Crevice Resistant','Grade 12','HX Shell']},
+
+  /* ─────── ZIRCONIUM / TANTALUM / SPECIAL ALLOYS ─────── */
+  Zirconium: {id:'Zirconium', group:'Special Alloys',         color:'#909060',name:'Zirconium 702 / 705',        grade:'ASTM B523 UNS R60702 / R60705',       t_min:-196, t_max:370,  p_max:300, cost_idx:40.0, std:'ASTM B523, B551',                  composition:{Zr:'99.2 min (+Hf)',Hf:'4.5 max',Fe:'0.20 max'},                                                                pros:['Excellent hot concentrated HCl resistance','Outstanding H₂SO₄ resistance','Acetic and formic acid service'],cons:['Highest cost (except Tantalum)','Ignition risk in some oxidising acids','Limited fabricators'],suits:['hcl','h2so4','h3po4'],avoids:['hf','cl2'],desc:'Specialty alloy for hot concentrated HCl of all concentrations and hot H₂SO₄ where no other cost-effective alloy survives. Acetic acid production, ion exchange columns, specialty chemical reactors.',tags:['Zirconium','Hot HCl','H₂SO₄','Specialty Chemical']},
+  Tantalum:  {id:'Tantalum',  group:'Special Alloys',         color:'#807060',name:'Tantalum (Ta)',               grade:'ASTM B365 (commercially pure Ta)',     t_min:-196, t_max:250,  p_max:200, cost_idx:120.0,std:'ASTM B365',                         composition:{Ta:'99.7 min',Nb:'0.10 max',W:'0.05 max',Fe:'0.01 max'},                                                         pros:['Exceptional corrosion resistance to all mineral acids','Immune to HF, HCl, H₂SO₄','Inert like glass'],cons:['Extremely high cost (platinum group level)','Max 250°C (embrittlement)','Attack by strong alkali'],suits:['hcl','h2so4','hno3','hf','h3po4'],avoids:['naoh'],desc:'Tantalum is the ultimate corrosion-resistant metal — functionally inert to all mineral acids at nearly all concentrations except strong caustic. Used for dip pipes, bayonet heaters, and critical reactor internals.',tags:['Tantalum','Ultimate Corrosion','All Acids','Specialist']},
+  Nickel201: {id:'Nickel201', group:'Special Alloys',         color:'#404850',name:'Commercially Pure Nickel 200/201',grade:'ASTM B161 UNS N02200/N02201',    t_min:-196, t_max:600,  p_max:300, cost_idx:22.0, std:'ASTM B161, B162',                  composition:{Ni:'99.0 min',C:'0.02 max (201)',Mn:'0.35 max',Si:'0.35 max',Fe:'0.40 max'},                                     pros:['Excellent caustic NaOH/KOH resistance at all concentrations','Good high-temp oxidation resistance','No contamination of caustic product'],cons:['Not for oxidising acids','High cost','Limited to 315°C for 200, 600°C for 201'],suits:['naoh','nh3','water_fw'],avoids:['h2so4','hcl','hno3'],desc:'Ni200/201 (low C) for concentrated caustic soda and potassium hydroxide service at all temperatures and concentrations. Chlor-alkali plants, rayon production, and chemical processing where purity matters.',tags:['Ni200','Caustic Service','NaOH','Chlor-Alkali']},
+
+  /* ─────── POLYMER ─────── */
+  HDPE:      {id:'HDPE',      group:'Polymer',                color:'#005533',name:'HDPE PE100',                 grade:'ASTM D3035 / ISO 4427 PE100',         t_min:-50,  t_max:60,   p_max:16,  cost_idx:0.8,  std:'ASTM D3035, ISO 4427',             composition:{Material:'High Density Polyethylene',Density:'0.941–0.965 g/cm³',MFI:'0.2–1.0 g/10min',SDR:'11–26 typical'},   pros:['Excellent acid/alkali resistance','Very low cost','No corrosion','Lightweight and easy installation'],cons:['Max 60°C','Low pressure only (<16 bar)','UV degradation without black pigment'],suits:['water_fw','water_sw','hcl','h2so4','naoh','nh3','acid_mine','h3po4'],avoids:['steam'],desc:'PE100 HD-polyethylene for cold corrosive chemical service, potable water supply, and large-diameter acid lines. Lowest cost corrosion-resistant piping option.',tags:['Polymer','Acid Resistant','Low Cost','Water']},
+  PP:        {id:'PP',        group:'Polymer',                color:'#003388',name:'Polypropylene PP-H/PP-R',    grade:'PP-H / PP-R (DIN 8077 / ISO 15494)',  t_min:5,    t_max:80,   p_max:10,  cost_idx:0.9,  std:'DIN 8077, ISO 15494',             composition:{Material:'Polypropylene homopolymer/random copolymer',Density:'0.895–0.920 g/cm³',MFR:'0.3–3 g/10min'},          pros:['Broad chemical resistance','Higher temp than HDPE','Hygienic surface','Good for plating lines'],cons:['Brittle below 0°C','Max 80°C','Low pressure only (<10 bar)'],suits:['water_fw','hcl','h2so4','naoh','nh3','h3po4','milk'],avoids:['steam','benzene','cl2'],desc:'Polypropylene piping and vessels for chemical, water treatment, and food/beverage service. Standard for pickling lines, electroplating, and chemical distribution piping up to 80°C.',tags:['Polymer','Chemical Resistant','Low Pressure','Plating Line']},
+  PVDF:      {id:'PVDF',      group:'Polymer',                color:'#440055',name:'PVDF / Kynar',               grade:'ASTM D3222 Type I / DIN 16968',        t_min:-40,  t_max:140,  p_max:12,  cost_idx:8.0,  std:'ASTM D3222',                       composition:{Material:'Polyvinylidene Fluoride',Density:'1.76–1.78 g/cm³',MW:'180,000–500,000'},                               pros:['Excellent halogen and acid resistance','Higher temperature than PP/HDPE','Semiconductor grade purity available'],cons:['High cost for polymer','UV sensitive (without UV stabiliser)','Low pressure only'],suits:['hcl','cl2','water_fw','h3po4','pharma','h2so4'],avoids:['steam','hno3'],desc:'Fluoropolymer for aggressive halogen, acid, and ultra-pure service. Semiconductor fabs, pharma pure water, chlorine handling piping, and HF service where metallic MOC is too costly.',tags:['Fluoropolymer','Halogen','Pharma','Semiconductor']},
+  PTFE_Lined:{id:'PTFE_Lined',group:'Polymer',                color:'#330044',name:'PTFE / PFA Lined Pipe',      grade:'ASME B31.3 — Lined Piping',           t_min:-50,  t_max:180,  p_max:20,  cost_idx:5.0,  std:'ASTM E831, DIN 28050',             composition:{Material:'Polytetrafluoroethylene / Perfluoroalkoxy resin',Density:'2.1–2.3 g/cm³',WallThickness:'3–6mm lining'},pros:['Universal chemical resistance','Inert to virtually all acids, alkalis, solvents','Higher temp than PVDF (180°C)'],cons:['Low pressure rating','Carbon steel shell required','Permeation risk for some solvents'],suits:['hcl','h2so4','hno3','hf','naoh','cl2','h3po4'],avoids:['steam'],desc:'PTFE/PFA-lined carbon steel piping for universal chemical resistance at low-to-moderate pressure. Cost-effective alternative to Hastelloy/Alloy 20 for acids up to 180°C.',tags:['PTFE','PFA Lined','Universal Chemical','Low Cost Alternative']},
+
+  /* ─────── FRP / GRP ─────── */
+  FRP_VE:    {id:'FRP_VE',    group:'FRP / GRP',              color:'#006633',name:'FRP Vinyl Ester GRP',        grade:'ASTM D5364 / ASME RTP-1',             t_min:-40,  t_max:100,  p_max:6,   cost_idx:3.5,  std:'ASME RTP-1, BS 4994, ASTM D5364', composition:{Matrix:'Vinyl Ester Resin',Reinforcement:'E-glass or C-glass fibre',CorrosionBarrier:'2–3mm rich layer',Structure:'Filament wound or hand lay-up'},pros:['Excellent acid and brine resistance','Lightweight — low support cost','Large diameter vessels economical'],cons:['Pressure limited (<6 bar vessel)','Max ~100°C','Brittle — no impact tolerance'],suits:['hcl','h2so4','water_sw','brine','h3po4','acid_mine','fgd'],avoids:['steam','benzene','cl2'],desc:'FRP with vinyl ester resin for FGD absorbers, acid storage tanks, and large chemical process vessels. Best corrosion resistance in the FRP family. Used in scrubbers, flue gas systems, and acid transport.',tags:['FRP','Vinyl Ester','FGD','Acid Tank']},
+  FRP_Epoxy: {id:'FRP_Epoxy', group:'FRP / GRP',              color:'#005522',name:'FRP Epoxy GRP',              grade:'BS 4994 / ASTM D4097',                t_min:-20,  t_max:80,   p_max:6,   cost_idx:2.8,  std:'BS 4994, ASTM D4097',              composition:{Matrix:'Epoxy Resin',Reinforcement:'E-glass or woven roving',CorrosionBarrier:'1.5–2mm gel coat',Structure:'Filament wound'},                            pros:['Better structural properties than VE','Good for water and mild chemicals','Lower cost than VE'],cons:['Lower chemical resistance than VE','Max 80°C','Not for strong acids or solvents'],suits:['water_fw','water_sw'],avoids:['h2so4','hcl','benzene','steam'],desc:'Epoxy GRP for water service, potable water tanks, hydrocarbon pipe lining, and mild chemical storage. Good mechanical properties at lower cost than vinyl ester systems.',tags:['FRP Epoxy','Water Tank','Hydrocarbon','Structural']},
+};
+
+/* ── COMPARE STATE ── */
+let compareList = [];
+
+function addToCompare(id, btn) {
+  if (compareList.includes(id)) {
+    compareList = compareList.filter(x => x !== id);
+    btn.textContent = '+ Add to Compare';
+    btn.classList.remove('added');
+  } else {
+    if (compareList.length >= 4) { alert('Maximum 4 materials can be compared at once.'); return; }
+    compareList.push(id);
+    btn.textContent = '✓ Added to Compare';
+    btn.classList.add('added');
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compare-bar');
+  const items = document.getElementById('compare-bar-items');
+  if (compareList.length === 0) {
+    bar.classList.remove('show');
+    return;
+  }
+  bar.classList.add('show');
+  items.innerHTML = compareList.map(id => {
+    const m = MATERIALS[id];
+    return `<div class="compare-tag">
+      <span>${m?.name}</span>
+      <span class="compare-tag-x" onclick="removeFromCompare('${id}')">✕</span>
+    </div>`;
+  }).join('');
+}
+
+function removeFromCompare(id) {
+  compareList = compareList.filter(x => x !== id);
+  updateCompareBar();
+  // BUG FIX: rebuild cards so button state is consistent with compareList state
+  // (direct DOM patching alone is unreliable after filter/search re-renders)
+  const btn = document.getElementById(`cmpbtn-${id}`);
+  if (btn) {
+    btn.textContent = '+ Add to Compare';
+    btn.classList.remove('added');
+  }
+  buildLibCards(); // ensure all rendered buttons reflect current compareList
+}
+
+function clearCompare() {
+  // Clear button states on all visible cards before wiping list
+  compareList.forEach(id => {
+    const btn = document.getElementById(`cmpbtn-${id}`);
+    if (btn) { btn.textContent = '+ Add to Compare'; btn.classList.remove('added'); }
+  });
+  compareList = [];
+  updateCompareBar();
+}
+
+function openCompareModal() {
+  if (compareList.length < 2) { alert('Select at least 2 materials to compare.'); return; }
+  const mats = compareList.map(id => MATERIALS[id]).filter(Boolean);
+  const props = [
+    {key:'group',   label:'Material Group',    fmt: m => m.group},
+    {key:'grade',   label:'Grade / Standard',  fmt: m => m.grade},
+    {key:'t_min',   label:'Min Temperature',   fmt: m => `${m.t_min}°C`, numeric: true, best: 'min'},
+    {key:'t_max',   label:'Max Temperature',   fmt: m => `${m.t_max}°C`, numeric: true, best: 'max'},
+    {key:'p_max',   label:'Max Pressure',      fmt: m => `${m.p_max} bar`, numeric: true, best: 'max'},
+    {key:'cost_idx',label:'Cost Index (CS=1×)',fmt: m => `${m.cost_idx}×`, numeric: true, best: 'min'},
+    {key:'std',     label:'Standards',         fmt: m => m.std},
+    {key:'pros',    label:'Key Advantages',    fmt: m => m.pros.slice(0,3).join('; ')},
+    {key:'cons',    label:'Limitations',       fmt: m => m.cons.join('; ')},
+  ];
+
+  const colWidthPx = Math.max(140, Math.floor(600 / mats.length));
+  const colWidth = `${colWidthPx}px`;
+  const hdRow = `<div class="compare-prop-row">
+    <div class="compare-prop-key" style="font-weight:700;background:var(--slate);color:#fff;">Property</div>
+    ${mats.map(m => `<div class="compare-prop-val" style="background:${GROUP_COLORS[m.group]}22;font-weight:800;color:${GROUP_COLORS[m.group]};min-width:${colWidth};">${m.name}</div>`).join('')}
+  </div>`;
+
+  const rows = props.map(p => {
+    let numVals = p.numeric ? mats.map(m => parseFloat(m[p.key])) : null;
+    let bestVal = null, worstVal = null;
+    if (numVals) {
+      bestVal  = p.best === 'max' ? Math.max(...numVals) : Math.min(...numVals);
+      worstVal = p.best === 'max' ? Math.min(...numVals) : Math.max(...numVals);
+    }
+    const cells = mats.map(m => {
+      const val = parseFloat(m[p.key]);
+      let cls = '';
+      if (numVals && !isNaN(val) && bestVal !== worstVal) {
+        if (val === bestVal)  cls = 'best';
+        else if (val === worstVal && mats.length > 1) cls = 'worst';
+      }
+      return `<div class="compare-prop-val ${cls}" style="min-width:${colWidth};">${p.fmt(m)}</div>`;
+    }).join('');
+    return `<div class="compare-prop-row"><div class="compare-prop-key">${p.label}</div>${cells}</div>`;
+  }).join('');
+
+  document.getElementById('compare-modal-body').innerHTML = `
+    <div style="overflow-x:auto;">
+      <div style="min-width:${160 + mats.length * colWidthPx}px;">
+        ${hdRow}${rows}
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:0.89rem;color:var(--mid);">
+      🟢 Green = best value in category | 🔴 Red = worst value in category (numerical properties only, equal values not highlighted).<br>
+      ⚠ <strong>Comparison is unweighted.</strong> Cost, temperature rating and corrosion resistance should be weighted by your specific application — this table is a reference aid, not a final engineering decision.
+    </div>`;
+  document.getElementById('compare-modal').classList.add('open');
+}
+
+function closeCompareModal() {
+  document.getElementById('compare-modal').classList.remove('open');
+}
+
+/* ── COMPAT SCORING — uses dynamic operating conditions from UI ── */
+function getConditions() {
+  return {
+    t_op:   parseFloat(document.getElementById('cond-temp')?.value  ?? 80),
+    p_op:   parseFloat(document.getElementById('cond-press')?.value ?? 10),
+    cl_ppm: parseFloat(document.getElementById('cond-cl')?.value    ?? 50),
+    ph:     parseFloat(document.getElementById('cond-ph')?.value    ?? 7),
+    h2s:    document.getElementById('cond-h2s')?.value === 'yes',
+    phase:  document.getElementById('cond-phase')?.value ?? 'wet',
+  };
+}
+
+function compat(fluidId, mat) {
+  const f = FLUIDS.find(x => x.id === fluidId);
+  // BUG FIX: return -1 (not suitable) for unknown fluid, not 0
+  if (!f) return -1;
+
+  const c = getConditions();
+  const t_op = isNaN(c.t_op) ? 80  : c.t_op;
+  const p_op = isNaN(c.p_op) ? 10  : c.p_op;
+  const cl   = isNaN(c.cl_ppm) ? 50 : c.cl_ppm;
+  const ph   = isNaN(c.ph)    ? 7  : c.ph;
+  const h2s  = c.h2s;
+  const dry  = c.phase === 'dry';
+
+  // BUG FIX: Use actual operating conditions instead of hardcoded 100°C/5 bar
+  if (mat.t_max < t_op) return -1;           // material can't handle op temp
+  if (mat.t_min > t_op) return -1;           // material too brittle at op temp
+  if (mat.p_max < p_op) return -1;           // material can't handle op pressure
+
+  // Hard avoid list — definitive material rejection
+  if (mat.avoids && mat.avoids.includes(fluidId)) return -1;
+
+  let s = 50;
+
+  // Suit list bonus
+  if (mat.suits && mat.suits.includes(fluidId)) s += 35;
+
+  // CORROSIVITY PENALTIES
+  if (f.corr === 'severe'   && mat.group === 'Carbon Steel') s -= 40;
+  if (f.corr === 'severe'   && (mat.group === 'HP Boiler Tube' || mat.group === 'Low Alloy Steel')) s -= 35;
+  if (f.corr === 'moderate' && mat.group === 'Carbon Steel') s -= 20;
+  if (f.corr === 'low'      && mat.group === 'Carbon Steel') s += 10;
+
+  // CHLORIDE SCC penalties — austenitic and lean duplex SS susceptible above 60°C
+  const isSCC_susceptible = ['Stainless Steel', 'Duplex SS'].includes(mat.group);
+  if (isSCC_susceptible && cl > 200 && t_op > 60) {
+    // Duplex SS has significantly better SCC resistance than austenitic — smaller penalty
+    const sccPenalty = mat.group === 'Duplex SS' ? 10 : 30;
+    s -= sccPenalty;
+  } else if (isSCC_susceptible && cl > 50 && t_op > 80) {
+    const sccPenalty = mat.group === 'Duplex SS' ? 5 : 20;
+    s -= sccPenalty;
+  }
+
+  // Super Duplex/Duplex: hard penalty only at very high Cl⁻ and elevated temp
+  if (mat.group === 'Duplex SS' && cl > 5000 && t_op > 100) s -= 15;
+
+  // PHASE AWARENESS (BUG FIX): dry vs wet Cl2/CO2
+  if (fluidId === 'cl2' && dry) {
+    // Dry chlorine: CS acceptable, not flagged as severely corrosive
+    if (mat.group === 'Carbon Steel') s += 25; // dry Cl2 much less aggressive
+  }
+  if (fluidId === 'co2' && dry) {
+    // Dry CO2: CS acceptable, corrosion minimal
+    if (mat.group === 'Carbon Steel' || mat.group === 'Low Alloy Steel') s += 15;
+  }
+
+  // H2S SOUR SERVICE (NACE MR0175)
+  if (h2s) {
+    if (mat.group === 'Carbon Steel' && t_op > 60)  s -= 25; // SSC risk
+    if (mat.group === 'Low Alloy Steel' && t_op > 60) s -= 20;
+    if (mat.avoids && mat.avoids.includes('h2s_gas')) s -= 30;
+  }
+
+  // LOW pH PENALTIES
+  if (ph < 4) {
+    if (mat.group === 'Carbon Steel') s -= 25;
+    if (mat.group === 'Stainless Steel') s -= 10;
+  }
+  if (ph > 12) {
+    // Caustic SCC risk — austenitic SS more susceptible than duplex
+    if (mat.group === 'Stainless Steel') s -= 15;
+    if (mat.group === 'Duplex SS') s -= 8; // duplex less susceptible but not immune
+  }
+
+  // POLYMER/FRP: cap score, suited for low-temp corrosive service
+  if ((mat.group === 'Polymer' || mat.group === 'FRP / GRP') && mat.suits && mat.suits.includes(fluidId)) {
+    s = Math.min(s, 92);
+  }
+
+  // Ni alloy bonus for severe service
+  if ((mat.group === 'Hastelloy Family' || mat.group === 'Inconel / Incoloy') && f.corr === 'severe') s += 15;
+
+  return Math.max(0, Math.min(100, s));
+}
+
+/* ── TAB SWITCHING ── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  // Rebuild matrix when switching to it to pick up fresh conditions
+  if (id === 'matrix') buildMatrix();
+}
+
+/* ── DARK MODE ── */
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-toggle').textContent = isDark ? '🌙' : '☀️';
+  try { localStorage.setItem('moc-theme', isDark ? 'light' : 'dark'); } catch(e){}
+}
+(function(){
+  try {
+    const t = localStorage.getItem('moc-theme');
+    if (t === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.addEventListener('DOMContentLoaded',()=>{document.getElementById('dark-toggle').textContent='☀️';}); }
+  } catch(e){}
+})();
+
+/* ── TOAST ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ── KEYBOARD SHORTCUTS ── */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'd' || e.key === 'D') toggleDark();
+  if (e.key === '/') {
+    e.preventDefault();
+    const s = document.getElementById('lib-search');
+    if (s) { s.focus(); switchTab('library', document.querySelector('.tab-btn')); }
+  }
+  if (e.key === 'Escape') {
+    closeCompareModal();
+    clearLibSearch();
+  }
+});
+
+/* ══════════════════════ TAB 1: LIBRARY ══════════════════════ */
+let libFilter = 'All';
+
+function buildLibFilter() {
+  const groups = [...new Set(Object.values(MATERIALS).map(m => m.group))];
+  document.getElementById('lib-filter-row').innerHTML =
+    ['All',...groups].map(g =>
+      `<button class="fb ${g==='All'?'active':''}" data-group="${g}" aria-pressed="${g==='All'?'true':'false'}" onclick="setLibFilter(this.dataset.group,this)">${g}</button>`
+    ).join('');
+}
+
+function setLibFilter(g, btn) {
+  libFilter = g;
+  document.querySelectorAll('.fb').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+  btn.classList.add('active');
+  btn.setAttribute('aria-pressed','true');
+  buildLibCards();
+}
+
+function onLibSearch() {
+  const val = document.getElementById('lib-search').value;
+  const clrBtn = document.getElementById('lib-search-clear');
+  if (clrBtn) clrBtn.classList.toggle('visible', val.length > 0);
+  buildLibCards();
+}
+
+function clearLibSearch() {
+  const s = document.getElementById('lib-search');
+  if (s) s.value = '';
+  const clrBtn = document.getElementById('lib-search-clear');
+  if (clrBtn) clrBtn.classList.remove('visible');
+  buildLibCards();
+}
+
+function buildLibCards() {
+  const search = (document.getElementById('lib-search')?.value || '').toLowerCase();
+  const sortVal = document.getElementById('lib-sort')?.value || 'default';
+  let mats = Object.values(MATERIALS).filter(m => {
+    const matchGroup = libFilter === 'All' || m.group === libFilter;
+    const matchSearch = !search ||
+      m.name.toLowerCase().includes(search) ||
+      m.grade.toLowerCase().includes(search) ||
+      m.group.toLowerCase().includes(search) ||
+      m.desc.toLowerCase().includes(search) ||
+      m.tags.some(t => t.toLowerCase().includes(search));
+    return matchGroup && matchSearch;
+  });
+
+  // Sort
+  if (sortVal === 'name') mats.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sortVal === 'temp_asc') mats.sort((a,b) => a.t_max - b.t_max);
+  else if (sortVal === 'temp_desc') mats.sort((a,b) => b.t_max - a.t_max);
+  else if (sortVal === 'cost_asc') mats.sort((a,b) => a.cost_idx - b.cost_idx);
+  else if (sortVal === 'cost_desc') mats.sort((a,b) => b.cost_idx - a.cost_idx);
+
+  const countEl = document.getElementById('lib-count');
+  if (countEl) countEl.textContent = `Showing ${mats.length} of ${Object.keys(MATERIALS).length} materials${search ? ` for "${search}"` : ''}`;
+
+  if (mats.length === 0) {
+    document.getElementById('lib-cards').innerHTML = `
+      <div class="no-results">
+        <div class="no-results-icon">🔍</div>
+        <div>No materials found for "<strong>${search}</strong>"</div>
+        <div style="margin-top:8px;font-size:0.89rem;"><button onclick="clearLibSearch()" style="color:var(--copper);background:none;border:none;cursor:pointer;font-size:1.02rem;text-decoration:underline;">Clear search</button></div>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('lib-cards').innerHTML = mats.map(m => {
+    const barColor = GROUP_COLORS[m.group] || '#666';
+    const compRows = Object.entries(m.composition).map(([k,v]) =>
+      `<div class="comp-row"><span>${k}</span><span>${v}</span></div>`).join('');
+    const tagPills = m.tags.map(t =>
+      `<span class="tag" style="color:${barColor};border-color:${barColor}20;background:${barColor}10">${t}</span>`).join('');
+    const prosHtml = m.pros.slice(0,3).map(p => `<div>${p}</div>`).join('');
+    const consHtml = m.cons.slice(0,2).map(c => `<div>${c}</div>`).join('');
+    const isInCompare = compareList.includes(m.id);
+    return `<div class="lib-card">
+      <div class="lib-card-top">
+        <div class="lib-card-bar" style="background:${barColor}"></div>
+        <div class="lib-card-title-block">
+          <div class="lib-card-group">${m.group}</div>
+          <div class="lib-card-name">${m.name}</div>
+          <div class="lib-card-grade">${m.grade}</div>
+        </div>
+      </div>
+      <div class="lib-card-body">
+        <div class="lib-prop"><span class="lib-prop-k">Temperature Range</span><span class="lib-prop-v">${m.t_min}°C – ${m.t_max}°C <span style="font-size:0.78rem;color:var(--mid);font-family:var(--body);font-weight:400;">(oxidation/code limit)</span></span></div>
+        <div class="lib-prop"><span class="lib-prop-k">Max Pressure</span><span class="lib-prop-v">${m.p_max} bar <span style="font-size:0.78rem;color:var(--mid);font-family:var(--body);font-weight:400;">(indicative; verify per code &amp; thickness)</span></span></div>
+        <div class="lib-prop"><span class="lib-prop-k">Cost Index (CS=1.0)</span><span class="lib-prop-v">${m.cost_idx}× <span style="font-size:0.78rem;color:var(--mid);font-family:var(--body);font-weight:400;">(indicative; region &amp; supply-chain dependent)</span></span></div>
+        <div class="lib-prop"><span class="lib-prop-k">Standard</span><span class="lib-prop-v" style="font-size:1.02rem;">${m.std.split(',')[0]}</span></div>
+        <div class="pros-cons">
+          <div class="pros-list">${prosHtml}</div>
+          <div class="cons-list">${consHtml}</div>
+        </div>
+        <div class="lib-desc">${m.desc}</div>
+        <button class="expand-btn" onclick="toggleComp(this)">▶ View Full Composition &amp; Standards</button>
+        <div class="comp-detail">
+          ${compRows}
+          <div class="comp-row"><span>All Standards</span><span>${m.std}</span></div>
+        </div>
+        <div class="lib-tags">${tagPills}</div>
+        <button class="add-compare-btn ${isInCompare?'added':''}" id="cmpbtn-${m.id}" onclick="addToCompare('${m.id}',this)">
+          ${isInCompare ? '✓ Added to Compare' : '+ Add to Compare'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleComp(btn) {
+  const detail = btn.nextElementSibling;
+  detail.classList.toggle('open');
+  // BUG FIX: use innerHTML (not textContent) to correctly render &amp; entities
+  btn.innerHTML = detail.classList.contains('open')
+    ? '&#9660; Hide Composition'
+    : '&#9658; View Full Composition &amp; Standards';
+}
+
+/* ══════════════════════ TAB 2: MATRIX ══════════════════════ */
+let matrixIndustryFilter = 'All';
+
+function buildMatrixIndustryFilter() {
+  const industries = ['All', ...new Set(FLUIDS.map(f => f.ind))];
+  const el = document.getElementById('matrix-industry-filter');
+  if (!el) return;
+  el.innerHTML = industries.map(ind =>
+    `<button class="mif ${ind==='All'?'active':''}" data-ind="${ind}" onclick="setMatrixIndustry(this.dataset.ind,this)">${ind}</button>`
+  ).join('');
+}
+
+function setMatrixIndustry(ind, btn) {
+  matrixIndustryFilter = ind;
+  document.querySelectorAll('.mif').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildMatrix();
+}
+
+function buildMatrix() {
+  const mats   = Object.values(MATERIALS);
+  const fluidSearch = (document.getElementById('matrix-fluid-search')?.value || '').toLowerCase();
+  const fluids = FLUIDS.filter(f => {
+    const matchInd = matrixIndustryFilter === 'All' || f.ind === matrixIndustryFilter;
+    const matchSearch = !fluidSearch || f.name.toLowerCase().includes(fluidSearch);
+    return matchInd && matchSearch;
+  });
+
+  const shortName = n => n
+    .replace('Stainless Steel ','SS ')
+    .replace('Cupro-Nickel ','CuNi ')
+    .replace('Polypropylene PP-H/PP-R','PP')
+    .replace('HDPE PE100','HDPE')
+    .replace('1¼Cr-½Mo (P11 / P22)','LAS P11/P22')
+    .replace('9Cr-1Mo-V (P91 / P92)','P91/P92')
+    .replace('Carbon Steel A516 Gr.70','CS A516')
+    .replace('Carbon Steel A106 Gr.B','CS A106')
+    .replace('IS 2062 Fe410','Mild Steel')
+    .replace(' (Inconel 625)','')
+    .replace(' (Hastelloy C-276)','')
+    .replace(' (N10276)','')
+    .replace(' (N06625)','')
+    .replace(' (Incoloy 825)','')
+    .replace(' (Inconel 600)','')
+    .replace(' (Inconel 718)','')
+    .replace(' (Inconel)','')
+    .replace(' (Kynar)','')
+    .replace(' (CP Ti)','')
+    .replace('Lean Duplex ','')
+    .replace('Hastelloy ','Hast.')
+    .replace('Inconel ','')
+    .replace('Alloy ','')
+    .replace(' (N04400)','')
+    .replace('Commercially Pure Nickel 200/201','Ni 200/201')
+    .replace('Titanium ','Ti ')
+    .replace('SA-213 ','T')
+    .replace('SA-210 Gr.A1 / Gr.C','SA-210')
+    .replace('FRP Vinyl Ester GRP','FRP VE')
+    .replace('FRP Epoxy GRP','FRP Epoxy')
+    .replace('PTFE / PFA Lined Pipe','PTFE Lined')
+    .replace('Zirconium 702 / 705','Zirconium')
+    .replace('Tantalum (Ta)','Tantalum');
+
+  const matHdrs = mats.map(m =>
+    `<th class="mat-col" title="${m.grade}">${shortName(m.name)}</th>`).join('');
+
+  const rows = fluids.map(f => {
+    const cells = mats.map(m => {
+      const s = compat(f.id, m);
+      let cls, lbl;
+      if (s < 0)       { cls='c-no';   lbl='✗'; }
+      else if (s >= 70){ cls='c-exc';  lbl='✓✓'; }
+      else if (s >= 45){ cls='c-ok';   lbl='✓'; }
+      else             { cls='c-marg'; lbl='~'; }
+      return `<td class="cell"><span class="compat ${cls}" title="${m.name}: Score ${s<0?'Not suitable':s}">${lbl}</span></td>`;
+    }).join('');
+    return `<tr><td class="fluid-name">${f.name}</td>${cells}</tr>`;
+  }).join('');
+
+  document.getElementById('matrix-wrap').innerHTML = `
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th class="fluid-col">Process Fluid / Material →</th>
+          ${matHdrs}
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+const GROUP_COLORS = {
+  'Carbon Steel':        '#7a5200',
+  'Low Alloy Steel':     '#5a3a00',
+  'HP Boiler Tube':      '#3a6020',
+  'Reformer Tube':       '#1a3a5a',
+  'Stainless Steel':     '#5a8aaa',
+  'Duplex SS':           '#304880',
+  'Hastelloy Family':    '#0a2040',
+  'Inconel / Incoloy':   '#1a3860',
+  'Monel / Copper Alloy':'#8a5010',
+  'Titanium':            '#505060',
+  'Special Alloys':      '#606040',
+  'Polymer':             '#004a28',
+  'FRP / GRP':           '#005500',
+};
+
+/* ══════════════════════ TAB 3: GRADE REFERENCE ══════════════════════ */
+const GRADE_DATA = [
+  {group:'Carbon Steel — Pipes, Plates & Fittings',items:[
+    {name:'ASTM A106 Gr.B',         desc:'Seamless CS pipe, most common grade for high-temp non-corrosive service in refineries and chemical plants.',t_max:'425°C',p_max:'High',forms:'Pipe'},
+    {name:'ASTM A53 Gr.B',          desc:'Welded and seamless CS pipe. General service, structural, low-pressure utility.',t_max:'370°C',p_max:'Moderate',forms:'Pipe'},
+    {name:'ASTM A516 Gr.60 / Gr.70',desc:'Standard pressure vessel plate for moderate and elevated temperature. Gr.70 has higher tensile strength.',t_max:'425°C',p_max:'Vessel',forms:'Plate'},
+    {name:'ASTM A105',              desc:'Forged CS for pipe fittings, flanges, and valves up to moderate temperature.',t_max:'370°C',p_max:'High',forms:'Forging'},
+    {name:'ASTM A234 WPB',          desc:'Wrought CS butt-weld pipe fittings for moderate and high-temperature service.',t_max:'425°C',p_max:'High',forms:'Fittings'},
+    {name:'ASTM A333 Gr.6',         desc:'Seamless and welded CS pipe for low-temperature service (cryogenic). Charpy tested to -46°C.',t_max:'345°C',p_max:'High',forms:'Pipe'},
+    {name:'IS 2062 E250 / E350',    desc:'Indian standard structural and CS plate. Weldable quality. Used for pressure vessels and structural fabrication.',t_max:'350°C',p_max:'Moderate',forms:'Plate/Section'},
+    {name:'IS 1239 (Mild Steel Tubes)',desc:'Indian standard for ERW mild steel tubes for water, steam, and gas service at moderate temperature.',t_max:'300°C',p_max:'Low–Mod',forms:'Tube/Pipe'},
+  ]},
+  {group:'HP Boiler Tube Materials — ASME Section I / II',items:[
+    {name:'SA-210 Gr.A1 (CS Boiler Tube)',  desc:'Standard medium-carbon seamless tube for water walls, risers, downcomer, economisers. Most common boiler tube grade.',t_max:'480°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 T2 (½Cr-½Mo)',            desc:'Low-alloy tube for superheater service above CS limits. Used in package boilers and lower-duty utility boiler reheaters.',t_max:'540°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 T11 (1¼Cr-½Mo)',          desc:'1¼Cr-½Mo alloy tube. Standard for superheaters and reheaters in industrial and utility boilers. Good oxidation resistance to 580°C.',t_max:'580°C',p_max:'Very High',forms:'Tube'},
+    {name:'SA-213 T22 (2¼Cr-1Mo)',          desc:'Higher Cr-Mo for better HTHA margin (API 941 Nelson curves). HP superheater, reheater, and hydrogen service tubes.',t_max:'620°C',p_max:'Very High',forms:'Tube'},
+    {name:'SA-213 T91 (9Cr-1Mo-V-Nb)',      desc:'Modified 9Cr-1Mo steel. Highest creep strength in ferritic class. Standard for USC boiler superheaters and reheaters (>600°C).',t_max:'650°C',p_max:'Ultra High',forms:'Tube'},
+    {name:'SA-213 T92 (9Cr-0.5Mo-1.8W-V-Nb)',desc:'Improved creep strength vs T91 with W addition. Used in advanced USC (A-USC) boilers for final superheater in highest-duty service.',t_max:'650°C',p_max:'Ultra High',forms:'Tube'},
+    {name:'SA-213 TP304H (18Cr-8Ni High C)', desc:'Austenitic SS tube for high-temperature final superheaters and reheaters (>600°C). Far better oxidation than ferritic. Used where T91 is borderline.',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 TP316H (16Cr-12Ni-2Mo)',  desc:'Mo-bearing austenitic tube for improved creep and oxidation resistance in final superheater and high-temp reheater applications.',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 TP321H (18Cr-10Ni-Ti)',   desc:'Ti-stabilised austenitic tube. Good resistance to sensitisation at high temperatures. Used in superheaters and HRSGs.',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 TP347H (18Cr-10Ni-Nb)',   desc:'Nb-stabilised austenitic tube with excellent creep strength and sensitisation resistance. Standard for modern USC final superheaters.',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'SA-213 TP347HFG (Fine Grain)',   desc:'Fine grain version of TP347H with improved steam oxidation resistance. Used in A-USC boilers for the most demanding final superheater stage.',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'Super 304H (18Cr-9Ni-3Cu-Nb)',   desc:'Cu-bearing austenitic tube with exceptional creep strength and steam oxidation resistance. Japanese-developed for A-USC final superheaters.',t_max:'700°C',p_max:'High',forms:'Tube'},
+    {name:'HR3C / TP310NbN (25Cr-20Ni-Nb-N)',desc:'High-alloy austenitic with outstanding steam oxidation resistance. Used in final superheater outlets where all other austenitic grades reach their limit.',t_max:'700°C',p_max:'High',forms:'Tube'},
+    {name:'Alloy 617 / N06617',             desc:'Ni-Cr-Co-Mo superalloy tube. Being evaluated for turbine headers and final SH for conceptual 700°C A-USC power plants.',t_max:'1000°C',p_max:'High',forms:'Tube/Pipe'},
+    {name:'SA-178 Gr.A (ERW Boiler Tube)',  desc:'Electric resistance welded CS tube for water walls and economisers in lower-duty industrial boilers and heat recovery systems.',t_max:'370°C',p_max:'Moderate',forms:'Tube (ERW)'},
+  ]},
+  {group:'Primary Reformer Tube Alloys (Centrifugal Cast)',items:[
+    {name:'HK40 — ASTM A351 Gr.HK40 (25Cr-20Ni)',        desc:'Classic austenitic heat-resistant alloy for primary reformer furnace tubes. Lower cost, established grade. Predecessor to HP Modified.',t_max:'1050°C',p_max:'Low (80 bar)',forms:'Centrifugal Cast Tube'},
+    {name:'HP Modified (24Cr-35Ni + microalloy)',          desc:'Industry workhorse for steam methane reformer (SMR) tubes. HP Mod with W, Nb, Ti, or Zr additions for improved creep and carburisation resistance.',t_max:'1050°C',p_max:'Low (80 bar)',forms:'Centrifugal Cast Tube'},
+    {name:'HP Nb (HP + 0.5–1.5% Nb)',                     desc:'Nb micro-alloyed HP with improved creep strength. Standard in most modern ammonia and hydrogen reformers. Longer campaign life than basic HP.',t_max:'1080°C',p_max:'Low (80 bar)',forms:'Centrifugal Cast Tube'},
+    {name:'HP Nb + W / HP Nb + Ti (Advanced HP)',          desc:'Further micro-alloyed grades with W or Ti for the highest-duty reformer service. Used in modern high-throughput ammonia and methanol plants.',t_max:'1100°C',p_max:'Low (80 bar)',forms:'Centrifugal Cast Tube'},
+    {name:'Manaurite® XM / KHR35C type',                  desc:'Proprietary high-Ni (35Ni) centrifugally cast alloys from specialist foundries for enhanced carburisation and high-temp strength.',t_max:'1100°C',p_max:'Low (80 bar)',forms:'Centrifugal Cast Tube'},
+    {name:'Alloy 800HT / N08811 (ASTM B407)',              desc:'Wrought Ni-Fe-Cr alloy for reformer outlet manifolds (pigtails), transfer lines, and convection section tubing. Excellent carburisation resistance.',t_max:'980°C',p_max:'Moderate',forms:'Wrought Pipe/Tube'},
+    {name:'Alloy 601 / N06601 (ASTM B167)',                desc:'Ni-Cr-Al alloy for radiant heater tubes, thermal oxidiser liners, and reformer convection section. Al₂O₃-forming with outstanding oxidation resistance to 1150°C.',t_max:'1150°C',p_max:'Low',forms:'Tube/Sheet'},
+    {name:'Alloy 602CA / N06025',                          desc:'High Al, C, Zr nickel alloy for the most demanding reformer convection zone and pyrolysis furnace applications. Near the top of oxidation resistance.',t_max:'1200°C',p_max:'Low',forms:'Tube'},
+    {name:'Alloy HR-120 / N08120',                         desc:'Fe-Ni-Cr alloy with high Si for carburising and sulphidising environments. Convection section tubing where fuel sulphur causes attack.',t_max:'1000°C',p_max:'Low',forms:'Tube/Pipe'},
+    {name:'Alloy 617 / N06617 (ASTM B167)',                desc:'Ni-Co-Cr-Mo alloy for the highest-temperature reformer headers, outlet manifolds, and future A-USC applications.',t_max:'1050°C',p_max:'Moderate',forms:'Pipe/Tube/Forging'},
+  ]},
+  {group:'Stainless Steel — Austenitic Piping & Vessels',items:[
+    {name:'ASTM A312 TP304',        desc:'Most common austenitic SS pipe. General corrosion, food, pharma, chemical service.',t_max:'870°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A312 TP304L',       desc:'Low C grade. Welded fabrication without sensitisation risk. Pharma and food.',t_max:'870°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A312 TP316L',       desc:'Mo-bearing (2–3% Mo). Standard for moderate chloride, pharma, marine process.',t_max:'870°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A312 TP317L',       desc:'Higher Mo (3–4%). Better pitting resistance. FGD, phosphoric acid, aggressive Cl.',t_max:'870°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A312 TP321',        desc:'Ti-stabilised. High-temp welded assemblies where sensitisation is a risk.',t_max:'900°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A312 TP347',        desc:'Nb-stabilised. Better sensitisation resistance than 321. Catalytic reformer piping.',t_max:'900°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'ASTM A240 / A276 SS plate',desc:'SS sheet and plate for pressure vessel, tank, and structural fabrication. All grades.',t_max:'900°C',p_max:'Vessel',forms:'Plate/Sheet'},
+    {name:'IS 6913 (SS Pipes)',     desc:'Indian standard covering 304, 304L, 316, 316L, 321 equivalent SS seamless pipes.',t_max:'870°C',p_max:'Mod–High',forms:'Pipe'},
+    {name:'Alloy 904L / N08904',    desc:'Super austenitic with 4–5% Mo + Cu. Excellent H₂SO₄ and phosphoric acid resistance.',t_max:'400°C',p_max:'Mod–High',forms:'Pipe/Plate'},
+    {name:'Alloy 20 / N08020',      desc:'Nb-stabilised super austenitic. Designed for H₂SO₄ service in chemical plants.',t_max:'450°C',p_max:'Mod–High',forms:'Pipe/Plate'},
+  ]},
+  {group:'Duplex & Super Duplex SS',items:[
+    {name:'UNS S32101 (Lean Duplex 2101)',desc:'Lean duplex. Low Ni, Mn-substituted. Moderate Cl environments. More stable price.',t_max:'280°C',p_max:'High',forms:'Pipe/Plate'},
+    {name:'UNS S31803 / S32205 (Duplex 2205)',desc:'Standard duplex 2205. PREN ~35. Seawater, Cl-bearing environments.',t_max:'315°C',p_max:'High',forms:'Pipe/Plate/Tube'},
+    {name:'UNS S32750 (Super Duplex 2507)', desc:'Super Duplex. PREN ~42. Subsea, offshore, high Cl⁻ environments.',t_max:'300°C',p_max:'High',forms:'Pipe/Plate'},
+    {name:'UNS S32760 (Zeron 100)',         desc:'Super duplex with W + Cu. Seawater/acid, offshore topsides.',t_max:'300°C',p_max:'High',forms:'Pipe/Plate'},
+  ]},
+  {group:'Hastelloy Family — Corrosion-Resistant Ni Alloys',items:[
+    {name:'Hastelloy C-276 / N10276',  desc:'Gold standard for aggressive acids. HCl, mixed acids, halogen service. FGD, pharma reactors.',t_max:'1040°C',p_max:'High',forms:'All forms'},
+    {name:'Hastelloy C-22 / N06022',   desc:'Higher Cr vs C-276. Better oxidising acid resistance. FGD scrubber lining, HNO₃ service.',t_max:'1040°C',p_max:'High',forms:'All forms'},
+    {name:'Hastelloy C-2000 / N06200', desc:'Highest all-round: added Cu for best H₂SO₄ + HCl resistance in combined service.',t_max:'1040°C',p_max:'High',forms:'All forms'},
+    {name:'Hastelloy B-3 / N10665',    desc:'High Mo without Cr. Best for HCl of all concentrations and temperatures. No oxidising media.',t_max:'870°C',p_max:'High',forms:'All forms'},
+    {name:'Hastelloy G-30 / N06030',   desc:'High Cr: excellent for wet process phosphoric acid and H₂SO₄. Fertiliser plant standard.',t_max:'760°C',p_max:'High',forms:'Pipe/Plate'},
+    {name:'Hastelloy X / N06002',      desc:'Ni-Cr-Fe-Mo for high-temperature gas turbine and combustion components. Excellent oxidation.',t_max:'1200°C',p_max:'Low',forms:'Sheet/Plate'},
+  ]},
+  {group:'Inconel / Incoloy — High Performance Ni Alloys',items:[
+    {name:'Alloy 625 / N06625 (Inconel 625)',  desc:'Exceptional corrosion + high-temp strength. No Cl SCC. Offshore, FGD, subsea, cladding.',t_max:'980°C',p_max:'High',forms:'All forms'},
+    {name:'Alloy 600 / N06600 (Inconel 600)',  desc:'Ni-Cr for high-temp oxidation service. Furnace components, heat treatment fixtures.',t_max:'1100°C',p_max:'Moderate',forms:'Tube/Sheet/Bar'},
+    {name:'Alloy 718 / N07718 (Inconel 718)',  desc:'Precipitation-hardened. High strength, sour gas, HP wellhead equipment per API 6A718.',t_max:'700°C',p_max:'Very High',forms:'All forms'},
+    {name:'Alloy 800H/HT / N08810/11 (Incoloy 800H)',desc:'Fe-Ni-Cr with Al+Ti. Carburisation and nitriding resistant. Reformer manifolds, pyrolysis.',t_max:'980°C',p_max:'Moderate',forms:'Pipe/Tube/Sheet'},
+    {name:'Alloy 825 / N08825 (Incoloy 825)',  desc:'Ni-Fe-Cr-Mo-Cu. H₂SO₄, H₃PO₄, seawater, sour service. Oil country tubular goods.',t_max:'450°C',p_max:'High',forms:'Pipe/Plate/Tube'},
+    {name:'Alloy 601 / N06601 (Inconel 601)',  desc:'Ni-Cr-Al for high-temp oxidation to 1150°C. Radiant tubes, furnace components.',t_max:'1150°C',p_max:'Low',forms:'Sheet/Tube/Bar'},
+    {name:'Alloy 617 / N06617',                desc:'Ni-Co-Cr-Mo for extreme high-temp (>1000°C). Gas turbine combustion liners, USC headers.',t_max:'1050°C',p_max:'High',forms:'Pipe/Sheet/Forging'},
+  ]},
+  {group:'Monel & Copper Alloys',items:[
+    {name:'Monel 400 / N04400',     desc:'Ni-Cu. HF alkylation, seawater, reducing acid service. Classic for HF units.',t_max:'480°C',p_max:'High',forms:'All forms'},
+    {name:'Monel K-500 / N05500',   desc:'Age-hardened Ni-Cu. Same corrosion as Monel 400 but 3× strength for pump shafts/propellers.',t_max:'480°C',p_max:'High',forms:'Bar/Forging'},
+    {name:'Cu-Ni 90/10 (C70600)',   desc:'10% Ni Cu alloy. General seawater cooling piping, HVAC condensate, ship hulls.',t_max:'200°C',p_max:'Moderate',forms:'Pipe/Tube/Plate'},
+    {name:'Cu-Ni 70/30 (C71500)',   desc:'30% Ni Cu alloy. Superior seawater resistance. Navy condensers, desalination, HX tubing.',t_max:'260°C',p_max:'High',forms:'Pipe/Tube/Plate'},
+    {name:'Admiralty Brass (C44300)',desc:'Cu-Zn-Sn alloy. Classic HX tube in fresh and mildly brackish water. Low velocity service.',t_max:'180°C',p_max:'Moderate',forms:'Tube'},
+    {name:'Titanium Gr.2 HX Tube',  desc:'Ti Grade 2 seamless tube for seawater-cooled condensers and offshore heat exchangers.',t_max:'260°C',p_max:'Moderate',forms:'Tube'},
+  ]},
+  {group:'Heat Exchanger Tube Materials',items:[
+    {name:'ASTM B111 Cu-Ni 70/30',  desc:'Navy standard seawater condenser tube. Excellent biofouling resistance and erosion resistance.',t_max:'260°C',p_max:'High',forms:'Tube'},
+    {name:'ASTM B338 Ti Grade 2',   desc:'Preferred tube for seawater cooled offshore, coastal power plant, and aggressive Cl⁻ service.',t_max:'260°C',p_max:'Moderate',forms:'Tube'},
+    {name:'ASTM B163 Alloy 825',    desc:'Ni-Fe-Cr-Mo-Cu tube for aggressive process side — sour gas coolers, sulfuric acid HX.',t_max:'450°C',p_max:'High',forms:'Tube'},
+    {name:'ASTM B163 Alloy 625',    desc:'Premium for extremely corrosive service — HCl, HF, seawater on both sides.',t_max:'980°C',p_max:'High',forms:'Tube'},
+    {name:'ASTM A213 TP316L',       desc:'SS HX tube for moderate chloride and corrosive process. Pharma/food heat exchangers.',t_max:'870°C',p_max:'High',forms:'Tube'},
+    {name:'ASTM A213 TP321',        desc:'Ti-stabilised SS HX tube for high-temp refinery heat exchangers (HX with hydrocarbon process).',t_max:'900°C',p_max:'High',forms:'Tube'},
+    {name:'Duplex 2205 HX Tube',    desc:'Duplex SS for seawater coolers and offshore HX. PREN~35 resists pitting and SCC.',t_max:'315°C',p_max:'High',forms:'Tube'},
+    {name:'Hastelloy C-276 HX Tube',desc:'Premium tube for most aggressive process fluids — acid coolers, reactor effluent HX.',t_max:'1040°C',p_max:'High',forms:'Tube'},
+  ]},
+  {group:'Clad / Weld Overlay & Lined Materials',items:[
+    {name:'CS + Alloy 625 Weld Overlay',   desc:'Carbon steel shell with Inconel 625 overlay on process wetted surfaces. For pressure vessels handling aggressive corrosives.',t_max:'425°C',p_max:'High',forms:'Vessel/Nozzle'},
+    {name:'CS + SS 316L Cladding',         desc:'CS plate roll-bonded with 316L SS on one face. Pressure vessels for moderate corrosion with reduced cost vs solid SS.',t_max:'350°C',p_max:'High',forms:'Plate/Vessel'},
+    {name:'CS + Hastelloy C-276 Clad',     desc:'CS pressure vessel with C-276 cladding for highly corrosive acids and mixed acid service.',t_max:'350°C',p_max:'High',forms:'Vessel'},
+    {name:'CS + Titanium Explosion Clad',  desc:'Titanium-clad CS for seawater and oxidising acid service. Offshore HX shells and tubesheet.',t_max:'260°C',p_max:'High',forms:'Plate/Tubesheet'},
+    {name:'PTFE / PFA Lined Pipe (CS Shell)',desc:'Full-bore PTFE or PFA lining inside CS pipe for universal chemical resistance at low-moderate pressure.',t_max:'180°C',p_max:'20 bar',forms:'Pipe/Fittings/Valve'},
+    {name:'Rubber Lined CS Pipe/Vessel',   desc:'Natural or synthetic rubber lining for abrasive acid slurries (mining, fertiliser). Economic solution for dilute acid.',t_max:'80°C',p_max:'Moderate',forms:'Pipe/Vessel/Pump'},
+    {name:'Cement / Epoxy Lined CS Pipe',  desc:'Internal cement mortar or epoxy coating for water pipes and mild chemical lines. Low cost, limited chemical resistance.',t_max:'60°C',p_max:'Moderate',forms:'Pipe'},
+  ]},
+  {group:'Special Alloys — Zirconium, Tantalum, Pure Nickel',items:[
+    {name:'Zirconium 702 / R60702',  desc:'Best for hot concentrated HCl of all concentrations. H₂SO₄ up to 70% at boiling. Acetic acid.',t_max:'370°C',p_max:'Moderate',forms:'Pipe/Plate/Vessel'},
+    {name:'Tantalum (ASTM B365)',    desc:'Functionally inert to all mineral acids, HF, HCl, H₂SO₄, HNO₃ up to ~250°C. Most corrosion-resistant practical metal.',t_max:'250°C',p_max:'Low',forms:'Sheet/Tubing/Liners'},
+    {name:'Nickel 200 / N02200',     desc:'Commercially pure Ni. Excellent NaOH/KOH at all concentrations and temps. Chlor-alkali plants.',t_max:'315°C',p_max:'High',forms:'Pipe/Sheet/Bar'},
+    {name:'Nickel 201 / N02201',     desc:'Low-carbon Ni (max 0.02% C). Preferred over Ni200 above 315°C to avoid graphitisation.',t_max:'600°C',p_max:'High',forms:'Pipe/Sheet/Bar'},
+  ]},
+  {group:'Polymer Piping & Liners',items:[
+    {name:'HDPE PE100 (ISO 4427)',   desc:'High-density PE pipe. Acid, alkali, water service up to 60°C. Large diameter chemical lines.',t_max:'60°C',p_max:'16 bar',forms:'Pipe/Fittings'},
+    {name:'PP-H Polypropylene (DIN 8077)',desc:'Homopolymer PP pipe. Chemical, pickling, water treatment lines up to 80°C.',t_max:'80°C',p_max:'10 bar',forms:'Pipe/Vessel/Fittings'},
+    {name:'PP-R Random Copolymer',   desc:'Better impact resistance than PP-H. Hot water systems and mild chemical service.',t_max:'90°C',p_max:'10 bar',forms:'Pipe/Fittings'},
+    {name:'PVDF / Kynar (ASTM D3222)',desc:'Fluoropolymer for halogen, aggressive acid, pharma. Better temp range than PP/HDPE.',t_max:'140°C',p_max:'12 bar',forms:'Pipe/Vessel/Sheet'},
+    {name:'PTFE (Teflon)',           desc:'Universal fluoropolymer. For all chemicals at low-moderate temp. Used as lining, gaskets, valve seats.',t_max:'200°C',p_max:'Liner only',forms:'Lining/Gasket/Sheet'},
+    {name:'PVC-U (BS 3505)',         desc:'Unplasticised PVC. Cold water and mild acids, max 60°C. Low cost general pipe.',t_max:'60°C',p_max:'6 bar',forms:'Pipe'},
+    {name:'CPVC (ASTM F441)',        desc:'Chlorinated PVC. Extended temp range vs PVC-U. Hot water, dilute acids to 93°C.',t_max:'93°C',p_max:'8 bar',forms:'Pipe'},
+    {name:'ABS (ASTM D1527)',        desc:'Acrylonitrile-butadiene-styrene. Chemical waste drainage, low-pressure non-corrosive service.',t_max:'60°C',p_max:'Low',forms:'Pipe/Fittings'},
+  ]},
+  {group:'FRP / GRP Vessels & Pipes',items:[
+    {name:'Vinyl Ester / E-glass (ASME RTP-1)',    desc:'Best FRP corrosion resistance. HCl, H₂SO₄, brine, FGD. Standard for acid storage and scrubbers.',t_max:'100°C',p_max:'6 bar',forms:'Vessel/Pipe/Duct'},
+    {name:'Epoxy / E-glass (BS 4994)',             desc:'Moderate corrosion, water, hydrocarbon. Better structural properties than vinyl ester.',t_max:'80°C',p_max:'6 bar',forms:'Vessel/Pipe'},
+    {name:'Isophthalic Polyester / E-glass',       desc:'Economy FRP for water and mild acids. Lower cost than vinyl ester.',t_max:'65°C',p_max:'4 bar',forms:'Vessel'},
+    {name:'Phenolic / C-glass',                    desc:'High temperature FRP. Elevated temp acid service, fume ductwork.',t_max:'150°C',p_max:'Low',forms:'Vessel/Duct'},
+    {name:'Epoxy Filament Wound Pipe (AWWA C950)', desc:'Water transmission, sewage, and chemical service filament-wound GRP pipe.',t_max:'65°C',p_max:'20 bar',forms:'Pipe (large dia)'},
+  ]},
+];
+
+function buildGradeRef() {
+  const search = (document.getElementById('grade-search')?.value || '').toLowerCase();
+  let totalShown = 0;
+  const html = GRADE_DATA.map(group => {
+    const items = search
+      ? group.items.filter(item =>
+          item.name.toLowerCase().includes(search) ||
+          item.desc.toLowerCase().includes(search) ||
+          (item.forms || '').toLowerCase().includes(search))
+      : group.items;
+    if (items.length === 0) return '';
+    totalShown += items.length;
+    const rows = items.map(item =>
+      `<tr>
+        <td>
+          ${item.name}
+          <button class="copy-grade-btn" onclick="copyGrade('${item.name.replace(/'/g,"\\'")}')">⧉ Copy</button>
+        </td>
+        <td>${item.forms}</td>
+        <td style="font-family:var(--mono);font-size:0.87rem;">${item.t_max}</td>
+        <td>${item.p_max}</td>
+        <td style="color:var(--mid);font-size:1.00rem;">${item.desc}</td>
+      </tr>`).join('');
+    return `
+      <div style="margin-bottom:24px;">
+        <div style="font-family:var(--mono);font-size:0.94rem;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:10px;padding:8px 14px;background:var(--copper-pale);border-radius:4px;border-left:4px solid var(--copper);">
+          ${group.group}
+        </div>
+        <table class="grade-table">
+          <thead><tr><th>Grade / Standard</th><th>Form</th><th>Max Temp</th><th>Pressure</th><th>Description / Application</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }).join('');
+  const container = document.getElementById('grade-ref-content');
+  if (search && totalShown === 0) {
+    container.innerHTML = `<div class="no-results"><div class="no-results-icon">🔍</div><div>No grades found for "<strong>${search}</strong>"</div></div>`;
+  } else {
+    container.innerHTML = html;
+  }
+}
+
+function copyGrade(name) {
+  try {
+    navigator.clipboard.writeText(name).then(() => showToast(`Copied: ${name}`));
+  } catch(e) {
+    showToast(`Grade: ${name}`);
+  }
+}
+
+/* ══════════════════════ TAB 4: CORROSION GUIDE ══════════════════════ */
+const CORR_GUIDE = [
+  {title:'Uniform (General) Corrosion',    icon:'🔴',mats:'Carbon Steel, Mild Steel',cause:'Chemical attack by aqueous electrolytes, acids, or oxidising agents causing even material loss.',solution:'Material upgrade, corrosion allowance (CA), protective coatings, corrosion inhibitors.',example:'CS pipe in dilute H₂SO₄ — uniform wall thinning.'},
+  {title:'Pitting Corrosion',              icon:'🔵',mats:'Austenitic SS (304, 316)',cause:'Local breakdown of passive film in Cl⁻-bearing environments. Initiates at surface defects, inclusions.',solution:'Higher PREN alloys (317L, Duplex, Super Duplex, Titanium). Avoid Cl⁻ at elevated temperature.',example:'SS 304 vessel with stagnant seawater → discrete pits form.'},
+  {title:'Chloride Stress Corrosion Cracking (SCC)',icon:'🟠',mats:'Austenitic SS (304, 316, 317, 321)',cause:'Combination of tensile stress + Cl⁻ ions + temperature (>60°C threshold). Cracking propagates rapidly.',solution:'Switch to Duplex SS (2205/2507), Titanium, or Nickel alloys. Stress relieve where possible.',example:'316L heat exchanger in seawater cooling at 80°C → SCC failure.'},
+  {title:'Intergranular Corrosion (Sensitisation)',icon:'🟡',mats:'Austenitic SS (non-L grades)',cause:'Cr carbide precipitation at grain boundaries during welding (450–850°C). Creates Cr-depleted attack path.',solution:'Use L grades (304L, 316L), stabilised grades (321, 347), or solution anneal after welding.',example:'SS 304 weld HAZ in acid service → intergranular attack.'},
+  {title:'Galvanic Corrosion',             icon:'⚫',mats:'All metals in electrolyte contact',cause:'Two dissimilar metals in electrolyte → electrochemical potential difference → accelerated anode corrosion.',solution:'Avoid dissimilar metal couples, use insulating flanges/gaskets, cathodic protection, match materials.',example:'CS flange bolted to SS pipe in seawater → CS bolts corrode rapidly.'},
+  {title:'Crevice Corrosion',             icon:'🟤',mats:'SS grades in Cl⁻ environments',cause:'Stagnant electrolyte in confined spaces (under gaskets, flanges) → O₂ depletion → local acidification.',solution:'Duplex SS, Titanium, smooth surfaces, avoid stagnant regions, proper drainage design.',example:'SS flange face in seawater service → crevice attack under gasket.'},
+  {title:'Erosion-Corrosion',             icon:'🔶',mats:'CS, Soft metals in high-velocity fluid',cause:'Combined mechanical erosion (fluid flow) and chemical corrosion. Protective films stripped away.',solution:'Harder materials, reduce velocity, change pipe geometry, erosion-resistant alloys (6Mo, DSS).',example:'CS elbow in slurry service → rapid wall loss at bends.'},
+  {title:'Hydrogen-Induced Cracking (HIC/SSC)',icon:'🔴',mats:'Carbon & Low Alloy Steel',cause:'Atomic hydrogen from H₂S corrosion absorbed into steel, forms blisters or stepwise cracking.',solution:'NACE MR0175/ISO 15156 compliance. HIC-resistant steel, PWHT, hardness ≤22 HRC, SSCC testing.',example:'CS vessel in H₂S service → stepwise cracking / blistering.'},
+  {title:'High Temperature Corrosion (HTHA)',icon:'🔥',mats:'Carbon Steel at T > 230°C in H₂ service',cause:'Atomic hydrogen attacks carbides in steel, causing decarburisation and methane formation → fissures.',solution:'Use Cr-Mo alloys per API 941 Nelson Curves (P11, P22, P91). CS limited to ~230°C in H₂.',example:'CS reactor in hydrogen service at 280°C → HTHA damage.'},
+  {title:'Microbiologically Influenced Corrosion (MIC)',icon:'🟢',mats:'CS, SS 316 in stagnant water',cause:'Sulphate-reducing bacteria (SRB) and other microbes create local corrosion cells in stagnant water.',solution:'Biocide treatment, flow velocity maintenance (>1 m/s), Duplex SS, Cu-Ni (biofouling resistance).',example:'CS water lines left stagnant → pitting from SRB activity.'},
+];
+
+function buildCorrGuide() {
+  document.getElementById('corr-guide').innerHTML = `
+    <div style="margin-bottom:18px;font-size:1.05rem;color:var(--mid);background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:10px 14px;line-height:1.6;">
+      Engineering reference for corrosion mechanisms relevant to material selection. Understanding failure modes is essential to selecting the correct MOC. <strong style="color:var(--amber);">⚠ This guide is a reference summary only.</strong> Confirm all MOC decisions against NACE MR0175/ISO 15156, API 941, ASTM corrosion rate data, and a qualified corrosion engineer.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;">
+      ${CORR_GUIDE.map(c => `
+        <div style="background:var(--paper);border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,0.05);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 6px 20px rgba(0,0,0,0.10)'" onmouseout="this.style.boxShadow='0 1px 5px rgba(0,0,0,0.05)'">
+          <div style="background:var(--slate);padding:11px 15px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.25rem;">${c.icon}</span>
+            <span style="font-family:var(--head);font-size:1.02rem;font-weight:700;color:#fff;">${c.title}</span>
+          </div>
+          <div style="padding:13px 15px;">
+            <div style="margin-bottom:8px;">
+              <span style="font-family:var(--mono);font-size:0.88rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--copper);">Susceptible Materials</span><br>
+              <span style="font-size:1.02rem;color:var(--ink3);font-weight:700;">${c.mats}</span>
+            </div>
+            <div style="margin-bottom:8px;">
+              <span style="font-family:var(--mono);font-size:0.88rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);">Mechanism</span><br>
+              <span style="font-size:1.02rem;color:var(--mid);line-height:1.5;">${c.cause}</span>
+            </div>
+            <div style="margin-bottom:8px;background:var(--green-pale);border:1px solid #86efac;border-radius:4px;padding:7px 10px;">
+              <span style="font-family:var(--mono);font-size:0.88rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);">Prevention / Solution</span><br>
+              <span style="font-size:1.00rem;color:var(--green2);line-height:1.5;">${c.solution}</span>
+            </div>
+            <div style="font-size:0.88rem;color:var(--light);font-style:italic;padding-top:5px;border-top:1px dashed var(--rule);">📋 <em>Example:</em> ${c.example}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', () => {
+  buildLibFilter();
+  buildLibCards();
+  buildMatrixIndustryFilter();
+  buildMatrix();
+  buildGradeRef();
+  buildCorrGuide();
+
+  // Back to top button
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('back-top');
+    if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+  });
+});
+</script>
+</body>
+</html>
