@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2182,8 +2183,12 @@ async function calculate() {
     const epsBase   = matVal === 'custom'
       ? parseFloat(document.getElementById('customEps').value) || 0.05
       : parseFloat(matVal);
-    const pumpEff  = (parseFloat(document.getElementById('pumpEff').value)  || 75) / 100;
-    const motorEff = (parseFloat(document.getElementById('motorEff').value) || 92) / 100;
+    const pumpEffRaw  = parseFloat(document.getElementById('pumpEff').value);
+    const motorEffRaw = parseFloat(document.getElementById('motorEff').value);
+    if (isNaN(pumpEffRaw)  || pumpEffRaw  <= 0 || pumpEffRaw  > 100) { showAlert('err', 'Pump efficiency must be 1–100%.'); return; }
+    if (isNaN(motorEffRaw) || motorEffRaw <= 0 || motorEffRaw > 100) { showAlert('err', 'Motor efficiency must be 1–100%.'); return; }
+    const pumpEff  = pumpEffRaw  / 100;
+    const motorEff = motorEffRaw / 100;
 
     if ([D, L, Q, rho, mu].some(isNaN) || D <= 0 || L <= 0 || Q <= 0 || rho <= 0 || mu <= 0) {
       showAlert('err', 'Please fill in all required fields with positive values.'); return;
@@ -2279,7 +2284,7 @@ function renderResults(r) {
     ? `<div style="font-size:.74rem;color:#92400e;margin-top:4px;">⚠ Transitional regime — high uncertainty (±${r.uncertPct}%): ${dpLow}–${dpHigh} ${r.dpUnit}</div>`
     : `<div style="font-size:.74rem;opacity:.75;margin-top:4px;">Estimated model uncertainty ±${r.uncertPct}%: ${dpLow}–${dpHigh} ${r.dpUnit}</div>`;
   const gasNote = r.isGasFluid ? `<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:.79rem;color:#991b1b;font-weight:600;">⚠ Compressible fluid: results use an incompressible model. Valid only if ΔP/P₁ < 10%.</div>` : '';
-  const foulingNote = r.foulingMm > 0 ? `<div style="font-size:.73rem;color:var(--text3);margin-bottom:8px;">🔧 Fouling allowance +${r.foulingMm} mm applied → total ε = ${r.epsTotalMm.toFixed(4)} mm</div>` : '';
+  const foulingNote = r.foulingMm > 0 ? `<div style="font-size:.73rem;color:var(--text3);margin-bottom:8px;">🔧 Fouling allowance +${r.foulingMm} mm applied → total ε = ${(r.epsTotalMm || 0).toFixed(4)} mm</div>` : '';
 
   el.innerHTML = `
     ${gasNote}${foulingNote}
@@ -2320,7 +2325,7 @@ function renderResults(r) {
       <div class="summary-row"><span class="sr-key">Pipe Diameter</span><span class="sr-val">${r.diameter.toFixed(1)} ${r.diamUnit}</span></div>
       <div class="summary-row"><span class="sr-key">Pipe Length</span><span class="sr-val">${r.length.toFixed(1)} ${r.lenUnit}</span></div>
       <div class="summary-row"><span class="sr-key">Friction : Fittings : Elevation</span><span class="sr-val">${pct(r.dpPipe)}% : ${pct(r.dpMinor)}% : ${pct(r.dpElev)}%</span></div>
-      <div class="summary-row"><span class="sr-key">${r.per100label}</span><span class="sr-val">${(r.dpDisp / r.length * 100).toFixed(4)} ${r.dpUnit}/100${r.lenUnit}</span></div>
+      <div class="summary-row"><span class="sr-key">${r.per100label}</span><span class="sr-val">${r.length > 0 ? (r.dpDisp / r.length * 100).toFixed(4) : '—'} ${r.dpUnit}/100${r.lenUnit}</span></div>
       <div class="summary-row"><span class="sr-key">Fittings Equiv. Length (Le)</span><span class="sr-val">${r.Leq.toFixed(1)} m</span></div>
     </div>
     <div class="pump-section">
@@ -2459,7 +2464,7 @@ function generatePDF() {
   // TOTAL DP BANNER
   h += '<div style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-radius:8px;padding:12px 18px;text-align:center;margin-bottom:11px;">';
   h += '  <div style="font-size:8.5px;font-weight:700;letter-spacing:1.2px;opacity:.85;margin-bottom:3px;">TOTAL PRESSURE DROP</div>';
-  h += '  <div style="font-family:'Courier New',monospace;font-size:32px;font-weight:700;line-height:1;">' + r.dpDisp.toFixed(4) + '<span style="font-size:13px;margin-left:5px;opacity:.9;">' + r.dpUnit + '</span></div>';
+  h += '  <div style="font-family:\'Courier New\',monospace;font-size:32px;font-weight:700;line-height:1;">' + r.dpDisp.toFixed(4) + '<span style="font-size:13px;margin-left:5px;opacity:.9;">' + r.dpUnit + '</span></div>';
   h += '  <div style="font-size:8.5px;opacity:.8;margin-top:4px;">Friction ' + pct(r.dpPipe) + '% &bull; Fittings ' + pct(r.dpMinor) + '% &bull; Elevation ' + pct(r.dpElev) + '% &nbsp;|&nbsp; Uncertainty &plusmn;' + r.uncertPct + '%</div>';
   h += '</div>';
 
@@ -2468,7 +2473,7 @@ function generatePDF() {
     color = color || '#4f46e5';
     return '<div style="border:1.5px solid #e5e7eb;border-left:3px solid ' + color + ';border-radius:5px;padding:7px 9px;background:#f9fafb;">' +
       '<div style="font-size:7.5px;font-weight:700;text-transform:uppercase;color:#6b7280;letter-spacing:.5px;margin-bottom:2px;">' + label + '</div>' +
-      '<div style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;">' + val + '</div>' +
+      '<div style="font-family:\'Courier New\',monospace;font-size:13px;font-weight:700;">' + val + '</div>' +
       (sub ? '<div style="font-size:7.5px;color:#6b7280;margin-top:1px;">' + sub + '</div>' : '') +
       '</div>';
   }
@@ -2509,7 +2514,7 @@ function generatePDF() {
   ];
   rows.forEach(function(row, i) {
     var bg = i % 2 ? 'background:#f9fafb;' : '';
-    h += '<tr style="' + bg + '"><td style="padding:3px 7px;border:1px solid #e5e7eb;">' + row[0] + '</td><td style="padding:3px 7px;border:1px solid #e5e7eb;font-weight:700;font-family:'Courier New',monospace;">' + row[1] + '</td></tr>';
+    h += '<tr style="' + bg + '"><td style="padding:3px 7px;border:1px solid #e5e7eb;">' + row[0] + '</td><td style="padding:3px 7px;border:1px solid #e5e7eb;font-weight:700;font-family:\'Courier New\',monospace;">' + row[1] + '</td></tr>';
   });
   h += '</table>';
   h += '</div>';
@@ -2531,13 +2536,13 @@ function generatePDF() {
   h += '<div style="font-size:8px;font-weight:700;color:#4f46e5;margin-bottom:6px;letter-spacing:.5px;">SUMMARY</div>';
   var summaryRows = [
     ['Friction : Fittings : Elevation', pct(r.dpPipe) + '% : ' + pct(r.dpMinor) + '% : ' + pct(r.dpElev) + '%'],
-    [r.per100label, (r.dpDisp / r.length * 100).toFixed(4) + ' ' + r.dpUnit + '/100' + r.lenUnit],
+    [r.per100label, (r.length > 0 ? (r.dpDisp / r.length * 100).toFixed(4) : '—') + ' ' + r.dpUnit + '/100' + r.lenUnit],
     ['Equiv. pipe length (Le)', r.Leq.toFixed(1) + ' m'],
     ['Flow regime', r.regime + ' (Re ' + Math.round(r.Re).toLocaleString() + ')'],
     ['Model uncertainty', '&plusmn;' + r.uncertPct + '%'],
   ];
   summaryRows.forEach(function(row) {
-    h += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0e7ff;font-size:9px;"><span>' + row[0] + '</span><span style="font-family:'Courier New',monospace;font-weight:700;">' + row[1] + '</span></div>';
+    h += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0e7ff;font-size:9px;"><span>' + row[0] + '</span><span style="font-family:\'Courier New\',monospace;font-weight:700;">' + row[1] + '</span></div>';
   });
   h += '</div>';
 
@@ -2550,7 +2555,7 @@ function generatePDF() {
     ['Motor Power (HP)', (r.P_motor / 745.7).toFixed(2) + ' hp'],
   ];
   pumpRows.forEach(function(row) {
-    h += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #ede9fe;font-size:9px;"><span>' + row[0] + '</span><span style="font-family:'Courier New',monospace;font-weight:700;">' + row[1] + '</span></div>';
+    h += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #ede9fe;font-size:9px;"><span>' + row[0] + '</span><span style="font-family:\'Courier New\',monospace;font-weight:700;">' + row[1] + '</span></div>';
   });
   h += '</div>';
   h += '</div>'; // end two-col
