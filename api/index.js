@@ -3227,24 +3227,54 @@ function runCalculate(p) {
     }
 
     // ── Merkel chart data ────────────────────────────────────────
-    // [MISSING FIELD FIX] Frontend buildMerkelChartSVG needs p.hs AND p.ha (operating line points)
-    const chartData = [];
-    const steps = 20;
+    // Frontend buildMerkelChartSVG destructures chartData as an OBJECT:
+    // { satCurve[], chevPts[], hADesign, hAActual, aCWT, aHWT, Tmin, Tmax }
     const hw_fn = T => {
       const Psat = 0.6105 * Math.exp(17.27 * T / (T + 237.3));
       const Ws   = 0.622 * Psat / (101.325 - Psat);
       return 1.006 * T + Ws * (2501 + 1.86 * T);
     };
-    const ha_inlet = hw_fn(aWB_C);
-    const cpa      = 1.006;
-    const LG       = 1.2;
+    const ha_inlet  = hw_fn(aWB_C);
+    const ha_design = hw_fn(dWB_C);
+    const cpa       = 1.006;
+    const LG        = 1.2;
+    const Tmin      = Math.min(aCWT_C, aWB_C, dWB_C) - 1;
+    const Tmax      = aHWT_C + 1;
+
+    // satCurve: array of {T, h} for the saturation enthalpy curve
+    const satCurve = [];
+    const steps = 40;
     for (let i = 0; i <= steps; i++) {
-      const T  = aCWT_C + (aHWT_C - aCWT_C) * i / steps;
-      const hs = safe(hw_fn(T));
-      // Air enthalpy along operating line (from CWT inlet upward)
-      const ha = safe(ha_inlet + (T - aCWT_C) * cpa * LG);
-      chartData.push({ T: safe(T), hs, ha });
+      const T  = Tmin + (Tmax - Tmin) * i / steps;
+      satCurve.push({ T: safe(T), h: safe(hw_fn(T)) });
     }
+
+    // chevPts: Chebyshev integration points with hs (sat) and ha (operating line)
+    // 4-point Chebyshev nodes mapped onto [aCWT_C, aHWT_C]
+    const chevNodes = largeRange
+      ? [0.0694, 0.2500, 0.5000, 0.7500, 0.9306]   // 5-point (large range)
+      : [0.1127, 0.5000, 0.8873];                    // 3-point (standard, shown as 4-pt Chebyshev in UI)
+    const chevPts = chevNodes.map(frac => {
+      const T  = aCWT_C + frac * (aHWT_C - aCWT_C);
+      const hs = safe(hw_fn(T));
+      const ha = safe(ha_inlet + (T - aCWT_C) * cpa * LG);
+      return { T: safe(T), hs, ha };
+    });
+
+    // hADesign / hAActual — horizontal reference lines for inlet air enthalpy
+    const hADesign = safe(ha_design);
+    const hAActual = safe(ha_inlet);
+
+    const chartData = {
+      satCurve,
+      chevPts,
+      hADesign,
+      hAActual,
+      aCWT:  aCWT_C,
+      aHWT:  aHWT_C,
+      Tmin:  safe(Tmin),
+      Tmax:  safe(Tmax),
+    };
 
     return {
       // ── Echo inputs ──────────────────────────────────────────
