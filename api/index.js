@@ -7209,7 +7209,7 @@ async function vesselSeparator_handler(req, res) {
     return res.status(400).json({ error: 'Invalid request body.' });
 
   try {
-    return await handle_vessel_separator(req, body, res);
+    return await handle_calculate(body, res);
   } catch (e) {
     console.error('[vessel-separator-sizing.js] Unhandled error:', e);
     return res.status(500).json({ error: e.message || 'Internal server error' });
