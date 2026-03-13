@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Contact Us | multicalci.com</title>
+<meta name="description" content="Contact the multicalci.com team to report a calculator bug, suggest a formula improvement, or request a new engineering tool. We respond within 48 hours.">
+<meta property="og:title" content="Contact multicalci.com — Report Bugs & Suggest Improvements">
+<meta property="og:description" content="Help us make multicalci.com better. Report formula errors, suggest new features, or request a new engineering calculator.">
+<meta property="og:url" content="https://multicalci.com/contact/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Contact multicalci.com — Report Bugs & Suggest Improvements">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://multicalci.com/contact/">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#07090f;
+  --bg2:#0c0f1a;
+  --bg3:#111827;
+  --surface:#16202e;
+  --surface2:#1c2a3e;
+  --border:rgba(255,255,255,.07);
+  --border-hi:rgba(255,255,255,.13);
+  --cyan:#38bdf8;
+  --cyan-dim:rgba(56,189,248,.12);
+  --cyan-glow:rgba(56,189,248,.35);
+  --amber:#fbbf24;
+  --green:#34d399;
+  --red:#f87171;
+  --red-dim:rgba(248,113,113,.1);
+  --text:#f0f4ff;
+  --text2:#94a3b8;
+  --text3:#4b5e7a;
+  --text4:#2a384f;
+  --mono:'DM Mono',monospace;
+  --sans:'Outfit',sans-serif;
+  --serif:'Fraunces',serif;
+  --r:10px;
+}
+
+/* ── RESET & BASE ── */
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── BACKGROUND ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%,rgba(56,189,248,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 110%,rgba(56,189,248,.04) 0%,transparent 70%);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(56,189,248,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(56,189,248,.018) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:60px;
+  background:rgba(7,9,15,.88);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px) saturate(1.4);
+  gap:12px;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo{
+  width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--cyan) 0%,#0ea5e9 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.7rem;font-weight:500;color:#07090f;
+  box-shadow:0 0 16px rgba(56,189,248,.3);
+  letter-spacing:.05em;
+}
+.nav-name{font-family:var(--sans);font-size:.95rem;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+.nav-name em{color:var(--cyan);font-style:normal;}
+
+.nav-links{display:flex;gap:2px;align-items:center;}
+.nav-links a{
+  padding:6px 14px;border-radius:7px;
+  font-size:.83rem;font-weight:500;color:var(--text3);
+  text-decoration:none;transition:all .15s;
+}
+.nav-links a:hover{background:var(--surface);color:var(--text2);}
+.nav-links a.active{color:var(--cyan);background:var(--cyan-dim);}
+
+/* Mobile nav */
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--text2);}
+.nav-toggle svg{display:block;}
+@media(max-width:620px){
+  .nav-links{display:none;position:absolute;top:60px;left:0;right:0;background:rgba(7,9,15,.98);border-bottom:1px solid var(--border);padding:10px 16px;flex-direction:column;gap:2px;}
+  .nav-links.open{display:flex;}
+  .nav-toggle{display:flex;}
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  padding:72px 24px 52px;text-align:center;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 16px;border-radius:24px;
+  border:1px solid rgba(56,189,248,.25);
+  background:rgba(56,189,248,.06);
+  font-family:var(--mono);font-size:.68rem;font-weight:500;
+  color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:22px;
+}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
+
+.hero h1{
+  font-family:var(--serif);font-size:clamp(2.2rem,5.5vw,3.4rem);
+  font-weight:300;line-height:1.1;letter-spacing:-.03em;
+  margin-bottom:14px;
+}
+.hero h1 em{
+  font-style:italic;color:var(--cyan);
+  font-weight:300;
+}
+.hero p{
+  font-size:.97rem;color:var(--text2);max-width:500px;
+  margin:0 auto;line-height:1.75;
+}
+
+/* ── PAGE WRAP ── */
+.page-wrap{
+  position:relative;z-index:1;
+  max-width:860px;margin:0 auto;padding:0 20px 100px;
+}
+
+/* ── STAT CARDS ── */
+.stat-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin:0 0 32px;
+}
+@media(max-width:700px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){.stat-row{grid-template-columns:1fr;}}
+
+.stat-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px 18px;transition:border-color .2s;
+}
+.stat-card:hover{border-color:var(--border-hi);}
+.sc-label{
+  font-size:.68rem;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:6px;
+  font-family:var(--mono);
+}
+.sc-icon{font-size:1.25rem;margin-bottom:6px;display:block;}
+.sc-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.sc-sub{font-size:.73rem;color:var(--text3);line-height:1.5;}
+.sc-metric{
+  font-family:var(--mono);font-size:.7rem;color:var(--cyan);
+  margin-top:8px;border-top:1px solid var(--border);padding-top:8px;
+}
+
+/* ── FORM CARD ── */
+.form-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+}
+
+.form-card-header{
+  padding:22px 30px;
+  background:linear-gradient(180deg,var(--bg3) 0%,var(--bg2) 100%);
+  border-bottom:1px solid var(--border);
+}
+.fch-top{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.fch-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.fch-title{font-family:var(--sans);font-size:1rem;font-weight:700;color:var(--text);}
+.fch-sub{font-size:.78rem;color:var(--text3);line-height:1.5;}
+
+/* ── FORM BODY ── */
+.form-body{padding:30px;}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr;}}
+
+.fgroup{display:flex;flex-direction:column;gap:6px;position:relative;}
+.flabel{
+  font-size:.76rem;font-weight:600;color:var(--text2);
+  letter-spacing:.4px;text-transform:uppercase;
+  font-family:var(--mono);
+}
+.flabel .req{color:var(--red);margin-left:3px;}
+
+.finput,.fselect,.ftextarea{
+  width:100%;padding:11px 14px;
+  background:var(--bg3);
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  font-family:var(--sans);font-size:.9rem;color:var(--text);
+  outline:none;transition:border-color .18s,box-shadow .18s,background .18s;
+  appearance:none;
+}
+.finput::placeholder,.ftextarea::placeholder{color:var(--text4);}
+.finput:hover,.fselect:hover,.ftextarea:hover{border-color:var(--border-hi);}
+.finput:focus,.fselect:focus,.ftextarea:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px var(--cyan-dim);
+  background:var(--surface);
+}
+
+/* Validation states */
+.finput.valid,.fselect.valid,.ftextarea.valid{border-color:rgba(52,211,153,.35);}
+.finput.invalid,.fselect.invalid,.ftextarea.invalid{border-color:var(--red);}
+.field-err{font-size:.71rem;color:var(--red);display:none;margin-top:2px;}
+.fgroup.has-err .field-err{display:block;}
+.fgroup.has-err .finput,.fgroup.has-err .fselect,.fgroup.has-err .ftextarea{border-color:var(--red);}
+
+.fselect{
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234b5e7a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;
+}
+.fselect option,.fselect optgroup{background:var(--bg3);color:var(--text);}
+
+.ftextarea{resize:vertical;min-height:140px;font-size:.89rem;line-height:1.65;}
+.char-count{
+  font-size:.7rem;color:var(--text4);text-align:right;
+  margin-top:3px;font-family:var(--mono);transition:color .15s;
+}
+
+/* ── PRIORITY SELECTOR ── */
+.prio-section{margin-top:20px;}
+.prio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+@media(max-width:480px){.prio-grid{grid-template-columns:1fr;}}
+
+.prio-card{
+  padding:10px 14px;border-radius:8px;
+  border:1.5px solid var(--border);
+  background:var(--bg3);
+  cursor:pointer;transition:all .18s;text-align:left;
+  font-family:var(--sans);
+}
+.prio-card:hover{border-color:var(--border-hi);background:var(--surface);}
+.prio-card.sel-low{border-color:var(--green);background:rgba(52,211,153,.07);}
+.prio-card.sel-medium{border-color:var(--amber);background:rgba(251,191,36,.07);}
+.prio-card.sel-high{border-color:var(--red);background:var(--red-dim);}
+
+.prio-indicator{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle;}
+.prio-low .prio-indicator{background:var(--green);}
+.prio-medium .prio-indicator{background:var(--amber);}
+.prio-high .prio-indicator{background:var(--red);}
+.prio-name{font-size:.82rem;font-weight:700;color:var(--text);}
+.prio-desc{font-size:.71rem;color:var(--text3);margin-top:2px;}
+
+/* Dynamic hint */
+.msg-hint{
+  font-size:.75rem;color:var(--text3);line-height:1.5;
+  padding:10px 13px;background:var(--cyan-dim);
+  border-left:2px solid var(--cyan);border-radius:0 7px 7px 0;
+  margin-top:8px;display:none;
+}
+.msg-hint.show{display:block;}
+
+/* ── DIVIDER ── */
+.form-divider{height:1px;background:var(--border);margin:24px 0;}
+
+/* ── SUBMIT AREA ── */
+.form-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;margin-top:26px;flex-wrap:wrap;
+}
+.privacy-note{
+  font-size:.72rem;color:var(--text3);max-width:340px;line-height:1.6;
+  display:flex;align-items:flex-start;gap:7px;
+}
+.privacy-note svg{flex-shrink:0;margin-top:1px;}
+
+.btn-submit{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:13px 28px;border-radius:9px;border:none;
+  background:var(--cyan);
+  color:#07090f;font-family:var(--sans);font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 0 28px rgba(56,189,248,.2);
+  white-space:nowrap;letter-spacing:-.01em;
+}
+.btn-submit:hover:not(:disabled){
+  transform:translateY(-2px);
+  box-shadow:0 6px 32px rgba(56,189,248,.4);
+  background:#7dd3fc;
+}
+.btn-submit:active:not(:disabled){transform:translateY(0);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.btn-arrow{transition:transform .2s;}
+.btn-submit:hover:not(:disabled) .btn-arrow{transform:translateX(4px);}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(7,9,15,.3);border-top-color:#07090f;
+  animation:spin .55s linear infinite;display:inline-block;
+}
+
+/* ── SUCCESS SCREEN ── */
+.success-screen{
+  display:none;text-align:center;padding:60px 24px;
+}
+.success-screen.show{display:block;}
+.success-check{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(52,211,153,.1);border:2px solid var(--green);
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-bottom:20px;
+  animation:checkIn .4s ease-out forwards;
+}
+@keyframes checkIn{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.success-check svg{color:var(--green);}
+.success-title{
+  font-family:var(--serif);font-size:1.8rem;font-weight:400;font-style:italic;
+  color:var(--green);margin-bottom:10px;
+}
+.success-msg{font-size:.91rem;color:var(--text2);line-height:1.75;max-width:420px;margin:0 auto 20px;}
+.success-ref{
+  font-family:var(--mono);font-size:.75rem;color:var(--text3);
+  background:var(--bg3);border:1px solid var(--border);
+  padding:8px 16px;border-radius:7px;display:inline-block;letter-spacing:.05em;
+}
+.btn-back{
+  margin-top:22px;display:inline-flex;align-items:center;gap:6px;
+  padding:10px 22px;border-radius:8px;
+  border:1.5px solid var(--border-hi);background:transparent;
+  color:var(--text2);font-family:var(--sans);font-size:.84rem;font-weight:600;
+  cursor:pointer;transition:all .18s;text-decoration:none;
+}
+.btn-back:hover{background:var(--surface);color:var(--text);border-color:var(--border-hi);}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:24px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;
+}
+.footer-brand{font-family:var(--sans);font-size:.88rem;font-weight:700;color:var(--text3);}
+.footer-brand em{color:var(--cyan);font-style:normal;}
+.footer-note{font-size:.71rem;color:var(--text4);max-width:380px;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:.76rem;color:var(--text3);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-brand" href="https://multicalci.com/">
+    <div class="nav-logo">M</div>
+    <div class="nav-name">multi<em>calci.com</em></div>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="https://multicalci.com/">Home</a>
+    <a href="https://multicalci.com/">Calculators</a>
+    <a href="contact.html" class="active">Contact</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <line x1="3" y1="6" x2="17" y2="6"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14" x2="17" y2="14"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">Write to us</div>
+  <h1>We <em>Listen</em><br>to Engineers</h1>
+  <p>Found a formula error? Have an improvement idea? Need a new tool? Every submission is read personally — your feedback directly shapes this platform.</p>
+</section>
+
+<!-- ── PAGE WRAP ── -->
+<div class="page-wrap">
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <span class="sc-icon">🐛</span>
+      <div class="sc-title">Bug Reports</div>
+      <div class="sc-sub">Formula errors, unit issues, wrong outputs.</div>
+      <div class="sc-metric">Avg response: 24 hrs</div>
+    </div>
+    <div class="stat-card">
+      <span class="sc-icon">💡</span>
+      <div class="sc-title">Improvements</div>
+      <div class="sc-sub">Better correlations, more fluid types, UI fixes.</div>
+      <div class="sc-metric">All suggestions reviewed</div>
+    </div>
+    <div class="stat-card">
+      <span class="sc-icon">🔧</span>
+      <div class="sc-title">New Tools</div>
+      <div class="sc-sub">Request a calculator that doesn't exist yet.</div>
+      <div class="sc-metric">Roadmap updated monthly</div>
+    </div>
+    <div class="stat-card">
+      <span class="sc-icon">🤝</span>
+      <div class="sc-title">Collaborate</div>
+      <div class="sc-sub">Academic, technical review, or industry partnerships.</div>
+      <div class="sc-metric">Response within 72 hrs</div>
+    </div>
+  </div>
+
+  <!-- MAIN FORM CARD -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-top">
+        <div class="fch-dot"></div>
+        <div class="fch-title">Send a Message</div>
+      </div>
+      <div class="fch-sub">Your email is only used to reply to you — never displayed, stored, or shared.</div>
+    </div>
+
+    <div class="form-body">
+
+      <!-- SUCCESS STATE -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-check">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">Message Received</div>
+        <div class="success-msg">Thank you for taking the time to write. We personally read every submission and will reply to your email within 24–48 hours. Your feedback makes multicalci.com better for everyone.</div>
+        <div class="success-ref" id="ticketId">REF: —</div>
+        <br>
+        <a class="btn-back" href="https://multicalci.com/">← Back to Calculators</a>
+      </div>
+
+      <!-- FORM -->
+      <!--
+        SETUP: Replace YOUR_FORMSPREE_ID with your actual Formspree form ID.
+        1) Go to formspree.io  2) Sign up free  3) New Form  4) Copy the form ID
+        Example: https://formspree.io/f/xdknopqr
+      -->
+      <form id="contactForm" action="https://formspree.io/f/xbdaekvg" method="POST" novalidate>
+
+        <!-- Anti-spam honeypot -->
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+        <input type="hidden" name="_subject" value="[multicalci.com] Contact Form Submission">
+
+        <div class="form-grid">
+
+          <!-- Message Type -->
+          <div class="fgroup" id="fg-msgType">
+            <label class="flabel" for="msgType">Message Type <span class="req">*</span></label>
+            <select class="fselect" id="msgType" name="message_type" required>
+              <option value="">— Select type —</option>
+              <option value="bug">Bug / Formula Error</option>
+              <option value="improvement">Suggest Improvement</option>
+              <option value="new-tool">Request New Calculator</option>
+              <option value="ui">UI / Usability Issue</option>
+              <option value="unit">Unit Conversion Error</option>
+              <option value="collaboration">Collaboration / Partnership</option>
+              <option value="general">General Enquiry</option>
+            </select>
+            <div class="field-err" id="err-msgType">Please select a message type.</div>
+          </div>
+
+          <!-- Related Calculator -->
+          <div class="fgroup" id="fg-calcName">
+            <label class="flabel" for="calcName">Related Calculator <span class="req">*</span></label>
+            <select class="fselect" id="calcName" name="calculator" required>
+              <option value="">— Select calculator —</option>
+              <optgroup label="Process & Fluid">
+                <option>Pipe Sizing</option>
+                <option>Pressure Drop Calculator</option>
+                <option>Orifice Design & Sizing</option>
+                <option>Pump & NPSH</option>
+                <option>Control Valve Sizing</option>
+                <option>Fluid Machinery Calculator</option>
+              </optgroup>
+              <optgroup label="Heat & Thermodynamics">
+                <option>Heat Exchanger Design</option>
+                <option>Steam Properties</option>
+                <option>Steam Turbine Power</option>
+                <option>Psychrometric Calculator</option>
+                <option>Cooling Tower Calculations</option>
+              </optgroup>
+              <optgroup label="Vessels & Materials">
+                <option>Vessel / Separator Sizing</option>
+                <option>Material of Construction</option>
+                <option>Units Converter</option>
+              </optgroup>
+              <optgroup label="Civil Engineering Calculators">
+                <option>Beam Bending Analysis</option>
+                <option>Column Design</option>
+                <option>Concrete Mix Design</option>
+                <option>Pipe Flow (Civil)</option>
+                <option>Retaining Wall Design</option>
+                <option>Earthwork & Volumes</option>
+                <option>Surveying Calculations</option>
+              </optgroup>
+              <optgroup label="Electrical Engineering Calculators">
+                <option>Ohm's Law & Power</option>
+                <option>AC / DC Power</option>
+                <option>Cable Sizing</option>
+                <option>Electric Motor</option>
+                <option>Transformer Calculator</option>
+                <option>Capacitor & RC/LC</option>
+                <option>Voltage Drop & Protection</option>
+              </optgroup>
+              <optgroup label="InstruCalc Pro">
+                <option>4–20 mA Signal Converter</option>
+                <option>Square Root Extractor</option>
+                <option>Loop Integrity Calculator</option>
+                <option>Thermowell Analyser</option>
+                <option>Loop Load Analyzer</option>
+                <option>Thermocouple Type Reference</option>
+              </optgroup>
+              <optgroup label="Mechanical Engineering Calculators">
+                <option>Structural Calculators</option>
+                <option>Joints & Welds</option>
+                <option>Power Transmission</option>
+                <option>Sheet, Spring & Fastener</option>
+                <option>CNC · Tank · Centre of Gravity</option>
+              </optgroup>
+              <option value="general">General Website / Other</option>
+            </select>
+            <div class="field-err" id="err-calcName">Please select a related calculator.</div>
+          </div>
+
+          <!-- Name -->
+          <div class="fgroup" id="fg-userName">
+            <label class="flabel" for="userName">Your Name <span class="req">*</span></label>
+            <input class="finput" type="text" id="userName" name="name" placeholder="e.g. Rahul Sharma" required autocomplete="name">
+            <div class="field-err" id="err-userName">Please enter your name.</div>
+          </div>
+
+          <!-- Email -->
+          <div class="fgroup" id="fg-userEmail">
+            <label class="flabel" for="userEmail">Your Email <span class="req">*</span></label>
+            <input class="finput" type="email" id="userEmail" name="_replyto" placeholder="you@example.com" required autocomplete="email">
+            <div class="field-err" id="err-userEmail">Please enter a valid email address.</div>
+          </div>
+
+        </div><!-- end form-grid -->
+
+        <!-- Priority selector -->
+        <div class="prio-section">
+          <div class="flabel" style="margin-bottom:0">Priority Level</div>
+          <div class="prio-grid">
+            <button type="button" class="prio-card prio-low sel-low" data-level="low">
+              <span class="prio-indicator"></span><span class="prio-name">Low</span>
+              <div class="prio-desc">Minor issue, no wrong answers</div>
+            </button>
+            <button type="button" class="prio-card prio-medium" data-level="medium">
+              <span class="prio-indicator"></span><span class="prio-name">Medium</span>
+              <div class="prio-desc">Affects accuracy of results</div>
+            </button>
+            <button type="button" class="prio-card prio-high" data-level="high">
+              <span class="prio-indicator"></span><span class="prio-name">High</span>
+              <div class="prio-desc">Wrong answers or fully broken</div>
+            </button>
+          </div>
+          <input type="hidden" id="priorityVal" name="priority" value="low">
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- Message -->
+        <div class="fgroup" id="fg-userMsg">
+          <label class="flabel" for="userMsg">Message <span class="req">*</span></label>
+          <!-- Context-aware hint -->
+          <div class="msg-hint" id="msgHint"></div>
+          <textarea class="ftextarea" id="userMsg" name="message"
+            placeholder="Describe your issue or request in as much detail as possible…"
+            required oninput="updateCharCount(this)"></textarea>
+          <div class="char-count" id="charCount">0 / 2000</div>
+          <div class="field-err" id="err-userMsg">Please enter a message (min 20 characters).</div>
+        </div>
+
+        <!-- Input values — shown only for bug/unit types -->
+        <div class="fgroup" id="inputValuesGroup" style="display:none;margin-top:16px;">
+          <label class="flabel" for="inputVals">Input Values Used
+            <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text4);font-size:.7rem;"> — optional, helps reproduce the issue</span>
+          </label>
+          <input class="finput" type="text" id="inputVals" name="input_values"
+            placeholder="e.g. Pipe ID = 100 mm, Flow = 10 m³/h, Fluid = Water at 80°C">
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <div class="privacy-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3)"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Your email is processed via Formspree and never stored on our servers, displayed publicly, or shared with third parties.</span>
+          </div>
+          <button class="btn-submit" type="submit" id="submitBtn">
+            <span>Send Message</span>
+            <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+      </form>
+    </div><!-- end form-body -->
+  </div><!-- end form-card -->
+
+</div><!-- end page-wrap -->
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">multi<em>calci.com</em></div>
+  <div class="footer-note">⚠ For preliminary engineering use only. Verify all results with a qualified engineer.</div>
+  <div class="footer-links">
+    <a href="https://multicalci.com/">Home</a>
+    <a href="https://multicalci.com/">Calculators</a>
+  </div>
+</footer>
+
+<script>
+/* ── MOBILE NAV ── */
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* ── PRIORITY SELECTOR ── */
+document.querySelectorAll('.prio-card').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const level = btn.dataset.level;
+    document.querySelectorAll('.prio-card').forEach(b => {
+      b.className = b.className.replace(/\bsel-\w+/g, '').trim();
+    });
+    btn.classList.add('sel-' + level);
+    document.getElementById('priorityVal').value = level;
+  });
+});
+
+/* ── CHAR COUNT ── */
+function updateCharCount(el) {
+  const len = el.value.length;
+  const counter = document.getElementById('charCount');
+  counter.textContent = len + ' / 2000';
+  counter.style.color = len > 1800 ? 'var(--red)' : len > 1400 ? 'var(--amber)' : '';
+  if (len > 2000) el.value = el.value.substring(0, 2000);
+}
+
+/* ── DYNAMIC HINTS + FIELD VISIBILITY ── */
+const hints = {
+  bug: '🐛 Tip: include the exact inputs you used and the output you expected vs what you got.',
+  improvement: '💡 Tip: describe what would make the calculator more useful or accurate.',
+  'new-tool': '🔧 Tip: briefly describe the calculation and any relevant engineering standard.',
+  unit: '📐 Tip: specify the unit pair (e.g. kPa → psi) and the incorrect conversion result.',
+  ui: '🎨 Tip: mention your browser/device and what behaviour you expected vs what happened.',
+  collaboration: '🤝 Tip: describe your background, organisation, and what you have in mind.',
+  general: '',
+};
+
+document.getElementById('msgType').addEventListener('change', function() {
+  const val = this.value;
+  const hint = document.getElementById('msgHint');
+  const inputGroup = document.getElementById('inputValuesGroup');
+
+  if (hints[val]) {
+    hint.textContent = hints[val];
+    hint.classList.add('show');
+  } else {
+    hint.classList.remove('show');
+  }
+
+  // Show input values field only for bug/unit reports
+  inputGroup.style.display = (val === 'bug' || val === 'unit') ? 'flex' : 'none';
+});
+
+/* ── PRE-FILL FROM URL PARAMS ── */
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const calc = params.get('calc');
+  const type = params.get('type');
+
+  if (calc) {
+    const sel = document.getElementById('calcName');
+    for (const opt of sel.options) {
+      if (opt.text.toLowerCase().includes(calc.toLowerCase())) { opt.selected = true; break; }
+    }
+  }
+  if (type) {
+    const typeSelect = document.getElementById('msgType');
+    for (const opt of typeSelect.options) {
+      if (opt.value === type) { opt.selected = true; typeSelect.dispatchEvent(new Event('change')); break; }
+    }
+  }
+});
+
+/* ── INLINE VALIDATION ── */
+function validateField(input) {
+  const group = input.closest('.fgroup');
+  if (!group) return true;
+  let valid = true;
+
+  if (input.required) {
+    if (input.type === 'email') {
+      valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+    } else if (input.tagName === 'TEXTAREA') {
+      valid = input.value.trim().length >= 20;
+    } else {
+      valid = input.value.trim() !== '';
+    }
+  }
+
+  group.classList.toggle('has-err', !valid);
+  input.classList.toggle('valid', valid && input.value.trim() !== '');
+  input.classList.toggle('invalid', !valid);
+  return valid;
+}
+
+['msgType','calcName','userName','userEmail','userMsg'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('blur', () => validateField(el));
+  if (el) el.addEventListener('change', () => validateField(el));
+});
+
+/* ── FORM SUBMIT ── */
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Validate all required fields
+  const fields = ['msgType','calcName','userName','userEmail','userMsg'];
+  let allValid = true;
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !validateField(el)) allValid = false;
+  });
+  if (!allValid) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>Sending…</span><span class="spinner"></span>';
+
+  try {
+    const res = await fetch(this.action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      const refId = 'PET-' + Date.now().toString(36).toUpperCase();
+      document.getElementById('ticketId').textContent = 'REF: ' + refId;
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+    } else {
+      throw new Error('Server error');
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Send Message</span><svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+
+    // Inline error rather than alert()
+    const footer = document.querySelector('.form-footer');
+    const existing = document.getElementById('submitError');
+    if (!existing) {
+      const errEl = document.createElement('div');
+      errEl.id = 'submitError';
+      errEl.style.cssText = 'width:100%;font-size:.78rem;color:var(--red);padding:9px 13px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:7px;';
+      const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost';
+      errEl.textContent = isLocal 
+        ? '⚠ Form submissions are blocked when testing locally. Please deploy to multicalci.com and test live.' 
+        : '⚠ Something went wrong. Please check your connection and try again.';
+      footer.parentNode.insertBefore(errEl, footer);
+      setTimeout(() => errEl.remove(), 6000);
+    }
+  }
+});
+</script>
+</body>
+</html>
