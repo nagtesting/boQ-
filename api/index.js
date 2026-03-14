@@ -7451,9 +7451,19 @@ function calcNPSH(inputs) {
 
   // ── Vapour pressure head ──
   const h_vp = pv_Pa / rg;
+  // ── VLE / Saturated liquid detection ──
+  // For a pure single-component fluid in a pressurised vessel (refrigerant
+  // receiver, liquid ammonia accumulator, condensate drum) the vessel pressure
+  // equals the vapour pressure at the bulk liquid temperature. Any apparent
+  // difference is instrument error, not real subcooling.
+  // Threshold: if Pv/P_abs > 0.97 (within 3%) treat as saturated service.
+  const saturationRatio = isVessel ? (pv_Pa / P_abs_Pa) : 0;
+  const isSaturatedService = isVessel && saturationRatio >= 0.97;
+  // In saturated service the pressure terms cancel → NPSHa = z − hf only
+  const H_abs_effective = isSaturatedService ? h_vp : H_abs;
 
   // ── NPSHa (HI 9.6.1) ──
-  const npsha = H_abs + z - hf - h_vp;
+  const npsha = H_abs_effective + z - hf - h_vp;
 
   // ── NPSHa pressure equivalents ──
   const npsha_deltaP_Pa  = rg * npsha;
@@ -7496,7 +7506,8 @@ function calcNPSH(inputs) {
     warnings.push({cls:'err', msg:'⛔ NPSHa is NEGATIVE ('+npsha.toFixed(2)+' m). Fluid will flash in suction pipe. Immediate redesign required — raise tank, lower pump, or reduce temperature.'});
   if (T > 80)
     warnings.push({cls:'warn', msg:'⚠ High temperature '+T.toFixed(0)+'°C: vapour pressure is rising steeply. Small temperature increases cause large NPSHa reductions. Check worst-case temperature.'});
-
+  if (isSaturatedService)
+    warnings.push({cls:'err', msg:'⛔ SATURATED LIQUID SERVICE DETECTED — Pv/P_vessel = '+(saturationRatio*100).toFixed(1)+'%. This vessel contains liquid in VLE equilibrium with its own vapour (refrigerant receiver, ammonia accumulator, condensate drum). The vessel pressure and vapour pressure are the SAME thermodynamic state — they cancel exactly. NPSHa = z − h_f = '+npsha.toFixed(2)+' m only. Standard NPSH formula does not apply. Do NOT use a standard centrifugal pump — specify canned motor, barrel type, or a pump with inducer rated for near-zero NPSH service.'});
   // ── Status classification ──
   let sc, st;
   if (npsha < 0) {
@@ -7557,6 +7568,7 @@ function calcNPSH(inputs) {
     cavMargin_bar, cavS,
     // Helpers
     netDP_bar, netDP_m,
+    isSaturatedService, saturationRatio,
     rg, g,
     tp: upType, isAbove, isVessel,
   };
