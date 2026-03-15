@@ -7213,7 +7213,7 @@ function calcH2P(p) {
     if (T_C < -29) warns.push('⚠ T<−29°C: MDMT and Charpy impact testing per ASME UCS-66 may apply.');
   }
   if (D_std > 4.0) warns.push(`⚠ D=${D_std.toFixed(2)} m exceeds 4.0 m shop fabrication limit. Field fabrication or special transport required.`);
-
+if (D_std > 4.267) warns.push(`⚠ D=${D_std.toFixed(2)} m exceeds standard vessel diameter list. Verify availability with fabricator.`);
   return {
     status, warns,
     results: [
@@ -7285,6 +7285,7 @@ function calcV2P(p) {
     if (T_C < -29) warns.push('⚠ T<−29°C: MDMT check per ASME UCS-66.');
   }
   if (D_std > 4.0) warns.push(`⚠ D=${D_std.toFixed(2)} m: field fabrication required.`);
+  if (D_std > 4.267) warns.push(`⚠ D=${D_std.toFixed(2)} m exceeds standard diameter list. Confirm availability with fabricator.`);
 
   return {
     status, warns,
@@ -7681,6 +7682,8 @@ function sanitiseVesselInputs(body) {
       // Clamp margin to 50–100 %
       b.margin = Math.min(100, Math.max(50, parseFloat(b.margin) || def.margin));
       const sf_h2p = parseFloat(b.svcFactor);
+      const lf = parseFloat(b.llfrac);
+      if (!isFinite(lf) || lf <= 0 || lf >= 1) b.llfrac = def.llfrac;
       if (!isFinite(sf_h2p) || sf_h2p <= 0) b.svcFactor = def.svcFactor;
       break;
 
