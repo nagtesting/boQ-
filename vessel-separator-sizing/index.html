@@ -1572,6 +1572,8 @@ function setUnit(tool, mode, btn) {
   if (btn) btn.classList.add('active');
   const imp = document.getElementById('imp-'+tool);
   if (imp) imp.style.display = (mode==='Imp') ? 'block' : 'none';
+  // Track unit mode per tool for params dispatch
+  if (tool === 'pv') pvUnit = mode;
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -1723,6 +1725,7 @@ async function callAPI(calc, params, resultId, badgeId, errId, warnId, btnEl) {
 // ══════════════════════════════════════════════════════════════════════
 function calcH2P(btn) {
   const params = {
+    type: 'h2p',
     Qg: gv('h2p-qg'), Qg_u: gs('h2p-qg-u'),
     Ql: gv('h2p-ql'), Ql_u: gs('h2p-ql-u'),
     rhog: gv('h2p-rhog'), rhog_u: gs('h2p-rhou-g'),
@@ -1741,6 +1744,7 @@ function calcH2P(btn) {
 // ══════════════════════════════════════════════════════════════════════
 function calcV2P(btn) {
   const params = {
+    type: 'v2p',
     Qg: gv('v2p-qg'), Qg_u: gs('v2p-qg-u'),
     Ql: gv('v2p-ql'), Ql_u: gs('v2p-ql-u'),
     rhog: gv('v2p-rhog'), rhog_u: gs('v2p-rhou-g'),
@@ -1760,6 +1764,7 @@ function calcV2P(btn) {
 // ══════════════════════════════════════════════════════════════════════
 function calc3P(btn) {
   const params = {
+    type: '3ph',
     Qg: gv('p3-qg'), Qg_u: gs('p3-qg-u'),
     Qo: gv('p3-qo'), Qo_u: gs('p3-qo-u'),
     Qw: gv('p3-qw'), Qw_u: gs('p3-qw-u'),
@@ -1782,8 +1787,12 @@ function calc3P(btn) {
 // syncE() REMOVED — joint efficiency E is now resolved server-side from
 // the category string (body.cat). API owns JOINT_EFF_MAP. See api/index.js.
 
+// pvUnit tracks current unit mode for Imperial result display
+let pvUnit = 'SI';
+
 function calcPV(btn) {
   const params = {
+    type: 'pv',                          // required: tells sanitiseVesselInputs which case to run
     P: gv('pv-P'), P_u: gs('pv-Pu'),
     D: gv('pv-D'), D_u: gs('pv-Du'),
     S: gv('pv-S'), S_u: gs('pv-Su'),
@@ -1791,7 +1800,8 @@ function calcPV(btn) {
     CA: gv('pv-CA'), CA_u: gs('pv-CAu'),
     head: gs('pv-head'), minT: gs('pv-minT'),
     T: gv('pv-T'), T_u: gs('pv-Tu'),
-    cat: gs('pv-Ecat')   // send category string; API maps it to correct E
+    cat: gs('pv-Ecat'),                  // send category string; API maps it to correct E
+    unitMode: pvUnit                     // 'SI' or 'Imp' — tells API which units to return
   };
   callAPI('pv', params, 'pv-result', 'pv-badge', 'pv-err', 'pv-warn', btn);
 }
@@ -1823,6 +1833,7 @@ function syncMistK() {
 function calcMist(btn) {
   const mtype = gs('mist-type');
   const params = {
+    type: 'mist',
     Qg: gv('mist-qg'), Qg_u: gs('mist-qg-u'),
     rhog: gv('mist-rhog'), rhog_u: gs('mist-rhou-g'),
     rhol: gv('mist-rhol'), rhol_u: gs('mist-rhou-l'),
@@ -1862,6 +1873,7 @@ function setNzDefaults() {
 
 function calcNozzle(btn) {
   const params = {
+    type: 'nozzle',
     Q: gv('nz-Q'), Q_u: gs('nz-Qu'),
     vel: gv('nz-vel'), vel_u: gs('nz-velu'),
     rho: gv('nz-rho'), rho_u: gs('nz-rhu'),
@@ -1883,14 +1895,24 @@ function exportPDF(tool) {
   const W=210,H=297,M=18,UW=W-M*2;
   let y=0;
 
-  // Header
-  doc.setFillColor(10,53,96);doc.rect(0,0,W,26,'F');
+  // ── PDF Header — multicalci.com branding at top ──
+  doc.setFillColor(10,53,96);doc.rect(0,0,W,32,'F');
+  // Logo block (top-left)
+  doc.setFillColor(255,255,255);doc.roundedRect(M,5,22,18,2,2,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(10,53,96);
+  doc.text('M',M+7.5,12,{align:'center'});
+  doc.text('.com',M+7.5,17,{align:'center'});
+  // Site name
+  doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(180,210,255);
+  doc.text('multicalci.com',M+26,11);
+  // Tool title
   doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(255,255,255);
-  doc.text('Vessel & Separator Sizing Calculator — v3.0',M,11);
-  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(190,215,255);
-  doc.text('ASME / API / GPSA | High-P NH₃/Urea corrections | Metric + Imperial',M,18);
-  doc.text('Generated: '+new Date().toLocaleString(),W-M,18,{align:'right'});
-  doc.setFillColor(224,236,252);doc.rect(0,26,W,12,'F');
+  doc.text('Vessel & Separator Sizing Calculator — v3.0',M+26,20);
+  // Subtitle
+  doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(170,205,255);
+  doc.text('ASME / API / GPSA | High-P NH₃/Urea corrections | Metric + Imperial',M+26,27);
+  doc.text('Generated: '+new Date().toLocaleString(),W-M,27,{align:'right'});
+  doc.setFillColor(224,236,252);doc.rect(0,32,W,10,'F');
 
   const TITLES={
     h2p:'Horizontal 2-Phase Separator Sizing',
@@ -1902,8 +1924,8 @@ function exportPDF(tool) {
     ref:'Engineering Reference Tables'
   };
   doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(10,53,96);
-  doc.text(TITLES[tool]||tool,M,34);
-  y=50;
+  doc.text(TITLES[tool]||tool,M,40);
+  y=55;
 
   function np(){if(y>H-32){doc.addPage();y=22;}}
   function sh(t){np();doc.setFillColor(240,245,252);doc.rect(M,y-5,UW,9,'F');
