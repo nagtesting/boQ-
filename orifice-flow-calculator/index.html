@@ -7,6 +7,2760 @@
 <title>Orifice Flow Calculator — ISO 5167 | multicalci.com</title>
 <meta name="description" content="Free orifice plate flow calculator using ISO 5167 standard for liquids and gases with discharge coefficients.">
 <link rel="canonical" href="https://multicalci.com/orifice-flow-calculator/">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orifice Flow Calculator — ISO 5167 | multicalci.com</title>
+<meta name="description" content="Free orifice plate flow calculator using ISO 5167 standard for liquids and gases with discharge coefficients.">
+<link rel="canonical" href="https://multicalci.com/orifice-flow-calculator/">
+<meta property="og:title" content="Orifice Flow Calculator — ISO 5167 | multicalci.com">
+<meta property="og:description" content="Free orifice plate flow calculator using ISO 5167 standard for liquids and gases with discharge coefficients.">
+<meta property="og:url" content="https://multicalci.com/orifice-flow-calculator/">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Orifice Flow Calculator — ISO 5167 | multicalci.com">
+    <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
+
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Orifice Flow Calculator — ISO 5167","description":"Free ISO 5167 orifice plate flow calculator with Reader-Harris/Gallagher discharge coefficient, IAPWS-IF97 steam properties and expansibility factor.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/orifice-flow-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ──────────────────────────────────────────────────── */
+:root {
+  --bg:        #eef1f6;
+  --bg2:       #ffffff;
+  --bg3:       #f0f4fa;
+  --surface:   #ffffff;
+  --surface2:  #f7f9fc;
+  --border:    #c8d4e8;
+  --border2:   #a0b0cc;
+  --cyan:      #0055bb;
+  --cyan2:     #003d8c;
+  --cyan3:     #007a5e;
+  --amber:     #a04800;
+  --amber2:    #7a3400;
+  --red:       #b00014;
+  --green:     #115e2e;
+  --purple:    #4a24a0;
+  --text:      #05080f;
+  --text2:     #101828;
+  --text3:     #1e2d42;
+  --mono:      'IBM Plex Mono', monospace;
+  --head:      'Orbitron', monospace;
+  --body:      'Inter', sans-serif;
+  --r:         10px;
+  --glow-c:    rgba(0, 85, 187, 0.07);
+  --glow-a:    rgba(160, 72, 0, 0.07);
+}
+
+/* ─── RESET ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Background texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 20%, rgba(0,85,187,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(0,55,150,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ─── HEADER ──────────────────────────────────────────────────── */
+.header {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px;
+  background: #ffffff;
+  border-bottom: 2px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,40,100,0.08);
+}
+.logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.logo-mark {
+  width: 42px; height: 42px;
+  border: 2px solid var(--cyan);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--head); font-size: 1.1rem; color: var(--cyan);
+  background: rgba(0,85,187,0.06);
+  box-shadow: 0 2px 12px rgba(0,85,187,0.15);
+  animation: pulse-border 3s ease-in-out infinite;
+}
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 2px 12px rgba(0,85,187,0.15); }
+  50% { box-shadow: 0 2px 20px rgba(0,85,187,0.28); }
+}
+.logo-text { line-height: 1.2; }
+.logo-text .title { font-family: var(--head); font-size: 0.9rem; font-weight: 700; color: var(--cyan); letter-spacing: 2px; }
+.logo-text .sub { font-size: 0.68rem; color: var(--text3); letter-spacing: 1px; font-weight: 700; }
+
+.header-controls { display: flex; align-items: center; gap: 12px; }
+.unit-toggle { display: flex; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; }
+.unit-btn {
+  padding: 7px 16px; border: none; background: transparent;
+  font-family: var(--head); font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 1.5px; cursor: pointer; color: var(--text3);
+  transition: all 0.2s;
+}
+.unit-btn.active { background: var(--cyan); color: #ffffff; }
+
+/* ─── LAYOUT ──────────────────────────────────────────────────── */
+.app {
+  position: relative; z-index: 1;
+  max-width: 1280px; margin: 0 auto;
+  padding: 24px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 20px;
+}
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .header { padding: 12px 16px; } .app { padding: 14px 10px; } }
+
+/* ─── CARDS ───────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px;
+  transition: border-color 0.3s;
+  box-shadow: 0 2px 12px rgba(0,40,100,0.07);
+}
+.card:hover { border-color: var(--border2); box-shadow: 0 4px 20px rgba(0,40,100,0.1); }
+
+.card-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+.card-head-icon {
+  width: 30px; height: 30px;
+  background: rgba(0,85,187,0.08);
+  border: 1px solid rgba(0,85,187,0.2);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+}
+.card-head-title {
+  font-family: var(--head); font-size: 0.78rem;
+  font-weight: 700; letter-spacing: 1.5px; color: var(--cyan);
+  text-transform: uppercase;
+}
+.card-head-step {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 0.75rem;
+  color: var(--text3); letter-spacing: 1px; font-weight: 700;
+}
+
+/* ─── MODE SELECTOR ───────────────────────────────────────────── */
+.mode-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 20px;
+}
+.mode-btn-card {
+  padding: 12px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg3);
+  cursor: pointer; text-align: center;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.mode-btn-card::after {
+  content: ''; position: absolute;
+  inset: 0; opacity: 0;
+  background: linear-gradient(135deg, rgba(0,85,187,0.08), transparent);
+  transition: opacity 0.2s;
+}
+.mode-btn-card:hover::after { opacity: 1; }
+.mode-btn-card.active {
+  border-color: var(--cyan);
+  background: rgba(0,85,187,0.06);
+  box-shadow: 0 2px 12px rgba(0,85,187,0.12);
+}
+.mode-icon { font-size: 1.3rem; margin-bottom: 4px; }
+.mode-label {
+  font-family: var(--head); font-size: 0.65rem;
+  font-weight: 700; letter-spacing: 1.2px;
+  color: var(--text3);
+}
+.mode-btn-card.active .mode-label { color: var(--cyan); }
+
+/* ─── FORM ELEMENTS ───────────────────────────────────────────── */
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.frow-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.frow-1 { margin-bottom: 12px; }
+@media (max-width: 480px) { .frow, .frow-3 { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 0.82rem; font-weight: 800;
+  color: var(--text2); letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.field label .hint {
+  font-weight: 600; color: var(--text3);
+  font-size: 0.75rem; text-transform: none; letter-spacing: 0;
+}
+
+.inp-wrap { position: relative; display: flex; }
+input[type=number], select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 10px 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+  appearance: none;
+  font-variant-numeric: tabular-nums;
+}
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; }
+input:focus, select:focus {
+  border-color: var(--cyan2);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0,85,187,0.12);
+}
+input:disabled, select:disabled {
+  opacity: 0.4; cursor: not-allowed;
+}
+.inp-unit {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 800;
+  color: var(--cyan2); pointer-events: none; white-space: nowrap;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23003d8c' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px; cursor: pointer;
+}
+select option { background: #ffffff; color: var(--text); }
+
+/* ─── FLUID DATABASE ──────────────────────────────────────────── */
+.fluid-db-wrap {
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 12px; margin-bottom: 12px;
+}
+.fluid-search-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.fluid-search-row input { flex: 1; }
+.fluid-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  max-height: 130px; overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.fchip {
+  padding: 5px 11px;
+  background: #ffffff; border: 1.5px solid var(--border);
+  border-radius: 5px; font-family: var(--mono); font-size: 0.82rem; font-weight: 700;
+  color: var(--text); cursor: pointer; white-space: nowrap;
+  transition: all 0.15s;
+}
+.fchip:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,85,187,0.04); }
+.fchip.sel { border-color: var(--cyan); color: var(--cyan); background: rgba(0,85,187,0.07); }
+.fchip.sel-steam { border-color: var(--amber); color: var(--amber); background: rgba(160,72,0,0.07); }
+
+.custom-fluid-toggle {
+  font-size: 0.7rem; font-weight: 700; color: var(--cyan2); cursor: pointer;
+  margin-top: 8px; display: inline-flex; align-items: center; gap: 5px;
+}
+.custom-fluid-toggle:hover { color: var(--cyan); }
+.custom-fluid-section { display: none; margin-top: 10px; }
+.custom-fluid-section.open { display: block; }
+
+/* ─── STEAM BADGE ─────────────────────────────────────────────── */
+.steam-badge {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 7px;
+  background: rgba(160,72,0,0.07);
+  border: 1.5px solid rgba(160,72,0,0.25);
+  margin-bottom: 12px;
+  font-size: 0.72rem; font-weight: 700; color: var(--amber);
+}
+.steam-badge.show { display: flex; }
+
+/* ─── PIPE SCHEDULES ──────────────────────────────────────────── */
+.pipe-quick {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;
+}
+.pchip {
+  padding: 5px 11px; border-radius: 5px;
+  background: #ffffff; border: 1.5px solid var(--border);
+  font-family: var(--mono); font-size: 0.82rem; font-weight: 700;
+  color: var(--text2); cursor: pointer; transition: all 0.15s;
+}
+.pchip:hover { border-color: var(--cyan2); color: var(--cyan); background: rgba(0,85,187,0.05); }
+
+/* ─── SEPARATOR ───────────────────────────────────────────────── */
+.sep { border: none; border-top: 1.5px solid var(--border); margin: 16px 0; }
+
+/* ─── RESULTS PANEL ───────────────────────────────────────────── */
+.results-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 22px;
+  grid-row: span 1;
+  box-shadow: 0 2px 12px rgba(0,40,100,0.07);
+}
+
+.main-result {
+  background: linear-gradient(135deg, rgba(0,85,187,0.06), rgba(0,60,140,0.02));
+  border: 1.5px solid var(--border2);
+  border-radius: 10px; padding: 20px;
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,85,187,0.08);
+}
+.main-result::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,85,187,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.main-result .result-label {
+  font-family: var(--head); font-size: 0.7rem;
+  letter-spacing: 1.5px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 8px; font-weight: 700;
+}
+.main-result .result-value {
+  font-family: var(--head); font-size: 2.6rem;
+  font-weight: 900; color: var(--cyan);
+  letter-spacing: 1px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.main-result .result-unit {
+  font-family: var(--mono); font-size: 0.9rem; font-weight: 700;
+  color: var(--cyan2); margin-top: 6px;
+}
+
+/* Mini results grid */
+.mini-results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.mini-result {
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 12px;
+}
+.mini-result .m-label {
+  font-size: 0.75rem; font-weight: 800;
+  color: var(--text3); letter-spacing: 0.5px;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.mini-result .m-val {
+  font-family: var(--mono); font-size: 1.15rem;
+  font-weight: 700; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.mini-result .m-val.cyan { color: var(--cyan); }
+.mini-result .m-val.amber { color: var(--amber); }
+.mini-result .m-val.green { color: var(--green); }
+.mini-result .m-val.purple { color: var(--purple); }
+
+/* ─── BETA GAUGE ──────────────────────────────────────────────── */
+.beta-gauge-wrap {
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 14px; margin-bottom: 12px;
+}
+.beta-gauge-title {
+  font-family: var(--head); font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 1.2px; color: var(--text2);
+  margin-bottom: 10px;
+}
+.gauge-bar-bg {
+  height: 12px; border-radius: 6px;
+  background: var(--border); border: 1px solid var(--border2);
+  position: relative; overflow: visible; margin-bottom: 4px;
+}
+.gauge-zone-ok {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(20% - 0px); width: 50%;
+  background: rgba(17,94,46,0.15);
+  border-left: 1.5px solid rgba(17,94,46,0.4);
+  border-right: 1.5px solid rgba(17,94,46,0.4);
+}
+.gauge-fill {
+  height: 100%; border-radius: 6px;
+  transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+  position: relative;
+}
+.gauge-needle {
+  position: absolute; top: -5px; width: 3px; height: 22px;
+  border-radius: 2px; background: var(--cyan);
+  transform: translateX(-50%);
+  transition: left 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 1px 6px rgba(0,85,187,0.3);
+}
+.gauge-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 700; color: var(--text3);
+}
+.beta-readout {
+  display: flex; align-items: baseline; gap: 8px; margin-top: 8px;
+}
+.beta-val { font-family: var(--head); font-size: 1.6rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+.beta-status { font-family: var(--mono); font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
+.beta-ok  { color: var(--green); background: rgba(17,94,46,0.1); border: 1.5px solid rgba(17,94,46,0.3); }
+.beta-bad { color: var(--red); background: rgba(176,0,20,0.08); border: 1.5px solid rgba(176,0,20,0.3); }
+.beta-warn{ color: var(--amber); background: rgba(160,72,0,0.08); border: 1.5px solid rgba(160,72,0,0.3); }
+
+/* ─── MULTI-UNIT CELLS ──────────────────────────────────────── */
+.muc-cell {
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.muc-cell:hover { border-color: var(--cyan); box-shadow: 0 2px 8px rgba(0,85,187,0.1); }
+.muc-lbl {
+  font-family: var(--body);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.muc-val {
+  font-family: var(--mono);
+  font-size: 0.97rem;
+  font-weight: 800;
+  color: var(--cyan2);
+  font-variant-numeric: tabular-nums;
+}
+.muc-gas { border-color: rgba(0,122,94,0.3); background: rgba(0,122,94,0.04); }
+.muc-gas .muc-val { color: var(--cyan3); }
+.muc-gas:hover { border-color: var(--cyan3); }
+
+/* ─── DP MULTI-UNIT CELLS ───────────────────────────────────── */
+.dpc-cell {
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dpc-lbl { font-family:var(--body); font-size:0.68rem; font-weight:800; color:var(--text3); text-transform:uppercase; letter-spacing:0.4px; }
+.dpc-val { font-family:var(--mono); font-size:0.92rem; font-weight:800; color:var(--amber); font-variant-numeric:tabular-nums; }
+
+/* ─── EXTRA OUTPUTS TABLE ────────────────────────────────────── */
+.output-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.output-table td {
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem; font-weight: 700;
+}
+.output-table td:first-child { color: var(--text2); font-weight: 700; }
+.output-table td:last-child { font-family: var(--mono); text-align: right; color: var(--text); font-weight: 800; font-size: 0.97rem; font-variant-numeric: tabular-nums; }
+.output-table tr:last-child td { border-bottom: none; }
+
+/* ─── WARNING ─────────────────────────────────────────────────── */
+.warn-box {
+  display: none; align-items: flex-start; gap: 8px;
+  padding: 10px 14px; border-radius: 7px;
+  background: rgba(176,0,20,0.06);
+  border: 1.5px solid rgba(176,0,20,0.3);
+  font-size: 0.85rem; font-weight: 700; color: #9a0010; line-height: 1.6;
+  margin-top: 12px;
+}
+.warn-box.show { display: flex; }
+.warn-box.warn-amber {
+  background: rgba(160,72,0,0.06);
+  border-color: rgba(160,72,0,0.3);
+  color: #7a3400;
+}
+
+/* ─── FORMULA BOX ─────────────────────────────────────────────── */
+.formula-box {
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 7px; padding: 12px 16px;
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 700;
+  color: var(--text2); line-height: 2;
+}
+.formula-box .hl { color: var(--cyan2); font-weight: 800; }
+.formula-box .hla { color: var(--amber); font-weight: 800; }
+.formula-toggle {
+  font-size: 0.82rem; font-weight: 700; color: var(--text3); cursor: pointer;
+  margin-bottom: 6px; display: inline-flex; align-items: center; gap: 5px;
+}
+.formula-toggle:hover { color: var(--cyan); }
+
+/* ─── TOOLTIPS ────────────────────────────────────────────────── */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+  background: #ffffff; border: 1.5px solid var(--border2);
+  color: var(--text); font-size: 0.68rem; font-weight: 700; line-height: 1.5;
+  padding: 6px 10px; border-radius: 5px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s;
+  z-index: 100; font-family: var(--body);
+  box-shadow: 0 4px 12px rgba(0,30,80,0.1);
+}
+[data-tip]:hover::after { opacity: 1; }
+
+/* ─── SCROLLBARS ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg3); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── PDF BUTTON ──────────────────────────────────────────────── */
+.pdf-btn {
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #0055bb, #003d8c);
+  color: #ffffff;
+  border: none; border-radius: 7px;
+  font-family: var(--head); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,85,187,0.25);
+  transition: all 0.2s;
+}
+.pdf-btn:hover {
+  background: linear-gradient(135deg, #0066dd, #004aaa);
+  box-shadow: 0 4px 16px rgba(0,85,187,0.4);
+  transform: translateY(-1px);
+}
+
+/* ─── ANIMATE IN ──────────────────────────────────────────────── */
+.card, .results-card { animation: slideUp 0.4s ease both; }
+.card:nth-child(2) { animation-delay: 0.05s; }
+.card:nth-child(3) { animation-delay: 0.1s; }
+.results-card { animation-delay: 0.15s; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── HOME BUTTON ─────────────────────────────────────────────── */
+.home-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  color: var(--text2);
+  font-family: var(--head); font-size: 0.68rem;
+  font-weight: 700; letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.home-btn:hover {
+  background: var(--cyan); color: #fff;
+  border-color: var(--cyan);
+  box-shadow: 0 2px 10px rgba(0,85,187,0.25);
+  transform: translateY(-1px);
+}
+
+/* ─── SOCIAL FOOTER ───────────────────────────────────────────── */
+.social-footer {
+  background: #0f1923;
+  padding: 36px 0 28px;
+  margin-top: 0;
+}
+.social-inner {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.social-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8fafc8;
+  display: block;
+  margin-bottom: 14px;
+}
+.social-links {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 24px;
+}
+.soc-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px;
+  border-radius: 7px;
+  font-family: 'DM Sans', 'IBM Plex Mono', sans-serif;
+  font-size: 0.88rem; font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+.soc-twitter  { background: #1a2332; color: #e8f0fb; border-color: #2a3a50; }
+.soc-linkedin { background: #1a2332; color: #e8f0fb; border-color: #2a3a50; }
+.soc-facebook { background: #1a2332; color: #e8f0fb; border-color: #2a3a50; }
+.soc-whatsapp { background: #1a2332; color: #e8f0fb; border-color: #2a3a50; }
+.soc-email    { background: #1a2332; color: #e8f0fb; border-color: #2a3a50; }
+.soc-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+.soc-twitter:hover  { background: #000; border-color: #fff; color: #fff; }
+.soc-linkedin:hover { background: #0077b5; border-color: #0077b5; color: #fff; }
+.soc-facebook:hover { background: #1877f2; border-color: #1877f2; color: #fff; }
+.soc-whatsapp:hover { background: #25d366; border-color: #25d366; color: #fff; }
+.soc-email:hover    { background: #c0392b; border-color: #c0392b; color: #fff; }
+
+.footer-links {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #1e2d42;
+  font-size: 0.85rem;
+}
+.footer-links a {
+  color: #8fafc8; text-decoration: none; font-weight: 600;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: #fff; }
+.footer-copy { color: #4a5a6a; margin-left: auto; font-size: 0.82rem; }
+
+@media(max-width:600px) {
+  .social-links { gap: 8px; }
+  .soc-btn { padding: 8px 12px; font-size: 0.8rem; }
+  .footer-links { gap: 12px; }
+  .footer-copy { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="header">
+<div class="logo">
+    <div class="logo-mark">⊙</div>
+    <div class="logo-text">
+      <div class="title">ORIFICE STATION</div>
+      <div class="sub">ISO 5167 / AGA3 FLOW ENGINEERING</div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <a href="https://multicalci.com/" class="home-btn" title="Back to MultiCalci Home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>
+      Home
+    </a>
+    <button class="pdf-btn" onclick="generatePDF()">⬇ PDF Report</button>
+    <div class="unit-toggle">
+      <button class="unit-btn active" onclick="setUnits('metric')">SI</button>
+      <button class="unit-btn" onclick="setUnits('imperial')">IMP</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ APP GRID ══════════ -->
+<div class="app">
+
+  <!-- ── CARD 1: MODE + FLUID ── -->
+  <div class="card" style="grid-column:1; grid-row:1 / span 2;">
+
+    <!-- Mode -->
+    <div class="card-head">
+      <div class="card-head-icon">⚡</div>
+      <div class="card-head-title">Calculation Mode</div>
+      <div class="card-head-step">STEP 01</div>
+    </div>
+    <div class="mode-row">
+      <div class="mode-btn-card active" id="mc_flow" onclick="setMode('flow')">
+        <div class="mode-icon">💧</div>
+        <div class="mode-label">FLOW<br>RATE</div>
+      </div>
+      <div class="mode-btn-card" id="mc_dp" onclick="setMode('dp')">
+        <div class="mode-icon">📊</div>
+        <div class="mode-label">DIFF<br>PRESSURE</div>
+      </div>
+      <div class="mode-btn-card" id="mc_beta" onclick="setMode('beta')">
+        <div class="mode-icon">🔩</div>
+        <div class="mode-label">BORE<br>SIZE</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Fluid -->
+    <div class="card-head" style="margin-top:4px;">
+      <div class="card-head-icon">🧪</div>
+      <div class="card-head-title">Fluid & Process</div>
+      <div class="card-head-step">STEP 02</div>
+    </div>
+
+    <div class="frow">
+      <div class="field">
+        <label>Fluid Category</label>
+        <select id="f_cat" onchange="onCatChange()">
+          <option value="gas">General Gas / Vapour</option>
+          <option value="liquid">Liquid</option>
+          <option value="steam">Steam / Water</option>
+        </select>
+      </div>
+      <div class="field" id="orifice_type_wrap">
+        <label>Orifice / Meter Type <span class="hint">(sets Cd)</span></label>
+        <select id="orifice_type" onchange="onOrificeTypeChange()">
+          <option value="sharp_corner">Sharp Corner — ISO RHG Cd(Re,β)</option>
+          <option value="sharp_flange">Flange Tap — ISO RHG Cd(Re,β)</option>
+          <option value="corner_tap">Corner Tap — ISO RHG Cd(Re,β)</option>
+          <option value="d_d2_tap">D & D/2 Tap — ISO RHG Cd(Re,β)</option>
+          <option value="nozzle_isa">ISA Nozzle — Cd≈0.99 (ISO 5167-3)</option>
+          <option value="venturi_tube">Venturi Tube — Cd≈0.985 (ISO 5167-4)</option>
+          <option value="venturi_nozzle">Venturi Nozzle — Cd≈0.965</option>
+          <option value="custom_cd">Custom Cd (override)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="frow" id="custom_cd_row" style="display:none;">
+      <div class="field">
+        <label data-tip="Discharge coefficient (realistic range 0.50–0.95)">Custom Cd Value</label>
+        <input type="number" id="custom_cd_val" value="0.611" min="0.50" max="0.95" step="0.001">
+      </div>
+    </div>
+
+    <!-- Fluid database -->
+    <div class="fluid-db-wrap">
+      <div style="font-family:var(--head); font-size:0.62rem; letter-spacing:1.5px; color:var(--text2); font-weight:800; margin-bottom:8px;">▸ FLUID DATABASE — QUICK SELECT</div>
+      <div class="fluid-search-row">
+        <input type="text" id="fluid_search" placeholder="Search fluids…" oninput="filterFluidChips()" style="font-size:0.78rem; padding:7px 10px;">
+      </div>
+      <div class="fluid-chips" id="fluid_chips"></div>
+      <div class="custom-fluid-toggle" onclick="toggleCustomFluid()">＋ Enter custom fluid properties</div>
+      <div class="custom-fluid-section" id="custom_fluid_sec">
+        <div class="frow" style="margin-bottom:0;">
+          <div class="field">
+            <label id="custom_rho_lbl">Base SG (air=1.0) <span class="hint">gas</span></label>
+            <input type="number" id="custom_rho" value="0.65" step="0.01" oninput="clearChipSel()">
+          </div>
+          <div class="field" id="custom_mw_wrap">
+            <label>Molar Mass <span class="hint">g/mol</span></label>
+            <input type="number" id="custom_mw" value="28.96" step="0.1" oninput="clearChipSel()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steam badge -->
+    <div class="steam-badge" id="steam_badge">
+      🌡 <span>Steam density: IAPWS-IF97 Region 1 (liquid) + Region 2 (superheated steam) — 43-term residual formulation. Enter temperature above saturation for superheated steam.</span>
+    </div>
+
+    <!-- Process conditions -->
+    <div class="frow">
+      <div class="field">
+        <label id="p_lbl" data-tip="ABSOLUTE upstream pressure (bara / psia — NOT gauge pressure). Using gauge pressure will cause 10–20% flow error.">Op. Pressure <span class="hint" style="color:var(--amber);font-size:0.7rem;">abs</span></label>
+        <div class="inp-wrap">
+          <input type="number" id="p_val" value="10.0" step="0.1" oninput="updateFluidProps()">
+          <span class="inp-unit" id="p_unit">Bar a</span>
+        </div>
+      </div>
+      <div class="field">
+        <label id="t_lbl">Op. Temperature</label>
+        <div class="inp-wrap">
+          <input type="number" id="t_val" value="200" step="1" oninput="updateFluidProps()">
+          <span class="inp-unit" id="t_unit">°C</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="frow" id="gas_extra_row">
+      <div class="field" id="sg_wrap">
+        <label id="sg_lbl" data-tip="Specific gravity relative to air (=1.0) for gases, or liquid SG rel. to water">SG / Density Input</label>
+        <div class="inp-wrap">
+          <input type="number" id="d_val" value="0.65" step="0.01" oninput="syncCustomRho()">
+          <span class="inp-unit" id="rho_unit">SG (air=1)</span>
+        </div>
+      </div>
+      <div class="field">
+        <label data-tip="Pitzer correlation auto-updates with T & P when a known gas is selected. Valid range: 0.30–1.20. Z=1.0 for ideal gas. Values outside 0.3–1.2 indicate invalid input.">Compressibility Z <span class="hint" id="z_auto_badge" style="display:none;color:var(--cyan2);font-size:0.68rem;">⟳ auto</span></label>
+        <input type="number" id="zf" value="0.99" step="0.001" min="0.30" max="1.20" oninput="clampZ()">
+      </div>
+    </div>
+
+    <!-- Op. Density live preview (client-side, updates with T/P/fluid) -->
+    <div id="dens_preview_wrap" style="
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(0,85,187,0.05); border:1.5px solid rgba(0,85,187,0.18);
+      border-radius:8px; padding:10px 16px; margin-bottom:12px;
+    ">
+      <span style="font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:1.5px;color:var(--cyan2);">⊙ OP. DENSITY</span>
+      <span id="out_dens" style="font-family:var(--mono);font-size:1.05rem;font-weight:800;color:var(--cyan);">— kg/m³</span>
+      <span style="font-size:0.65rem;color:var(--text3);font-weight:700;">AUTO</span>
+    </div>
+
+    <div class="frow">
+      <div class="field">
+        <label data-tip="Ratio of specific heats Cp/Cv. Air=1.40, Steam≈1.30, CO2≈1.28">Isentropic Exp. k</label>
+        <input type="number" id="isen_k" value="1.40" step="0.01">
+      </div>
+      <div class="field">
+        <label data-tip="Sutherland's law auto-updates viscosity with T when a known gas is selected. Edit manually to override.">Dyn. Viscosity μ <span class="hint" id="mu_auto_badge" style="display:none;color:var(--cyan2);font-size:0.68rem;">⟳ auto</span></label>
+        <div class="inp-wrap">
+          <input type="number" id="visc" value="0.0000182" step="0.000001">
+          <span class="inp-unit">Pa·s</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Geometry -->
+    <div class="card-head">
+      <div class="card-head-icon">📐</div>
+      <div class="card-head-title">Pipe & Orifice Geometry</div>
+      <div class="card-head-step">STEP 03</div>
+    </div>
+
+    <div class="field frow-1">
+      <label>Pipe Schedule / Size — Quick Set</label>
+      <div class="pipe-quick" id="pipe_quick"></div>
+    </div>
+
+    <div class="frow" style="margin-top:10px;">
+      <div class="field">
+        <label>Pipe ID <span class="hint" style="color:var(--text3)">ISO valid: 50–1000 mm</span></label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="p_id" value="154.05" step="0.01" min="10" style="flex:1;min-width:0;">
+          <select id="pid_unit_sel" onchange="onDimUnitChange('pid')" style="width:80px;padding:10px 6px;font-size:0.85rem;">
+            <option value="mm" selected>mm</option>
+            <option value="cm">cm</option>
+            <option value="m">m</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Orifice Bore d <span class="hint" style="color:var(--text3)">β=d/D: 0.20–0.75</span></label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="b_id" value="75.00" step="0.01" style="flex:1;min-width:0;">
+          <select id="bid_unit_sel" onchange="onDimUnitChange('bid')" style="width:80px;padding:10px 6px;font-size:0.85rem;">
+            <option value="mm" selected>mm</option>
+            <option value="cm">cm</option>
+            <option value="m">m</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- Knowns -->
+    <div class="card-head">
+      <div class="card-head-icon">🎛</div>
+      <div class="card-head-title">Known Values</div>
+      <div class="card-head-step">STEP 04</div>
+    </div>
+    <div class="frow">
+      <div class="field">
+        <label id="dp_lbl">Differential Pressure</label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="dp_v" value="2500" step="1" style="flex:1;min-width:0;">
+          <select id="dp_unit_sel" style="width:90px;padding:10px 6px;font-size:0.85rem;">
+            <option value="mmH2O" selected>mmH₂O</option>
+            <option value="inH2O">inH₂O</option>
+            <option value="Pa">Pa</option>
+            <option value="kPa">kPa</option>
+            <option value="mbar">mbar</option>
+            <option value="bar">bar</option>
+            <option value="psi">psi</option>
+            <option value="kgcm2">kg/cm²</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label id="f_lbl">Target Flow</label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="f_val" value="1500" disabled style="flex:1;min-width:0;">
+          <select id="f_unit_sel" style="width:100px;padding:10px 6px;font-size:0.85rem;" disabled>
+            <option value="Nm3hr">Nm³/hr</option>
+            <option value="Nm3day">Nm³/day</option>
+            <option value="Sm3hr">Sm³/hr</option>
+            <option value="m3hr">m³/hr</option>
+            <option value="kghr">kg/hr</option>
+            <option value="kgs">kg/s</option>
+            <option value="tonhr">t/hr</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CALCULATE BUTTON ── -->
+    <div style="margin-top:18px;padding-top:14px;border-top:2px solid var(--border);">
+      <button id="calc_btn" onclick="runNow()" style="
+        width:100%;
+        padding:16px 24px;
+        background:linear-gradient(135deg,#0033a0 0%,#0055bb 60%,#0077cc 100%);
+        color:#fff;
+        border:none;
+        border-radius:10px;
+        font-family:var(--head);
+        font-size:1rem;
+        font-weight:700;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        cursor:pointer;
+        box-shadow:0 4px 18px rgba(0,85,187,0.35);
+        transition:transform 0.12s,box-shadow 0.12s,filter 0.12s;
+        position:relative;
+        overflow:hidden;
+      "
+      onmouseover="this.style.filter='brightness(1.12)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,85,187,0.45)'"
+      onmouseout="this.style.filter='';this.style.transform='';this.style.boxShadow='0 4px 18px rgba(0,85,187,0.35)'"
+      onmousedown="this.style.transform='translateY(0)'"
+      >
+        <span style="position:relative;z-index:1;">⊙ &nbsp;CALCULATE</span>
+      </button>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button onclick="generatePDF()" style="
+          flex:1;padding:11px 12px;
+          background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;
+          font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;
+          color:var(--cyan2);cursor:pointer;transition:background 0.15s,border-color 0.15s;
+        "
+        onmouseover="this.style.background='var(--border)'"
+        onmouseout="this.style.background='var(--bg3)'"
+        >📄 &nbsp;PDF REPORT</button>
+        <button onclick="runNow()" style="
+          flex:1;padding:11px 12px;
+          background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;
+          font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;
+          color:var(--text3);cursor:pointer;transition:background 0.15s;
+        "
+        onmouseover="this.style.background='var(--border)'"
+        onmouseout="this.style.background='var(--bg3)'"
+        >🔄 &nbsp;RECALCULATE</button>
+      </div>
+    </div>
+
+  </div><!-- /card 1 -->
+
+  <!-- ── CARD 2: RESULTS ── -->
+  <div class="results-card" style="grid-column:2; grid-row:1;">
+
+    <div class="card-head">
+      <div class="card-head-icon">📊</div>
+      <div class="card-head-title">Calculation Results</div>
+      <div class="card-head-step">STEP 05</div>
+    </div>
+
+    <!-- Main result -->
+    <div class="main-result">
+      <div class="result-label" id="main_lbl">CALCULATED MASS FLOW</div>
+      <div class="result-value" id="main_val">—</div>
+      <div class="result-unit" id="main_unit">kg / hr</div>
+    </div>
+
+    <!-- ── FLOW MULTI-UNIT PANEL ── -->
+    <div style="margin-bottom:14px;">
+      <div style="font-family:var(--head);font-size:0.62rem;letter-spacing:1.5px;color:var(--cyan2);font-weight:800;margin-bottom:8px;padding:5px 0 4px;border-bottom:1.5px solid var(--border);">⚡ FLOW RATE — ALL UNITS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="flow_units_grid">
+        <div class="muc-cell" id="muc_kghr"><span class="muc-lbl">kg/hr</span><span class="muc-val" id="muc_v_kghr">—</span></div>
+        <div class="muc-cell" id="muc_kgs"><span class="muc-lbl">kg/s</span><span class="muc-val" id="muc_v_kgs">—</span></div>
+        <div class="muc-cell" id="muc_tonhr"><span class="muc-lbl">t/hr</span><span class="muc-val" id="muc_v_tonhr">—</span></div>
+        <div class="muc-cell" id="muc_m3hr"><span class="muc-lbl">m³/hr (actual)</span><span class="muc-val" id="muc_v_m3hr">—</span></div>
+        <div class="muc-cell muc-gas" id="muc_nm3hr"><span class="muc-lbl">Nm³/hr <span style="font-weight:600;font-size:0.68rem;opacity:0.7">(0°C,1atm)</span></span><span class="muc-val" id="muc_v_nm3hr">—</span></div>
+        <div class="muc-cell muc-gas" id="muc_nm3day"><span class="muc-lbl">Nm³/day</span><span class="muc-val" id="muc_v_nm3day">—</span></div>
+        <div class="muc-cell muc-gas" id="muc_sm3hr"><span class="muc-lbl">Sm³/hr <span style="font-weight:600;font-size:0.68rem;opacity:0.7">(15°C,1atm)</span></span><span class="muc-val" id="muc_v_sm3hr">—</span></div>
+        <div class="muc-cell" id="muc_m3s"><span class="muc-lbl">m³/s (actual)</span><span class="muc-val" id="muc_v_m3s">—</span></div>
+      </div>
+    </div>
+
+    <!-- Mini grid: velocity + flow summary -->
+    <div class="mini-results">
+      <div class="mini-result">
+        <div class="m-label">Mass Flow (kg/hr)</div>
+        <div class="m-val amber" id="out_mass">— kg/hr</div>
+      </div>
+      <div class="mini-result">
+        <div class="m-label">Vol. Flow (m³/hr)</div>
+        <div class="m-val green" id="out_qact">— m³/hr</div>
+      </div>
+      <div class="mini-result">
+        <div class="m-label">Vel. at Orifice</div>
+        <div class="m-val purple" id="out_vorif">— m/s</div>
+      </div>
+    </div>
+
+    <!-- Beta gauge -->
+    <div class="beta-gauge-wrap">
+      <div class="beta-gauge-title">BETA RATIO (β = d/D) — ISO 5167 ACCEPTANCE RANGE 0.20–0.75</div>
+      <div class="gauge-bar-bg">
+        <div class="gauge-zone-ok"></div>
+        <div class="gauge-fill" id="gauge_fill" style="width:0%;background:var(--green);"></div>
+        <div class="gauge-needle" id="gauge_needle" style="left:0%;"></div>
+      </div>
+      <div class="gauge-labels"><span>0</span><span>0.2</span><span>0.45</span><span>0.7</span><span>1.0</span></div>
+      <div class="beta-readout">
+        <span class="beta-val" id="beta_val" style="color:var(--green);">—</span>
+        <span class="beta-status beta-ok" id="beta_status">WAITING</span>
+      </div>
+    </div>
+
+    <!-- ── DP MULTI-UNIT PANEL ── -->
+    <div style="margin-bottom:14px;">
+      <div style="font-family:var(--head);font-size:0.62rem;letter-spacing:1.5px;color:var(--amber);font-weight:800;margin-bottom:8px;padding:5px 0 4px;border-bottom:1.5px solid var(--border);">🎛 DIFFERENTIAL PRESSURE — ALL UNITS</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+        <div class="dpc-cell"><span class="dpc-lbl">mmH₂O</span><span class="dpc-val" id="dpc_mmh2o">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">inH₂O</span><span class="dpc-val" id="dpc_inh2o">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">Pa</span><span class="dpc-val" id="dpc_pa">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">kPa</span><span class="dpc-val" id="dpc_kpa">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">mbar</span><span class="dpc-val" id="dpc_mbar">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">bar</span><span class="dpc-val" id="dpc_bar">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">psi</span><span class="dpc-val" id="dpc_psi">—</span></div>
+        <div class="dpc-cell"><span class="dpc-lbl">kg/cm²</span><span class="dpc-val" id="dpc_kgcm2">—</span></div>
+      </div>
+    </div>
+
+    <!-- Extra outputs table -->
+    <table class="output-table" id="extra_table">
+      <tr style="background:rgba(0,85,187,0.04)"><td colspan="2" style="font-family:var(--head);font-size:0.65rem;letter-spacing:1.5px;color:var(--cyan2);font-weight:800;padding:7px 11px;">▸ FLOW — MULTIPLE UNITS</td></tr>
+      <tr><td>Mass Flow</td><td id="out_mass2">—</td></tr>
+      <tr><td>Mass Flow (kg/s)</td><td id="out_kgs">—</td></tr>
+      <tr><td>Mass Flow (t/hr)</td><td id="out_tonhr">—</td></tr>
+      <tr><td>Actual Vol. Flow (m³/hr)</td><td id="out_qact2">—</td></tr>
+      <tr><td>Actual Vol. Flow (m³/s)</td><td id="out_qact_s">—</td></tr>
+      <tr><td>Nm³/hr (ref 0°C, 1.01325 bar)</td><td id="out_nm3">—</td></tr>
+      <tr><td>Nm³/day (ref 0°C, 1.01325 bar)</td><td id="out_nm3day">—</td></tr>
+      <tr><td>Sm³/hr (ref 15°C, 1.01325 bar)</td><td id="out_sm3">—</td></tr>
+      <tr style="background:rgba(0,85,187,0.04)"><td colspan="2" style="font-family:var(--head);font-size:0.65rem;letter-spacing:1.5px;color:var(--cyan2);font-weight:800;padding:7px 11px;">▸ HYDRAULICS & METER</td></tr>
+      <tr><td>Vel. in Pipe</td><td id="out_vpipe">—</td></tr>
+      <tr><td>Reynolds No. (pipe)</td><td id="out_re">—</td></tr>
+      <tr><td>Expansibility factor Y</td><td id="out_y">—</td></tr>
+      <tr><td>Velocity of Approach E</td><td id="out_e">—</td></tr>
+      <tr><td>Cd — ISO RHG f(Re,β,tap) <span style="font-size:0.72rem;color:var(--text3)">[NOT constant]</span></td><td id="out_cd">—</td></tr>
+      <tr style="background:rgba(0,85,187,0.04)"><td colspan="2" style="font-family:var(--head);font-size:0.65rem;letter-spacing:1.5px;color:var(--cyan2);font-weight:800;padding:7px 11px;">▸ PRESSURE LOSS</td></tr>
+      <tr><td data-tip="Fraction of measured ΔP permanently lost as pipe friction/turbulence. Orifice: 50–90%. Venturi: 5–20%. Normal for orifice — ΔP itself is usually small vs line pressure.">Perm. Pressure Loss <span style="font-size:0.72rem;color:var(--text3)">(% of ΔP)</span></td><td id="out_perm">—</td></tr>
+      <tr><td>Perm. Loss (mmH₂O)</td><td id="out_perm_mmh2o">—</td></tr>
+      <tr><td>Perm. Loss (mbar)</td><td id="out_perm_mbar">—</td></tr>
+      <tr><td>Perm. Loss (bar)</td><td id="out_perm_bar">—</td></tr>
+      <tr><td style="color:var(--purple)">Flow Uncertainty ±U (k=2)</td><td id="out_uncertainty" style="color:var(--purple)">—</td></tr>
+      <tr><td>ΔP/P₁ Ratio <span style="font-size:0.72rem;color:var(--text3)">(ISO limit &lt;0.25 for Y validity)</span></td><td id="out_dp_ratio">—</td></tr>
+    </table>
+
+    <!-- Formula -->
+    <div class="formula-toggle" onclick="toggleFormula()">▸ Show formula reference</div>
+    <div id="formula_box" class="formula-box" style="display:none;">
+      <span class="hl">ISO 5167-2:2022 — Orifice / Nozzle / Venturi Flow Equation</span><br>
+      qm = <span class="hl">Cd(Re,β)</span> · <span class="hla">E</span> · <span class="hl">Y</span> · A₂ · √(2·ρ·ΔP)<br>
+      <span class="hl">Cd(Re,β)</span> = Reader-Harris/Gallagher (ISO 5167-2 §5.3.2.1) — iterative f(Re,β,tap). NOT constant.<br>
+      &nbsp;&nbsp;Cd ≈ 0.5961 + 0.0261β² − 0.216β⁸ + 0.000521(10⁶β/Re)⁰·⁷ + tap corrections<br>
+      <span class="hl">E</span> = 1/√(1−β⁴) &nbsp;<span style="color:var(--text3)"> (velocity of approach factor)</span><br>
+      <span class="hl">Y — Orifice (ISO 5167-2)</span>: Y = 1 − (0.41+0.35β⁴)·ΔP/(P·κ) &nbsp;[valid ΔP/P &lt; 0.25]<br>
+      <span class="hl">Y — Nozzle/Venturi (ISO 5167-3/4)</span>: Y = √[κ·τ^(2/κ)·(1−β⁴) / ((κ−1)·(1−τ^((κ-1)/κ))·(1−β⁴·τ^(2/κ)))]<br>
+      <span class="hla">ΔW</span>/ΔP = [√(1−β⁴(1−Cd²)) − Cd·β²] / [√(1−β⁴(1−Cd²)) + Cd·β²] &nbsp;<span style="color:var(--text3)">(perm. loss, orifice)</span><br>
+      ρ = <span class="hla">P·M</span>/(Z·R·T) &nbsp;[gas] &nbsp;|&nbsp; ρ = SG×1000 &nbsp;[liquid] &nbsp;|&nbsp; IAPWS-IF97 &nbsp;[steam]<br>
+      β = d/D &nbsp;&nbsp; A₂ = π/4·d² &nbsp;&nbsp; ISO Re min: β≤0.44→5000, β≤0.56→10000, β≤0.65→30000, β≤0.75→170000
+    </div>
+
+    <div class="warn-box" id="warn1">⚠ <span id="warn1_txt"></span></div>
+    <div class="warn-box warn-amber" id="warn2">ℹ <span id="warn2_txt"></span></div>
+    <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);font-size:0.68rem;color:var(--text3);line-height:1.6;">
+      <strong>Assumptions &amp; Limitations:</strong> ISO 5167-2:2022 | Single-phase flow only | Sharp-edge orifice (ISO geometry) | Clean smooth pipe assumed | 
+      Plate edge wear, pipe roughness and flow profile distortion not modelled (each can affect Cd by 0.5–5%) | 
+      Two-phase (flashing liquid, wet steam) not supported | 
+      Viscosity: Sutherland law (±5–30% for polar/heavy gases) | 
+      Z: Pitzer correlation (valid Tr&gt;0.7, Pr&lt;0.9; use EOS outside this range) | 
+      Pressure must be <em>absolute</em> (bara/psia).
+    </div>
+
+  </div><!-- /results -->
+
+</div><!-- /app -->
+
+<!-- ══════════ JAVASCRIPT ══════════ -->
+
+<!-- ══════════ JAVASCRIPT — CLIENT ONLY (no calc logic here) ══════════ -->
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────
+let MODE  = 'flow';
+let UNITS = 'metric';
+let selectedFluidKey = null;
+let _lastApiResult   = {};          // cache last API response for PDF
+
+const API_URL = '/api/orifice-flow';
+
+// ─── Fluid library (orifice: gases, key liquids, steam) ───────────────────
+const FLUID_DB = {
+  // ── Gases ──
+  'Air':            {t:'g',sg:1.000,M:28.964,k:1.400,mu:1.82e-5,Z:1.000,Tc:132.5,Pc:3.77, omega:0.035, mu_ref:1.716e-5,T_ref:273.15,S:110.4},
+  'Nitrogen (N₂)':  {t:'g',sg:0.967,M:28.014,k:1.400,mu:1.76e-5,Z:1.000,Tc:126.2,Pc:3.39, omega:0.037, mu_ref:1.663e-5,T_ref:273.15,S:107.0},
+  'Oxygen (O₂)':    {t:'g',sg:1.105,M:32.000,k:1.395,mu:2.01e-5,Z:1.000,Tc:154.6,Pc:5.04, omega:0.025, mu_ref:1.919e-5,T_ref:273.15,S:138.9},
+  'Hydrogen (H₂)':  {t:'g',sg:0.070,M:2.016, k:1.405,mu:8.90e-6,Z:1.000,Tc:33.2, Pc:1.30, omega:-0.216,mu_ref:8.411e-6,T_ref:273.15,S:96.7},
+  'CO₂':            {t:'g',sg:1.519,M:44.010,k:1.289,mu:1.48e-5,Z:0.994,Tc:304.1,Pc:7.38, omega:0.239, mu_ref:1.370e-5,T_ref:273.15,S:222.0},
+  'CO':             {t:'g',sg:0.967,M:28.010,k:1.400,mu:1.77e-5,Z:1.000,Tc:132.9,Pc:3.50, omega:0.048, mu_ref:1.657e-5,T_ref:273.15,S:118.0},
+  'Methane (CH₄)':  {t:'g',sg:0.554,M:16.043,k:1.304,mu:1.10e-5,Z:0.998,Tc:190.6,Pc:4.60, omega:0.012, mu_ref:1.030e-5,T_ref:273.15,S:164.0},
+  'Propane (C₃H₈)': {t:'g',sg:1.522,M:44.097,k:1.130,mu:8.20e-6,Z:0.981,Tc:369.8,Pc:4.25, omega:0.152, mu_ref:7.550e-6,T_ref:273.15,S:278.0},
+  'Butane (C₄H₁₀)': {t:'g',sg:2.009,M:58.124,k:1.100,mu:7.40e-6,Z:0.960,Tc:425.1,Pc:3.80, omega:0.200, mu_ref:6.870e-6,T_ref:273.15,S:329.0},
+  'Natural Gas':    {t:'g',sg:0.620,M:17.967,k:1.310,mu:1.10e-5,Z:0.990,Tc:203.3,Pc:4.64, omega:0.010, mu_ref:1.027e-5,T_ref:273.15,S:170.0},
+  'Ammonia (NH₃)':  {t:'g',sg:0.588,M:17.031,k:1.310,mu:1.00e-5,Z:0.995,Tc:405.6,Pc:11.28,omega:0.250, mu_ref:9.270e-6,T_ref:273.15,S:503.0},
+  'Chlorine':       {t:'g',sg:2.448,M:70.906,k:1.340,mu:1.33e-5,Z:0.990,Tc:417.2,Pc:7.71, omega:0.069, mu_ref:1.234e-5,T_ref:273.15,S:351.0},
+  'Argon':          {t:'g',sg:1.380,M:39.948,k:1.667,mu:2.27e-5,Z:1.000,Tc:150.9,Pc:4.87, omega:0.001, mu_ref:2.125e-5,T_ref:273.15,S:142.0},
+  'Helium':         {t:'g',sg:0.138,M:4.003, k:1.667,mu:1.99e-5,Z:1.000,Tc:5.2,  Pc:0.23, omega:-0.390,mu_ref:1.875e-5,T_ref:273.15,S:79.4},
+  'SO₂':            {t:'g',sg:2.264,M:64.065,k:1.290,mu:1.25e-5,Z:0.990,Tc:430.8,Pc:7.88, omega:0.245, mu_ref:1.163e-5,T_ref:273.15,S:416.0},
+  'H₂S':            {t:'g',sg:1.189,M:34.081,k:1.320,mu:1.22e-5,Z:0.990,Tc:373.2,Pc:8.94, omega:0.100, mu_ref:1.130e-5,T_ref:273.15,S:331.0},
+  'Ethane (C₂H₆)':  {t:'g',sg:1.049,M:30.069,k:1.200,mu:9.10e-6,Z:0.988,Tc:305.3,Pc:4.87, omega:0.099, mu_ref:8.560e-6,T_ref:273.15,S:252.0},
+  'Ethylene':       {t:'g',sg:0.968,M:28.054,k:1.240,mu:1.02e-5,Z:0.993,Tc:282.4,Pc:5.04, omega:0.089, mu_ref:9.450e-6,T_ref:273.15,S:225.0},
+  'Acetylene':      {t:'g',sg:0.897,M:26.038,k:1.232,mu:1.03e-5,Z:0.990,Tc:308.3,Pc:6.14, omega:0.187, mu_ref:9.570e-6,T_ref:273.15,S:234.0},
+  'Flue Gas':       {t:'g',sg:1.000,M:28.964,k:1.350,mu:1.90e-5,Z:1.000,Tc:132.5,Pc:3.77, omega:0.035, mu_ref:1.716e-5,T_ref:273.15,S:110.4},
+  // ── Liquids ── (T-corrected density handled by API)
+  'Water':             {t:'l',sg:1.000,mu:1.00e-3, Pv:0.023},
+  'Seawater':          {t:'l',sg:1.025,mu:1.07e-3, Pv:0.022},
+  'Crude Oil (30API)': {t:'l',sg:0.876,mu:2.0e-2,  Pv:0.008},
+  'Diesel / Gas Oil':  {t:'l',sg:0.840,mu:3.5e-3,  Pv:0.003},
+  'Kerosene':          {t:'l',sg:0.800,mu:1.8e-3,  Pv:0.007},
+  'Gasoline':          {t:'l',sg:0.720,mu:5.5e-4,  Pv:0.55},
+  'Methanol':          {t:'l',sg:0.791,mu:5.9e-4,  Pv:0.129},
+  'Ethanol':           {t:'l',sg:0.789,mu:1.2e-3,  Pv:0.059},
+  'Toluene':           {t:'l',sg:0.867,mu:5.9e-4,  Pv:0.038},
+  'Benzene':           {t:'l',sg:0.879,mu:6.5e-4,  Pv:0.100},
+  'Acetone':           {t:'l',sg:0.791,mu:3.2e-4,  Pv:0.247},
+  'Sulfuric Acid 98%': {t:'l',sg:1.836,mu:2.67e-2, Pv:0.0},
+  'HCl 32%':           {t:'l',sg:1.157,mu:1.9e-3,  Pv:0.085},
+  'NaOH 50%':          {t:'l',sg:1.525,mu:7.8e-2,  Pv:0.005},
+  'MEA':               {t:'l',sg:1.018,mu:2.41e-2, Pv:0.0005},
+  'Glycerol':          {t:'l',sg:1.261,mu:1.412,   Pv:0.0001},
+  'Ethylene Glycol':   {t:'l',sg:1.113,mu:2.10e-2, Pv:0.0001},
+  // ── Steam ──
+  'Steam':          {t:'s',sg:0.498,mu:1.3e-5,Pv:0,k:1.135},
+};
+
+// Pipe schedule lookup [NPS, sched, OD_mm, ID_mm]
+const PIPE_SCHEDULES = [
+  ['1"',   40, 33.40, 26.64], ['1.5"', 40, 48.26, 40.89],
+  ['2"',   40, 60.33, 52.50], ['2.5"', 40, 73.03, 62.71],
+  ['3"',   40, 88.90, 77.93], ['4"',   40,114.30,102.26],
+  ['6"',   40,168.28,154.05], ['6"',   80,168.28,146.33],
+  ['8"',   40,219.08,202.72], ['8"',   80,219.08,193.68],
+  ['10"',  40,273.05,254.51], ['12"',  40,323.85,303.23],
+  ['16"',  40,406.40,381.00], ['20"',  40,508.00,477.82],
+  ['24"',  40,609.60,574.65],
+];
+
+// ─── DIMENSION UNIT HELPERS (UI only, no calc) ────────────────────────
+function onDimUnitChange(which) {
+  const inp = document.getElementById(which === 'pid' ? 'p_id' : 'b_id');
+  const sel = document.getElementById(which + '_unit_sel');
+  const oldUnit = sel.dataset.prev || 'mm';
+  const newUnit = sel.value;
+  const valMm   = dimToMm(parseFloat(inp.value) || 0, oldUnit);
+  const conv    = {mm:1,cm:0.1,m:0.001,in:1/25.4};
+  inp.value     = parseFloat((valMm * (conv[newUnit]||1)).toFixed(6));
+  sel.dataset.prev = newUnit;
+}
+
+// ─── DISPLAY HELPERS ──────────────────────────────────────────────────
+function setMain(label, val, unit) {
+  document.getElementById('main_lbl').textContent  = label;
+  document.getElementById('main_val').textContent  = val;
+  document.getElementById('main_unit').textContent = unit;
+}
+function setOut(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setLoading(on) {
+  // Show a spinner overlay on the results card while API is in-flight
+  let sp = document.getElementById('api_spinner');
+  if (!sp) {
+    sp = document.createElement('div');
+    sp.id = 'api_spinner';
+    sp.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;border:4px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+      <span style="font-family:var(--head);font-size:0.7rem;letter-spacing:2px;color:var(--cyan2);">CALCULATING…</span>
+    </div>`;
+    sp.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(240,244,250,0.82);z-index:9;border-radius:var(--r);';
+    const card = document.querySelector('.results-card');
+    if (card) { card.style.position='relative'; card.appendChild(sp); }
+  }
+  sp.style.display = on ? 'flex' : 'none';
+}
+function clearWarns() {
+  ['warn1','warn2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.innerHTML=''; el.classList.remove('show'); }
+  });
+}
+function updateGauge(beta) {
+  const pct    = Math.min(Math.max(beta,0),1)*100;
+  const fill   = document.getElementById('gauge_fill');
+  const needle = document.getElementById('gauge_needle');
+  const valEl  = document.getElementById('beta_val');
+  const statEl = document.getElementById('beta_status');
+  fill.style.width = pct + '%';
+  needle.style.left = pct + '%';
+  valEl.textContent = beta.toFixed(4);
+  if (beta >= 0.20 && beta <= 0.70) {
+    fill.style.background='var(--green)'; valEl.style.color='var(--green)';
+    statEl.textContent='WITHIN ISO RANGE'; statEl.className='beta-status beta-ok';
+  } else if (beta > 0.70 && beta <= 0.75) {
+    fill.style.background='var(--amber)'; valEl.style.color='var(--amber)';
+    statEl.textContent='HIGH BETA — CHECK'; statEl.className='beta-status beta-warn';
+  } else {
+    fill.style.background='var(--red)'; valEl.style.color='var(--red)';
+    statEl.textContent='OUT OF RANGE'; statEl.className='beta-status beta-bad';
+  }
+}
+function renderResults(r) {
+  // ── Primary output ──
+  if (MODE === 'flow')       setMain('CALCULATED MASS FLOW', r.mass_kghr.toFixed(1), 'kg / hr');
+  else if (MODE === 'dp') {
+    const dpUnit = document.getElementById('dp_unit_sel').value;
+    const dpLabels = {mmH2O:'mmH₂O',inH2O:'inH₂O',Pa:'Pa',kPa:'kPa',mbar:'mbar',bar:'bar',psi:'psi',kgcm2:'kg/cm²'};
+    const dpVal = ({mmH2O:r.dp_mmH2O,inH2O:r.dp_inH2O,Pa:r.dp_Pa,kPa:r.dp_kPa,mbar:r.dp_mbar,bar:r.dp_bar,psi:r.dp_psi,kgcm2:r.dp_kgcm2})[dpUnit] ?? r.dp_Pa;
+    setMain('DIFF PRESSURE', dpVal.toFixed(2), dpLabels[dpUnit] || dpUnit);
+    document.getElementById('dp_v').value = dpVal.toFixed(2);
+  } else {
+    const bidUnit = document.getElementById('bid_unit_sel').value;
+    const boreDisp = ({mm:r.bore_mm,cm:r.bore_mm/10,m:r.bore_mm/1000,in:r.bore_mm/25.4})[bidUnit] ?? r.bore_mm;
+    setMain('BORE DIAMETER', boreDisp.toFixed(3), bidUnit);
+    document.getElementById('b_id').value = boreDisp.toFixed(3);
+  }
+
+  // ── Mini cards ──
+  setOut('out_dens',  r.rho_op.toFixed(4) + ' kg/m³');
+  setOut('out_mass',  r.mass_kghr.toFixed(2) + ' kg/hr');
+  setOut('out_qact',  r.qv_act_m3hr.toFixed(3) + ' m³/hr');
+  setOut('out_vorif', r.v_orifice != null ? r.v_orifice.toFixed(4) + ' m/s' : '—');
+
+  // ── Flow multi-unit cells ──
+  setOut('muc_v_kghr',  r.mass_kghr.toFixed(2));
+  setOut('muc_v_kgs',   r.mass_kgs.toFixed(5));
+  setOut('muc_v_tonhr', r.mass_tonhr.toFixed(4));
+  setOut('muc_v_m3hr',  r.qv_act_m3hr.toFixed(3));
+  setOut('muc_v_m3s',   r.qv_act_m3s.toFixed(6));
+  const isGas = document.getElementById('f_cat').value === 'gas';
+  ['muc_nm3hr','muc_nm3day','muc_sm3hr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isGas ? '' : 'none';
+  });
+  if (isGas) {
+    setOut('muc_v_nm3hr',  r.nm3hr != null ? r.nm3hr.toFixed(2) : '—');
+    setOut('muc_v_nm3day', r.nm3day != null ? r.nm3day.toFixed(1) : '—');
+    setOut('muc_v_sm3hr',  r.sm3hr != null ? r.sm3hr.toFixed(2) : '—');
+  }
+
+  // ── DP multi-unit cells ──
+  if (r.dp_Pa > 0) {
+    setOut('dpc_mmh2o', r.dp_mmH2O.toFixed(1));
+    setOut('dpc_inh2o', r.dp_inH2O.toFixed(3));
+    setOut('dpc_pa',    r.dp_Pa.toFixed(0));
+    setOut('dpc_kpa',   r.dp_kPa.toFixed(3));
+    setOut('dpc_mbar',  r.dp_mbar.toFixed(2));
+    setOut('dpc_bar',   r.dp_bar.toFixed(5));
+    setOut('dpc_psi',   r.dp_psi.toFixed(4));
+    setOut('dpc_kgcm2', r.dp_kgcm2.toFixed(5));
+  } else {
+    ['dpc_mmh2o','dpc_inh2o','dpc_pa','dpc_kpa','dpc_mbar','dpc_bar','dpc_psi','dpc_kgcm2'].forEach(id=>setOut(id,'—'));
+  }
+
+  // ── Extra table ──
+  setOut('out_mass2',   r.mass_kghr.toFixed(2) + ' kg/hr');
+  setOut('out_kgs',     r.mass_kgs.toFixed(5) + ' kg/s');
+  setOut('out_tonhr',   r.mass_tonhr.toFixed(4) + ' t/hr');
+  setOut('out_qact2',   r.qv_act_m3hr.toFixed(3) + ' m³/hr');
+  setOut('out_qact_s',  r.qv_act_m3s.toFixed(6) + ' m³/s');
+  setOut('out_nm3',     r.nm3hr != null ? r.nm3hr.toFixed(2) + ' Nm³/hr' : '— (gas only)');
+  setOut('out_nm3day',  r.nm3day != null ? r.nm3day.toFixed(1) + ' Nm³/day' : '— (gas only)');
+  setOut('out_sm3',     r.sm3hr != null ? r.sm3hr.toFixed(2) + ' Sm³/hr' : '— (gas only)');
+  setOut('out_vpipe',   (r.v_pipe ?? 0).toFixed(4) + ' m/s');
+  setOut('out_re',      Math.round(r.Re_pipe ?? 0).toString());
+  setOut('out_y',       r.Y != null ? r.Y.toFixed(5) : '—');
+  setOut('out_e',       (r.E ?? 0).toFixed(6));
+  setOut('out_cd',      (r.Cd ?? 0).toFixed(5) + ` (Re=${Math.round(r.Re_pipe??0)})`);
+  setOut('out_perm',    (r.perm_pct ?? 0).toFixed(1) + '%');
+  setOut('out_perm_mmh2o', (r.perm_mmH2O ?? 0).toFixed(1) + ' mmH₂O');
+  setOut('out_perm_mbar',  (r.perm_mbar ?? 0).toFixed(2) + ' mbar');
+  setOut('out_perm_bar',   (r.perm_bar ?? 0).toFixed(4) + ' bar | ' + (r.perm_kPa??0).toFixed(3) + ' kPa | ' + (r.perm_psi??0).toFixed(4) + ' psi');
+  setOut('out_uncertainty', '±' + (r.uncertainty_pct ?? '—') + '% (ISO, k=2)');
+
+  // ΔP/P ratio
+  const dpPratio = r.dp_P_ratio ?? 0;
+  const dpPel = document.getElementById('out_dp_ratio');
+  if (dpPel) {
+    dpPel.textContent = dpPratio.toFixed(4) + (dpPratio > 0.25 ? ' ⚠ EXCEEDS ISO LIMIT' : dpPratio > 0.15 ? ' ⚠ Approaching limit' : ' ✓ OK');
+    dpPel.style.cssText = dpPratio > 0.25 ? 'color:var(--red)' : dpPratio > 0.15 ? 'color:var(--amber)' : '';
+  }
+
+  // Beta gauge
+  updateGauge(r.beta ?? 0);
+
+  // Auto-update Z/μ fields if API returned auto values
+  if (r.mu_auto != null) {
+    document.getElementById('visc').value = r.mu_auto.toExponential(4);
+    document.getElementById('mu_auto_badge').style.display = '';
+  }
+  if (r.Z_auto != null) {
+    document.getElementById('zf').value = r.Z_auto.toFixed(5);
+    document.getElementById('z_auto_badge').style.display = '';
+  }
+
+  // Warnings
+  clearWarns();
+  const w1 = document.getElementById('warn1');
+  const w2 = document.getElementById('warn2');
+  if (r.warnings?.length) {
+    w1.innerHTML = '⚠ ' + r.warnings.join('<br>⚠ ');
+    w1.classList.add('show');
+  }
+  if (r.infos?.length) {
+    w2.innerHTML = 'ℹ ' + r.infos.join('<br>ℹ ');
+    w2.classList.add('show');
+  }
+}
+
+// ─── DEBOUNCE ─────────────────────────────────────────────────────────
+// run() is intentionally disabled — API only fires on Calculate button click.
+// Use updateFluidProps() for live density/μ/Z preview without API call.
+let _debounceTimer = null;
+function run() {
+  // no-op: calculation is manual (button only)
+}
+
+// ─── MAIN API CALL ────────────────────────────────────────────────────
+async function runNow() {
+  // Collect all inputs
+  const isMetric = UNITS === 'metric';
+  const cat      = document.getElementById('f_cat').value;
+  const dpUnit   = document.getElementById('dp_unit_sel').value;
+
+  const payload = {
+    mode:      MODE,
+    cat,
+    unitSys:   UNITS,
+    tapType:   document.getElementById('orifice_type').value,
+    customCd:  document.getElementById('custom_cd_val')?.value,
+    P:         document.getElementById('p_val').value,
+    T:         document.getElementById('t_val').value,
+    D:         document.getElementById('p_id').value,
+    D_unit:    document.getElementById('pid_unit_sel').value,
+    d:         document.getElementById('b_id').value,
+    d_unit:    document.getElementById('bid_unit_sel').value,
+    dp:        document.getElementById('dp_v').value,
+    dp_unit:   dpUnit,
+    flow:      document.getElementById('f_val').value,
+    flow_unit: document.getElementById('f_unit_sel').value,
+    Z:         document.getElementById('zf').value,
+    k:         document.getElementById('isen_k').value,
+    mu:        document.getElementById('visc').value,
+    sg:        document.getElementById('d_val').value,
+    MW:        document.getElementById('custom_mw').value,
+    fluidKey:  selectedFluidKey,
+  };
+
+  setLoading(true);
+  try {
+    const res  = await fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Calculation failed');
+    _lastApiResult = data;
+    renderResults(data);
+  } catch (err) {
+    clearWarns();
+    const w1 = document.getElementById('warn1');
+    w1.innerHTML = `⚠ API Error: ${err.message}`;
+    w1.classList.add('show');
+    setMain('ERROR', '—', '');
+    console.error('API error:', err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─── UI INTERACTIONS (pure client — no physics) ───────────────────────
+function setMode(m) {
+  MODE = m;
+  ['flow','dp','beta'].forEach(id => {
+    document.getElementById('mc_'+id).classList.toggle('active', id===m);
+  });
+  document.getElementById('f_val').disabled     = (m==='flow');
+  document.getElementById('f_unit_sel').disabled = (m==='flow');
+  document.getElementById('dp_v').disabled       = (m==='dp');
+  document.getElementById('b_id').disabled       = (m==='beta');
+}
+
+function setUnits(u) {
+  UNITS = u;
+  document.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateUnitLabels();
+  updateFluidProps();
+}
+
+function updateUnitLabels() {
+  const m = UNITS === 'metric';
+  document.getElementById('p_unit').textContent = m ? 'Bar a' : 'psia';
+  document.getElementById('t_unit').textContent = m ? '°C' : '°F';
+}
+
+function onOrificeTypeChange() {
+  document.getElementById('custom_cd_row').style.display =
+    document.getElementById('orifice_type').value === 'custom_cd' ? '' : 'none';
+}
+
+function onCatChange() {
+  selectedFluidKey = null;
+  const cat     = document.getElementById('f_cat').value;
+  const isSteam = cat === 'steam';
+  const isLiq   = cat === 'liquid';
+  document.getElementById('steam_badge').classList.toggle('show', isSteam);
+  document.getElementById('gas_extra_row').style.display = isSteam ? 'none' : '';
+  document.getElementById('zf').disabled   = isSteam;
+  document.getElementById('d_val').disabled = isSteam;
+
+  if (isSteam) {
+    document.getElementById('isen_k').value = '1.30';
+    document.getElementById('visc').value   = '0.0000150';
+    document.getElementById('f_lbl').textContent = 'Target Mass Flow';
+    const fsel = document.getElementById('f_unit_sel');
+    fsel.innerHTML = '<option value="kghr">kg/hr</option><option value="kgs">kg/s</option><option value="tonhr">t/hr</option>';
+    fsel.value = 'kghr';
+  } else if (isLiq) {
+    document.getElementById('isen_k').value  = '1.00';
+    document.getElementById('sg_lbl').textContent = 'Liquid SG (water=1.0)';
+    document.getElementById('rho_unit').textContent = 'SG';
+    document.getElementById('zf').value     = '1.000';
+    document.getElementById('custom_rho_lbl').textContent = 'Liquid SG (water=1.0)';
+    document.getElementById('custom_mw_wrap').style.display = 'none';
+    document.getElementById('f_lbl').textContent = 'Target Vol. Flow';
+    const fsel = document.getElementById('f_unit_sel');
+    fsel.innerHTML = '<option value="m3hr">m³/hr</option><option value="kghr">kg/hr</option><option value="kgs">kg/s</option><option value="tonhr">t/hr</option>';
+    fsel.value = 'm3hr';
+  } else {
+    document.getElementById('sg_lbl').textContent = 'Base SG (air=1.0)';
+    document.getElementById('rho_unit').textContent = 'SG (air=1)';
+    document.getElementById('custom_rho_lbl').textContent = 'Base SG (air=1.0)';
+    document.getElementById('custom_mw_wrap').style.display = '';
+    document.getElementById('f_lbl').textContent = 'Target Flow';
+    const fsel = document.getElementById('f_unit_sel');
+    fsel.innerHTML = '<option value="Nm3hr">Nm³/hr</option><option value="Nm3day">Nm³/day</option><option value="Sm3hr">Sm³/hr</option><option value="m3hr">m³/hr (actual)</option><option value="kghr">kg/hr</option><option value="kgs">kg/s</option><option value="tonhr">t/hr</option>';
+    fsel.value = 'Nm3hr';
+  }
+  buildFluidChips();
+  updateExtraTableVisibility(cat);
+  updateFluidProps();
+}
+
+function updateExtraTableVisibility(cat) {
+  const gasOnlyIds = ['out_nm3','out_nm3day','out_sm3'];
+  gasOnlyIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { const row=el.closest('tr'); if (row) row.style.display=(cat!=='gas')?'none':''; }
+  });
+}
+
+// ─── FLUID CHIPS ──────────────────────────────────────────────────────
+function buildFluidChips() {
+  const wrap = document.getElementById('fluid_chips');
+  wrap.innerHTML = '';
+  const cat = document.getElementById('f_cat').value;
+  Object.entries(FLUID_DB).forEach(([name, data]) => {
+    if ((cat==='gas'&&data.t==='g')||(cat==='liquid'&&data.t==='l')||(cat==='steam'&&data.t==='s')) {
+      const el = document.createElement('div');
+      el.className = 'fchip';
+      el.dataset.name = name;
+      el.textContent = name;
+      el.onclick = () => selectFluid(name);
+      wrap.appendChild(el);
+    }
+  });
+  selectedFluidKey = null;
+}
+
+function filterFluidChips() {
+  const q = document.getElementById('fluid_search').value.toLowerCase();
+  document.querySelectorAll('#fluid_chips .fchip').forEach(c => {
+    c.style.display = c.dataset.name.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function selectFluid(name) {
+  selectedFluidKey = name;
+  document.querySelectorAll('#fluid_chips .fchip').forEach(c => {
+    c.classList.remove('sel','sel-steam');
+    if (c.dataset.name===name) c.classList.add(FLUID_DB[name]?.t==='s'?'sel-steam':'sel');
+  });
+  const f = FLUID_DB[name];
+  if (!f) return;
+  // Pre-fill input fields for user reference — API will compute actual values
+  if (f.t==='g') {
+    document.getElementById('d_val').value      = f.sg.toFixed(3);
+    document.getElementById('custom_mw').value  = f.M.toFixed(3);
+    document.getElementById('custom_rho').value = f.sg.toFixed(3);
+    document.getElementById('isen_k').value     = f.k.toFixed(3);
+    document.getElementById('visc').value       = f.mu.toExponential(4);
+    document.getElementById('zf').value         = f.Z.toFixed(4);
+  } else if (f.t==='l') {
+    document.getElementById('d_val').value = f.sg.toFixed(4);
+    document.getElementById('visc').value  = f.mu.toExponential(4);
+  }
+  updateFluidProps(); // immediately preview density + μ + Z for current T/P
+}
+
+function clearChipSel() {
+  selectedFluidKey = null;
+  document.querySelectorAll('#fluid_chips .fchip').forEach(c=>c.classList.remove('sel','sel-steam'));
+  document.getElementById('mu_auto_badge').style.display = 'none';
+  document.getElementById('z_auto_badge').style.display  = 'none';
+}
+
+function syncCustomRho() {
+  document.getElementById('custom_rho').value = document.getElementById('d_val').value;
+  clearChipSel();
+  updateFluidProps();
+}
+
+function toggleCustomFluid() {
+  document.getElementById('custom_fluid_sec').classList.toggle('open');
+}
+
+function clampZ() {
+  const el = document.getElementById('zf');
+  const v  = parseFloat(el.value);
+  if (isNaN(v)) return;
+  el.style.background = (v<0.10||v>2.0) ? 'rgba(176,0,20,0.10)' : (v<0.50||v>1.20) ? 'rgba(160,72,0,0.10)' : '';
+  if (v<=0)  el.value='0.10';
+  if (v>5.0) el.value='5.0';
+}
+
+// ─── DENSITY PREVIEW — API-driven ────────────────────────────────────
+let _densityPreviewTimer = null;
+function updateFluidProps() {
+  clearTimeout(_densityPreviewTimer);
+  _densityPreviewTimer = setTimeout(_fetchDensityPreview, 180);
+}
+
+async function _fetchDensityPreview() {
+  const cat = document.getElementById('f_cat').value;
+  const payload = {
+    action:   'density-preview',
+    cat,
+    unitSys:  UNITS,
+    P:        document.getElementById('p_val').value,
+    T:        document.getElementById('t_val').value,
+    fluidKey: selectedFluidKey,
+    sg:       document.getElementById('d_val').value,
+    MW:       document.getElementById('custom_mw').value,
+    Z:        document.getElementById('zf').value,
+  };
+  try {
+    const res  = await fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.ok) return;
+    // Update density display
+    if (data.rho_op != null && data.rho_op > 0) {
+      setOut('out_dens', data.rho_op.toFixed(4) + ' kg/m³');
+    }
+    // Update Z field if gas with auto Z
+    if (data.Z_auto != null) {
+      document.getElementById('zf').value = data.Z_auto.toFixed(5);
+      document.getElementById('z_auto_badge').style.display = '';
+    }
+    // Update viscosity field if gas with auto μ
+    if (data.mu_auto != null) {
+      document.getElementById('visc').value = data.mu_auto.toExponential(4);
+      document.getElementById('mu_auto_badge').style.display = '';
+    }
+  } catch (e) {
+    // Silent fail — preview is non-critical
+  }
+}
+
+// ─── PIPE CHIPS ───────────────────────────────────────────────────────
+function buildPipeChips() {
+  const wrap = document.getElementById('pipe_quick');
+  PIPE_SCHEDULES.forEach(([nps, sch, od, id_mm]) => {
+    const el = document.createElement('div');
+    el.className = 'pchip';
+    el.title = `OD ${od}mm, ID ${id_mm}mm, Sch ${sch}`;
+    el.textContent = `${nps} Sch${sch}`;
+    el.onclick = () => {
+      const pidUnit = document.getElementById('pid_unit_sel').value;
+      const conv = {mm:1,cm:0.1,m:0.001,in:1/25.4};
+      document.getElementById('p_id').value = parseFloat((id_mm*(conv[pidUnit]||1)).toFixed(4));
+    };
+    wrap.appendChild(el);
+  });
+}
+
+function toggleFormula() {
+  const fb     = document.getElementById('formula_box');
+  const toggle = document.querySelector('.formula-toggle');
+  const open   = fb.style.display === 'none';
+  fb.style.display = open ? '' : 'none';
+  toggle.textContent = open ? '▾ Hide formula reference' : '▸ Show formula reference';
+}
+
+// ─── ADD SPINNER KEYFRAME ─────────────────────────────────────────────
+const _spinStyle = document.createElement('style');
+_spinStyle.textContent = `
+  @keyframes spin { to { transform: rotate(360deg) } }
+  @keyframes calcPulse {
+    0%   { box-shadow: 0 4px 18px rgba(0,85,187,0.35); }
+    40%  { box-shadow: 0 0 0 8px rgba(0,85,187,0.18), 0 4px 24px rgba(0,85,187,0.5); }
+    100% { box-shadow: 0 4px 18px rgba(0,85,187,0.35); }
+  }
+`;
+document.head.appendChild(_spinStyle);
+
+// Enter key triggers calculate from any input
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const btn = document.getElementById('calc_btn');
+    if (btn) { btn.style.animation = 'none'; void btn.offsetWidth; btn.style.animation = 'calcPulse 0.5s ease'; }
+    runNow();
+  }
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pid_unit_sel').dataset.prev = 'mm';
+  document.getElementById('bid_unit_sel').dataset.prev = 'mm';
+  buildFluidChips();
+  buildPipeChips();
+  onCatChange();
+  updateUnitLabels();
+  updateFluidProps();
+});
+
+// ─── PDF REPORT GENERATOR ─────────────────────────────────────
+function generatePDF() {
+  const m = UNITS === 'metric';
+
+  // Collect all current values
+  const inputs = {
+    mode: MODE === 'flow' ? 'Flow Rate' : MODE === 'dp' ? 'Differential Pressure' : 'Bore Size',
+    fluidCat: document.getElementById('f_cat').options[document.getElementById('f_cat').selectedIndex].text,
+    fluidSel: selectedFluidKey || 'Custom / Manual',
+    orificeType: document.getElementById('orifice_type').options[document.getElementById('orifice_type').selectedIndex].text,
+    pressure: document.getElementById('p_val').value + ' ' + document.getElementById('p_unit').textContent,
+    temperature: document.getElementById('t_val').value + ' ' + document.getElementById('t_unit').textContent,
+    pipeID: document.getElementById('p_id').value + ' ' + document.getElementById('pid_unit_sel').value,
+    boreDia: document.getElementById('b_id').value + ' ' + document.getElementById('bid_unit_sel').value,
+    dp: document.getElementById('dp_v').value + ' ' + document.getElementById('dp_unit_sel').value,
+    flow: document.getElementById('f_val').value + ' ' + document.getElementById('f_unit_sel').value,
+    sg: document.getElementById('d_val').value,
+    z: document.getElementById('zf').value,
+    k: document.getElementById('isen_k').value,
+    visc: document.getElementById('visc').value + ' Pa·s',
+  };
+
+  const results = {
+    mainLabel: document.getElementById('main_lbl').textContent,
+    mainVal: document.getElementById('main_val').textContent,
+    mainUnit: document.getElementById('main_unit').textContent,
+    density: document.getElementById('out_dens').textContent,
+    massFlow: document.getElementById('out_mass').textContent,
+    volFlow: document.getElementById('out_qact').textContent,
+    velOrifice: document.getElementById('out_vorif').textContent,
+    kgs: document.getElementById('muc_v_kgs').textContent,
+    tonhr: document.getElementById('muc_v_tonhr').textContent,
+    m3s: document.getElementById('muc_v_m3s').textContent,
+    nm3: document.getElementById('muc_v_nm3hr').textContent,
+    nm3day: document.getElementById('muc_v_nm3day').textContent,
+    sm3: document.getElementById('muc_v_sm3hr').textContent,
+    dp_mmh2o: document.getElementById('dpc_mmh2o').textContent,
+    dp_inh2o: document.getElementById('dpc_inh2o').textContent,
+    dp_kpa: document.getElementById('dpc_kpa').textContent,
+    dp_mbar: document.getElementById('dpc_mbar').textContent,
+    dp_bar: document.getElementById('dpc_bar').textContent,
+    dp_psi: document.getElementById('dpc_psi').textContent,
+    velPipe: document.getElementById('out_vpipe').textContent,
+    reynolds: document.getElementById('out_re').textContent,
+    expY: document.getElementById('out_y').textContent,
+    velE: document.getElementById('out_e').textContent,
+    cd: document.getElementById('out_cd').textContent,
+    pressRec: document.getElementById('out_perm').textContent,
+    pressRecMmh2o: document.getElementById('out_perm_mmh2o').textContent,
+    pressRecMbar: document.getElementById('out_perm_mbar').textContent,
+    pressRecBar: document.getElementById('out_perm_bar').textContent,
+    beta: document.getElementById('beta_val').textContent,
+    betaStatus: document.getElementById('beta_status').textContent,
+  };
+
+  const warn1 = document.getElementById('warn1').textContent.trim();
+  const warn2 = document.getElementById('warn2').textContent.trim();
+  const now = new Date().toLocaleString();
+  const unitSys = m ? 'SI (Metric)' : 'Imperial (US)';
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ISO 5167 Flow Calculation Report — multicalci.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; font-size: 10.5pt; color: #0a0f1a; background: #fff; font-variant-numeric: tabular-nums; }
+
+  /* ── BRAND HEADER STRIP ── */
+  .brand-strip {
+    background: linear-gradient(135deg, #001a4d 0%, #0033a0 45%, #0055bb 70%, #0077cc 100%);
+    padding: 28px 32px 22px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-strip::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 120% at 50% -10%, rgba(255,255,255,0.12) 0%, transparent 60%);
+  }
+  .brand-strip::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ffd700, #ffaa00, #ff6600, #ffaa00, #ffd700);
+  }
+  .brand-site {
+    font-family: 'Orbitron', monospace;
+    font-size: 30pt;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4), 0 0 40px rgba(100,180,255,0.3);
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+  }
+  .brand-site .brand-dot { color: #ffd700; }
+  .brand-site .brand-com { color: #a8d8ff; font-size: 22pt; }
+  .brand-tagline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5pt;
+    color: rgba(200,225,255,0.85);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .brand-dividers {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin-top: 10px; position: relative; z-index: 1;
+  }
+  .brand-dividers .bd-line { flex: 1; max-width: 120px; height: 1px; background: rgba(255,255,255,0.25); }
+  .brand-dividers .bd-icon { color: #ffd700; font-size: 14pt; }
+
+  /* ── REPORT META BAR ── */
+  .meta-bar {
+    background: #f0f4fa;
+    border-bottom: 2px solid #c8d4e8;
+    padding: 10px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .meta-item { font-size: 8.5pt; color: #3a4a60; font-weight: 600; }
+  .meta-item strong { color: #0033a0; font-weight: 800; }
+  .meta-mode {
+    background: #0055bb; color: #fff;
+    font-size: 8pt; font-weight: 800;
+    padding: 4px 14px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page-body { padding: 20px 32px 24px; }
+
+  /* ── MAIN RESULT BANNER ── */
+  .banner {
+    background: linear-gradient(135deg, #eef4ff, #e6efff);
+    border: 2px solid #0055bb;
+    border-radius: 10px;
+    padding: 14px 22px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,85,187,0.1);
+  }
+  .banner-label { font-size: 8pt; font-weight: 800; color: #003d8c; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
+  .banner-value { font-family: 'IBM Plex Mono', monospace; font-size: 26pt; font-weight: 700; color: #0055bb; line-height: 1; }
+  .banner-unit { font-family: 'IBM Plex Mono', monospace; font-size: 11pt; font-weight: 600; color: #003d8c; margin-left: 8px; }
+  .banner-beta { text-align: right; }
+  .banner-beta-lbl { font-size: 8pt; font-weight: 800; color: #3a4a60; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .banner-beta-val { font-family: 'IBM Plex Mono', monospace; font-size: 20pt; font-weight: 800; color: #0055bb; }
+
+  /* ── SECTIONS ── */
+  .section-title {
+    font-size: 8.5pt; font-weight: 800; color: #0055bb;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    border-bottom: 1.5px solid #c8d4e8;
+    padding-bottom: 4px; margin-bottom: 8px; margin-top: 16px;
+  }
+
+  /* ── GRID LAYOUTS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .four-col { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th { background: #0033a0; color: #fff; font-weight: 800; padding: 6px 9px; text-align: left; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 6px 9px; border-bottom: 1px solid #dde4ef; color: #0a0f1a; font-weight: 600; }
+  td.val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; text-align: right; color: #05080f; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #f5f8fd; }
+
+  /* ── VALUE CHIP ── */
+  .val-chip {
+    background: #f0f4fa;
+    border: 1.5px solid #c8d4e8;
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .vc-lbl { font-size: 7.5pt; font-weight: 800; color: #5a6a80; text-transform: uppercase; letter-spacing: 0.5px; }
+  .vc-val { font-family: 'IBM Plex Mono', monospace; font-size: 10.5pt; font-weight: 800; color: #0033a0; }
+  .val-chip.gas { border-color: rgba(0,122,94,0.4); background: rgba(0,122,94,0.05); }
+  .val-chip.gas .vc-val { color: #007a5e; }
+  .val-chip.amber { border-color: rgba(160,72,0,0.3); background: rgba(160,72,0,0.05); }
+  .val-chip.amber .vc-val { color: #a04800; }
+
+  /* ── BADGE ── */
+  .badge { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: 8.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-ok   { background: rgba(17,94,46,0.1); color: #115e2e; border: 1.5px solid rgba(17,94,46,0.3); }
+  .badge-warn { background: rgba(160,72,0,0.1); color: #a04800; border: 1.5px solid rgba(160,72,0,0.3); }
+  .badge-bad  { background: rgba(176,0,20,0.1); color: #b00014; border: 1.5px solid rgba(176,0,20,0.3); }
+
+  /* ── FORMULA ── */
+  .formula { background: #f0f4fa; border-left: 4px solid #0055bb; border-radius: 5px; padding: 9px 13px; font-family: 'IBM Plex Mono', monospace; font-size: 8.5pt; font-weight: 600; color: #1e2d42; line-height: 2; margin-top: 6px; }
+  .formula .hl  { color: #0055bb; font-weight: 700; }
+  .formula .hla { color: #a04800; font-weight: 700; }
+
+  /* ── WARNINGS ── */
+  .warn-box { padding: 7px 11px; border-radius: 5px; font-size: 9pt; font-weight: 700; margin-top: 8px; line-height: 1.5; }
+  .warn-red   { background: rgba(176,0,20,0.06); border: 1.5px solid rgba(176,0,20,0.3); color: #9a0010; }
+  .warn-amber { background: rgba(160,72,0,0.06); border: 1.5px solid rgba(160,72,0,0.3); color: #7a3400; }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 18px; padding: 10px 32px;
+    background: #001a4d;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8pt; color: rgba(200,225,255,0.7); font-weight: 600;
+  }
+  .footer a { color: #7ab8ff; text-decoration: none; }
+  .footer strong { color: #ffd700; }
+</style>
+</head>
+<body>
+
+  <!-- ══ BRAND HEADER ══ -->
+  <div class="brand-strip">
+    <div class="brand-site">multi<span class="brand-dot">c</span>alci<span class="brand-com">.com</span></div>
+    <div class="brand-tagline">Free Engineering Calculators · ISO Standards · Trusted by Engineers</div>
+    <div class="brand-dividers">
+      <div class="bd-line"></div>
+      <span class="bd-icon">⊙</span>
+      <div class="bd-line"></div>
+    </div>
+  </div>
+
+  <!-- ══ META BAR ══ -->
+  <div class="meta-bar">
+    <div class="meta-item">📄 <strong>ISO 5167 / AGA3 — Orifice Flow Calculation Report</strong></div>
+    <div class="meta-item">🕐 Generated: <strong>${now}</strong></div>
+    <div class="meta-item">📐 Units: <strong>${unitSys}</strong></div>
+    <div class="meta-mode">${inputs.mode} MODE</div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- ══ MAIN RESULT BANNER ══ -->
+    <div class="banner">
+      <div>
+        <div class="banner-label">${results.mainLabel}</div>
+        <div>
+          <span class="banner-value">${results.mainVal}</span>
+          <span class="banner-unit">${results.mainUnit}</span>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="badge ${results.betaStatus.includes('WITHIN') ? 'badge-ok' : results.betaStatus.includes('HIGH') ? 'badge-warn' : 'badge-bad'}">${results.betaStatus}</span>
+        </div>
+      </div>
+      <div class="banner-beta">
+        <div class="banner-beta-lbl">Beta Ratio β = d/D</div>
+        <div class="banner-beta-val">${results.beta}</div>
+        <div style="font-size:8pt;color:#5a6a80;font-weight:600;margin-top:3px;">ISO Range: 0.20 – 0.75</div>
+      </div>
+    </div>
+
+    <!-- ══ INPUTS ══ -->
+    <div class="two-col">
+      <div>
+        <div class="section-title">▸ Process Inputs</div>
+        <table>
+          <tr><th>Parameter</th><th style="text-align:right">Value</th></tr>
+          <tr><td>Fluid Category</td><td class="val">${inputs.fluidCat}</td></tr>
+          <tr><td>Fluid Selected</td><td class="val">${inputs.fluidSel}</td></tr>
+          <tr><td>Meter / Tap Type</td><td class="val">${inputs.orificeType.replace(/—.*/, '').trim()}</td></tr>
+          <tr><td>Operating Pressure</td><td class="val">${inputs.pressure}</td></tr>
+          <tr><td>Operating Temperature</td><td class="val">${inputs.temperature}</td></tr>
+          <tr><td>Differential Pressure</td><td class="val">${inputs.dp}</td></tr>
+          <tr><td>Target Flow Input</td><td class="val">${inputs.flow}</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="section-title">▸ Geometry & Fluid Properties</div>
+        <table>
+          <tr><th>Parameter</th><th style="text-align:right">Value</th></tr>
+          <tr><td>Pipe Internal Dia.</td><td class="val">${inputs.pipeID}</td></tr>
+          <tr><td>Orifice Bore Dia.</td><td class="val">${inputs.boreDia}</td></tr>
+          <tr><td>Specific Gravity / SG</td><td class="val">${inputs.sg}</td></tr>
+          <tr><td>Compressibility Z</td><td class="val">${inputs.z}</td></tr>
+          <tr><td>Isentropic Exponent k</td><td class="val">${inputs.k}</td></tr>
+          <tr><td>Dynamic Viscosity μ</td><td class="val">${inputs.visc}</td></tr>
+          <tr><td>Discharge Coeff. Cd</td><td class="val">${results.cd}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ FLOW — ALL UNITS ══ -->
+    <div class="section-title">▸ Flow Rate — Multiple Units</div>
+    <div class="four-col" style="margin-bottom:6px;">
+      <div class="val-chip"><span class="vc-lbl">kg / hr</span><span class="vc-val">${results.massFlow.replace(' kg/hr','')}</span></div>
+      <div class="val-chip"><span class="vc-lbl">kg / s</span><span class="vc-val">${results.kgs}</span></div>
+      <div class="val-chip"><span class="vc-lbl">t / hr</span><span class="vc-val">${results.tonhr}</span></div>
+      <div class="val-chip"><span class="vc-lbl">m³/hr (actual)</span><span class="vc-val">${results.volFlow.replace(' m³/hr','')}</span></div>
+    </div>
+    <div class="four-col">
+      <div class="val-chip gas"><span class="vc-lbl">Nm³/hr (0°C,1atm)</span><span class="vc-val">${results.nm3 !== '—' ? results.nm3 : '— (gas only)'}</span></div>
+      <div class="val-chip gas"><span class="vc-lbl">Nm³/day</span><span class="vc-val">${results.nm3day !== '—' ? results.nm3day : '—'}</span></div>
+      <div class="val-chip gas"><span class="vc-lbl">Sm³/hr (15°C,1atm)</span><span class="vc-val">${results.sm3 !== '—' ? results.sm3 : '—'}</span></div>
+      <div class="val-chip"><span class="vc-lbl">m³/s (actual)</span><span class="vc-val">${results.m3s}</span></div>
+    </div>
+
+    <!-- ══ DP — ALL UNITS ══ -->
+    <div class="section-title">▸ Differential Pressure — Multiple Units</div>
+    <div class="four-col">
+      <div class="val-chip amber"><span class="vc-lbl">mmH₂O</span><span class="vc-val">${results.dp_mmh2o}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">inH₂O</span><span class="vc-val">${results.dp_inh2o}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">kPa</span><span class="vc-val">${results.dp_kpa}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">mbar</span><span class="vc-val">${results.dp_mbar}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">bar</span><span class="vc-val">${results.dp_bar}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">psi</span><span class="vc-val">${results.dp_psi}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">Perm. Loss mmH₂O</span><span class="vc-val">${results.pressRecMmh2o.replace(' mmH₂O','')}</span></div>
+      <div class="val-chip amber"><span class="vc-lbl">Perm. Loss mbar</span><span class="vc-val">${results.pressRecMbar.replace(' mbar','')}</span></div>
+    </div>
+
+    <!-- ══ HYDRAULICS ══ -->
+    <div class="section-title">▸ Hydraulics & Meter Performance</div>
+    <div class="two-col">
+      <table>
+        <tr><th>Parameter</th><th style="text-align:right">Value</th></tr>
+        <tr><td>Operating Density ρ</td><td class="val">${results.density}</td></tr>
+        <tr><td>Velocity in Pipe</td><td class="val">${results.velPipe}</td></tr>
+        <tr><td>Velocity at Orifice</td><td class="val">${results.velOrifice}</td></tr>
+        <tr><td>Reynolds Number Re</td><td class="val">${results.reynolds}</td></tr>
+      </table>
+      <table>
+        <tr><th>Parameter</th><th style="text-align:right">Value</th></tr>
+        <tr><td>Expansibility Factor Y</td><td class="val">${results.expY}</td></tr>
+        <tr><td>Velocity of Approach E</td><td class="val">${results.velE}</td></tr>
+        <tr><td>Discharge Coeff. Cd</td><td class="val">${results.cd}</td></tr>
+        <tr><td>Perm. Pressure Loss</td><td class="val">${results.pressRec}% of ΔP · ${results.pressRecBar}</td></tr>
+      </table>
+    </div>
+
+    <!-- ══ FORMULA ══ -->
+    <div class="section-title">▸ ISO 5167 Formula Reference</div>
+    <div class="formula">
+      q<sub>m</sub> = <span class="hl">Cd(Re,β)</span> · <span class="hla">E</span> · <span class="hl">Y</span> · A₂ · √(2·ρ·ΔP) &nbsp;|&nbsp; <span class="hl">E</span> = 1/√(1−β⁴) &nbsp;|&nbsp; β = d/D<br>
+      <span class="hl">Y (orifice)</span> = 1 − (0.41+0.35β⁴)·ΔP/(P·κ) &nbsp;|&nbsp; ρ = <span class="hla">P·M</span>/(Z·R·T) [gas] &nbsp;|&nbsp; Cd: Reader-Harris/Gallagher iterative
+    </div>
+
+    ${warn1 ? `<div class="warn-box warn-red">⚠ ${warn1}</div>` : ''}
+    ${warn2 ? `<div class="warn-box warn-amber">ℹ ${warn2}</div>` : ''}
+
+  </div><!-- /page-body -->
+
+  <!-- ══ FOOTER ══ -->
+  <div class="footer">
+    <div>⊙ ISO 5167 / AGA3 Orifice Flow Engineering Calculator</div>
+    <div><strong>multicalci.com</strong> — Free Engineering Calculators</div>
+    <div>Generated: ${now}</div>
+  </div>
+
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) {
+    win.onload = () => {
+      setTimeout(() => { win.print(); }, 600);
+    };
+  }
+}
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,600;0,700;1,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink:       #0f1923;
+  --ink2:      #2c3e50;
+  --muted:     #596577;
+  --accent:    #c0392b;
+  --blue:      #1a5276;
+  --blue-lt:   #d6eaf8;
+  --bg:        #f7f9fc;
+  --bg2:       #ffffff;
+  --border:    #dce3ed;
+  --mono:      'IBM Plex Mono', monospace;
+  --serif:     'Source Serif 4', Georgia, serif;
+  --sans:      'DM Sans', sans-serif;
+}
+.edu-wrap { background:var(--bg); border-top:4px solid var(--accent); padding:64px 0 80px; margin-top:60px; font-family:var(--sans); }
+.edu-inner { max-width:1020px; margin:0 auto; padding:0 24px; }
+.edu-header { display:flex; align-items:flex-end; gap:20px; margin-bottom:10px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.edu-header-label { font-family:var(--mono); font-size:0.72rem; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:6px; }
+.edu-header h2 { font-family:var(--serif); font-size:2.1rem; font-weight:700; color:var(--ink); margin:0; line-height:1.1; }
+.edu-header-desc { color:var(--muted); font-size:0.95rem; line-height:1.6; max-width:500px; margin-left:auto; text-align:right; }
+.edu-nav { display:flex; gap:0; margin:32px 0 0; border-bottom:2px solid var(--border); flex-wrap:wrap; }
+.edu-nav-btn { font-family:var(--mono); font-size:0.78rem; letter-spacing:0.5px; font-weight:600; padding:12px 22px; border:none; background:none; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.18s; text-transform:uppercase; }
+.edu-nav-btn:hover { color:var(--blue); background:var(--blue-lt); }
+.edu-nav-btn.on { color:var(--accent); border-bottom-color:var(--accent); background:#fdf2f2; }
+.edu-pane { display:none; padding-top:36px; }
+.edu-pane.on { display:block; animation:rise 0.28s ease; }
+@keyframes rise { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.e-card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:32px 36px; margin-bottom:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+.e-card h3 { font-family:var(--serif); font-size:1.25rem; font-weight:700; color:var(--blue); margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+.e-card h4 { font-family:var(--sans); font-size:0.97rem; font-weight:600; color:var(--ink); margin:22px 0 8px; }
+.e-card p { color:var(--ink2); line-height:1.8; margin:0 0 14px; font-size:0.95rem; }
+.e-card p:last-child { margin-bottom:0; }
+.e-card ul { padding-left:20px; color:var(--ink2); line-height:1.85; font-size:0.95rem; margin:8px 0 14px; }
+.e-card ul li { margin-bottom:6px; }
+.f-block { background:var(--ink); color:#e8f4fd; border-radius:6px; padding:22px 28px; margin:18px 0; position:relative; overflow:hidden; }
+.f-block::before { content:''; position:absolute; left:0;top:0;bottom:0; width:4px; background:var(--accent); }
+.f-block .f-main { font-family:var(--mono); font-size:1.2rem; font-weight:600; letter-spacing:0.5px; color:#fff; margin-bottom:6px; line-height:1.5; }
+.f-block .f-label { font-size:0.78rem; color:#8fafc8; font-family:var(--mono); letter-spacing:0.5px; }
+.f-block .f-where { margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.83rem; color:#a8c4da; line-height:1.9; font-family:var(--mono); }
+.v-table { width:100%; border-collapse:collapse; font-size:0.88rem; margin:16px 0; }
+.v-table thead tr { background:var(--ink); color:#fff; }
+.v-table th { padding:11px 14px; text-align:left; font-family:var(--mono); font-weight:600; font-size:0.78rem; letter-spacing:0.5px; }
+.v-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--ink2); vertical-align:top; }
+.v-table tr:last-child td { border-bottom:none; }
+.v-table tr:hover td { background:#f0f7ff; }
+.v-table .sym { font-family:var(--mono); font-weight:600; color:var(--accent); }
+.callout { border-radius:6px; padding:16px 20px; margin:16px 0; font-size:0.9rem; line-height:1.7; display:flex; gap:12px; align-items:flex-start; }
+.callout-icon { font-size:1.2rem; flex-shrink:0; margin-top:1px; }
+.callout.warn { background:#fef9ec; border:1px solid #f0c040; color:#5a3e00; }
+.callout.info { background:#eaf4fd; border:1px solid #7fb9e0; color:#0d3a5c; }
+.callout.danger { background:#fdf0ef; border:1px solid #e8a09a; color:#6b1a17; }
+.callout.success { background:#edfaf1; border:1px solid #82c99a; color:#1a4d2a; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:16px 0; }
+@media(max-width:680px){ .two-col{grid-template-columns:1fr;} }
+.mini-card { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:18px 20px; }
+.mini-card .mc-title { font-family:var(--mono); font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:8px; }
+.mini-card p { font-size:0.88rem; color:var(--ink2); line-height:1.7; margin:0; }
+.steps { margin:8px 0; }
+.step { display:grid; grid-template-columns:48px 1fr; gap:16px; margin-bottom:28px; align-items:start; }
+.step-n { width:48px;height:48px; background:var(--ink); color:#fff; font-family:var(--mono); font-size:1.1rem; font-weight:600; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-body h4 { font-size:1rem; font-weight:700; color:var(--ink); margin:8px 0 6px; }
+.step-body p { font-size:0.92rem; color:var(--ink2); line-height:1.75; margin:0 0 8px; }
+.step-body ul { font-size:0.9rem; color:var(--ink2); line-height:1.8; padding-left:18px; margin:6px 0; }
+.ci { font-family:var(--mono); background:#eef2f8; padding:2px 7px; border-radius:3px; font-size:0.85rem; color:var(--blue); }
+.faq { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:10px; }
+.faq-q { width:100%; text-align:left; background:var(--bg2); border:none; padding:18px 24px; font-family:var(--sans); font-size:0.95rem; font-weight:600; color:var(--ink); cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px; transition:background 0.15s; }
+.faq-q:hover { background:#f0f4f9; }
+.faq-q.on { background:#fdf2f2; color:var(--accent); }
+.faq-arr { font-family:var(--mono); font-size:1rem; color:var(--accent); transition:transform 0.25s; flex-shrink:0; }
+.faq-q.on .faq-arr { transform:rotate(45deg); }
+.faq-a { display:none; padding:0 24px 20px; background:#fdf8f8; border-top:1px solid #f0d8d8; font-size:0.92rem; color:var(--ink2); line-height:1.8; }
+.faq-a.on { display:block; animation:rise 0.22s ease; }
+.faq-a p { margin:12px 0 0; }
+.faq-a ul { padding-left:18px; margin:10px 0 0; }
+.faq-a li { margin-bottom:6px; }
+.faq-a .fi { font-family:var(--mono); background:#f4f4f4; padding:8px 12px; border-radius:4px; display:block; margin:10px 0; font-size:0.85rem; }
+.gloss-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; }
+.gloss-item { background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:16px 18px; transition:box-shadow 0.2s,border-color 0.2s; }
+.gloss-item:hover { border-color:#aac4df; box-shadow:0 3px 12px rgba(26,82,118,0.1); }
+.gloss-term { font-family:var(--serif); font-size:1rem; font-weight:700; color:var(--blue); margin-bottom:4px; }
+.gloss-sym { font-family:var(--mono); font-size:0.8rem; background:#dce8f5; color:var(--blue); padding:1px 6px; border-radius:3px; margin-left:6px; }
+.gloss-def { font-size:0.87rem; color:var(--muted); line-height:1.65; margin:6px 0 0; }
+.gloss-std { font-family:var(--mono); font-size:0.75rem; color:var(--accent); margin-top:6px; }
+@media(max-width:600px){
+  .edu-header{flex-direction:column;align-items:flex-start;}
+  .edu-header-desc{text-align:left;margin-left:0;}
+  .e-card{padding:22px 18px;}
+  .edu-nav-btn{padding:10px 12px;font-size:0.7rem;}
+  .f-block .f-main{font-size:1rem;}
+}
+</style>
+
+<div class="edu-wrap">
+<div class="edu-inner">
+
+  <div class="edu-header">
+    <div>
+      <div class="edu-header-label">Technical Reference</div>
+      <h2>Orifice Flow —<br>Theory, Practice &amp; Standards</h2>
+    </div>
+    <div class="edu-header-desc">A complete engineering reference covering ISO 5167 methodology, derivation from first principles, design procedures, and field troubleshooting. For engineering students and practising process engineers.</div>
+  </div>
+
+  <nav class="edu-nav">
+    <button class="edu-nav-btn on" onclick="eTab('theory',this)">01 · Theory &amp; Formulas</button>
+    <button class="edu-nav-btn"    onclick="eTab('deriv',this)">02 · Full Derivation</button>
+    <button class="edu-nav-btn"    onclick="eTab('guide',this)">03 · Design &amp; How-To</button>
+    <button class="edu-nav-btn"    onclick="eTab('faq',this)">04 · FAQ</button>
+    <button class="edu-nav-btn"    onclick="eTab('gloss',this)">05 · Glossary</button>
+  </nav>
+
+  <!-- ═══ PANE 1: THEORY ═══ -->
+  <div class="edu-pane on" id="ep-theory">
+
+    <div class="e-card">
+      <h3>What is an Orifice Plate and Why Does It Work?</h3>
+      <p>An <strong>orifice plate</strong> is a thin, flat disc with a precisely machined circular hole (the bore) installed perpendicular to a pipe's axis. When fluid flows through the pipe, the orifice forces the entire stream through a reduced area — velocity rises sharply and static pressure drops. Measuring that pressure differential tells you the flow rate.</p>
+      <p>This works because energy is conserved along a streamline. Bernoulli's principle states that for steady, incompressible, inviscid flow, the sum of pressure energy, kinetic energy, and potential energy is constant. When cross-sectional area decreases, continuity (mass conservation) demands velocity increase, and Bernoulli requires that velocity increase to come at the expense of pressure. The result is a measurable pressure differential directly related to flow rate.</p>
+      <p>Orifice plates are standardised under <strong>ISO 5167-2</strong> and <strong>AGA Report No. 3</strong> (for natural gas). When installed correctly, they achieve measurement uncertainties of <strong>±0.5% to ±2%</strong> without individual calibration — purely by conforming to dimensional tolerances and installation requirements. This remarkable accuracy from a passive device with no moving parts explains why orifice plates remain dominant in industrial metering after more than a century of use.</p>
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><strong>Why orifice plates over other meters?</strong> Compared to venturi tubes and flow nozzles, orifice plates have higher permanent pressure loss — but they dominate because they are inexpensive to fabricate, can be inspected and replaced in-line without process shutdown (using a senior orifice fitting), tolerate high temperature and pressure, handle dirty fluids with periodic cleaning, and their uncertainty is fully characterised by four decades of international collaborative research.</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>The Governing Equation (ISO 5167)</h3>
+      <p>The volumetric flow rate through an orifice plate per ISO 5167-2 is:</p>
+      <div class="f-block">
+        <div class="f-main">Q = Cd · (π/4 · d²) · (1/√(1−β⁴)) · √(2ΔP/ρ)</div>
+        <div class="f-label">ISO 5167-2 Orifice Equation — Incompressible Flow</div>
+        <div class="f-where">
+Cd  = discharge coefficient (dimensionless) — from Reader-Harris/Gallagher equation
+β   = d/D = beta ratio (dimensionless)
+d   = orifice bore diameter at flowing temperature (m)
+D   = pipe internal diameter at flowing temperature (m)
+ΔP  = differential pressure P₁ − P₂ (Pa)
+ρ   = fluid density at upstream flowing conditions (kg/m³)
+        </div>
+      </div>
+      <p>The term <strong>1/√(1−β⁴)</strong> is the <em>velocity of approach factor</em> E. It corrects for the fact that fluid already has measurable velocity in the pipe before reaching the orifice. For β = 0.3, E = 1.004 (negligible). For β = 0.7, E = 1.228 — a 23% correction that cannot be ignored.</p>
+      <p>For <strong>mass flow rate</strong>, rearrange using ṁ = ρQ. Note that ρ moves inside the square root:</p>
+      <div class="f-block">
+        <div class="f-main">ṁ = Cd · E · (π/4 · d²) · √(2 · ΔP · ρ)</div>
+        <div class="f-label">Mass flow — preferred for gas and steam where volumetric flow depends on conditions</div>
+      </div>
+      <p>For <strong>compressible gases</strong>, apply the isentropic expansion factor Y (ε in some standards):</p>
+      <div class="f-block">
+        <div class="f-main">Q_gas = Cd · E · Y · (π/4 · d²) · √(2ΔP/ρ₁)</div>
+        <div class="f-label">Y corrects for density change as gas expands. Y = 1.0 for liquids.</div>
+        <div class="f-where">
+Y = 1 − (0.351 + 0.256β⁴ + 0.93β⁸) · [1 − (P₂/P₁)^(1/κ)]
+κ = isentropic exponent: 1.4 for air, 1.3 for steam, 1.28 for natural gas
+        </div>
+      </div>
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Most common calculation mistake:</strong> Using the simplified Q = Cd · A · √(2ΔP/ρ) and omitting the velocity of approach factor E. For β &gt; 0.5, this underestimates flow by up to 15%. Always use the full ISO equation, or verify that the Cd value you are using already incorporates E (some older sources tabulate Cd·E together as C).</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>The Discharge Coefficient Cd — Reader-Harris/Gallagher Equation</h3>
+      <p>Cd is the most critical parameter. It accounts for real-fluid effects — viscous losses, turbulence, and the jet contraction at the vena contracta — that ideal Bernoulli theory ignores. ISO 5167 uses the <strong>Reader-Harris/Gallagher (RG) equation</strong>, derived by regression of ~16,000 calibration data points from 9 independent laboratories:</p>
+      <div class="f-block">
+        <div class="f-main">Cd = 0.5961 + 0.0261β² − 0.216β⁸ + 0.000521(10⁶β/Re_D)^0.7<br>+ (0.0188 + 0.0063A)β³·⁵(10⁶/Re_D)^0.3<br>+ (0.043 + 0.080e^(−10L₁) − 0.123e^(−7L₁))(1−0.11A)(β⁴/(1−β⁴))<br>− 0.031(M₂' − 0.8M₂'^1.1)β^1.3</div>
+        <div class="f-label">RG equation — valid for 0.1 ≤ β ≤ 0.75, Re_D ≥ 5000, per ISO 5167-2:2022 §5.3</div>
+        <div class="f-where">
+A = (19000β/Re_D)^0.8
+L₁ = tap distance upstream / D (0 for corner taps, 25.4/D for flange taps, 1.0 for D taps)
+M₂' = 2L₂'/(1−β)  where L₂' = tap distance downstream / D
+        </div>
+      </div>
+      <p>Because Cd depends on Re_D, and Re_D depends on velocity (and hence Q and Cd), the solution is <strong>iterative</strong> — start with Cd = 0.61, compute Q and Re_D, update Cd, repeat until convergence (typically 3–5 iterations, |ΔCd| &lt; 0.0001). This calculator performs this iteration automatically.</p>
+      <div class="two-col">
+        <div class="mini-card">
+          <div class="mc-title">Cd by Orifice Type (High Re Asymptote)</div>
+          <p>
+            Sharp-edged, standard: <strong>0.60–0.63</strong><br>
+            Quadrant-edge (low Re service): <strong>0.77–0.82</strong><br>
+            Conical entrance: <strong>0.73–0.80</strong><br>
+            Rounded entrance (nozzle-like): <strong>0.95–0.99</strong><br>
+            Eccentric / segmental bore: <strong>0.60–0.63</strong>
+          </p>
+        </div>
+        <div class="mini-card">
+          <div class="mc-title">Effect of Edge Wear on Cd</div>
+          <p>The upstream edge must be sharp. A worn edge (radius e) increases Cd and causes over-reading. ISO 5167 specifies maximum edge radius: e/d ≤ 0.0004. For a 100 mm bore, that is 0.04 mm — less than a human hair. Even modest rounding (e/d = 0.01) increases Cd by ~0.7%, causing ~0.7% positive flow error. After years in erosive service, edge wear can cause 3–5% systematic over-reading.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Beta Ratio β — Design Trade-offs</h3>
+      <p>The beta ratio β = d/D is the central design variable. It determines the differential pressure signal at a given flow rate, the permanent pressure loss, the required straight run, and the measurement uncertainty.</p>
+      <table class="v-table">
+        <thead><tr><th>β Range</th><th>ΔP Signal</th><th>Permanent Loss</th><th>Uncertainty</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td class="sym">0.20–0.30</td><td>Very high — may need small-range DP transmitter</td><td>~90% of ΔP</td><td>Higher — RG eq. less accurate at extremes</td><td>Rarely used; very low flow, small pipes</td></tr>
+          <tr><td class="sym">0.30–0.50</td><td>High</td><td>~75–85% of ΔP</td><td>Good (±0.6%)</td><td>General process metering</td></tr>
+          <tr><td class="sym">0.50–0.65</td><td>Moderate</td><td>~55–70% of ΔP</td><td>Best (±0.5%)</td><td>Preferred range — lowest uncertainty per ISO 5167</td></tr>
+          <tr><td class="sym">0.65–0.75</td><td>Lower — needs wider-range DP transmitter</td><td>~40–55% of ΔP</td><td>Good (±0.6%)</td><td>High flow, energy recovery important, large pipes</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div><strong>Design rule:</strong> Size the orifice so that at maximum flow, ΔP equals the upper range of your DP transmitter (e.g., 25 kPa or 100 inH₂O). At minimum expected flow (say 30% of max), ΔP will be 9% of maximum (because Q ∝ √ΔP). Check that 9% of your transmitter URV is above its minimum reliable output — usually 0.5–1% of URV. If minimum flow gives ΔP below transmitter minimum, you need a smaller β or a wider-range transmitter.</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Tap Configurations and Straight Run Requirements</h3>
+      <table class="v-table">
+        <thead><tr><th>Tap Type</th><th>Upstream Tap Location</th><th>Downstream Tap Location</th><th>Region / Standard</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Corner Taps</strong></td><td>Flush with plate face upstream</td><td>Flush with plate face downstream</td><td>Europe; ISO 5167; D &lt; 50 mm</td></tr>
+          <tr><td><strong>Flange Taps</strong></td><td>25.4 mm (1 inch) upstream of plate</td><td>25.4 mm (1 inch) downstream</td><td>North America; AGA-3; oil &amp; gas</td></tr>
+          <tr><td><strong>D and D/2 Taps</strong></td><td>1D upstream of plate</td><td>0.5D downstream</td><td>Large pipes; near vena contracta position</td></tr>
+        </tbody>
+      </table>
+      <p>Minimum upstream straight pipe (from nearest fitting to orifice plate) per ISO 5167, for β = 0.6:</p>
+      <table class="v-table">
+        <thead><tr><th>Upstream Disturbance</th><th>Required Straight Run (× D)</th></tr></thead>
+        <tbody>
+          <tr><td>Single 90° elbow</td><td>18D</td></tr>
+          <tr><td>Two 90° elbows, same plane</td><td>28D</td></tr>
+          <tr><td>Two 90° elbows, perpendicular planes</td><td>54D</td></tr>
+          <tr><td>Gate valve, fully open</td><td>18D</td></tr>
+          <tr><td>Control valve, any position</td><td>50D — avoid if possible</td></tr>
+          <tr><td>Downstream (any fitting)</td><td>5D minimum</td></tr>
+        </tbody>
+      </table>
+      <div class="callout danger">
+        <span class="callout-icon">🚨</span>
+        <div><strong>Reversed plate — the most common installation mistake:</strong> Orifice plates have a sharp upstream edge and a chamfered downstream bore. Installing backwards (sharp edge facing downstream) changes Cd by +10 to +15% and causes significant over-reading. Always verify the flow direction arrow engraved on the plate handle matches the pipe flow direction. Check during every maintenance inspection.</div>
+      </div>
+    </div>
+
+  </div><!-- /theory -->
+
+  <!-- ═══ PANE 2: DERIVATION ═══ -->
+  <div class="edu-pane" id="ep-deriv">
+
+    <div class="e-card">
+      <h3>Step 1 — Continuity Equation (Conservation of Mass)</h3>
+      <p>For steady, incompressible flow, mass flow rate is the same at every cross section. Since density ρ is constant, volumetric flow rate Q is also constant:</p>
+      <div class="f-block">
+        <div class="f-main">A₁ · v₁ = A₂ · v₂ = Q</div>
+        <div class="f-where">
+A₁ = pipe area = π/4 · D²  (section 1, upstream)
+A₂ = orifice area = π/4 · d²  (section 2, at bore)
+v₁, v₂ = mean velocities at each section
+        </div>
+      </div>
+      <p>From this: v₁ = v₂ · (A₂/A₁) = v₂ · (d/D)² = v₂ · β². So pipe velocity is smaller than orifice velocity by a factor of β². For β = 0.5, the pipe velocity is one-quarter of the orifice velocity.</p>
+    </div>
+
+    <div class="e-card">
+      <h3>Step 2 — Bernoulli Equation (Conservation of Energy)</h3>
+      <p>Apply Bernoulli between section 1 (upstream tap) and section 2 (orifice throat), assuming steady, inviscid, incompressible, horizontal flow:</p>
+      <div class="f-block">
+        <div class="f-main">P₁ + ½ρv₁² = P₂ + ½ρv₂²</div>
+        <div class="f-label">Each term has units of Pa (J/m³) — energy per unit volume</div>
+      </div>
+      <p>Rearranging:</p>
+      <div class="f-block">
+        <div class="f-main">P₁ − P₂ = ½ρ(v₂² − v₁²)</div>
+      </div>
+      <p>Substituting v₁ = β²v₂ from the continuity equation:</p>
+      <div class="f-block">
+        <div class="f-main">ΔP = ½ρv₂²(1 − β⁴)</div>
+        <div class="f-label">β⁴ appears because v₁² = (β²v₂)² = β⁴v₂²</div>
+      </div>
+      <p>Solving for the orifice velocity v₂:</p>
+      <div class="f-block">
+        <div class="f-main">v₂ = √(2ΔP / ρ(1−β⁴))  =  E · √(2ΔP/ρ)</div>
+        <div class="f-where">where E = 1/√(1−β⁴) is the velocity of approach factor</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Step 3 — Ideal Volumetric Flow Rate</h3>
+      <p>Multiply orifice velocity by orifice area to get the <strong>theoretical (ideal) volumetric flow rate</strong>:</p>
+      <div class="f-block">
+        <div class="f-main">Q_ideal = A₂ · v₂  =  (π/4 · d²) · E · √(2ΔP/ρ)</div>
+        <div class="f-label">Assumes: no viscosity, no turbulence, no jet contraction beyond the bore</div>
+      </div>
+      <p>This is what you would measure if the fluid were ideal (inviscid) and the jet filled the bore exactly. In reality, two physical effects cause actual flow to differ.</p>
+    </div>
+
+    <div class="e-card">
+      <h3>Step 4 — Physical Reality: Vena Contracta and Viscous Losses</h3>
+      <p><strong>Effect 1 — Vena Contracta (jet contraction):</strong> Due to fluid inertia, streamlines converge beyond the sharp bore edge. The actual minimum jet cross-section (the vena contracta) is smaller than the bore area by the <em>contraction coefficient</em> Cc. For a sharp-edged orifice, Cc ≈ 0.61, meaning the jet uses only 61% of the bore area. This is the primary reason Cd ≈ 0.61.</p>
+      <p><strong>Effect 2 — Viscous and turbulent losses:</strong> Real fluid has viscosity; energy is dissipated in the shear layer and turbulent mixing zone. A velocity coefficient Cv ≈ 0.98 accounts for this loss.</p>
+      <p>Combined into one coefficient:</p>
+      <div class="f-block">
+        <div class="f-main">Cd = Cc × Cv  ≈  0.61 × 0.98  ≈  0.60</div>
+        <div class="f-label">Physical interpretation of the discharge coefficient</div>
+      </div>
+      <p>Therefore the actual flow rate is:</p>
+      <div class="f-block">
+        <div class="f-main">Q = Cd · E · (π/4 · d²) · √(2ΔP/ρ)</div>
+        <div class="f-label">The ISO 5167 orifice equation — full form for incompressible flow</div>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">💡</span>
+        <div><strong>Key insight:</strong> Cd is not an empirical fudge factor — it has physical meaning. Cd ≈ 0.61 means that only 61% of the bore area is effectively carrying flow, because the jet contracts to 61% of the bore area at the vena contracta. A 100 mm orifice in a 200 mm pipe does not behave as if it were 100 mm of open pipe — the effective flow area is only about 61 mm equivalent diameter.</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Step 5 — Iterative Solution for Cd</h3>
+      <p>The challenge: Cd (via the RG equation) depends on Re_D, and Re_D depends on Q (which depends on Cd). This circular dependency is resolved by iteration:</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">i</div>
+          <div class="step-body"><h4>Initial estimate</h4><p>Start with <span class="ci">Cd⁰ = 0.61</span> (or the high-Re asymptote of the RG equation for the given β).</p></div>
+        </div>
+        <div class="step">
+          <div class="step-n">ii</div>
+          <div class="step-body"><h4>Calculate flow and Reynolds number</h4><p>Compute <span class="ci">Q = Cd · E · A₂ · √(2ΔP/ρ)</span>, then <span class="ci">Re_D = 4ṁ / (π · D · μ) = 4ρQ / (π · D · μ)</span>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-n">iii</div>
+          <div class="step-body"><h4>Update Cd</h4><p>Substitute Re_D into the RG equation to get <span class="ci">Cd_new</span>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-n">iv</div>
+          <div class="step-body"><h4>Check convergence</h4><p>If <span class="ci">|Cd_new − Cd_old| &lt; 0.0001</span>, stop. Otherwise set <span class="ci">Cd_old = Cd_new</span> and return to step ii. Typically converges in 3–5 iterations.</p></div>
+        </div>
+      </div>
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>At low Reynolds numbers (Re &lt; 10,000):</strong> Cd drops noticeably below 0.61 and the RG equation uncertainty increases sharply. ISO 5167 requires Re_D ≥ 5,000 for standard orifice plates. For viscous fluids or very low flow, consider a quadrant-edge or conical-entrance orifice, which maintain stable Cd down to Re ≈ 500.</div>
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Step 6 — Compressible Gas Flow Correction</h3>
+      <p>For gases, density decreases as pressure drops across the orifice. The fluid that exits at P₂ is less dense than at entry P₁, so actual volumetric flow is higher than the incompressible calculation predicts. The <strong>isentropic expansion factor Y</strong> corrects for this:</p>
+      <div class="f-block">
+        <div class="f-main">Y = 1 − (0.351 + 0.256β⁴ + 0.93β⁸) · [1 − (P₂/P₁)^(1/κ)]</div>
+        <div class="f-where">
+P₁, P₂ = absolute pressures at upstream and downstream taps (Pa absolute)
+κ = ratio of specific heats (Cp/Cv): air 1.40, steam 1.30, natural gas ~1.28
+Y = 1.0 for liquids; Y &lt; 1.0 for gases (typically 0.96–0.99 for ΔP/P₁ &lt; 10%)
+        </div>
+      </div>
+      <p>When ΔP/P₁ &lt; 2% (a common situation in process plants at operating pressure), Y &gt; 0.997 and the correction is negligible (&lt;0.3%). When ΔP/P₁ &gt; 5%, Y must be applied. For ΔP/P₁ &gt; 25%, the isentropic assumption breaks down and the full energy equation with real gas properties is needed.</p>
+    </div>
+
+  </div><!-- /deriv -->
+
+  <!-- ═══ PANE 3: GUIDE ═══ -->
+  <div class="edu-pane" id="ep-guide">
+
+    <div class="e-card">
+      <h3>How to Design an Orifice Plate from Scratch</h3>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">
+            <h4>Define Process Conditions</h4>
+            <p>Collect from process datasheet and P&ID:</p>
+            <ul>
+              <li><strong>Fluid:</strong> name, phase, composition (if mixture or gas)</li>
+              <li><strong>Flow range:</strong> Q_min, Q_normal, Q_max (in m³/hr or kg/hr)</li>
+              <li><strong>Operating pressure P₁:</strong> upstream absolute pressure (kPa abs or psia)</li>
+              <li><strong>Operating temperature T₁:</strong> upstream (°C or °F)</li>
+              <li><strong>Pipe:</strong> nominal size, schedule, material — needed for actual ID</li>
+              <li><strong>Metering purpose:</strong> indication only, control, or custody transfer (drives accuracy requirements)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">
+            <h4>Determine Fluid Properties at Operating Conditions</h4>
+            <p>You need <strong>density ρ</strong> and <strong>dynamic viscosity μ</strong> at P₁ and T₁ — not at standard conditions. This is the most common source of large errors.</p>
+            <ul>
+              <li><strong>Liquids:</strong> Use Perry's, NIST WebBook, or process simulation. Water at 80°C: ρ = 971.8 kg/m³, μ = 355 μPa·s — very different from 20°C values (998.2 kg/m³, 1002 μPa·s).</li>
+              <li><strong>Ideal gases:</strong> ρ = PM/(RT). For real gases: ρ = PM/(ZRT), where Z is the compressibility factor from AGA-8 or NIST equations.</li>
+              <li><strong>Steam:</strong> Use IAPWS-IF97 steam tables. At 10 barg, 200°C: ρ = 5.74 kg/m³. At 10 barg, 250°C: ρ = 5.14 kg/m³ — a 10% difference that directly impacts flow accuracy.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">
+            <h4>Get the Actual Pipe Internal Diameter</h4>
+            <p>Never use nominal pipe size. Look up actual ID from ASME B36.10 (carbon steel) or B36.19 (stainless) pipe tables for your schedule. Example: 4" pipe, Schedule 40: ID = 102.26 mm. Schedule 80: ID = 97.18 mm. Using the wrong schedule introduces a β error that propagates as a β⁴ error in the flow equation — easily 5–10% flow error.</p>
+            <p>For existing plant piping, verify with ultrasonic thickness measurement — corrosion, erosion, or scale may have changed the ID significantly from as-built.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">4</div>
+          <div class="step-body">
+            <h4>Select DP Transmitter Range and Calculate Required β</h4>
+            <p>Choose a target ΔP at Q_max — this is your DP transmitter upper range value (URV). Common choices: 25 kPa (100 inH₂O), 50 kPa, 125 kPa. Rearrange the orifice equation to solve for d:</p>
+            <p style="font-family:var(--mono); font-size:0.85rem; background:#f0f4f8; padding:10px; border-radius:4px;">d = D · √β &nbsp; where β is found by solving:<br>Q_max = Cd · E · (π/4 · β²D²) · √(2ΔP_max/ρ)</p>
+            <p>Since both Cd and E depend on β, iterate: start with β = 0.6, compute d, calculate E and Cd at this β and Re_D, recompute d, repeat until β converges (usually 3 iterations). Confirm β is in range 0.20–0.75. If outside, adjust DP URV or pipe size.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">5</div>
+          <div class="step-body">
+            <h4>Check Reynolds Number at Minimum Flow</h4>
+            <p>Minimum flow is the worst case for Reynolds number. Calculate:</p>
+            <p style="font-family:var(--mono); font-size:0.85rem; background:#f0f4f8; padding:10px; border-radius:4px;">Re_D = 4 · ρ · Q_min / (π · D · μ)</p>
+            <p>If Re_D &lt; 10,000, measurement uncertainty increases significantly. ISO 5167 minimum is 5,000. Below this, consider a quadrant-edge orifice, or a different meter type (Coriolis or electromagnetic) if low-flow accuracy is essential.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">6</div>
+          <div class="step-body">
+            <h4>Specify Plate Material, Thickness, and Edge Tolerance</h4>
+            <ul>
+              <li><strong>Material:</strong> 316 SS for most services. Hastelloy C-276 for chlorides. Carbon steel for clean, non-corrosive hydrocarbons. Duplex SS for sour gas (H₂S-containing).</li>
+              <li><strong>Bore tolerance:</strong> Per ISO 5167, bore diameter must be measured to ±0.1% of d. For a 50 mm bore, that is ±0.05 mm — requires precision bore gauging, not a standard ruler.</li>
+              <li><strong>Edge sharpness:</strong> Upstream edge radius ≤ 0.0004 × d. For d = 100 mm, max radius = 0.04 mm. Inspect with 10× magnifier on receipt and after each removal from service. Any visible flat = replace.</li>
+              <li><strong>Plate thickness:</strong> Per ISO 5167, minimum 3 mm; maximum depends on β. The bore bevel angle on the downstream face must be 30–45° per standard.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">7</div>
+          <div class="step-body">
+            <h4>Verify Straight Run and Specify Installation</h4>
+            <p>Map all fittings within 50D upstream and 10D downstream of the proposed orifice location. Look up required straight run from ISO 5167 Table A.1 (or AGA-3 Table 2) for your β and specific fitting combination. If straight run is inadequate, specify a CPA 50E or equivalent flow conditioner. Note on the datasheet: tap orientation (horizontal for liquids, top for gases, condensate-leg for steam), gasket material and thickness (affects effective bore diameter), and whether a senior orifice fitting is required for in-line plate changes.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="e-card">
+      <h3>Field Troubleshooting — Symptom / Cause / Fix</h3>
+      <table class="v-table">
+        <thead><tr><th>Symptom</th><th>Likely Cause</th><th>Diagnostic / Corrective Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Consistently high reading, 5–15%</strong></td><td>Worn/rounded upstream bore edge; reversed plate; low-pressure impulse line partially blocked</td><td>Pull plate, measure bore, inspect edge under magnifier; verify plate direction arrow; blow down LP impulse line</td></tr>
+          <tr><td><strong>Consistently low reading, 5–15%</strong></td><td>Partial bore blockage (debris, scale, wax); condensate in gas LP impulse line; blocked HP tap</td><td>Pull and clean plate; drain gas impulse lines; clear HP tap with probe rod or high-pressure N₂ purge</td></tr>
+          <tr><td><strong>Erratic, noisy DP signal</strong></td><td>Two-phase flow (flashing or wet gas); pulsation from reciprocating machines; partial tap blockage causing slug flow in impulse line</td><td>Check process conditions for flash point; install pulsation dampener or snubber; blow down both impulse lines simultaneously</td></tr>
+          <tr><td><strong>Zero reading at known flow</strong></td><td>Manifold in equalise position; both impulse lines blocked or cross-connected; DP transmitter failed low</td><td>Check 5-valve manifold configuration; trace both impulse lines physically; verify transmitter with hand pump</td></tr>
+          <tr><td><strong>Negative DP reading</strong></td><td>HP and LP connections swapped at transmitter or at taps</td><td>Swap HP/LP at transmitter first (safe); if still negative, re-identify which tap is actually upstream on pipe</td></tr>
+          <tr><td><strong>Reading drifts slowly over months</strong></td><td>Gradual bore erosion changing d and β; DP transmitter drift; slow impulse line fouling</td><td>Annual bore measurement in dirty service; recalibrate transmitter every 2 years; fit isolation valves for blowdown without process shutdown</td></tr>
+          <tr><td><strong>Step change in reading after maintenance</strong></td><td>Plate installed backwards; wrong plate (different β) reinstalled; gasket protruding into bore; impulse lines reconnected backwards</td><td>Pull plate and verify β marking matches datasheet; check that gasket ID ≥ pipe ID; verify HP/LP connections per P&ID</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="e-card">
+      <h3>How to Use This Calculator Correctly</h3>
+      <ul>
+        <li><strong>Pipe Diameter D:</strong> Pipe internal diameter from pipe schedule tables — not nominal size. At high temperature, apply thermal expansion: D_hot = D_cold × [1 + α(T−20°C)] where α ≈ 17×10⁻⁶/°C for 316 SS.</li>
+        <li><strong>Orifice Diameter d:</strong> The certified bore diameter at 20°C from the plate manufacturer's certificate. Apply thermal expansion for hot service just as for pipe ID.</li>
+        <li><strong>Fluid Density ρ:</strong> Density at upstream operating P and T. For water: use tables. For hydrocarbons: use process simulator or API correlations. For gases: use ρ = PM/(ZRT). Never use standard-condition density for gas — this is the single most common large error in orifice calculations.</li>
+        <li><strong>Dynamic Viscosity μ:</strong> At operating T. For water, viscosity halves between 20°C and 60°C; a factor of 2 error in μ changes Re_D by factor 2 and Cd by ~0.5–1%.</li>
+        <li><strong>Differential Pressure ΔP:</strong> The measured or design value. Confirm units: 1 kPa = 4.015 inH₂O = 0.145 psi = 10 mbar. Unit errors of 25× (kPa vs inH₂O) are more common than you'd expect.</li>
+        <li><strong>Discharge Coefficient:</strong> Leave at the calculated ISO value unless you have a calibrated plate with a traceable Cd from a flow laboratory. A calibrated Cd is valid only for the specific plate, at the calibrated β and Re_D range.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Gas metering reminder:</strong> Always enter density at <em>flowing conditions</em> (actual P, T). If you enter density at standard conditions (e.g., 1.2 kg/m³ for air at 15°C, 1 atm) but your line is at 5 barg, the actual density is ~6× higher and your calculated flow will be ~2.45× too high — a catastrophic error in sizing or accounting.</div>
+      </div>
+    </div>
+
+  </div><!-- /guide -->
+
+  <!-- ═══ PANE 4: FAQ ═══ -->
+  <div class="edu-pane" id="ep-faq">
+    <div class="e-card">
+      <h3>Frequently Asked Questions</h3>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">Why does the orifice equation use √ΔP and not ΔP directly? What does this mean for meter turndown?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>Because the Bernoulli equation relates pressure difference to the <em>square</em> of velocity: ΔP = ½ρv². Solving for v gives v ∝ √ΔP, and since Q = Av, we have Q ∝ √ΔP. This is a direct consequence of kinetic energy being proportional to v².</p>
+          <p>The practical consequence is <strong>poor turndown</strong>. If maximum flow gives ΔP_max = 100 kPa:</p>
+          <ul>
+            <li>At 50% flow: ΔP = 25 kPa (25% of max — not 50%)</li>
+            <li>At 30% flow: DP = 9 kPa (9% of max)</li>
+            <li>At 10% flow: ΔP = 1 kPa (1% of max — below most transmitter accuracy)</li>
+          </ul>
+          <p>This limits orifice meters to a practical <strong>turndown of 3:1 to 5:1</strong>, compared to 100:1 for Coriolis meters. For applications requiring wider flow range (e.g., variable-flow processes), consider using two transmitters with different ranges on the same taps, or specifying a senior orifice fitting with interchangeable bore plates.</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">What is the vena contracta, exactly, and why does it make Cd ≈ 0.61?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>When fluid approaches a sharp-edged orifice, the streamlines must turn sharply inward to pass through the bore. Due to fluid inertia (momentum), the streamlines cannot make a 90° turn at the bore edge — they overshoot and continue converging beyond the bore face. The jet cross-section continues to decrease for a short distance downstream until reaching a minimum area at the <strong>vena contracta</strong> ("contracted vein" in Latin). Beyond that point, the jet expands and turbulent mixing with the surrounding slow fluid begins.</p>
+          <p>The ratio of vena contracta area to bore area is the <strong>contraction coefficient Cc</strong>. For a sharp-edged orifice, the streamlines' inability to negotiate the abrupt 90° corner results in Cc ≈ 0.611 — a result that can be derived analytically for a 2D slot using complex potential flow theory (the Kirchhoff solution) and is well confirmed experimentally for 3D orifices.</p>
+          <p>Since Cd = Cc × Cv and Cv ≈ 0.98 (small viscous loss correction), Cd ≈ 0.61 × 0.98 ≈ 0.60. The 0.61 figure is not arbitrary — it is fundamentally the geometric consequence of fluid inertia at a sharp-edged opening.</p>
+          <p>For a rounded-entry orifice, streamlines follow the curved surface smoothly with no separation, Cc → 1.0, and Cd → 0.98. This is why flow nozzles (rounded entry) have Cd ≈ 0.96–0.99.</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">How do I correct an orifice flow reading for a change in operating conditions?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>The orifice equation shows Q ∝ √(1/ρ). If density changes at the same ΔP, actual flow changes. In automated flow computers (RTUs, DCS), pressure and temperature are read continuously and used to compute flowing density in real time — this is called <strong>flow compensation</strong> and is mandatory for custody transfer metering.</p>
+          <p>For manual correction when conditions deviate from design:</p>
+          <p class="fi">Q_actual = Q_indicated × √(ρ_design / ρ_actual)</p>
+          <p>Examples:</p>
+          <ul>
+            <li><strong>Gas line pressure drops from 10 barg to 8 barg</strong> (isothermal): ρ_actual/ρ_design = (8+1.013)/(10+1.013) = 0.819. Actual flow = indicated × √(1/0.819) = indicated × 1.104. The meter under-reads by 10.4% — a significant error in gas accounting.</li>
+            <li><strong>Liquid temperature rises from 20°C to 60°C</strong>: water density drops from 998 to 983 kg/m³. Actual flow = indicated × √(998/983) = indicated × 1.0076. Only 0.8% error — usually negligible for liquids but matters in precise chemical dosing.</li>
+            <li><strong>Gas composition changes</strong> (e.g., natural gas heating value changes): molar mass M changes, density changes proportionally, flow correction = √(M_design/M_actual).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">How do I calculate the energy cost of the permanent pressure loss?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>The permanent pressure loss ΔP_perm is the irrecoverable portion of ΔP — the energy permanently converted to heat by turbulent mixing downstream of the vena contracta. It is approximately:</p>
+          <p class="fi">ΔP_perm ≈ ΔP × (1 − β²) / (1 + β²)  [sharp-edged orifice, approximate]</p>
+          <p>For β = 0.5: ΔP_perm ≈ ΔP × 0.60 (60% lost). For β = 0.7: ΔP_perm ≈ ΔP × 0.34 (34% lost). Compare to a venturi tube where permanent loss ≈ 5–10% of ΔP.</p>
+          <p>Annual pumping cost of permanent pressure loss:</p>
+          <p class="fi">Cost ($/yr) = (ΔP_perm × Q × 8760 × C_elec) / (η_pump × 3,600,000)</p>
+          <ul>
+            <li>ΔP_perm in Pa, Q in m³/s, C_elec in $/kWh, η_pump = pump efficiency (decimal)</li>
+            <li>Example: 150 mm pipe, β = 0.6, ΔP = 25 kPa, so ΔP_perm ≈ 13.5 kPa, Q = 50 m³/hr = 0.0139 m³/s, 8760 hr/yr, $0.10/kWh, η = 0.70: Cost ≈ $760/yr</li>
+            <li>For a large 600 mm natural gas header at high flow, the same calculation can yield $50,000–$200,000/yr — enough to justify replacing the orifice with a venturi tube in 1–2 years.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">What is the difference between ISO 5167 and AGA-3? Which should I use?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p><strong>ISO 5167-2</strong> is the international standard covering orifice plates for liquids, gases, and steam. It allows corner taps, flange taps, and D&D/2 taps. Uses the RG Cd equation. Published by ISO, adopted in Europe, Asia, and international projects. Applies to all fluids.</p>
+          <p><strong>AGA Report No. 3</strong> (ANSI/API 14.3) is the North American standard specifically for natural gas custody transfer. It mandates flange taps, uses the RG Cd equation (harmonised with ISO 5167 in 1992), requires gas compressibility calculated per AGA-8, and specifies additional quality requirements for custody transfer including flow computer standards, chart integration, and uncertainty budgets.</p>
+          <p>For most engineering calculations, the two give essentially identical results (&lt;0.1% difference) when using the same tap configuration and RG equation. <strong>Use AGA-3 if:</strong> you are metering natural gas for billing/custody transfer in North America, or the contract specifies it. <strong>Use ISO 5167 if:</strong> you are outside North America, metering liquids or steam, or the contract/local regulations specify it. For process indication (non-custody), either standard is acceptable — just be consistent.</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">When should I not use an orifice plate?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>Orifice plates are a poor choice in the following situations:</p>
+          <ul>
+            <li><strong>High viscosity fluids (Re &lt; 5000):</strong> Cd becomes unstable and inaccurate. Use a positive displacement meter, Coriolis, or laminar flow element.</li>
+            <li><strong>Two-phase flow (liquid with gas, or wet steam):</strong> The equation is not valid and readings are unreliable. Use a dedicated multiphase meter or separate the phases upstream.</li>
+            <li><strong>Slurries and fluids with suspended solids:</strong> Solids settle in impulse lines and erode the bore edge. Use a magnetic flowmeter (conductive liquids) or Coriolis.</li>
+            <li><strong>Very low flow or wide turndown (&gt;5:1):</strong> Poor signal at low ΔP. Use a Coriolis, ultrasonic, or variable area meter.</li>
+            <li><strong>Very dirty gases (catalyst fines, heavy tars):</strong> Bore fouls rapidly. Consider an annubar or averaging pitot which can be retracted for cleaning without shutdown.</li>
+            <li><strong>Cryogenic or very high temperature service where straight run is unavailable:</strong> The cost of piping modifications may exceed the cost of a more compact meter (Coriolis, ultrasonic) that requires less straight run.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" onclick="eFaq(this)">How accurate is the orifice plate and what contributes to measurement uncertainty?<span class="faq-arr">+</span></button>
+        <div class="faq-a">
+          <p>For a standard orifice plate conforming to ISO 5167, the combined uncertainty is approximately <strong>±0.5% to ±2%</strong> of reading. The main contributors are:</p>
+          <ul>
+            <li><strong>Discharge coefficient Cd:</strong> ISO 5167 claims ±0.5–0.75% for Cd in the preferred β range. This is the dominant term.</li>
+            <li><strong>Bore diameter d:</strong> A ±0.1% error in d causes ±0.2% error in d² (and hence flow). Requires precision bore gauging — not a standard workshop tool.</li>
+            <li><strong>Differential pressure measurement:</strong> DP transmitter accuracy typically ±0.1–0.5% of span. At low flow (small ΔP), this becomes the dominant uncertainty.</li>
+            <li><strong>Fluid density:</strong> ±0.5% error in ρ causes ±0.25% error in Q (because Q ∝ √(1/ρ)). For gases, this depends on accuracy of P, T measurement and compressibility correlation.</li>
+            <li><strong>Installation effects:</strong> Insufficient straight run, non-circular pipe cross-section, gasket intrusion — each can add 0.5–5% systematic bias.</li>
+          </ul>
+          <p>For custody transfer applications, an uncertainty budget per ISO 5167 Annex B or AGA-3 is required, documenting each contributor with its Type A or Type B evaluation.</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /faq -->
+
+  <!-- ═══ PANE 5: GLOSSARY ═══ -->
+  <div class="edu-pane" id="ep-gloss">
+    <div class="e-card">
+      <h3>Engineering Glossary — Orifice Flow Measurement</h3>
+      <div class="gloss-grid">
+
+        <div class="gloss-item">
+          <div class="gloss-term">Discharge Coefficient <span class="gloss-sym">Cd</span></div>
+          <div class="gloss-def">Ratio of actual volumetric flow to ideal (Bernoulli) flow through the orifice bore. Cd = Cc × Cv ≈ 0.61 for a sharp-edged orifice at turbulent flow. Calculated by the Reader-Harris/Gallagher equation as a function of β and Re_D. Decreases at low Re, increases with edge wear.</div>
+          <div class="gloss-std">ISO 5167-2 §5.3 / AGA-3</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Beta Ratio <span class="gloss-sym">β = d/D</span></div>
+          <div class="gloss-def">Ratio of orifice bore diameter to pipe internal diameter. Central design variable — determines ΔP signal, permanent loss, straight run requirement, and uncertainty. Valid range per ISO 5167: 0.1–0.75. Optimal for lowest uncertainty: 0.5–0.65. β appears as β⁴ in the velocity of approach factor — small errors in β have amplified effect on calculated flow.</div>
+          <div class="gloss-std">ISO 5167-2 §5.1</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Velocity of Approach Factor <span class="gloss-sym">E = 1/√(1−β⁴)</span></div>
+          <div class="gloss-def">Corrects the Bernoulli equation for the fact that fluid has pre-existing velocity in the pipe upstream of the orifice. E = 1.004 at β = 0.3 (negligible). E = 1.083 at β = 0.5. E = 1.228 at β = 0.7. Some older references absorb E into Cd and tabulate C = Cd·E — always confirm which convention is in use.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Contraction Coefficient <span class="gloss-sym">Cc</span></div>
+          <div class="gloss-def">Ratio of vena contracta jet area to orifice bore area. Cc ≈ 0.611 for a sharp-edged orifice — derived analytically from potential flow theory for a 2D slot (Kirchhoff solution). The primary physical reason Cd ≈ 0.61. Increases toward 1.0 as the entry is rounded (Cc ≈ 0.98 for a well-rounded flow nozzle).</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Vena Contracta</div>
+          <div class="gloss-def">The cross-section of minimum jet area and maximum velocity, located 0.3–0.8D downstream of the orifice plate face. Static pressure is minimum here. The vena contracta is not fixed — its position moves with β and Re_D. D&D/2 taps were historically called "vena contracta taps" because 0.5D downstream approximates the vena contracta location for typical β values.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Pipe Reynolds Number <span class="gloss-sym">Re_D</span></div>
+          <div class="gloss-def">Re_D = ρvD/μ = 4ṁ/(πDμ). Governs flow regime (laminar &lt;2300, transitional 2300–4000, turbulent &gt;4000) and determines Cd via the RG equation. ISO 5167 minimum: Re_D ≥ 5000. Best accuracy: Re_D ≥ 10,000. Note: orifice Re is defined on pipe diameter D, not orifice diameter d.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Isentropic Expansion Factor <span class="gloss-sym">Y (or ε)</span></div>
+          <div class="gloss-def">Correction factor for compressible gas flow accounting for gas density decrease across the orifice. Y = 1.0 for incompressible liquids. Y &lt; 1 for gases. For air at ΔP/P₁ = 0.10: Y ≈ 0.963. Significant (&gt;0.3%) when ΔP/P₁ &gt; 2%. For ΔP/P₁ &gt; 25%, the equation's accuracy degrades and full isentropic nozzle equations with real gas properties are needed.</div>
+          <div class="gloss-std">ISO 5167-2 §5.3.3</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Permanent Pressure Loss <span class="gloss-sym">ΔP_perm</span></div>
+          <div class="gloss-def">The irrecoverable fraction of ΔP converted to heat by turbulent mixing. For a sharp-edged orifice: ΔP_perm ≈ ΔP·(1−β²)/(1+β²). At β = 0.5: ~60% of ΔP is lost. At β = 0.7: ~34% lost. Much higher than venturi tubes (5–10%) — a significant operating cost for high-flow applications, justifying venturi tubes on large pipelines despite higher capital cost.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Reader-Harris/Gallagher Equation</div>
+          <div class="gloss-def">The empirical equation for Cd adopted by ISO 5167 (1998 revision) and AGA-3. Derived by M.J. Reader-Harris and J.A. Gallagher from regression of ~16,000 calibration data points across 9 laboratories worldwide. Replaced the Stolz equation, which underestimated the Re_D dependence of Cd at low Re. Applies to corner, flange, and D&D/2 taps with appropriate L₁, M₂' coefficients.</div>
+          <div class="gloss-std">ISO 5167-2:2022 §5.3.2</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Flow Conditioner</div>
+          <div class="gloss-def">Device installed upstream of an orifice to straighten the velocity profile and destroy swirl. Allows use of shorter upstream straight runs than tabulated in ISO 5167. Common types: Gallagher (19-tube bundle), CPA 50E (perforated plate), Laws (tabs). A conditioner at 10D upstream can replace the 40D that would otherwise be required after a double-elbow out-of-plane. Must be selected for the specific pipe Re and disturbance type.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Senior Orifice Fitting</div>
+          <div class="gloss-def">A specialised pipe fitting that allows the orifice plate to be removed and replaced while the line is under pressure and flowing, without process shutdown. Uses two isolation valves and a sliding carrier mechanism. Standard for custody transfer metering where downtime costs are high. Available in sizes 2"–36", rated to ASME 2500 class.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Custody Transfer Metering</div>
+          <div class="gloss-def">Flow measurement used to determine the quantity of fluid transferred between two parties for commercial billing. Requires the highest accuracy, documented uncertainty budgets, traceable calibration, tamper-evident sealing, and compliance with the applicable standard (AGA-3 for gas, API MPMS for liquids). Error of 0.5% in a large gas pipeline can represent millions of dollars per year.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Turndown Ratio</div>
+          <div class="gloss-def">Ratio of maximum to minimum measurable flow within specification. For orifice meters: typically 3:1 to 5:1, limited by the √ΔP relationship (at 20% flow, DP is only 4% of max — below most transmitter accuracy). Extended to ~10:1 using dual-range DP transmitters in parallel. Compare: Coriolis 100:1, ultrasonic 50:1, magnetic 30:1.</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Quadrant-Edge Orifice</div>
+          <div class="gloss-def">An orifice with a rounded (quarter-circle) upstream bore entry instead of a sharp edge. Maintains stable Cd ≈ 0.77 down to Re ≈ 500, making it suitable for viscous fluids (heavy oil, polymers, glycols) where standard sharp-edged orifices would give unstable and inaccurate Cd. Standardised in ISO 5167-2 Annex B. Requires different Cd equations — not interchangeable with sharp-edge equations.</div>
+          <div class="gloss-std">ISO 5167-2 Annex B</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Flange Taps</div>
+          <div class="gloss-def">Pressure measurement taps located exactly 1 inch (25.4 mm) from the upstream and downstream faces of the orifice plate. The North American industry standard, mandatory for AGA-3 custody transfer. The 25.4 mm dimension is fixed regardless of pipe size — unlike D&D/2 taps which scale with D. This means for large pipes (D &gt; 250 mm), flange taps are close to the corner tap location; for small pipes they approach the D&D/2 location.</div>
+          <div class="gloss-std">AGA-3 / ISO 5167-2</div>
+        </div>
+
+        <div class="gloss-item">
+          <div class="gloss-term">Compressibility Factor <span class="gloss-sym">Z</span></div>
+          <div class="gloss-def">Correction to the ideal gas law for real gas behaviour: ρ = PM/(ZRT). Z = 1.0 for ideal gas. For natural gas at typical pipeline conditions (50 barg, 20°C), Z ≈ 0.88 — using Z = 1.0 overestimates density by 14% and under-reads flow by 7%. Calculated per AGA-8 (custody transfer), NIST equations, or process simulators.</div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /gloss -->
+
+</div><!-- .edu-inner -->
+</div><!-- .edu-wrap -->
+
+<script>
+function eTab(id, btn) {
+  document.querySelectorAll('.edu-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.edu-nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('ep-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top: document.querySelector('.edu-wrap').offsetTop - 20, behavior: 'smooth'});
+}
+function eFaq(btn) {
+  const ans = btn.nextElementSibling;
+  const wasOpen = btn.classList.contains('on');
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('on'));
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('on'));
+  if (!wasOpen) { btn.classList.add('on'); ans.classList.add('on'); }
+}
+</script>
+<!-- END EDUCATIONAL CONTENT — Orifice Flow Calculator -->
+
+
+<!-- ══════════ SOCIAL + FOOTER BAR ══════════ -->
+<div class="social-footer">
+  <div class="social-inner">
+    <span class="social-label">Share this calculator:</span>
+    <div class="social-links">
+      <a href="https://twitter.com/intent/tweet?url=https://multicalci.com/orifice-flow-calculator/&text=Free+ISO+5167+Orifice+Flow+Calculator+for+engineers" target="_blank" rel="noopener" class="soc-btn soc-twitter" title="Share on Twitter/X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X / Twitter
+      </a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://multicalci.com/orifice-flow-calculator/" target="_blank" rel="noopener" class="soc-btn soc-linkedin" title="Share on LinkedIn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://multicalci.com/orifice-flow-calculator/" target="_blank" rel="noopener" class="soc-btn soc-facebook" title="Share on Facebook">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        Facebook
+      </a>
+      <a href="https://wa.me/?text=Free+ISO+5167+Orifice+Flow+Calculator+https://multicalci.com/orifice-flow-calculator/" target="_blank" rel="noopener" class="soc-btn soc-whatsapp" title="Share on WhatsApp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="/cdn-cgi/l/email-protection#efd09c9a8d858a8c9bd2a99d8a8acfa6bca0cfdaded9d8cfa09d8689868c8acfa9838098cfac8e838c9a838e9b809dc98d808b96d2ac878a8c84cf809a9bcf9b87869ccf899d8a8acf8a818886818a8a9d868188cf8c8e838c9a838e9b809dd5cf879b9b9f9cd5c0c0829a839b868c8e838c86c18c8082c0809d8689868c8ac289838098c28c8e838c9a838e9b809dc0" class="soc-btn soc-email" title="Share via Email">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+        Email
+      </a>
+    </div>
+    <div class="footer-links">
+      <a href="https://multicalci.com/">🏠 All Calculators</a>
+      <a href="https://multicalci.com/about.html">About</a>
+      <a href="h
+
 <meta property="og:title" content="Orifice Flow Calculator — ISO 5167 | multicalci.com">
 <meta property="og:description" content="Free orifice plate flow calculator using ISO 5167 standard for liquids and gases with discharge coefficients.">
 <meta property="og:url" content="https://multicalci.com/orifice-flow-calculator/">
