@@ -723,10 +723,6 @@ function controlValve_handler(req, res) {
       larger:  stdCv[Math.min(ri+1, stdCv.length-1)],
     };
 
-    // ── DISPLAY LABELS (built server side so no math in client) ──────────────
-    const pu        = m ? 'bar' : 'psi';
-    const dp2label  = v => v == null ? '—' : (m ? (v/14.5038).toFixed(3) : v.toFixed(2)) + ' ' + pu;
-
     // ── OPEN % CALCULATION (moved from client) ────────────────────────────────
     function openPct_eq(CvReq, szCv) {
       const ratio = Math.min(CvReq / Math.max(szCv, 0.001), 1.5);
