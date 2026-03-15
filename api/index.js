@@ -2065,7 +2065,7 @@ function calcShellTube(b) {
   const st=overSurf<-5?'err':overSurf<5?'warn':'ok';
   const resistanceBreakdown = calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, OD/Di);
   return {
-    Q,Qh,Qc,U,U_clean,area,area_provided,overSurf,lmtd,F,FLMTD,dT1,dT2,lmtdArr,
+    hF,cF,Q,Qh,Qc,U,U_clean,area,area_provided,overSurf,lmtd,F,FLMTD,dT1,dT2,lmtdArr,
     numTubes,nTubesPerPass,nPasses,nShells,shellID,Di,OD,L:L_eff,tubeVel,targetVel,velMode,
     shellDP,tubeDp,pdAllowShell,pdAllowTube,bdCorr:{...bdRes,hShell,hTube},
     NTU,eff,balErr,tema,pitchLayout,hTmean,cTmean,hTi,hTo,cTi,cTo,hPop,cPop,
@@ -2112,7 +2112,6 @@ function calcPlate(b) {
   if (!lmtdRes.lmtd) throw new Error(lmtdRes.err||'LMTD error');
   const {lmtd,F,dT1,dT2}=lmtdRes, FLMTD=lmtd*F;
   const Dh=2*gap/phi;
-  const beta=angle*Math.PI/180;
   const Ac=pw*gap;
   function htcPlate(fluid,mKgs) {
     const G=mKgs/Math.max(Ac,1e-8);
@@ -2455,8 +2454,10 @@ function calcLmtdNtu(b) {
     const Q_kW=Ch*(hTi-hTo), Qmax=Cmin_kW*(hTi-cTi);
     eff=Qmax>0?Q_kW/Qmax:null;
     const Cr=Cmin_kW/Cmax_kW;
-    if(arr==='counter'&&Cr<0.999&&eff!=null)
+   if(arr==='counter'&&Cr<0.999&&eff!=null)
       NTU=Math.log((1-Cr*Math.max(eff,0.001))/Math.max(1-eff,0.001))/(1-Cr);
+    else if(arr==='counter'&&Cr>=0.999&&eff!=null)
+      NTU=eff/Math.max(1-eff,1e-9);
     else if(arr==='parallel'&&eff!=null)
       NTU=-Math.log(1-eff*(1+Cr))/(1+Cr);
     else if(arr==='cross1'&&eff!=null)
