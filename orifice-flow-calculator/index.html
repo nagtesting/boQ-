@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1089,26 +1090,26 @@ const API_URL = '/api/orifice-flow';
 // ─── Fluid library (orifice: gases, key liquids, steam) ───────────────────
 const FLUID_DB = {
   // ── Gases ──
-  'Air':            {t:'g',sg:1.000,M:28.964,k:1.400,mu:1.82e-5,Z:1.000,Tc:132.5,Pc:3.77},
-  'Nitrogen (N₂)':  {t:'g',sg:0.967,M:28.014,k:1.400,mu:1.76e-5,Z:1.000,Tc:126.2,Pc:3.39},
-  'Oxygen (O₂)':    {t:'g',sg:1.105,M:32.000,k:1.395,mu:2.01e-5,Z:1.000,Tc:154.6,Pc:5.04},
-  'Hydrogen (H₂)':  {t:'g',sg:0.070,M:2.016, k:1.405,mu:8.90e-6,Z:1.000,Tc:33.2, Pc:1.30},
-  'CO₂':            {t:'g',sg:1.519,M:44.010,k:1.289,mu:1.48e-5,Z:0.994,Tc:304.1,Pc:7.38},
-  'CO':             {t:'g',sg:0.967,M:28.010,k:1.400,mu:1.77e-5,Z:1.000,Tc:132.9,Pc:3.50},
-  'Methane (CH₄)':  {t:'g',sg:0.554,M:16.043,k:1.304,mu:1.10e-5,Z:0.998,Tc:190.6,Pc:4.60},
-  'Propane (C₃H₈)': {t:'g',sg:1.522,M:44.097,k:1.130,mu:8.20e-6,Z:0.981,Tc:369.8,Pc:4.25},
-  'Butane (C₄H₁₀)': {t:'g',sg:2.009,M:58.124,k:1.100,mu:7.40e-6,Z:0.960,Tc:425.1,Pc:3.80},
-  'Natural Gas':    {t:'g',sg:0.620,M:17.967,k:1.310,mu:1.10e-5,Z:0.990,Tc:203.3,Pc:4.64},
-  'Ammonia (NH₃)':  {t:'g',sg:0.588,M:17.031,k:1.310,mu:1.00e-5,Z:0.995,Tc:405.6,Pc:11.28},
-  'Chlorine':       {t:'g',sg:2.448,M:70.906,k:1.340,mu:1.33e-5,Z:0.990,Tc:417.2,Pc:7.71},
-  'Argon':          {t:'g',sg:1.380,M:39.948,k:1.667,mu:2.27e-5,Z:1.000,Tc:150.9,Pc:4.87},
-  'Helium':         {t:'g',sg:0.138,M:4.003, k:1.667,mu:1.99e-5,Z:1.000,Tc:5.2,  Pc:0.23},
-  'SO₂':            {t:'g',sg:2.264,M:64.065,k:1.290,mu:1.25e-5,Z:0.990,Tc:430.8,Pc:7.88},
-  'H₂S':            {t:'g',sg:1.189,M:34.081,k:1.320,mu:1.22e-5,Z:0.990,Tc:373.2,Pc:8.94},
-  'Ethane (C₂H₆)':  {t:'g',sg:1.049,M:30.069,k:1.200,mu:9.10e-6,Z:0.988,Tc:305.3,Pc:4.87},
-  'Ethylene':       {t:'g',sg:0.968,M:28.054,k:1.240,mu:1.02e-5,Z:0.993,Tc:282.4,Pc:5.04},
-  'Acetylene':      {t:'g',sg:0.897,M:26.038,k:1.232,mu:1.03e-5,Z:0.990,Tc:308.3,Pc:6.14},
-  'Flue Gas':       {t:'g',sg:1.000,M:28.964,k:1.350,mu:1.90e-5,Z:1.000,Tc:132.5,Pc:3.77},
+  'Air':            {t:'g',sg:1.000,M:28.964,k:1.400,mu:1.82e-5,Z:1.000,Tc:132.5,Pc:3.77, omega:0.035, mu_ref:1.716e-5,T_ref:273.15,S:110.4},
+  'Nitrogen (N₂)':  {t:'g',sg:0.967,M:28.014,k:1.400,mu:1.76e-5,Z:1.000,Tc:126.2,Pc:3.39, omega:0.037, mu_ref:1.663e-5,T_ref:273.15,S:107.0},
+  'Oxygen (O₂)':    {t:'g',sg:1.105,M:32.000,k:1.395,mu:2.01e-5,Z:1.000,Tc:154.6,Pc:5.04, omega:0.025, mu_ref:1.919e-5,T_ref:273.15,S:138.9},
+  'Hydrogen (H₂)':  {t:'g',sg:0.070,M:2.016, k:1.405,mu:8.90e-6,Z:1.000,Tc:33.2, Pc:1.30, omega:-0.216,mu_ref:8.411e-6,T_ref:273.15,S:96.7},
+  'CO₂':            {t:'g',sg:1.519,M:44.010,k:1.289,mu:1.48e-5,Z:0.994,Tc:304.1,Pc:7.38, omega:0.239, mu_ref:1.370e-5,T_ref:273.15,S:222.0},
+  'CO':             {t:'g',sg:0.967,M:28.010,k:1.400,mu:1.77e-5,Z:1.000,Tc:132.9,Pc:3.50, omega:0.048, mu_ref:1.657e-5,T_ref:273.15,S:118.0},
+  'Methane (CH₄)':  {t:'g',sg:0.554,M:16.043,k:1.304,mu:1.10e-5,Z:0.998,Tc:190.6,Pc:4.60, omega:0.012, mu_ref:1.030e-5,T_ref:273.15,S:164.0},
+  'Propane (C₃H₈)': {t:'g',sg:1.522,M:44.097,k:1.130,mu:8.20e-6,Z:0.981,Tc:369.8,Pc:4.25, omega:0.152, mu_ref:7.550e-6,T_ref:273.15,S:278.0},
+  'Butane (C₄H₁₀)': {t:'g',sg:2.009,M:58.124,k:1.100,mu:7.40e-6,Z:0.960,Tc:425.1,Pc:3.80, omega:0.200, mu_ref:6.870e-6,T_ref:273.15,S:329.0},
+  'Natural Gas':    {t:'g',sg:0.620,M:17.967,k:1.310,mu:1.10e-5,Z:0.990,Tc:203.3,Pc:4.64, omega:0.010, mu_ref:1.027e-5,T_ref:273.15,S:170.0},
+  'Ammonia (NH₃)':  {t:'g',sg:0.588,M:17.031,k:1.310,mu:1.00e-5,Z:0.995,Tc:405.6,Pc:11.28,omega:0.250, mu_ref:9.270e-6,T_ref:273.15,S:503.0},
+  'Chlorine':       {t:'g',sg:2.448,M:70.906,k:1.340,mu:1.33e-5,Z:0.990,Tc:417.2,Pc:7.71, omega:0.069, mu_ref:1.234e-5,T_ref:273.15,S:351.0},
+  'Argon':          {t:'g',sg:1.380,M:39.948,k:1.667,mu:2.27e-5,Z:1.000,Tc:150.9,Pc:4.87, omega:0.001, mu_ref:2.125e-5,T_ref:273.15,S:142.0},
+  'Helium':         {t:'g',sg:0.138,M:4.003, k:1.667,mu:1.99e-5,Z:1.000,Tc:5.2,  Pc:0.23, omega:-0.390,mu_ref:1.875e-5,T_ref:273.15,S:79.4},
+  'SO₂':            {t:'g',sg:2.264,M:64.065,k:1.290,mu:1.25e-5,Z:0.990,Tc:430.8,Pc:7.88, omega:0.245, mu_ref:1.163e-5,T_ref:273.15,S:416.0},
+  'H₂S':            {t:'g',sg:1.189,M:34.081,k:1.320,mu:1.22e-5,Z:0.990,Tc:373.2,Pc:8.94, omega:0.100, mu_ref:1.130e-5,T_ref:273.15,S:331.0},
+  'Ethane (C₂H₆)':  {t:'g',sg:1.049,M:30.069,k:1.200,mu:9.10e-6,Z:0.988,Tc:305.3,Pc:4.87, omega:0.099, mu_ref:8.560e-6,T_ref:273.15,S:252.0},
+  'Ethylene':       {t:'g',sg:0.968,M:28.054,k:1.240,mu:1.02e-5,Z:0.993,Tc:282.4,Pc:5.04, omega:0.089, mu_ref:9.450e-6,T_ref:273.15,S:225.0},
+  'Acetylene':      {t:'g',sg:0.897,M:26.038,k:1.232,mu:1.03e-5,Z:0.990,Tc:308.3,Pc:6.14, omega:0.187, mu_ref:9.570e-6,T_ref:273.15,S:234.0},
+  'Flue Gas':       {t:'g',sg:1.000,M:28.964,k:1.350,mu:1.90e-5,Z:1.000,Tc:132.5,Pc:3.77, omega:0.035, mu_ref:1.716e-5,T_ref:273.15,S:110.4},
   // ── Liquids ──
   'Water':          {t:'l',sg:1.000,mu:1.00e-3,Pv:0.023},
   'Seawater':       {t:'l',sg:1.025,mu:1.07e-3,Pv:0.022},
@@ -1128,7 +1129,7 @@ const FLUID_DB = {
   'Glycerol':       {t:'l',sg:1.261,mu:1.412, Pv:0.0001},
   'Ethylene Glycol':{t:'l',sg:1.113,mu:2.10e-2,Pv:0.0001},
   // ── Steam ──
-  'Steam':          {t:'s',sg:0.6/1.205,mu:1.3e-5,Pv:0,k:1.135},
+  'Steam':          {t:'s',sg:0.498,mu:1.3e-5,Pv:0,k:1.135},
 };
 
 // Pipe schedule lookup [NPS, sched, OD_mm, ID_mm]
@@ -1228,7 +1229,7 @@ function renderResults(r) {
   setOut('out_dens',  r.rho_op.toFixed(4) + ' kg/m³');
   setOut('out_mass',  r.mass_kghr.toFixed(2) + ' kg/hr');
   setOut('out_qact',  r.qv_act_m3hr.toFixed(3) + ' m³/hr');
-  setOut('out_vorif', r.v_orifice?.toFixed(4) + ' m/s' ?? '—');
+  setOut('out_vorif', r.v_orifice != null ? r.v_orifice.toFixed(4) + ' m/s' : '—');
 
   // ── Flow multi-unit cells ──
   setOut('muc_v_kghr',  r.mass_kghr.toFixed(2));
@@ -1412,6 +1413,7 @@ function onOrificeTypeChange() {
 }
 
 function onCatChange() {
+  selectedFluidKey = null;
   const cat     = document.getElementById('f_cat').value;
   const isSteam = cat === 'steam';
   const isLiq   = cat === 'liquid';
@@ -1503,7 +1505,7 @@ function selectFluid(name) {
     document.getElementById('visc').value       = f.mu.toExponential(4);
     document.getElementById('zf').value         = f.Z.toFixed(4);
   } else if (f.t==='l') {
-    document.getElementById('d_val').value = (f.rho/1000).toFixed(4);
+    document.getElementById('d_val').value = f.sg.toFixed(4);
     document.getElementById('visc').value  = f.mu.toExponential(4);
   }
   run(); // API will auto-correct Z & μ for operating T/P
@@ -1532,6 +1534,36 @@ function clampZ() {
   el.style.background = (v<0.10||v>2.0) ? 'rgba(176,0,20,0.10)' : (v<0.50||v>1.20) ? 'rgba(160,72,0,0.10)' : '';
   if (v<=0)  el.value='0.10';
   if (v>5.0) el.value='5.0';
+}
+
+function updateFluidProps() {
+  if (!selectedFluidKey) return;
+  const f = FLUID_DB[selectedFluidKey];
+  if (!f || f.t !== 'g') return;
+  const T_K = (UNITS === 'metric'
+    ? parseFloat(document.getElementById('t_val').value)
+    : (parseFloat(document.getElementById('t_val').value) - 32) * 5/9) + 273.15;
+  const P_Pa = (UNITS === 'metric'
+    ? parseFloat(document.getElementById('p_val').value)
+    : parseFloat(document.getElementById('p_val').value) * 0.0689476) * 1e5;
+  // Sutherland viscosity
+  if (f.mu_ref && f.T_ref && f.S) {
+    const mu = f.mu_ref * Math.pow(T_K / f.T_ref, 1.5) * (f.T_ref + f.S) / (T_K + f.S);
+    document.getElementById('visc').value = Math.max(1e-7, Math.min(1e-3, mu)).toExponential(4);
+    document.getElementById('mu_auto_badge').style.display = '';
+  }
+  // Pitzer Z
+  if (f.Tc && f.Pc && f.omega !== undefined) {
+    const Tr = T_K / f.Tc;
+    const Pr = (P_Pa / 1e6) / f.Pc;
+    if (Tr >= 0.5) {
+      const B0 = 0.083 - 0.422 / Math.pow(Tr, 1.6);
+      const B1 = 0.139 - 0.172 / Math.pow(Tr, 4.2);
+      const Z  = Math.max(0.5, Math.min(1.2, 1 + (B0 + f.omega * B1) * Pr / Tr));
+      document.getElementById('zf').value = Z.toFixed(5);
+      document.getElementById('z_auto_badge').style.display = '';
+    }
+  }
 }
 
 // ─── PIPE CHIPS ───────────────────────────────────────────────────────
