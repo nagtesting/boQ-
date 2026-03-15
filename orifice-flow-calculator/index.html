@@ -1437,6 +1437,10 @@ function setUnits(u) {
   event.target.classList.add('active');
   updateUnitLabels();
   updateFluidProps();
+  // Re-render last result in new units immediately (no new API call needed)
+  if (_lastApiResult && _lastApiResult.ok) {
+    renderResults(_lastApiResult);
+  }
 }
 
 function updateUnitLabels() {
