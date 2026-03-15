@@ -2796,7 +2796,6 @@ const FLUID_DB_orifice = {
   'Ethylene':       {t:'g',sg:0.968,M:28.054,k:1.240,mu:1.02e-5,Z:0.993,Tc:282.4,Pc:5.04, omega:0.089,mu_ref:9.450e-6,T_ref:273.15,S:225.0},
   'Acetylene':      {t:'g',sg:0.897,M:26.038,k:1.232,mu:1.03e-5,Z:0.990,Tc:308.3,Pc:6.14, omega:0.187,mu_ref:9.570e-6,T_ref:273.15,S:234.0},
   'Flue Gas':       {t:'g',sg:1.000,M:28.964,k:1.350,mu:1.90e-5,Z:1.000,Tc:132.5,Pc:3.77, omega:0.035,mu_ref:1.716e-5,T_ref:273.15,S:110.4},
-};
 // ── Liquids ── rho0=kg/m³ at T0°C, beta_T=thermal expansion coefficient /°C
   // ρ(T) = rho0 / (1 + beta_T*(T - T0))
   'Water':             {t:'l', rho0:998.2,  T0:20, beta_T:2.1e-4},
