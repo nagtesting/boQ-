@@ -3081,6 +3081,9 @@ function calculate(params) {
     // Uncertainty
     uncertainty_pct: u_pct,
     dp_P_ratio:      P_Pa > 0 ? dp_Pa / P_Pa : 0,
+    // Velocities
+    v_orifice,
+    v_pipe,
     // Warnings
     warnings: warns,
     infos,
