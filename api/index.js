@@ -2820,6 +2820,9 @@ const FLUID_DB_orifice = {
 // ═════════════════════════════════════════════════════════════════════
 //  MAIN CALCULATION ENGINE
 // ═════════════════════════════════════════════════════════════════════
+function getReMin(b) {
+    if (b <= 0.44) return 5000; if (b <= 0.56) return 10000; if (b <= 0.65) return 30000; return 170000;
+  }
 function calculate(params) {
   const {
     mode,                // 'flow' | 'dp' | 'beta'
@@ -3049,10 +3052,7 @@ function calculate(params) {
   if (isSteam) infos.push('⚠ Wet steam (quality x<1) not modelled — ensure steam is dry/superheated at operating conditions');
   if (Re_pipe > 5000 && beta >= 0.20 && beta <= 0.75)
     infos.push('ISO 5167 requires ≥10–30 D upstream + ≥5 D downstream straight run');
-  function getReMin(b) {
-    if (b <= 0.44) return 5000; if (b <= 0.56) return 10000; if (b <= 0.65) return 30000; return 170000;
-  }
-  const Re_min = getReMin(beta);
+    const Re_min = getReMin(beta);
   if (Re_pipe > 0 && Re_pipe < Re_min) warns.push(`Re=${Re_pipe.toFixed(0)} below ISO 5167 minimum (${Re_min} for β=${beta.toFixed(3)})`);
   if (Z_auto?.outOfRange)
     infos.push(`Pitzer Z validity: Tr=${Z_auto.Tr?.toFixed(2)}, Pr=${Z_auto.Pr?.toFixed(2)} — outside recommended range (Tr>0.7, Pr<0.9)`);
