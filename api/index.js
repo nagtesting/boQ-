@@ -516,7 +516,24 @@ function compressor_handler(req, res) {
 // File: /api/control-valve.js
 // ALL math, unit conversions, validation done HERE — nothing in client
 // ============================================================
-
+const TSAT_TABLE = [
+  [14.696,212.0],[20,227.9],[40,267.2],[60,292.7],[80,312.0],
+  [100,327.8],[150,358.4],[200,381.8],[300,417.4],[400,444.6],
+  [500,467.0],[700,503.1],[1000,544.7],[1500,596.4],[2000,636.0],
+  [2500,668.1],[3000,695.4],
+];
+function getTsatF(P_psia) {
+  const t = TSAT_TABLE;
+  if (P_psia <= t[0][0]) return t[0][1];
+  if (P_psia >= t[t.length-1][0]) return t[t.length-1][1];
+  for (let i=0; i<t.length-1; i++) {
+    if (t[i][0] <= P_psia && P_psia <= t[i+1][0]) {
+      const frac = Math.log(P_psia/t[i][0]) / Math.log(t[i+1][0]/t[i][0]);
+      return t[i][1] + frac*(t[i+1][1]-t[i][1]);
+    }
+  }
+  return t[t.length-1][1];
+}
 function controlValve_handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -588,7 +605,8 @@ function controlValve_handler(req, res) {
     const dP   = Math.max(P1a - P2a, 0.0001);
     const TR   = T_F + 459.67;  // Rankine
     const A_in2 = Math.PI / 4 * D_in * D_in;
-    const Pc_psia = fluidPc ? fluidPc * 14.5038 : 3208;
+     const Pc_default = phase==='liq_gen'?600:phase==='liq_chem'?900:3208;
+    const Pc_psia = fluidPc ? fluidPc * 14.5038 : Pc_default;
 
     // ── FLOW CONVERSION to canonical units ────────────────────────────────────
     let Qc = Q;
@@ -599,9 +617,9 @@ function controlValve_handler(req, res) {
         Qc = m ? (Q * 2.20462) / (rho * 60) : Q / (rho * 60);
       } else { if (m) Qc = Q * 4.40287; }
     } else if (isG) {
-      if      (flowType === 'vol')  { if (m) Qc = Q * 35.3147; }
+      if      (flowType === 'vol')  { if (m) Qc = Q * 37.33; }
       else if (flowType === 'mass') { const lbh = m ? Q * 2.20462 : Q; Qc = (lbh / SG) * 379.5; }
-      else { if (m) Qc = Q * 35.3147; }
+      else { if (m) Qc = Q * 37.33; }
     } else {
       Qc = m ? Q * 2.20462 : Q; // steam → lb/h
     }
@@ -612,13 +630,13 @@ function controlValve_handler(req, res) {
 
     if (isL) {
       // LIQUID — IEC 60534-2-1 §5.1
-      const FF  = Math.min(0.96, 0.96 - 0.28 * Math.sqrt(Math.max(Pva / Pc_psia, 0)));
+      const FF  = Math.max(0.5, Math.min(0.96, 0.96 - 0.28 * Math.sqrt(Math.max(Pva / Pc_psia, 0))));
       dPmax     = Math.max(FL * FL * (P1a - FF * Pva), 0.001);
       dPeff     = Math.min(dP, dPmax);
       Cv        = Qc * Math.sqrt(SG / Math.max(dPeff, 0.0001));
 
       // Reynolds viscosity correction IEC 60534 §5.3
-      Rev = 76000 * Qc / (fluidVisc * Math.sqrt(Math.max(Cv * FL * FL, 0.001)));
+      Rev = 76000 * Qc / (fluidVisc * Math.pow(FL, 1.5) * Math.sqrt(Math.max(Cv, 0.001)));
       FR  = 1.0;
       if (Rev < 10000) {
         if      (Rev < 10)    FR = 0.026 * Math.pow(Rev, 0.33);
@@ -683,7 +701,7 @@ function controlValve_handler(req, res) {
       const isWet      = steamFluid === 'Wet Steam (90%)';
 
       if (isSup) {
-        const Tsat_F = -459.67 + 49.16 * Math.pow(P1a, 0.2345) + 200;
+        const Tsat_F = getTsatF(P1a);
         const Fs     = 1.0 + 0.00065 * Math.max(T_F - Tsat_F, 0);
         Cv = W * Fs / (2.1 * Math.sqrt(Math.max(dPeff_s * (P1a + P2a), 0.0001)));
       } else if (isWet) {
@@ -692,7 +710,8 @@ function controlValve_handler(req, res) {
         Cv = W / (2.1 * Math.sqrt(Math.max(dPeff_s * (P1a + P2a), 0.0001)));
       }
 
-      const v_spec = (85.76 * TR) / (P2a * 144.0);
+      const Z_steam = Math.max(0.7, 1.0 - 0.0022 * P2a / 100);
+      const v_spec = (85.76 * TR * Z_steam) / (P2a * 144.0);
       vel = W * v_spec / (3600.0 * A_in2 / 144.0);
 
       flowState = x_ratio >= 1 ? '🔴 Choked Steam' : '🟢 Steam Flow OK';
