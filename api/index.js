@@ -870,13 +870,13 @@ function controlValve_handler(req, res) {
       tempLabel:       m ? ((T_F - 32) * 5 / 9).toFixed(1) + '°C' : T_F.toFixed(1) + '°F',
       flLabel:         FL.toFixed(3) + (isG ? ' (xT)' : ' (FL)'),
       pipeLabel:       m ? (D_in * 25.4).toFixed(1) + ' mm' : D_in.toFixed(3) + ' in',
-        });
+       
 Fp:              (typeof Fp!=='undefined'&&Fp<1.0)?+Fp.toFixed(4):(typeof Fp_g!=='undefined'&&Fp_g<1.0)?+Fp_g.toFixed(4):1.0,
       FpLabel:         (typeof Fp!=='undefined'&&Fp<1.0)?Fp.toFixed(3):(typeof Fp_g!=='undefined'&&Fp_g<1.0)?Fp_g.toFixed(3):'1.000',
       Cv_min:          Cv_min!=null ? fmtN(Cv_min) : null,
       turndown:        turndown!=null ? +turndown.toFixed(1) : null,
       turndownOk,
-      
+       });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
