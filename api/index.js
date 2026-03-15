@@ -1942,19 +1942,7 @@ function calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, Ao_Ai) {
     { label: 'Wall conduction', pct: pct(r_w),     color: '#1D9E75' },
   ];
 }
-```
 
-The result will be:
-```
-1908  [blank]
-1909  // ─── UNIT CONVERSION HELPERS ...
-1910  function toSI_temp(...
-      ...
-      [resistance breakdown block]
-      [blank line]
-19XX  // ── SHELL & TUBE ──
-19XX  function calcShellTube(b) {
-19XX    const hFlKey=...
 // ─── SHELL & TUBE ─────────────────────────────────────────────────────────────
 function calcShellTube(b) {
   const hFlKey=b.hFlKey||'water', cFlKey=b.cFlKey||'water';
