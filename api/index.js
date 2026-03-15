@@ -1734,11 +1734,22 @@ function fan_handler(req, res) {
 // Route auto-created at /api/heatxpert by Vercel
 
 export const config = { api: { bodyParser: true } };
+// ─── CORS ALLOWED ORIGINS ──────────────────────────────────────────────────
+const HEATXPERT_ALLOWED_ORIGINS = new Set([
+  'https://multicalci.com',
+  'https://www.multicalci.com',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  // Add your Vercel preview URL here, e.g.:
+  // 'https://multicalci-git-main-yourteam.vercel.app',
+]);
 
 function heatxpert_handler(req, res) {
   // CORS
   const origin = req.headers.origin || '';
-  const allowed = origin.endsWith('.vercel.app') || origin.includes('multicalci.com') || origin === 'http://localhost:3000';
+  const allowed = HEATXPERT_ALLOWED_ORIGINS.has(origin);
+  res.setHeader('Vary', 'Origin');   // required when CORS origin is dynamic
+
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'https://multicalci.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -1794,14 +1805,35 @@ const P_REF_DB = 1.01325;
 const T_REF_DB = 293.15;
 
 const FP = {
-  'water':              {rho:998, mu:0.89,  cp:4.182, k:0.600, name:'Water'},
+  'water': {
+    rho_pts:[[10,999.7],[25,997.0],[50,988.1],[75,974.9],[100,958.4],[150,916.8]],
+    mu_pts: [[10,1.307],[25,0.890],[50,0.547],[75,0.378],[100,0.282],[150,0.183]],
+    cp_pts: [[10,4.192],[25,4.182],[50,4.182],[75,4.190],[100,4.216],[150,4.310]],
+    k_pts:  [[10,0.580],[25,0.607],[50,0.644],[75,0.667],[100,0.679],[150,0.683]],
+    name:'Water'
+  },
+
   'brine-nacl':         {rho:1197,mu:1.8,   cp:3.50,  k:0.500, name:'Brine NaCl 25%'},
   'brine-cacl2':        {rho:1298,mu:2.5,   cp:3.20,  k:0.480, name:'Brine CaCl₂ 30%'},
-  'ethylene-glycol-30': {rho:1040,mu:2.5,   cp:3.80,  k:0.450, name:'Ethylene Glycol 30%'},
+ 'ethylene-glycol-30': {
+    rho_pts:[[0,1054],[20,1040],[40,1027],[60,1014],[80,1000]],
+    mu_pts: [[0,5.6],[20,2.5],[40,1.4],[60,0.85],[80,0.55]],
+    cp_pts: [[0,3.64],[20,3.80],[40,3.90],[60,3.99],[80,4.07]],
+    k_pts:  [[0,0.440],[20,0.450],[40,0.455],[60,0.460],[80,0.462]],
+    name:'Ethylene Glycol 30%'
+  },
+
   'ethylene-glycol-50': {rho:1078,mu:4.8,   cp:3.50,  k:0.380, name:'Ethylene Glycol 50%'},
   'propylene-glycol-30':{rho:1020,mu:2.2,   cp:3.90,  k:0.430, name:'Propylene Glycol 30%'},
   'propylene-glycol-50':{rho:1042,mu:5.5,   cp:3.60,  k:0.350, name:'Propylene Glycol 50%'},
-  'crude-oil-light':    {rho:850, mu:10,    cp:2.10,  k:0.140, name:'Crude Oil (Light)'},
+ 'crude-oil-light': {
+    rho_pts:[[20,855],[40,840],[60,825],[80,810],[100,795]],
+    mu_pts: [[20,15.0],[40,8.0],[60,4.5],[80,2.8],[100,1.9]],
+    cp_pts: [[20,2.00],[50,2.10],[80,2.20],[100,2.28]],
+    k_pts:  [[20,0.142],[60,0.138],[100,0.133]],
+    name:'Crude Oil (Light)'
+  },
+
   'crude-oil-heavy':    {rho:950, mu:100,   cp:1.90,  k:0.120, name:'Crude Oil (Heavy)'},
   'diesel':             {rho:840, mu:3.5,   cp:2.00,  k:0.130, name:'Diesel'},
   'gasoline':           {rho:740, mu:0.6,   cp:2.20,  k:0.140, name:'Gasoline'},
@@ -1820,9 +1852,18 @@ const FP = {
   'natural-gas':        {rho:0.720,mu:0.0110,cp:2.200,k:0.0350,name:'Natural Gas',    MW:17.00,Tc:200.0,Pc:46.0, omega:0.012},
   'methane':            {rho:0.664,mu:0.0109,cp:2.220,k:0.0340,name:'Methane',        MW:16.04,Tc:190.6,Pc:46.1, omega:0.011},
   'co2':                {rho:1.842,mu:0.0147,cp:0.850,k:0.0168,name:'Carbon Dioxide', MW:44.01,Tc:304.2,Pc:73.8, omega:0.239},
-  'steam':              {rho:0.598,mu:0.0120,cp:2.010,k:0.0250,name:'Steam',          MW:18.02,Tc:647.1,Pc:220.6,omega:0.345},
+'steam': {
+    rho:0.598, mu:0.0120, cp:2.010, k:0.0250,
+    mu_pts: [[100,0.01227],[150,0.01415],[200,0.01615],[300,0.02008],[400,0.02449]],
+    k_pts:  [[100,0.02479],[150,0.02897],[200,0.03355],[300,0.04345],[400,0.05476]],
+    cp_pts: [[100,2.042],[150,1.980],[200,1.975],[300,1.997],[400,2.059]],
+    MW:18.02, Tc:647.1, Pc:220.6, omega:0.345,
+    hvap:2257, Tsat:100,
+    name:'Steam'
+  },
+
   'ammonia-gas':        {rho:0.730,mu:0.0101,cp:2.190,k:0.0246,name:'Ammonia Gas',    MW:17.03,Tc:405.6,Pc:113.5,omega:0.253},
-  'ammonia-liquid':     {rho:610, mu:0.25,  cp:4.70,  k:0.500, name:'Ammonia (Liquid)'},
+  'ammonia-liquid':     {rho:610, mu:0.25,  cp:4.70,  k:0.500, hvap:1370, Tsat:-33, name:'Ammonia (Liquid)'},
   'ethanol':            {rho:790, mu:1.20,  cp:2.46,  k:0.170, name:'Ethanol'},
   'methanol':           {rho:792, mu:0.60,  cp:2.53,  k:0.210, name:'Methanol'},
   'acetone':            {rho:790, mu:0.32,  cp:2.15,  k:0.160, name:'Acetone'},
@@ -1833,9 +1874,9 @@ const FP = {
   'naoh-50':            {rho:1530,mu:15,    cp:2.80,  k:0.450, name:'NaOH 50%'},
   'naoh-25':            {rho:1280,mu:3.0,   cp:3.40,  k:0.500, name:'NaOH 25%'},
   'acetic-acid':        {rho:1050,mu:1.2,   cp:2.10,  k:0.190, name:'Acetic Acid'},
-  'r134a':              {rho:1200,mu:0.20,  cp:1.43,  k:0.080, name:'R-134a'},
+  'r134a':              {rho:1200,mu:0.20,  cp:1.43,  k:0.080, hvap:198,  Tsat:-26, name:'R-134a'},
   'r410a':              {rho:1060,mu:0.15,  cp:1.77,  k:0.080, name:'R-410A'},
-  'r717':               {rho:610, mu:0.25,  cp:4.70,  k:0.500, name:'R-717 (Ammonia)'},
+  'r717':               {rho:610, mu:0.25,  cp:4.70,  k:0.500, hvap:1370, Tsat:-33, name:'R-717 (Ammonia)'},
   'milk':               {rho:1030,mu:2.0,   cp:3.90,  k:0.550, name:'Milk'},
   'juice':              {rho:1050,mu:3.0,   cp:3.80,  k:0.540, name:'Fruit Juice'},
   'beer':               {rho:1010,mu:1.5,   cp:4.00,  k:0.580, name:'Beer'},
@@ -1850,6 +1891,32 @@ const KMAT = {cs:50, ss304:16, ss316:14, copper:385, titanium:21, inconel:10, ni
 
 // Normalize fluid key lookup (case-insensitive)
 function getFluid(key) { return FP[(key||"").toLowerCase().trim()] || FP.water; }
+
+// ─── TEMPERATURE INTERPOLATION HELPER ───────────────────────────────────────
+function interpProp(pts, T) {
+  if (!pts || pts.length === 0) return null;
+  if (T <= pts[0][0])              return pts[0][1];
+  if (T >= pts[pts.length-1][0])   return pts[pts.length-1][1];
+  for (let i = 1; i < pts.length; i++) {
+    if (T <= pts[i][0]) {
+      const [T0,v0] = pts[i-1], [T1,v1] = pts[i];
+      return v0 + (v1-v0)*(T-T0)/(T1-T0);
+    }
+  }
+}
+
+function getFluidAtT(key, T_degC) {
+  const raw = FP[(key||'').toLowerCase().trim()] || FP.water;
+  return {
+    rho:  raw.rho_pts  ? interpProp(raw.rho_pts,  T_degC) : raw.rho,
+    mu:   raw.mu_pts   ? interpProp(raw.mu_pts,   T_degC) : raw.mu,
+    cp:   raw.cp_pts   ? interpProp(raw.cp_pts,   T_degC) : raw.cp,
+    k:    raw.k_pts    ? interpProp(raw.k_pts,    T_degC) : raw.k,
+    name: raw.name, MW: raw.MW, Tc: raw.Tc, Pc: raw.Pc,
+    omega: raw.omega, hvap: raw.hvap, Tsat: raw.Tsat
+  };
+}
+
 
 // ─── FLUID PROPERTY FUNCTIONS ─────────────────────────────────────────────────
 function calcZ(fluid, T_K, P_bar) {
@@ -1921,8 +1988,12 @@ function fluidAtConditions(fluidKey, T_mean_degC, P_bar_abs) {
     Z_val = calcZ(fluid, T_K, P);
     method = (fluid.MW && fluid.Tc && fluid.Pc) ? (P/(fluid.Pc||1)>1.0?'Peng-Robinson':'Pitzer virial') : 'ideal gas (no crit. props)';
   }
-  return { rho:fluidRhoActual(fluid,T_mean_degC,P_bar_abs), mu:fluidMuActual(fluid,T_mean_degC),
-    cp:fluid.cp, k:fluidKActual(fluid,T_mean_degC), name:fluid.name, Z:Z_val, zMethod:method, _isGas:isGas };
+const tProps = getFluidAtT(normalizedKey, T_mean_degC);
+  const rhoFinal = isGas ? fluidRhoActual(fluid,T_mean_degC,P_bar_abs) : tProps.rho;
+  return { rho:rhoFinal, mu:tProps.mu, cp:tProps.cp, k:tProps.k,
+    name:fluid.name, Z:Z_val, zMethod:method, _isGas:isGas,
+    hvap:fluid.hvap, Tsat:fluid.Tsat };
+
 }
 
 // ─── LMTD CALCULATION ─────────────────────────────────────────────────────────
@@ -1992,6 +2063,37 @@ Nu = Math.max(Nu, 0.023*Math.pow(Re,0.8)*Math.pow(Pr,0.4)); // floor
   }
   return {h:Nu*k/Di_m, Re, vel, Nu};
 }
+// ─── FILM CONDENSATION HTC (Nusselt) ────────────────────────────────────────
+// orientation: "horizontal" (default for S&T) or "vertical"
+function calcHcondense(fluid, Twall_degC, OD_m, L_m, orientation) {
+  const hvap  = (fluid.hvap || 2257) * 1000;     // J/kg
+  const Tsat  = fluid.Tsat  || 100;              // °C at ~1 bar
+  const dT    = Math.max(Math.abs(Tsat - Twall_degC), 1.0);
+  const rho   = fluid.rho;
+  const mu    = (fluid.mu || 0.28) * 1e-3;
+  const k     = fluid.k   || 0.68;
+  const g     = 9.81;
+  let h;
+  if (orientation === "vertical") {
+    // Nusselt vertical tube/plate
+    h = 0.943 * Math.pow((rho*rho*g*hvap*k*k*k) / (mu*dT*Math.max(L_m,0.01)), 0.25);
+  } else {
+    // Nusselt horizontal tube (default for S&T condensers)
+    h = 0.725 * Math.pow((rho*rho*g*hvap*k*k*k) / (mu*dT*Math.max(OD_m,0.001)), 0.25);
+  }
+  return Math.min(Math.max(h, 500), 25000);   // clamp to realistic range
+}
+
+// ─── CHEN CORRELATION — FLOW BOILING / EVAPORATING ──────────────────────────
+function calcHboiling(fluid, tubeRes_h, tubeRes_Re) {
+  // Simplified Chen: h_total = F*h_forced + S*h_nucleate
+  const Xtt  = 0.9;
+  const F    = 2.35 * Math.pow(1/Xtt + 0.213, 0.736);
+  const S    = 1 / (1 + 2.53e-6 * Math.pow(Math.max(tubeRes_Re, 1), 1.17));
+  const h_nb = 0.00122 * Math.pow(Math.max(fluid.k,0.05), 0.79) / (fluid.mu * 1e-3);
+  return F * tubeRes_h + S * h_nb;
+}
+
 
 // ─── BELL-DELAWARE SHELL-SIDE ────────────────────────────────────────────────
 function calcBellDelaware(fluid, massFlowKgS, shellID_m, OD_m, pitch_ratio, bcut_frac, bsp_ratio, L_m, nTubes, tema='C', pitchLayout='triangular') {
@@ -2115,6 +2217,8 @@ function calcShellTube(b) {
   const nPasses=b.hxType==='1-1'?1:b.hxType==='1-2'?2:4;
   const nShells=b.hxType==='2-4'?2:1;
   const tema=b.tema||'C';
+  const shellMode = b.shellMode || 'single-phase';
+  // shellMode values: 'single-phase' | 'condensing' | 'evaporating'
   if (OD<=0||L<=0||OD<=2*tw) throw new Error('Invalid tube geometry');
   const Di=OD-2*tw;
   const massH=hF/3600, massC=cF/3600;
@@ -2146,10 +2250,20 @@ function calcShellTube(b) {
   const tubeVel=massC/(nTubesPerPass*cFluid.rho*A_tube);
   const bdRes=calcBellDelaware(hFluid,massH,shellID,OD,pitch,bcut_frac,bsp_ratio,L_eff,numTubes,tema,pitchLayout);
   const tubeRes=calcHtube(cFluid,massC/nTubesPerPass,Di,L_eff);
-  const hShell=bdRes.hShell, hTube=tubeRes.h;
+  let hTube;
+  if (shellMode === 'condensing') {
+    const Twall = (cTi+cTo)/2;
+    hTube = calcHcondense(cFluid, Twall, OD, L_eff, 'horizontal');
+  } else if (shellMode === 'evaporating') {
+    hTube = calcHboiling(cFluid, tubeRes.h, tubeRes.Re);
+  } else {
+    hTube = tubeRes.h;    // original single-phase path
+  }
+  const hShell=bdRes.hShell;
   const Ao_Ai=OD/Di;
   const U_clean=1/(1/hShell+Ao_Ai/hTube+Rwall);
   const U=1/(1/hShell+Rfo+Ao_Ai/hTube+Ao_Ai*Rfi+Rwall);
+
 
   let lmtdArr;
   if (arr==='parallel') lmtdArr='parallel';
@@ -2187,7 +2301,7 @@ function calcShellTube(b) {
   const st=overSurf<-5?'err':overSurf<5?'warn':'ok';
   const resistanceBreakdown = calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, OD/Di);
   return {
-    hF,cF,Q,Qh,Qc,U,U_clean,area,area_provided,overSurf,lmtd,F,FLMTD,dT1,dT2,lmtdArr,
+    hF,cF,Q,Qh,Qc,U,U_clean,area,area_provided,overSurf,lmtd,F,FLMTD,dT1,dT2,lmtdArr,shellMode,
     numTubes,nTubesPerPass,nPasses,nShells,shellID,Di,OD,L:L_eff,tubeVel,targetVel,velMode,
     shellDP,tubeDp,pdAllowShell,pdAllowTube,bdCorr:{...bdRes,hShell,hTube},
     NTU,eff,balErr,tema,pitchLayout,hTmean,cTmean,hTi,hTo,cTi,cTo,hPop,cPop,
@@ -2283,38 +2397,102 @@ function calcPlate(b) {
   };
 }
 
-// ─── AIR COOLED (SIMPLE) ──────────────────────────────────────────────────────
+// ─── AIR COOLED — IMPROVED (Robinson-Briggs j-factor + fin efficiency) ──────
 function calcAirCooled(b) {
-  const flKey=b.flKey||'water', fluid=getFluid(flKey);
-  const Ti=requireFinite(b.Ti,'Ti'), To=requireFinite(b.To,'To');
-  const F_kgh=requireFinite(b.F,'F'), Tamb=requireFinite(b.Tamb,'Tamb');
-  const dTa=requireFinite(b.dTa,'dTa');
-  const rows=parseFloat(b.rows)||4, bayW=parseFloat(b.bayW)||3;
-  const fmat=b.fmat||'aluminum', fpm=parseFloat(b.fpm)||394;
-  const fanType=b.fanType||'forced';
-  if(To>=Ti) throw new Error('Outlet must be below inlet for air cooling');
-  if(Tamb>=To) throw new Error('Ambient must be below process outlet');
-  if(dTa<=0) throw new Error('Air temperature rise must be positive');
-  const Q=(F_kgh/3600)*fluid.cp*(Ti-To);
-  const TairOut=Tamb+dTa;
-  const lmtdRes=calcLMTD(Ti,To,Tamb,TairOut,'cross1');
-  if (!lmtdRes.lmtd) throw new Error(lmtdRes.err||'LMTD error');
-  const {lmtd,F,dT1,dT2}=lmtdRes, FLMTD=lmtd*F;
-  const cpAir=1.005, rhoAir=1.18;
-  const mAir=Q*1000/(cpAir*1000*dTa);
-  const etaFin={aluminum:0.92,copper:0.95,ss:0.80}[fmat]||0.92;
-  let U_bare=fluid.k>0.4?80:fluid.k<0.05?20:50;
-  const finArea_ratio=Math.min(fpm/1000*0.025*2/0.001,30);
-  const U_eff=U_bare*(1+etaFin*finArea_ratio)*0.5;
-  const U=Math.min(U_eff,900);
-  const area=Q*1000/(U*FLMTD);
-  const tubeLen=9, bayArea=rows*tubeLen*bayW*0.025;
-  const numBays=Math.max(1,Math.ceil(area/Math.max(bayArea,0.1)));
-  const fanPower=mAir*0.30/rhoAir/0.65;
-  const ApproachTemp=To-Tamb;
-  const st=ApproachTemp<5?'err':ApproachTemp<15?'warn':'ok';
-  const stTxt=ApproachTemp<5?'✗ Approach Too Close':ApproachTemp<15?'⚠ Close Approach':'✓ Design Acceptable';
-  return {Q,Ti,To,Tamb,TairOut,mAir,U,area,numBays,FLMTD,lmtd,F,fanPower,etaFin,ApproachTemp,st,stTxt,fluidName:fluid.name,warns:[]};
+  const flKey  = b.flKey || 'water';
+  const fluid  = getFluid(flKey);
+  const Ti     = requireFinite(b.Ti,   'Ti');
+  const To     = requireFinite(b.To,   'To');
+  const F_kgh  = requireFinite(b.F,    'F');
+  const Tamb   = requireFinite(b.Tamb, 'Tamb');
+  const dTa    = Math.max(parseFloat(b.dTa)  || 15,  1);
+
+  // Tube & fin geometry — all with defaults matching typical API 661 bundle
+  const tubeOD  = (parseFloat(b.tubeOD)  || 25.4)  / 1000;  // m
+  const tubeID  = (parseFloat(b.tubeID)  || 20.0)  / 1000;
+  const finH    = (parseFloat(b.finH)    || 12.5)  / 1000;
+  const finThk  = (parseFloat(b.finThk)  || 0.40)  / 1000;
+  const finDens = parseFloat(b.finDens)  || 394;             // fins/m
+  const pitchT  = (parseFloat(b.pitchT)  || 63.5)  / 1000;  // transverse pitch m
+  const nRows   = Math.max(1, parseInt(b.rows)   || 4);
+  const nTubes  = Math.max(1, parseInt(b.nTubes) || 40);     // tubes per row × bays
+  const tubeLen = parseFloat(b.tubeLen)  || 6.0;             // m
+  const Rfo     = parseFloat(b.Rfo)      || 0.0002;          // fouling m²K/W
+  const kFin    = 222;                                        // aluminium W/mK
+
+  if (To >= Ti)   throw new Error('Outlet must be below inlet for air cooling');
+  if (Tamb >= To) throw new Error('Ambient must be below process outlet');
+
+  // Heat duty kW
+  const Q = (F_kgh / 3600) * fluid.cp * (Ti - To);
+  const TairOut = Tamb + dTa;
+
+  // Extended surface geometry
+  const finOD       = tubeOD + 2 * finH;
+  const finSpacing  = 1.0 / finDens;
+  const A_fin_1fin  = Math.PI / 4 * (finOD*finOD - tubeOD*tubeOD) * 2;
+  const A_bare_1gap = Math.PI * tubeOD * (finSpacing - finThk);
+  const A_per_m     = (A_fin_1fin + A_bare_1gap) * finDens;
+  const A_total     = A_per_m * tubeLen * nTubes;         // total ext. surface m²
+  const A_inside    = Math.PI * tubeID * tubeLen * nTubes; // total inside surface m²
+
+  // Air-side: minimum free-flow area and mass velocity
+  const clearT   = pitchT - finOD;
+  const A_min    = Math.max(clearT * tubeLen * nTubes / nRows, 0.001);
+  const mAir     = Q * 1000 / (1005 * dTa);              // kg/s (energy balance)
+  const G_max    = mAir / A_min;                          // kg/m²s
+
+  // Robinson-Briggs j-factor
+  const Re_fin   = G_max * finOD / 1.84e-5;              // air visc ~1.84e-5 Pa•s
+  const s_D      = Math.max((finSpacing - finThk) / finOD, 0.05);
+  const j        = 0.1378 * Math.pow(Math.max(Re_fin, 500), -0.2178)
+                           * Math.pow(s_D, -0.1285);
+  const h_air_bare = j * G_max * 1005 / Math.pow(0.72, 2/3);  // W/m²K
+
+  // Fin efficiency — Schmidt approximation
+  const m_fin    = Math.sqrt(2 * h_air_bare / (kFin * Math.max(finThk, 0.0001)));
+  const mH       = m_fin * finH;
+  const eta_fin  = Math.tanh(mH) / Math.max(mH, 1e-9);
+  const phi_fin  = A_fin_1fin / (A_fin_1fin + A_bare_1gap);
+  const eta_0    = 1 - phi_fin * (1 - eta_fin);           // overall surface efficiency
+  const h_eff    = eta_0 * h_air_bare;
+
+  // Tube-side HTC (Dittus-Boelter)
+  const tubeFluid = fluidAtConditions(flKey, (Ti+To)/2, parseFloat(b.Pop)||P_REF_DB);
+  const tubeRes   = calcHtube(tubeFluid, F_kgh/3600/nTubes, tubeID, tubeLen);
+
+  // Overall U on extended-surface basis
+  const Ao_Ai  = A_total / Math.max(A_inside, 0.001);
+  const U      = 1 / (Ao_Ai/tubeRes.h + Ao_Ai*Rfo + 1/h_eff);
+
+  // LMTD crossflow with F correction
+  const lmtdRes = calcLMTD(Ti, To, Tamb, TairOut, 'cross1');
+  if (!lmtdRes.lmtd) throw new Error(lmtdRes.err || 'LMTD error');
+  const { lmtd, F, dT1, dT2 } = lmtdRes;
+  const FLMTD  = lmtd * F;
+  const A_req  = Q * 1000 / (U * FLMTD);
+  const overDesign = (A_total / A_req - 1) * 100;
+
+  // Fan power estimate (simple fan-law approach)
+  const rhoAir   = 1.18;
+  const V_air    = mAir / rhoAir;           // m³/s volumetric
+  const dP_air   = 0.8 * nRows * G_max * G_max / (2 * rhoAir);  // Pa simple
+  const fanPower = V_air * dP_air / (0.65 * 1000);  // kW at 65% efficiency
+
+  const ApproachTemp = To - Tamb;
+  const st     = ApproachTemp<5?'err':ApproachTemp<15?'warn':'ok';
+  const stTxt  = ApproachTemp<5?'✗ Approach Too Close':ApproachTemp<15?'⚠ Close Approach':'✓ Design Acceptable';
+  const warns  = [];
+  if (Re_fin < 2000)    warns.push('Airside Re='+Re_fin.toFixed(0)+' below validated range (2000–50000)');
+  if (eta_fin < 0.60)   warns.push('Fin efficiency '+( eta_fin*100).toFixed(1)+'% is low');
+  if (overDesign < 0)   warns.push('Insufficient tube area — increase nTubes or tube length');
+
+  return {
+    Q, Ti, To, Tamb, TairOut, mAir, U, A_total, A_req, overDesign,
+    FLMTD, lmtd, F, dT1, dT2, h_eff, h_air_bare, eta_fin, eta_0,
+    Re_fin, tubeVel:tubeRes.vel, fanPower, ApproachTemp, st, stTxt,
+    fluidName: fluid.name, warns
+  };
 }
 
 // ─── DOUBLE PIPE ─────────────────────────────────────────────────────────────
