@@ -1509,6 +1509,7 @@ function selectFluid(name) {
     document.getElementById('visc').value  = f.mu.toExponential(4);
   }
   run(); // API will auto-correct Z & μ for operating T/P
+  updateFluidProps(); // immediately preview density + μ + Z for current T/P
 }
 
 function clearChipSel() {
@@ -1537,33 +1538,130 @@ function clampZ() {
 }
 
 function updateFluidProps() {
-  if (!selectedFluidKey) return;
-  const f = FLUID_DB[selectedFluidKey];
-  if (!f || f.t !== 'g') return;
-  const T_K = (UNITS === 'metric'
+  const f = FLUID_DB[selectedFluidKey] || null;
+  const cat = document.getElementById('f_cat').value;
+
+  const T_C  = UNITS === 'metric'
     ? parseFloat(document.getElementById('t_val').value)
-    : (parseFloat(document.getElementById('t_val').value) - 32) * 5/9) + 273.15;
-  const P_Pa = (UNITS === 'metric'
+    : (parseFloat(document.getElementById('t_val').value) - 32) * 5/9;
+  const T_K  = T_C + 273.15;
+  const P_bar = UNITS === 'metric'
     ? parseFloat(document.getElementById('p_val').value)
-    : parseFloat(document.getElementById('p_val').value) * 0.0689476) * 1e5;
-  // Sutherland viscosity
-  if (f.mu_ref && f.T_ref && f.S) {
-    const mu = f.mu_ref * Math.pow(T_K / f.T_ref, 1.5) * (f.T_ref + f.S) / (T_K + f.S);
-    document.getElementById('visc').value = Math.max(1e-7, Math.min(1e-3, mu)).toExponential(4);
-    document.getElementById('mu_auto_badge').style.display = '';
-  }
-  // Pitzer Z
-  if (f.Tc && f.Pc && f.omega !== undefined) {
-    const Tr = T_K / f.Tc;
-    const Pr = (P_Pa / 1e6) / f.Pc;
-    if (Tr >= 0.5) {
-      const B0 = 0.083 - 0.422 / Math.pow(Tr, 1.6);
-      const B1 = 0.139 - 0.172 / Math.pow(Tr, 4.2);
-      const Z  = Math.max(0.5, Math.min(1.2, 1 + (B0 + f.omega * B1) * Pr / Tr));
-      document.getElementById('zf').value = Z.toFixed(5);
-      document.getElementById('z_auto_badge').style.display = '';
+    : parseFloat(document.getElementById('p_val').value) * 0.0689476;
+  const P_Pa = P_bar * 1e5;
+
+  let rho_preview = null;
+
+  // ── GAS ──────────────────────────────────────────────────────────────
+  if (cat === 'gas' && f && f.t === 'g') {
+    // Sutherland viscosity
+    if (f.mu_ref && f.T_ref && f.S) {
+      const mu = f.mu_ref * Math.pow(T_K / f.T_ref, 1.5) * (f.T_ref + f.S) / (T_K + f.S);
+      document.getElementById('visc').value = Math.max(1e-7, Math.min(1e-3, mu)).toExponential(4);
+      document.getElementById('mu_auto_badge').style.display = '';
     }
+    // Pitzer Z
+    let Z = parseFloat(document.getElementById('zf').value) || 1;
+    if (f.Tc && f.Pc && f.omega !== undefined) {
+      const Tr = T_K / f.Tc;
+      const Pr = (P_Pa / 1e6) / f.Pc;
+      if (Tr >= 0.5) {
+        const B0 = 0.083 - 0.422 / Math.pow(Tr, 1.6);
+        const B1 = 0.139 - 0.172 / Math.pow(Tr, 4.2);
+        Z = Math.max(0.5, Math.min(1.2, 1 + (B0 + f.omega * B1) * Pr / Tr));
+        document.getElementById('zf').value = Z.toFixed(5);
+        document.getElementById('z_auto_badge').style.display = '';
+      }
+    }
+    // Gas density: ρ = PM / ZRT
+    const MW = f.M || (parseFloat(document.getElementById('custom_mw').value) || 28.964);
+    rho_preview = (P_Pa * MW) / (Z * 8314.46 * T_K);
+
+  // ── LIQUID ───────────────────────────────────────────────────────────
+  } else if (cat === 'liquid') {
+    const sg = f ? f.sg : parseFloat(document.getElementById('d_val').value);
+    if (sg > 0) rho_preview = sg * 1000;
+
+  // ── STEAM ────────────────────────────────────────────────────────────
+  } else if (cat === 'steam') {
+    rho_preview = _steamDensityPreview(P_bar, T_C);
   }
+
+  // ── UPDATE DENSITY DISPLAY ───────────────────────────────────────────
+  if (rho_preview != null && rho_preview > 0 && isFinite(rho_preview)) {
+    setOut('out_dens', rho_preview.toFixed(4) + ' kg/m³');
+  }
+}
+
+// Client-side IAPWS-IF97 steam density preview (Region 1 + Region 2)
+function _steamDensityPreview(p_bar, t_c) {
+  const P_MPa = p_bar * 0.1;
+  const T     = t_c + 273.15;
+  const R     = 461.526;
+  if (P_MPa <= 0 || T <= 0) return null;
+
+  // Saturation temperature estimate
+  function T_sat(p) {
+    if (p <= 0) return 373.15;
+    const n7 = -0.23855557567849, n8 = 650.17534844798;
+    const n1=-17.073846940092, n2=12020.82470247, n3=-3232555.0322333;
+    const n4=14.91510861353,   n5=-4823.2657361591, n6=405113.40542057;
+    const vv = p + n7 / (p - n8);
+    const AA = vv*vv + 1167.0521452767*vv - 724213.16703206;
+    const BB = n1*vv*vv + n2*vv + n3;
+    const CC = n4*vv*vv + n5*vv + n6;
+    const disc = BB*BB - 4*AA*CC;
+    if (disc < 0) return 647.1;
+    return 2*CC / (-BB + Math.sqrt(disc));
+  }
+
+  const T_s = T_sat(P_MPa);
+
+  // Region 1 — liquid / subcooled
+  if (T < T_s - 0.5 || T <= 273.15) {
+    const tau1 = 1386 / T, pi1 = P_MPa / 16.53;
+    const I1 = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,3,3,4,4,4,5,8,8,21,23,29,30,31,32];
+    const J1 = [-2,-1,0,1,2,3,4,5,-9,-7,-1,0,-3,0,-3,1,-8,-6,-4,1,-3,-2,-4,-9,-7,-1,4,5];
+    const n1c = [
+      0.14632971213167,-0.84548187169114,-3.7563603672040,3.3855169168385,
+      -0.95791963387872,0.15772038513228,-0.016616417199501,0.00081214629983568,
+      -0.28319080123804e-3,-0.60706301565874e-3,-0.018990068218419,-0.032529748770505,
+      -0.21841717175414e-1,-0.52838357969930e-4,-0.47184321073267e-3,
+      -0.30001780793026e-3,0.47661393906987e-4,-0.44141845330846e-5,
+      -0.72694996297594e-15,-0.31679644845054e-4,-0.28270797985312e-5,
+      -0.85205128120103e-9,-0.22425281908000e-5,-0.65171222895601e-6,
+      -0.14341729937924e-12,-0.40516996860117e-6,-0.12734301741641e-8,
+      -0.17424871230634e-9
+    ];
+    let dphi = 0;
+    for (let i = 0; i < n1c.length; i++)
+      dphi += -n1c[i] * (I1[i]||0) * Math.pow(7.1 - pi1, (I1[i]||0) - 1) * Math.pow(tau1 - 1.222, J1[i]||0);
+    const v = (R * T / (P_MPa * 1e6)) * pi1 * dphi;
+    return v > 0 ? 1/v : null;
+  }
+
+  // Region 2 — superheated steam
+  const tau2 = 540 / T, pi2 = P_MPa;
+  const Ir = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,5,6,6,6,7,7,7,8,8,9,10,10,10,16,16,18,20,20,20,21,22,23,24,24,24];
+  const Jr = [0,1,2,3,6,1,2,4,7,36,0,1,3,6,35,1,2,3,7,3,16,35,0,11,25,8,36,13,4,10,14,29,50,57,20,35,48,21,53,39,26,40,58];
+  const nr = [
+    -1.7731742473213e-3,-1.7834862292358e-2,-4.5996013696365e-2,-5.7581259083432e-2,
+    -5.0325278727930e-2,-3.3032641670203e-5,-1.8948987516315e-4,-3.9392777243355e-3,
+    -4.3797295650573e-2,-2.6674547914087e-5,2.0481737692310e-7,4.3870667284435e-7,
+    -3.2277677238570e-5,-1.5033924542148e-2,-4.0668253562950e-2,-7.8847309559367e-10,
+    1.2790717852285e-8,4.8225372718507e-7,2.2922076337661e-6,-1.6714766451061e-11,
+    -2.1171472321355e-3,-2.3895741934104e-2,-5.9059564324270e-18,-1.2621808899101e-6,
+    -3.8946842435739e-2,1.1256211360459e-11,-8.2311340897998e-2,1.9809712802088e-8,
+    1.0406965210174e-19,-1.0234747095929e-13,-1.0018179379511e-9,-8.0882908646985e-11,
+    1.0693031879409e-1,-3.3662250574171e-1,8.9185845355421e-25,3.0629316876232e-13,
+    -4.2002467698208e-6,-5.9056029685639e-26,3.7826947613457e-6,-1.2768608934681e-15,
+    7.3087610595061e-29,5.5414715350778e-17,-9.4369707241210e-7
+  ];
+  let phiR_pi = 0;
+  for (let i = 0; i < nr.length; i++)
+    if (Ir[i] !== 0) phiR_pi += nr[i] * Ir[i] * Math.pow(pi2, Ir[i]-1) * Math.pow(tau2 - 0.5, Jr[i]);
+  const v2 = (R * T / (P_MPa * 1e6)) * pi2 * (1/pi2 + phiR_pi);
+  return v2 > 0 ? 1/v2 : null;
 }
 
 // ─── PIPE CHIPS ───────────────────────────────────────────────────────
