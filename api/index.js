@@ -515,13 +515,12 @@ function compressor_handler(req, res) {
 // Vercel Serverless API — Control Valve Sizing
 // File: /api/control-valve.js
 // ALL math, unit conversions, validation done HERE — nothing in client
-// Protected by secret key — requests without key return 403
 // ============================================================
 
 function controlValve_handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method Not Allowed' });
 
