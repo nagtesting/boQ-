@@ -857,7 +857,6 @@ function setCharType(type,el){
 }
 
 // ── MAIN CALC — API only, no math client side ─────────────────────────────
-const _K = ['c','v','-','k','3','y','9','x'].join('');
 const API_URL = '/api/control-valve';
 let _calcDebounce = null;
 function calc(){
@@ -878,7 +877,7 @@ async function _calcAsync(){
   try {
     const resp = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'x-api-key': _K },
+      headers: { 'Content-Type':'application/json' },
       body: JSON.stringify({
         phase:     PHASE,
         flowType:  FTYPE,
@@ -894,6 +893,8 @@ async function _calcAsync(){
         k:         document.getElementById('kval').value,
         Z:         document.getElementById('zf').value,
         steamFluid, fluidVisc, fluidPc,
+        charType:  document.getElementById('valveChar').value,
+        R_trim:    document.getElementById('rangeR').value,
       }),
     });
     apiResult = await resp.json();
@@ -906,42 +907,29 @@ async function _calcAsync(){
 
   // ── DISPLAY ONLY — no calculations here ──────────────────────────────────
   const r  = apiResult;
-  const pu = m ? 'bar' : 'psi';
-  const vU = m ? 'm/s' : 'ft/s';
-  const fmtN = v => (v==null||isNaN(v)||!isFinite(v)) ? '—' : v<1 ? (+v).toFixed(3) : v<10 ? (+v).toFixed(2) : (+v).toFixed(1);
-  const dp2  = v => v==null ? '—' : (m?(v/14.5038).toFixed(3):v.toFixed(2))+' '+pu;
+  const vU = m ? 'm/s' : 'ft/s';  // used for velStatus label only
 
-  setEl('resCv', fmtN(r.Cv));
-  setEl('resKv', fmtN(r.Kv));
-  setEl('resVel', fmtN(r.vel)+' '+vU);
+  setEl('resCv', r.CvLabel ?? '—');
+  setEl('resKv', r.KvLabel ?? '—');
+  setEl('resVel', r.velLabel ?? '—');
   setEl('velStatus', r.velOk ? '✓ Acceptable' : '⚠ High (limit '+r.velLim+' '+vU+')');
   document.getElementById('velStatus').style.color = r.velOk ? 'var(--green)' : 'var(--gold)';
 
-  // Valve size chips
-  const R_trim   = parseFloat(document.getElementById('rangeR').value)||50;
-  const charType2= document.getElementById('valveChar').value;
-  const openPct_eq = (CvReq, szCv) => {
-    const ratio = Math.min(CvReq/szCv, 1.5);
-    if(charType2==='equal_pct'){
-      const h = ratio<=0?0:1+Math.log(Math.max(ratio,1/R_trim))/Math.log(R_trim);
-      return Math.max(0,Math.min(h*100,200));
-    } else if(charType2==='quick_open'){ return Math.min(ratio*ratio*100,200); }
-    else { return Math.min(ratio*100,200); }
-  };
+  // Valve size chips — open% now computed server-side
   const s0=r.sizes.smaller, s1=r.sizes.rec, s2=r.sizes.larger;
-  const openPn = openPct_eq(r.Cv, s1.Cv_rated);
+  const openPn = r.openPct_rec ?? 0;
   lastOpenPct  = Math.min(openPn, 100);
 
-  setEl('vsz1', s0.s); setEl('vop1', s0.s===s1.s?'—':openPct_eq(r.Cv,s0.Cv_rated).toFixed(0)+'% open');
+  setEl('vsz1', s0.s); setEl('vop1', s0.s===s1.s?'—':(r.openPct_smaller??0).toFixed(0)+'% open');
   setEl('vsz2', s1.s); setEl('vop2', openPn.toFixed(0)+'% open');
-  setEl('vsz3', s2.s); setEl('vop3', s2.s===s1.s?'—':openPct_eq(r.Cv,s2.Cv_rated).toFixed(0)+'% open');
+  setEl('vsz3', s2.s); setEl('vop3', s2.s===s1.s?'—':(r.openPct_larger??0).toFixed(0)+'% open');
 
   setEl('dv_state', r.flowState);
   setEl('dv_noise', r.noiseDb+' dB');
-  setEl('dv_open',  openPn.toFixed(1)+'%');
+  setEl('dv_open',  openPn.toFixed(1)+'%');  // openPn from API
   setEl('dv_re',  r.Rev  != null ? r.Rev.toExponential(2)  : 'N/A (gas)');
   setEl('dv_dp',  r.dpRatioPct != null ? r.dpRatioPct+'%' : '—');
-  setEl('dv_flap', dp2(r.dPmax));
+  setEl('dv_flap', r.dPmaxLabel ?? '—');
   setEl('dv_y',   r.Y    != null ? r.Y.toFixed(4) : '—');
 
   colorEl('dv_state', r.flowState&&r.flowState.includes('🟢')?'ok':r.flowState&&(r.flowState.includes('🟡')||r.flowState.includes('🟠'))?'warn':'danger');
@@ -955,17 +943,17 @@ async function _calcAsync(){
   setEl('pb_dp_txt',    (r.dpRatioPct||0)+'%');
   setEl('pb_noise_txt', r.noiseDb+' dB (estimated)');
 
-  setEl('pt_dp',    dp2(r.dP));
-  setEl('pt_dpeff', dp2(r.dPeff));
-  setEl('pt_dpmax', r.dPmaxLabel || dp2(r.dPmax));
-  setEl('pt_vel',   fmtN(r.vel)+' '+vU);
+  setEl('pt_dp',    r.dPLabel    ?? '—');
+  setEl('pt_dpeff', r.dPeffLabel ?? '—');
+  setEl('pt_dpmax', r.dPmaxLabel ?? '—');
+  setEl('pt_vel',   r.velLabel ?? '—');
   setEl('pt_sg',    r.sgLabel || '—');
   setEl('pt_temp',  r.tempLabel || '—');
   setEl('pt_fl',    r.flLabel  || '—');
   setEl('pt_pipe',  r.pipeLabel|| '—');
 
   const allWarns = r.warns || [];
-  if(openPn>100) allWarns.push({cls:'warn-red',txt:`⚠️ Cv ${fmtN(r.Cv)} exceeds rated Cv of ${s1.s} (${s1.Cv_rated}). Select: ${s2.s}.`});
+  // >100% open warning now generated server-side in API warns[]
 
   renderWarnings(allWarns);
   updateCharChart();
