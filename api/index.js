@@ -7456,9 +7456,9 @@ function calcNPSH(inputs) {
   // receiver, liquid ammonia accumulator, condensate drum) the vessel pressure
   // equals the vapour pressure at the bulk liquid temperature. Any apparent
   // difference is instrument error, not real subcooling.
-  // Threshold: if Pv/P_abs > 0.97 (within 3%) treat as saturated service.
+  // Threshold: if Pv/P_abs > 0.90 (within 3%) treat as saturated service.
   const saturationRatio = isVessel ? (pv_Pa / P_abs_Pa) : 0;
-  const isSaturatedService = isVessel && saturationRatio >= 0.97;
+  const isSaturatedService = isVessel && saturationRatio >= 0.90;
   // In saturated service the pressure terms cancel → NPSHa = z − hf only
   const H_abs_effective = isSaturatedService ? h_vp : H_abs;
 
