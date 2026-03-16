@@ -7399,6 +7399,30 @@ const platePack = p.platePack === true || p.platePack === 'true';
 }
 
 // ── CALC 4: PRESSURE VESSEL THICKNESS (ASME VIII) ─────────────
+const ASME_STRESS_TABLE = {
+  'SA516_70':  { name:'SA-516 Gr 70 (CS)',          S_amb:138, S_200:138, S_260:138, S_315:128, S_370:114, mdmt:-29  },
+  'SA516_60':  { name:'SA-516 Gr 60 (CS)',          S_amb:118, S_200:118, S_260:118, S_315:110, S_370: 97, mdmt:-29  },
+  'SA515_70':  { name:'SA-515 Gr 70 (CS HT)',       S_amb:138, S_200:138, S_260:138, S_315:128, S_370:114, mdmt:  0  },
+  'SA387_11':  { name:'SA-387 Gr 11 Cl 2 (Cr-Mo)',  S_amb:155, S_200:155, S_260:155, S_315:150, S_370:145, mdmt:-29  },
+  'SA387_22':  { name:'SA-387 Gr 22 Cl 2 (Cr-Mo)',  S_amb:138, S_200:138, S_260:138, S_315:134, S_370:128, mdmt:-29  },
+  'SA240_304L':{ name:'SA-240 Tp 304L (SS)',         S_amb:115, S_200:107, S_260: 97, S_315: 87, S_370: 80, mdmt:-196 },
+  'SA240_316L':{ name:'SA-240 Tp 316L (SS)',         S_amb:115, S_200:107, S_260: 97, S_315: 87, S_370: 80, mdmt:-196 },
+  'SA240_317L':{ name:'SA-240 Tp 317L (SS)',         S_amb:115, S_200:108, S_260: 99, S_315: 90, S_370: 82, mdmt:-196 },
+  'SA240_2205':{ name:'SA-240 S31803 Duplex 2205',   S_amb:172, S_200:158, S_260:144, S_315:130, S_370:null,mdmt:-50  },
+  'SA333_6':   { name:'SA-333 Gr 6 (LTCS)',          S_amb:138, S_200:138, S_260:138, S_315:128, S_370:null,mdmt:-45  },
+  'SA537_1':   { name:'SA-537 Cl 1 (HSLA)',          S_amb:155, S_200:155, S_260:148, S_315:138, S_370:null,mdmt:-29  },
+};
+
+function asmeStressAtTemp(matKey, T_C) {
+  const m = ASME_STRESS_TABLE[matKey];
+  if (!m) return null;
+  if (!isFinite(T_C)) return m.S_amb;
+  if (T_C <= 100) return m.S_amb;
+  if (T_C <= 230) return m.S_200;
+  if (T_C <= 285) return m.S_260;
+  if (T_C <= 340) return m.S_315;
+  return m.S_370 ?? m.S_315;
+}
 
 function calcPV(p) {
   const P      = toMPag(p.P, p.P_u);
