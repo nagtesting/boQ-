@@ -7842,6 +7842,7 @@ function sanitiseVesselInputs(body) {
       if (!isFinite(lf) || lf <= 0 || lf >= 1) b.llfrac = def.llfrac;
       if (!isFinite(sf_h2p) || sf_h2p <= 0) b.svcFactor = def.svcFactor;
       break;
+      }
 
     case 'v2p':
       applyDefault('tr',     def.tr);
@@ -7854,6 +7855,7 @@ function sanitiseVesselInputs(body) {
       const sf_v2p = parseFloat(b.svcFactor);
       if (!isFinite(sf_v2p) || sf_v2p <= 0) b.svcFactor = def.svcFactor;
       break;
+  }
 
     case '3ph':
       applyDefault('tro',   def.tro);
@@ -7868,6 +7870,7 @@ function sanitiseVesselInputs(body) {
       const sf_3ph = parseFloat(b.svcFactor);
       if (!isFinite(sf_3ph) || sf_3ph <= 0) b.svcFactor = def.svcFactor;
       break;
+}
 
     case 'pv': {
       // Joint efficiency: resolve from category string; ignore raw E from client
