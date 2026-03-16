@@ -7633,10 +7633,6 @@ function calcPV(p) {
     summary: `ASME Sec.VIII Div.1 | ID=${D_mm.toFixed(0)} mm (${(D_mm/25.4).toFixed(2)}") | S=${S.toFixed(1)} MPa | E=${E.toFixed(2)}${isFinite(T_C)?' | T='+T_C.toFixed(0)+'°C':''}${L_eff_m?' | L='+L_eff_m.toFixed(2)+'m':''}`
   };
 }
-    ],
-    summary: `ASME Sec.VIII Div.1 | ID=${D_mm.toFixed(0)} mm (${(D_mm/25.4).toFixed(2)}") | S=${S.toFixed(1)} MPa | E=${E.toFixed(2)}${isFinite(T_C)?' | T='+T_C.toFixed(0)+'°C':''}`
-  };
-}
 
 // ── CALC 5: DEMISTER / MIST ELIMINATOR ───────────────────────
 function calcMist(p) {
