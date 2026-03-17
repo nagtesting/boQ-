@@ -139,6 +139,7 @@ function heatxpert_handler(req, res) {
       case 'wallThick':   return res.json(calcWallThickness(body));
       case 'fouling':     return res.json(calcFouling(body));
       case 'selector':    return res.json(calcSelector(body));
+      case 'geoOptimizer': return res.json(calcGeometryOptimizer(body));
       default:            return res.status(400).json({ error: 'Unknown calcType: ' + calcType });
     }
   } catch (err) {
@@ -805,8 +806,27 @@ function calcShellTube(b) {
   const warns = [];
   if (area_enforcement_note) warns.push('⚠ ' + area_enforcement_note);
   if (!converged) warns.push(`U convergence not fully achieved after ${iterCount} iterations — final deviation ${U_deviation_pct.toFixed(2)}%`);
-  if (tubeVel < 0.5) warns.push('Tube velocity below 0.5 m/s — fouling risk');
-  if (tubeVel > 4)   warns.push('Tube velocity above 4 m/s — erosion risk');
+
+  // Intelligent velocity diagnostics
+  if (tubeVel < 0.5) {
+    const L_for_target = L_eff * (targetVel / Math.max(tubeVel, 0.01));
+    const OD_for_target_mm = Math.round((OD * 1000) * Math.pow(tubeVel / targetVel, 0.5) * 10) / 10;
+    warns.push(
+      `Tube velocity ${tubeVel.toFixed(3)} m/s is below 0.5 m/s — fouling risk. ` +
+      `Caused by area requirement forcing ${numTubes_final} tubes at L=${L_eff.toFixed(1)} m. ` +
+      `To restore ${targetVel} m/s: increase tube length to ~${L_for_target.toFixed(1)} m, ` +
+      `OR use fewer/larger tubes (try OD ≈ ${OD_for_target_mm} mm with same L).`
+    );
+  } else if (tubeVel < targetVel * 0.5 && velMode !== 'fixedtubes') {
+    // velocity significantly below target but above fouling threshold — advisory only
+    const L_for_target = L_eff * (targetVel / Math.max(tubeVel, 0.01));
+    warns.push(
+      `Tube velocity ${tubeVel.toFixed(3)} m/s is well below target ${targetVel} m/s ` +
+      `(area requirement drives ${numTubes_final} tubes). ` +
+      `Consider increasing tube length to ~${L_for_target.toFixed(1)} m to raise velocity closer to target.`
+    );
+  }
+  if (tubeVel > 4) warns.push('Tube velocity above 4 m/s — erosion risk. Increase tube count or OD.');
   if (FLMTD < 5)     warns.push('F×LMTD < 5°C — very small driving force');
   if (F < 0.75 && shellMode === 'single-phase') warns.push(`F correction factor ${F.toFixed(3)} < 0.75 — consider additional shell pass`);
   if (shellDP > pdAllowShell) warns.push(`Shell ΔP ${shellDP.toFixed(3)} bar exceeds allowable`);
@@ -817,6 +837,97 @@ function calcShellTube(b) {
 
   const st = overSurf < -5 ? 'err' : overSurf < 5 ? 'warn' : 'ok';
   const resistanceBreakdown = calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, OD / Di);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DESIGN ADVISOR: when area forces tube count above velocity target,
+  // compute ALL available levers so engineer can choose the right fix
+  // for their constraint (fixed length, fixed shell size, etc.)
+  // ═══════════════════════════════════════════════════════════════════════════
+  let designAdvisor = null;
+
+  if (velMode !== 'fixedtubes' && numTubes_final > numTubes_geo && tubeVel < targetVel * 0.9) {
+    const pitchLen_adv = pitch * OD;
+    const bundleFactor_adv = bundleAreaFactor;
+
+    // LEVER A: Increase tube length (original suggestion)
+    const L_for_target = +(L_eff * targetVel / Math.max(tubeVel, 0.01)).toFixed(1);
+
+    // LEVER B: Increase tube passes — more passes → fewer tubes/pass → higher velocity
+    // Find minimum passes to hit target velocity with current tube count
+    let passAdvice = null;
+    for (let np = nPasses + 2; np <= 8; np += 2) {
+      const nTPP_adv = Math.ceil(numTubes_final / np);
+      const vel_adv = massC / (nTPP_adv * cFluid.rho * A_tube);
+      if (vel_adv >= targetVel * 0.85) {
+        const numTubes_adv = nTPP_adv * np;
+        passAdvice = {
+          passes: np,
+          tubes: numTubes_adv,
+          tubesPerPass: nTPP_adv,
+          velocity: +vel_adv.toFixed(3),
+          shellID_mm: +(estimateShellID(numTubes_adv) * 1000).toFixed(0)
+        };
+        break;
+      }
+    }
+
+    // LEVER C: Multiple shells in series — splits area across shells
+    let shellAdvice = null;
+    for (let ns = 2; ns <= 4; ns++) {
+      const A_per_shell = area / ns;
+      const nTubes_per_shell = Math.ceil(A_per_shell / (Math.PI * OD * L_eff) / nPasses) * nPasses;
+      const nTPP_adv = nTubes_per_shell / nPasses;
+      const vel_adv = massC / (nTPP_adv * cFluid.rho * A_tube);
+      if (vel_adv >= targetVel * 0.85) {
+        shellAdvice = {
+          shells: ns,
+          tubesPerShell: nTubes_per_shell,
+          tubesPerPass: nTPP_adv,
+          velocity: +vel_adv.toFixed(3),
+          shellID_mm: +(estimateShellID(nTubes_per_shell) * 1000).toFixed(0)
+        };
+        break;
+      }
+    }
+
+    // LEVER D: Reduce tube OD — smaller tubes → more tubes for same area → smaller cross-section → higher velocity
+    // Standard TEMA OD sizes to try
+    let odAdvice = null;
+    const OD_try = [0.01905, 0.01588, 0.0127, 0.01016]; // 3/4", 5/8", 1/2", 3/8"
+    for (const od_try of OD_try) {
+      if (od_try >= OD) continue; // only smaller than current
+      const tw_try = Math.max(0.0012, od_try * 0.08); // min 1.2mm or 8% of OD
+      const Di_try = od_try - 2 * tw_try;
+      if (Di_try <= 0) continue;
+      const A_cross_try = Math.PI * Di_try * Di_try / 4;
+      const A_tube_try = Math.PI * od_try * L_eff;
+      const nTubes_try = Math.ceil(area / A_tube_try / nPasses) * nPasses;
+      const nTPP_try = nTubes_try / nPasses;
+      const vel_try = massC / (nTPP_try * cFluid.rho * A_cross_try);
+      if (vel_try >= targetVel * 0.85) {
+        odAdvice = {
+          OD_mm: +(od_try * 1000).toFixed(2),
+          Di_mm: +(Di_try * 1000).toFixed(2),
+          tw_mm: +(tw_try * 1000).toFixed(1),
+          tubes: nTubes_try,
+          tubesPerPass: nTPP_try,
+          velocity: +vel_try.toFixed(3),
+          shellID_mm: +(estimateShellID(nTubes_try) * 1000).toFixed(0)
+        };
+        break; // first OD that works
+      }
+    }
+
+    designAdvisor = {
+      problem: `Tube velocity ${tubeVel.toFixed(3)} m/s is below target ${targetVel} m/s because area requirement (${area.toFixed(1)} m²) forces ${numTubes_final} tubes at L=${L_eff.toFixed(1)} m.`,
+      levers: {
+        A_increase_length: { description: 'Increase tube length', L_required_m: L_for_target, note: 'Maintains current OD and pass count' },
+        B_more_passes:  passAdvice  ? { description: 'Increase tube passes',  ...passAdvice,  note: 'Fewer tubes/pass → higher velocity. Same tube length.' } : null,
+        C_more_shells:  shellAdvice ? { description: 'Multiple shells in series', ...shellAdvice, note: 'Each shell sees lower duty. Most expensive option.' } : null,
+        D_smaller_OD:   odAdvice    ? { description: 'Reduce tube OD',        ...odAdvice,    note: 'Smaller bore → higher velocity. Check fouling/cleaning.' } : null,
+      }
+    };
+  }
 
   return {
     hF, cF, Q, Qh, Qc, U, U_clean, area, area_provided, overSurf,
@@ -832,6 +943,8 @@ function calcShellTube(b) {
     hFluid, cFluid, hFluidDB, cFluidDB,
     shellRe: bdRes.shellRe, shellVel: bdRes.shellVel,
     resistanceBreakdown, st, warns,
+    designAdvisor,
+    velocity_driven_by_area: numTubes_final > numTubes_geo,
     convergence: {
       converged,
       iterations: iterCount,
@@ -1347,6 +1460,102 @@ function calcFouling(b) {
   const U_service=1/(1/U_cl+Rf_total);
   const area_increase=(U_cl/U_service-1)*100;
   return {Rf_s,Rf_t,Rf_total,U_cl,U_service,area_increase};
+}
+
+// ─── SPACE-CONSTRAINED GEOMETRY OPTIMIZER ────────────────────────────────────
+// Called when tube length is fixed and velocity target cannot be met.
+// Finds the best combination of (OD, nPasses, nShells) that satisfies
+// BOTH area requirement AND target velocity within engineering constraints.
+function calcGeometryOptimizer(b) {
+  const area_req   = requireFinite(b.area_req,  'area_req');   // m²
+  const massC_kgs  = requireFinite(b.massC_kgs, 'massC_kgs');  // kg/s cold side
+  const L_fixed    = requireFinite(b.L_fixed,   'L_fixed');     // m — max allowed
+  const rho_c      = requireFinite(b.rho_c,     'rho_c');       // kg/m³ cold fluid
+  const target_vel = parseFloat(b.target_vel) || 1.5;           // m/s
+  const vel_min    = parseFloat(b.vel_min)    || 0.8;           // m/s acceptable floor
+  const vel_max    = parseFloat(b.vel_max)    || 3.5;           // m/s erosion ceiling
+  const max_passes = parseInt(b.max_passes)   || 8;
+  const max_shells = parseInt(b.max_shells)   || 4;
+  const tw_default = parseFloat(b.tw_mm)      || 2.0;           // mm wall thickness
+
+  // Standard tube OD options (TEMA/ASME preferred sizes in mm)
+  const OD_options_mm = [12.7, 15.88, 19.05, 25.4, 31.75, 38.1];
+  // Standard pass counts
+  const pass_options  = [1, 2, 4, 6, 8].filter(p => p <= max_passes);
+  // Shell series options
+  const shell_options = [1, 2, 3].filter(s => s <= max_shells);
+
+  const solutions = [];
+
+  OD_options_mm.forEach(od_mm => {
+    const OD  = od_mm / 1000;
+    const tw  = Math.min(tw_default / 1000, OD * 0.12); // max 12% wall ratio
+    const Di  = OD - 2 * tw;
+    if (Di <= 0.005) return;
+    const A_cross     = Math.PI * Di * Di / 4;
+    const A_per_tube  = Math.PI * OD * L_fixed;
+
+    pass_options.forEach(np => {
+      shell_options.forEach(ns => {
+        // Each shell sees 1/ns of the total area requirement
+        const area_per_shell = area_req / ns;
+        const n_total = Math.ceil(area_per_shell / A_per_tube / np) * np;
+        if (n_total < 1 || n_total > 500) return;
+        const nTPP    = n_total / np;
+        const vel     = massC_kgs / (nTPP * rho_c * A_cross);
+        const A_prov  = A_per_tube * n_total * ns;
+        const margin  = (A_prov / area_req - 1) * 100;
+
+        // Score solution: penalize velocity deviation from target, reward fewer tubes/passes
+        const vel_ok   = vel >= vel_min && vel <= vel_max;
+        const vel_score = Math.abs(vel - target_vel) / target_vel;  // 0 = perfect
+        const complexity = (np / 8) + (ns / 4) + (n_total / 200);   // lower = simpler
+        const score = vel_ok ? (vel_score + complexity * 0.3) : 999;
+
+        solutions.push({
+          od_mm, OD, Di: +(Di*1000).toFixed(2), tw_mm: +(tw*1000).toFixed(2),
+          nPasses: np, nShells: ns,
+          numTubes: n_total, nTubesPerPass: nTPP,
+          velocity: +vel.toFixed(3),
+          area_provided: +A_prov.toFixed(2),
+          area_margin_pct: +margin.toFixed(1),
+          vel_ok, score: +score.toFixed(4),
+          label: `OD=${od_mm}mm · ${np} pass · ${ns} shell${ns>1?'s':''}`
+        });
+      });
+    });
+  });
+
+  // Sort: valid solutions first (by score), then invalid by closeness to vel_min
+  solutions.sort((a, b) => a.score - b.score);
+
+  const valid   = solutions.filter(s => s.vel_ok).slice(0, 5);
+  const invalid = solutions.filter(s => !s.vel_ok)
+    .sort((a, b) => Math.abs(a.velocity - vel_min) - Math.abs(b.velocity - vel_min))
+    .slice(0, 3);
+
+  // Generate plain-English recommendation
+  let recommendation = '';
+  if (valid.length > 0) {
+    const best = valid[0];
+    recommendation = `Best option: ${best.od_mm}mm OD tubes with ${best.nPasses} passes` +
+      (best.nShells > 1 ? ` × ${best.nShells} shells in series` : '') +
+      ` → ${best.numTubes} tubes (${best.nTubesPerPass}/pass), velocity ${best.velocity} m/s.`;
+  } else {
+    recommendation = `No solution found within constraints. Consider relaxing velocity floor to ${(vel_min*0.8).toFixed(1)} m/s or allowing longer tubes.`;
+  }
+
+  return {
+    area_req: +area_req.toFixed(3),
+    L_fixed,
+    target_vel,
+    vel_min,
+    vel_max,
+    solutions_valid:   valid,
+    solutions_partial: invalid,
+    recommendation,
+    any_solution: valid.length > 0
+  };
 }
 
 // ─── HX SELECTOR ─────────────────────────────────────────────────────────────
