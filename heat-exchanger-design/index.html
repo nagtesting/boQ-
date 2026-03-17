@@ -629,26 +629,46 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
           🌡️ <span id="st_phaseNoteText"></span>
         </div>
 
-        <div class="sec-hd" style="color:var(--red);border-bottom-color:#f0cfc0">🔴 Hot Side (Shell)</div>
+        <div class="sec-hd" style="color:var(--red);border-bottom-color:#f0cfc0;flex-wrap:wrap;gap:6px">
+          🔴 Hot Side (Shell)
+          <span style="margin-left:auto;display:flex;gap:4px;flex-shrink:0">
+            <button type="button" id="hotModeFlowBtn" onclick="setHotMode('flow')"
+              style="padding:4px 11px;border-radius:6px;border:1.5px solid var(--red);
+                     background:var(--red);color:#fff;font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap">
+              ✦ Know Flow → Auto T<sub>out</sub>
+            </button>
+            <button type="button" id="hotModeTempBtn" onclick="setHotMode('temp')"
+              style="padding:4px 11px;border-radius:6px;border:1.5px solid var(--red);
+                     background:transparent;color:var(--red);font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap">
+              ✦ Know T<sub>out</sub> → Auto Flow
+            </button>
+          </span>
+        </div>
+        <div id="hotModeHint" style="font-size:.72rem;padding:6px 10px;border-radius:6px;
+             margin-bottom:10px;background:var(--red-lt);border:1px solid rgba(232,80,10,.2)">
+          ✅ <strong>Mode: Know Outlet Temp</strong> — enter hot outlet temp; hot flow rate is given.
+        </div>
         <div class="fgrid">
           <div class="fg"><label>Inlet Temp (<span class="u-temp">°C</span>)</label>
-            <div class="irow"><input type="number" id="st_hTi" step="0.1" value="120" required oninput="coldBalancePreview()"><select id="st_hTi_usel" class="u-sel u-temp-sel" onchange="onTempUnitChange('st_hTi',this.value)" style="width:52px;padding:4px 2px;font-size:.68rem;border-radius:5px;border:1px solid var(--bdr);background:var(--surf2);cursor:pointer">
+            <div class="irow"><input type="number" id="st_hTi" step="0.1" value="120" required oninput="hotBalancePreview()"><select id="st_hTi_usel" class="u-sel u-temp-sel" onchange="onTempUnitChange('st_hTi',this.value)" style="width:52px;padding:4px 2px;font-size:.68rem;border-radius:5px;border:1px solid var(--bdr);background:var(--surf2);cursor:pointer">
 <option value="c" selected>°C</option>
 <option value="f">°F</option>
 <option value="k">K</option>
 </select></div>
           </div>
-          <div class="fg"><label>Outlet Temp (<span class="u-temp">°C</span>)</label>
-            <div class="irow"><input type="number" id="st_hTo" step="0.1" value="60" required oninput="coldBalancePreview()"><select id="st_hTo_usel" class="u-sel u-temp-sel" onchange="onTempUnitChange('st_hTo',this.value)" style="width:52px;padding:4px 2px;font-size:.68rem;border-radius:5px;border:1px solid var(--bdr);background:var(--surf2);cursor:pointer">
+          <div class="fg" id="hotToGroup">
+            <label>Outlet Temp <span id="hotToMode" style="font-size:.65rem;color:var(--red);font-style:italic">(enter value)</span> (<span class="u-temp">°C</span>)</label>
+            <div class="irow"><input type="number" id="st_hTo" step="0.1" value="60" required oninput="hotBalancePreview()"><select id="st_hTo_usel" class="u-sel u-temp-sel" onchange="onTempUnitChange('st_hTo',this.value)" style="width:52px;padding:4px 2px;font-size:.68rem;border-radius:5px;border:1px solid var(--bdr);background:var(--surf2);cursor:pointer">
 <option value="c" selected>°C</option>
 <option value="f">°F</option>
 <option value="k">K</option>
 </select></div>
           </div>
-          <div class="fg"><label>Flow Rate</label>
+          <div class="fg" id="hotFlowGroup">
+            <label>Flow Rate <span id="hotFlowMode" style="font-size:.65rem;color:var(--red);font-style:italic">← enter value</span></label>
             <div class="irow" style="gap:4px">
-              <input type="number" id="st_hF" step="1" value="5000" required style="flex:1;min-width:0" oninput="coldBalancePreview()">
-              <select id="st_hFunit" onchange="updateFlowUnit('st_hFunit','st_hFulab');coldBalancePreview()" style="width:90px;padding:6px 4px;font-size:.73rem">
+              <input type="number" id="st_hF" step="1" value="5000" required style="flex:1;min-width:0" oninput="hotBalancePreview()">
+              <select id="st_hFunit" onchange="updateFlowUnit('st_hFunit','st_hFulab');hotBalancePreview()" style="width:90px;padding:6px 4px;font-size:.73rem">
                 <option value="kgh">kg/h</option>
                 <option value="nm3h">Nm³/h</option>
                 <option value="sm3h">Sm³/h</option>
@@ -2976,11 +2996,19 @@ function renderDesignAdvisor(r) {
       '<div style="font-size:.70rem;color:var(--warn)">⚠ Use when single lever is insufficient</div>',
       '<button onclick="applyAdvisorLever(\'E\','+e.L_required_m+','+e.passes+',null,'+e.numTubes+')" style="margin-top:auto;padding:6px 14px;border:none;border-radius:6px;background:var(--gold);color:#fff;font-size:.78rem;font-weight:700;cursor:pointer">↗ Apply — L='+e.L_required_m+' m, '+e.passes+'p</button>');
   }
+  var infeasibleBanner = (r.dual_objective_feasible === false)
+    ? '<div style="margin-bottom:10px;padding:10px 12px;background:rgba(192,0,26,.07);border-radius:6px;border-left:3px solid var(--err);font-size:.83rem;line-height:1.5;font-weight:600">'
+      +'🔴 Area vs velocity conflict at current geometry. Area requirement is a hard constraint — it cannot be relaxed. '
+      +'The only resolution is to change tube length, pass count, tube OD, or shell count so that the required area can be achieved '
+      +'with fewer tubes per pass. Select a lever below.'
+      +'</div>'
+    : '';
   return '<div class="note" style="margin-top:12px;background:linear-gradient(135deg,#f0f9f7,#eef4ff);border:1px solid rgba(0,85,200,.18);border-left:4px solid var(--blue);border-radius:10px;padding:14px 18px">'
     +'<div class="note-title" style="color:var(--blue);font-size:.95rem;margin-bottom:10px">🔧 Design Advisor — Fix Low Tube Velocity</div>'
     +'<div class="note-body">'
     +'<div style="margin-bottom:12px;padding:10px 12px;background:rgba(192,120,0,.08);border-radius:6px;border-left:3px solid var(--warn);font-size:.83rem;line-height:1.5">⚠ '+da.problem+'</div>'
-    +'<div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:10px">Choose an engineering lever — all lengths are TEMA standard — click Apply to recalculate:</div>'
+    + infeasibleBanner
+    +'<div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:10px">Choose a lever — all tube lengths are TEMA standard — click Apply to recalculate:</div>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px">'+cards+'</div>'
     +'</div></div>';
 }
@@ -3100,15 +3128,23 @@ function renderSTResults(r, warns=[]) {
       <tr><td class="lbl-col">Fluid Velocity</td>
         <td>${r.shellVel ? r.shellVel.toFixed(3)+' m/s' : '—'} <span style="font-size:.7rem;color:var(--t3)">(shell cross-flow)</span></td>
         <td>
-          <span style="font-weight:700;color:${r.tubeVel<0.5?'var(--err)':r.tubeVel<(r.targetVel||1.5)*0.5?'var(--warn)':r.tubeVel>4?'var(--err)':'var(--ok)'}">
+          <span style="font-weight:700;color:${r.tubeVel<0.5?'var(--err)':r.tubeVel<(r.targetVel||1.5)*0.9?'var(--warn)':r.tubeVel>4?'var(--err)':'var(--ok)'}">
             ${r.tubeVel.toFixed(3)} m/s
           </span>
           <span style="font-size:.7rem;color:var(--t3)"> in-tube</span>
-          ${r.targetVel ? `<br><span style="font-size:.7rem;color:${r.tubeVel>=(r.targetVel*0.8)?'var(--teal)':'var(--warn)'}">
-            🎯 target: ${r.targetVel} m/s · ${r.velMode==='target'?'auto-calc':'manual'}
-            ${r.tubeVel < r.targetVel * 0.8 ? ' — <strong>below target</strong> (area drives tube count)' : ' ✓'}
+          ${r.targetVel ? `<br><span style="font-size:.7rem;color:${r.tubeVel>=(r.targetVel*0.9)?'var(--teal)':'var(--warn)'}">
+            🎯 target: ${r.targetVel} m/s
+            ${r.tubeVel >= r.targetVel * 0.9 ? ' ✓ achieved' : ' — below target'}
           </span>` : ''}
-          ${(r.designAdvisor && r.tubeVel < (r.targetVel||1.5)*0.8) ? `<br><span style="font-size:.7rem;color:var(--blue)">💡 See Design Advisor below for fixes</span>` : ''}
+          ${r.dual_objective_feasible === false ? `
+          <br><span style="font-size:.72rem;font-weight:700;color:var(--err)">
+            ⚠ Area vs velocity conflict — at L=${r.L.toFixed(1)} m, OD=${(r.OD*1000).toFixed(1)} mm, ${r.nPasses} passes,
+            satisfying the required ${convA(r.area).toFixed(2)} ${aU()} forces ${r.numTubes} tubes,
+            giving only ${r.tubeVel.toFixed(3)} m/s.
+            <strong>Area requirement overrides velocity target.</strong>
+            Use Design Advisor to resolve.
+          </span>` : ''}
+          ${(r.designAdvisor && r.tubeVel < (r.targetVel||1.5)*0.9) ? `<br><span style="font-size:.7rem;color:var(--blue)">💡 See Design Advisor below for specific fixes</span>` : ''}
         </td>
       </tr>
       <tr><td class="lbl-col">Shell Re / h</td>
@@ -3123,11 +3159,13 @@ function renderSTResults(r, warns=[]) {
         <td colspan="2">
           <strong>${r.L.toFixed(1)} m</strong> × <strong>${r.numTubes} tubes</strong>
           (${r.nTubesPerPass} per pass × ${r.nPasses} passes)
-          ${r.velocity_driven_by_area
-            ? ` — <span style="color:var(--warn)">⚠ tube count set by <strong>area requirement</strong> (${r.numTubes_velocity||'?'} tubes would satisfy velocity target alone)</span>`
-            : r.velMode==='target'
-              ? ` — <span style="color:var(--teal)">🎯 tube count auto-set for ${r.targetVel} m/s target velocity</span>`
-              : ' — manual mode'}
+          ${r.dual_objective_feasible === false
+            ? ` — <span style="color:var(--err)">⚠ <strong>area constraint</strong> forces ${r.numTubes} tubes — velocity target unachievable at this geometry</span>`
+            : r.velocity_driven_by_area
+              ? ` — <span style="color:var(--teal)">✓ tube count auto-reduced from ${r.numTubes_velocity||'?'} to ${r.numTubes} satisfying both area and velocity</span>`
+              : r.velMode==='target'
+                ? ` — <span style="color:var(--teal)">🎯 auto-set for ${r.targetVel} m/s target</span>`
+                : ' — manual mode'}
         </td>
       </tr>
       <tr><td class="lbl-col">Area: Req / Provided</td>
@@ -4651,7 +4689,6 @@ function updateFlowUnit(selId,labId){
 // ── Cold mode logic ──────────────────────────────────────────────────────────
 function setColdMode(mode){
   coldMode=mode;
-  // Fix: update button styles by ID, not missing data-coldmode attribute
   const flowBtn = g('coldModeFlowBtn'), tempBtn = g('coldModeTempBtn');
   if (flowBtn) { flowBtn.style.background = mode==='flow' ? 'var(--teal)' : 'transparent'; flowBtn.style.color = mode==='flow' ? '#fff' : 'var(--teal)'; }
   if (tempBtn) { tempBtn.style.background = mode==='temp' ? 'var(--teal)' : 'transparent'; tempBtn.style.color = mode==='temp' ? '#fff' : 'var(--teal)'; }
@@ -4659,9 +4696,53 @@ function setColdMode(mode){
   if (hint) hint.innerHTML = mode==='flow'
     ? '✅ <strong>Mode: Know Flow Rate</strong> — enter cold flow rate; outlet temp will be auto-calculated from Q<sub>hot</sub> = Q<sub>cold</sub>.'
     : '✅ <strong>Mode: Know Outlet Temp</strong> — enter cold outlet temp; flow rate will be auto-calculated.';
-  // Show/hide cold outlet (readonly) vs cold flow input
   const cToEl = g('st_cTo'), cFEl = g('st_cF');
   if (cToEl) { cToEl.readOnly = mode==='flow'; cToEl.style.borderStyle = mode==='flow' ? 'dashed' : 'solid'; cToEl.style.color = mode==='flow' ? 'var(--t3)' : 'var(--t1)'; }
+}
+
+// ── Hot-side flow/temp mode ───────────────────────────────────────────────────
+let hotMode = 'temp'; // default: know hTi, hTo, hF → API uses all three
+
+function setHotMode(mode) {
+  hotMode = mode;
+  const flowBtn = g('hotModeFlowBtn'), tempBtn = g('hotModeTempBtn');
+  if (flowBtn) { flowBtn.style.background = mode==='flow' ? 'var(--red)' : 'transparent'; flowBtn.style.color = mode==='flow' ? '#fff' : 'var(--red)'; }
+  if (tempBtn) { tempBtn.style.background = mode==='temp' ? 'var(--red)' : 'transparent'; tempBtn.style.color = mode==='temp' ? '#fff' : 'var(--red)'; }
+  const hint = g('hotModeHint');
+  if (hint) hint.innerHTML = mode==='flow'
+    ? '✅ <strong>Mode: Know Outlet Temp</strong> — enter hot outlet temp; <strong>hot flow rate</strong> will be auto-calculated from heat balance.'
+    : '✅ <strong>Mode: Know Outlet Temp</strong> — enter hot outlet temp; hot flow rate is given.';
+  const hToEl = g('st_hTo'), hFEl = g('st_hF');
+  // In 'flow' mode: hTo is entered, hF becomes auto-calculated (shown as readonly)
+  // In 'temp' mode (default): hTo is entered, hF is entered (both known)
+  if (hToEl) {
+    const toMode = g('hotToMode');
+    if (toMode) toMode.textContent = '(enter value)';
+  }
+  if (hFEl) {
+    hFEl.readOnly = mode === 'flow';
+    hFEl.style.borderStyle = mode === 'flow' ? 'dashed' : 'solid';
+    hFEl.style.color = mode === 'flow' ? 'var(--t3)' : 'var(--t1)';
+    const hotFlowMode = g('hotFlowMode');
+    if (hotFlowMode) hotFlowMode.textContent = mode === 'flow' ? '(auto-calculated)' : '← enter value';
+  }
+}
+
+function hotBalancePreview() {
+  // Live preview only — actual calculation is server-side
+  // If hotMode==='flow': hTi, hTo, cold flow/temp known → can estimate hF client-side
+  if (hotMode !== 'flow') return;
+  try {
+    const hTi = parseFloat(g('st_hTi')?.value);
+    const hTo = parseFloat(g('st_hTo')?.value);
+    const cTi = parseFloat(g('st_cTi')?.value);
+    if (!isFinite(hTi) || !isFinite(hTo) || hTo >= hTi) return;
+    // Rough estimate: assume cp_h = cp_c = 4.18 kJ/kgK (water)
+    // hF = cF × cp_c × ΔTc / (cp_h × ΔTh)  — needs cold side data
+    // Just show placeholder until API calculates
+    const hFEl = g('st_hF');
+    if (hFEl && hFEl.readOnly) hFEl.placeholder = 'auto';
+  } catch(e) {}
 }
 function plToggleColdMode(){
   const mode=g('pl_coldMode').value;
@@ -4732,7 +4813,7 @@ document.getElementById('stForm').addEventListener('submit', async function(e){
     const hFlKey=g('st_hFl').value, cFlKey=g('st_cFl').value;
     const hTi=getTempVal('st_hTi'), hTo=getTempVal('st_hTo'), cTi=getTempVal('st_cTi');
     const hPop=getPresVal('st_hPop'), cPop=getPresVal('st_cPop');
-    const hFraw=parseFloat(g('st_hF').value)||0;
+    const hFraw = hotMode==='flow' ? 0 : (parseFloat(g('st_hF').value)||0);
     const hFunit=(g('st_hFunit')||{value:'kgh'}).value;
 
     let cFraw=0, cToVal=0;
@@ -4748,6 +4829,7 @@ document.getElementById('stForm').addEventListener('submit', async function(e){
       hFlKey, cFlKey, hPop, cPop,
       hTi, hTo, cTi, hF: hFraw, hFunit,
       coldMode, cF: cFraw, cTo: cToVal,
+      hotMode,
       OD: getDimMm('st_od'), tw: getDimMm('st_tw'), L: getLenM('st_len'),
       pitch: v('st_pitch'),
       Rfo: parseFloat(g('st_foulS').value)||0.0002,
@@ -4778,6 +4860,10 @@ document.getElementById('stForm').addEventListener('submit', async function(e){
       g('st_cTo').value = dispVal.toFixed(2);
     }
     else if(coldMode==='temp' && g('st_cF')) g('st_cF').value = r.cF.toFixed(1);
+    // Auto-fill hot flow if in hotMode=flow
+    if(hotMode==='flow' && r.hF && g('st_hF')) {
+      g('st_hF').value = r.hF.toFixed(1);
+    }
     showRes('st', renderSTResults(r, r.warns||[]));
   } catch(err) { showErr('st', err.message); }
 });
@@ -5205,6 +5291,8 @@ function onShellModeChange() {
 // ── INIT ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function(){
   buildFluidOptions();
+  setHotMode('temp');   // initialise hot-side toggle to default state
+  setColdMode('flow');  // initialise cold-side toggle to default state
   plToggleColdMode();
   dpToggleColdMode();
   onVelModeChange();
