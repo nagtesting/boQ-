@@ -2872,9 +2872,15 @@ function renderSTResults(r, warns=[]) {
       <tr><td class="lbl-col">Fluid Velocity</td>
         <td>${r.shellVel ? r.shellVel.toFixed(3)+' m/s' : '—'} <span style="font-size:.7rem;color:var(--t3)">(shell cross-flow)</span></td>
         <td>
-          <span style="font-weight:700;color:${r.tubeVel<0.5||r.tubeVel>4?'var(--warn)':'var(--ok)'}">${r.tubeVel.toFixed(3)} m/s</span>
+          <span style="font-weight:700;color:${r.tubeVel<0.5?'var(--err)':r.tubeVel<(r.targetVel||1.5)*0.5?'var(--warn)':r.tubeVel>4?'var(--err)':'var(--ok)'}">
+            ${r.tubeVel.toFixed(3)} m/s
+          </span>
           <span style="font-size:.7rem;color:var(--t3)"> in-tube</span>
-          ${r.targetVel ? `<br><span style="font-size:.7rem;color:var(--teal)">🎯 target: ${r.targetVel} m/s · ${r.velMode==='target'?'auto-calc':'manual'}</span>` : ''}
+          ${r.targetVel ? `<br><span style="font-size:.7rem;color:${r.tubeVel>=(r.targetVel*0.8)?'var(--teal)':'var(--warn)'}">
+            🎯 target: ${r.targetVel} m/s · ${r.velMode==='target'?'auto-calc':'manual'}
+            ${r.tubeVel < r.targetVel * 0.8 ? ' — <strong>below target</strong> (area drives tube count)' : ' ✓'}
+          </span>` : ''}
+          ${(r.designAdvisor && r.tubeVel < (r.targetVel||1.5)*0.8) ? `<br><span style="font-size:.7rem;color:var(--blue)">💡 See Design Advisor below for fixes</span>` : ''}
         </td>
       </tr>
       <tr><td class="lbl-col">Shell Re / h</td>
@@ -2889,9 +2895,11 @@ function renderSTResults(r, warns=[]) {
         <td colspan="2">
           <strong>${r.L.toFixed(1)} m</strong> × <strong>${r.numTubes} tubes</strong>
           (${r.nTubesPerPass} per pass × ${r.nPasses} passes)
-          ${r.velMode==='target'
-            ? ` — <span style="color:var(--teal)">🎯 tube count auto-set for ${r.targetVel} m/s target velocity</span>`
-            : ' — manual mode (tube count from area)'}
+          ${r.velocity_driven_by_area
+            ? ` — <span style="color:var(--warn)">⚠ tube count set by <strong>area requirement</strong> (${r.numTubes_velocity||'?'} tubes would satisfy velocity target alone)</span>`
+            : r.velMode==='target'
+              ? ` — <span style="color:var(--teal)">🎯 tube count auto-set for ${r.targetVel} m/s target velocity</span>`
+              : ' — manual mode'}
         </td>
       </tr>
       <tr><td class="lbl-col">Area: Req / Provided</td>
@@ -2971,6 +2979,67 @@ function renderSTResults(r, warns=[]) {
     </div>
   </div>` : ''}
 
+
+  \${r.designAdvisor ? \`
+  <div class="note" style="margin-top:12px;background:linear-gradient(135deg,#f0f9f7,#eef4ff);border-color:rgba(0,85,200,.18);border-left-color:var(--blue)">
+    <div class="note-title" style="color:var(--blue)">🔧 Design Advisor — Fix Low Tube Velocity at Fixed Tube Length</div>
+    <div class="note-body">
+      <div style="margin-bottom:10px;padding:8px 10px;background:rgba(192,120,0,.08);border-radius:6px;border-left:3px solid var(--warn);font-size:.82rem">
+        ⚠ \${r.designAdvisor.problem}
+      </div>
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-bottom:8px">Available Engineering Levers:</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+
+        \${r.designAdvisor.levers.A_increase_length ? \`
+        <div style="background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px;border-top:3px solid var(--red)">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--red);margin-bottom:6px">Lever A — Increase Length</div>
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--t1)">L = \${r.designAdvisor.levers.A_increase_length.L_required_m} m</div>
+          <div style="font-size:.75rem;color:var(--t3);margin-top:4px">\${r.designAdvisor.levers.A_increase_length.note}</div>
+          <div style="font-size:.72rem;color:var(--warn);margin-top:4px">⚠ Requires horizontal space</div>
+        </div>\` : ''}
+
+        \${r.designAdvisor.levers.B_more_passes ? \`
+        <div style="background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px;border-top:3px solid var(--blue)">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin-bottom:6px">Lever B — More Tube Passes</div>
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--t1)">\${r.designAdvisor.levers.B_more_passes.passes} passes</div>
+          <div style="font-size:.78rem;color:var(--t2);margin-top:4px">
+            \${r.designAdvisor.levers.B_more_passes.tubes} tubes (\${r.designAdvisor.levers.B_more_passes.tubesPerPass}/pass)
+            · vel = <strong style="color:var(--ok)">\${r.designAdvisor.levers.B_more_passes.velocity} m/s</strong>
+            · Shell ID ≈ \${r.designAdvisor.levers.B_more_passes.shellID_mm} mm
+          </div>
+          <div style="font-size:.75rem;color:var(--t3);margin-top:4px">\${r.designAdvisor.levers.B_more_passes.note}</div>
+          <div style="font-size:.72rem;color:var(--ok);margin-top:4px">✓ No extra length needed</div>
+        </div>\` : ''}
+
+        \${r.designAdvisor.levers.C_more_shells ? \`
+        <div style="background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px;border-top:3px solid var(--teal)">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--teal);margin-bottom:6px">Lever C — Shells in Series</div>
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--t1)">\${r.designAdvisor.levers.C_more_shells.shells} × shells</div>
+          <div style="font-size:.78rem;color:var(--t2);margin-top:4px">
+            \${r.designAdvisor.levers.C_more_shells.tubesPerShell} tubes/shell (\${r.designAdvisor.levers.C_more_shells.tubesPerPass}/pass)
+            · vel = <strong style="color:var(--ok)">\${r.designAdvisor.levers.C_more_shells.velocity} m/s</strong>
+            · Shell ID ≈ \${r.designAdvisor.levers.C_more_shells.shellID_mm} mm each
+          </div>
+          <div style="font-size:.75rem;color:var(--t3);margin-top:4px">\${r.designAdvisor.levers.C_more_shells.note}</div>
+        </div>\` : ''}
+
+        \${r.designAdvisor.levers.D_smaller_OD ? \`
+        <div style="background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px;border-top:3px solid #7c3aed">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7c3aed;margin-bottom:6px">Lever D — Reduce Tube OD</div>
+          <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--t1)">OD = \${r.designAdvisor.levers.D_smaller_OD.OD_mm} mm</div>
+          <div style="font-size:.78rem;color:var(--t2);margin-top:4px">
+            ID = \${r.designAdvisor.levers.D_smaller_OD.Di_mm} mm · \${r.designAdvisor.levers.D_smaller_OD.tubes} tubes (\${r.designAdvisor.levers.D_smaller_OD.tubesPerPass}/pass)
+            · vel = <strong style="color:var(--ok)">\${r.designAdvisor.levers.D_smaller_OD.velocity} m/s</strong>
+            · Shell ID ≈ \${r.designAdvisor.levers.D_smaller_OD.shellID_mm} mm
+          </div>
+          <div style="font-size:.75rem;color:var(--t3);margin-top:4px">\${r.designAdvisor.levers.D_smaller_OD.note}</div>
+          <div style="font-size:.72rem;color:var(--ok);margin-top:4px">✓ No extra length · Recalculate with new OD after selecting</div>
+        </div>\` : ''}
+
+      </div>
+    </div>
+  </div>\` : ''}
+
   <div class="note" style="margin-top:12px">
     <div class="note-title">📋 TEMA Design Checklist</div>
     <div class="note-body"><ul>
@@ -2980,7 +3049,27 @@ function renderSTResults(r, warns=[]) {
       <li>Minimum LMTD 5–10°C for economic design</li>
       <li>Corrosion allowance 1.5–3 mm per ASME Section VIII / TEMA Class ${r.tema}</li>
     </ul></div>
-  </div>`;
+  </div>
+
+  ${(r.velocity_driven_by_area && r.tubeVel < (r.targetVel||1.5)*0.85) ? `
+  <div class="note" style="margin-top:12px;background:linear-gradient(135deg,#eef4ff,#f0e8ff);border-color:rgba(124,58,237,.2);border-left-color:#7c3aed">
+    <div class="note-title" style="color:#7c3aed">📐 Space-Constrained Geometry Optimizer</div>
+    <div class="note-body">
+      <p style="margin-bottom:8px">
+        Tube length is <strong>${r.L.toFixed(1)} m</strong> (space-limited) but velocity target
+        <strong>${r.targetVel} m/s</strong> cannot be met at this length with current OD and pass count.
+        Use the optimizer to find alternative tube OD / pass configurations that satisfy
+        both area and velocity within the same footprint.
+      </p>
+      <button
+        onclick="runGeoOptimizer(${r.area.toFixed(4)}, ${(r.cF/3600).toFixed(4)}, ${r.L.toFixed(2)}, ${r.cFluid.rho.toFixed(1)}, ${r.targetVel||1.5})"
+        style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:var(--sans);font-size:.85rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(124,58,237,.3)">
+        🔍 Find Space-Constrained Solutions
+      </button>
+      <div id="geo-optimizer-results" style="margin-top:10px"></div>
+    </div>
+  </div>` : ''}
+  `;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -3997,6 +4086,90 @@ function startCalc(pfx) {
   const res = document.getElementById(pfx+'_res');
   if (res) res.classList.remove('show');
 }
+// ── Space-Constrained Geometry Optimizer ──────────────────────────────────────
+async function runGeoOptimizer(area_req, massC_kgs, L_fixed, rho_c, target_vel) {
+  const el = document.getElementById('geo-optimizer-results');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--t3);font-size:.82rem;padding:8px 0">🔍 Searching configurations…</div>';
+  try {
+    const resp = await fetch('/api/heatxpert', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        calcType:'geoOptimizer',
+        area_req, massC_kgs, L_fixed, rho_c, target_vel,
+        vel_min: 0.8, vel_max: 3.5, max_passes: 8, max_shells: 3
+      })
+    });
+    const data = await resp.json();
+    if (data.error) { el.innerHTML = `<div style="color:var(--err);font-size:.82rem">${data.error}</div>`; return; }
+
+    const valid   = data.solutions_valid   || [];
+    const partial = data.solutions_partial || [];
+
+    const scoreColor = v => v >= target_vel*0.95 && v <= target_vel*1.3 ? 'var(--ok)'
+                          : v >= 0.8 ? 'var(--warn)' : 'var(--err)';
+
+    const renderRow = (s, rank) => `
+      <tr style="${rank===0?'background:var(--teal-lt)':''}">
+        <td style="font-weight:700;color:${rank===0?'var(--teal)':'var(--t1)'}">${rank===0?'⭐ Best':'#'+(rank+1)}</td>
+        <td style="font-weight:700">${s.od_mm} mm</td>
+        <td style="font-weight:700">${s.nPasses}</td>
+        <td>${s.nShells > 1 ? s.nShells+' × series' : '1'}</td>
+        <td>${s.numTubes} <span style="font-size:.7rem;color:var(--t3)">(${s.nTubesPerPass}/pass)</span></td>
+        <td style="font-weight:700;color:${scoreColor(s.velocity)}">${s.velocity} m/s</td>
+        <td style="color:var(--ok)">+${s.area_margin_pct}%</td>
+        <td><button onclick="applyGeoSolution(${s.od_mm},${s.nPasses},${s.nShells},${s.numTubes})"
+          style="font-size:.7rem;padding:3px 10px;border:none;border-radius:5px;background:var(--blue);color:#fff;cursor:pointer;font-weight:700">Apply</button></td>
+      </tr>`;
+
+    el.innerHTML = `
+      <div style="margin-top:6px">
+        <div style="font-size:.8rem;font-weight:700;color:#7c3aed;margin-bottom:6px">
+          ${data.any_solution
+            ? `✅ ${valid.length} solution(s) found — ${data.recommendation}`
+            : `⚠ No perfect solution found. Closest partial options shown.`}
+        </div>
+        <div style="overflow-x:auto">
+          <table class="dtbl" style="font-size:.78rem">
+            <thead><tr>
+              <th>Rank</th><th>Tube OD</th><th>Passes</th><th>Shells</th>
+              <th>Tubes</th><th>Velocity</th><th>Area margin</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+              ${valid.map((s,i)=>renderRow(s,i)).join('')}
+              ${!data.any_solution ? partial.map((s,i)=>renderRow(s,i)).join('') : ''}
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:.7rem;color:var(--t3);margin-top:6px">
+          * Area requirement: ${area_req.toFixed(2)} m² | L fixed: ${L_fixed} m | Target velocity: ${target_vel} m/s |
+          Vel range: 0.8–3.5 m/s | Max ${data.solutions_valid?.length||0}+${data.solutions_partial?.length||0} configs evaluated
+        </div>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div style="color:var(--err);font-size:.82rem">Optimizer error: ${e.message}</div>`;
+  }
+}
+
+function applyGeoSolution(od_mm, nPasses, nShells, numTubes) {
+  // Apply the selected geometry back to the input form
+  const odField = document.getElementById('st_OD');
+  const hxTypeField = document.getElementById('st_hxType');
+  const numTubesField = document.getElementById('st_numTubesFixed');
+  const velModeField = document.getElementById('st_velMode');
+  if (odField) odField.value = od_mm;
+  // Map nPasses to hxType
+  const hxMap = {1:'1-1', 2:'1-2', 4:'1-4'};
+  if (hxTypeField && hxMap[nPasses]) hxTypeField.value = hxMap[nPasses];
+  if (numTubesField) numTubesField.value = numTubes;
+  if (velModeField) velModeField.value = 'fixedtubes';
+  // Trigger recalculation
+  const calcBtn = document.querySelector('#tab-st .btn-calc');
+  if (calcBtn) calcBtn.click();
+  // Scroll to results
+  document.getElementById('st_res')?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 function showRes(pfx, html) {
   document.getElementById(pfx+'_spin').classList.remove('show');
   const res = document.getElementById(pfx+'_res');
