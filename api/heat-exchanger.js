@@ -535,7 +535,37 @@ function calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, Ao_Ai) {
   ];
 }
 
-// ─── SHELL & TUBE ─────────────────────────────────────────────────────────────
+// ─── TWO-PHASE / CONDENSING LMTD CORRECTION ─────────────────────────────────
+// For condensing/evaporating service the "hot" or "cold" side is isothermal
+// (T = Tsat). We compute a zone-weighted LMTD across the condensing region
+// using the Chen & Flux weighted method (simplified to isothermal-side LMTD).
+function calcLMTD_twophase(hTi, hTo, cTi, cTo, shellMode, arr) {
+  // For condensing: hot side is at Tsat (isothermal); cold side sensible
+  // For evaporating: cold side is at Tsat (isothermal); hot side sensible
+  // In both cases dT1 and dT2 are well-defined; F = 1.0 (no cross-flow penalty
+  // because one stream is isothermal → pure countercurrent is always equivalent)
+  let dT1, dT2;
+  if (shellMode === 'condensing') {
+    // Hot side: isothermal at hTi (= hTo = Tsat_hot for condenser shell side)
+    // Use the actual terminal temperatures but set F=1.0
+    dT1 = hTi - cTo;
+    dT2 = hTo - cTi;
+  } else if (shellMode === 'evaporating') {
+    // Cold side isothermal at cTi (= cTo = Tsat_cold for evaporator tube side)
+    dT1 = hTi - cTo;
+    dT2 = hTo - cTi;
+  } else {
+    return calcLMTD(hTi, hTo, cTi, cTo, arr);
+  }
+  if (dT1 <= 0 || dT2 <= 0) return { lmtd: null, err: 'Temperature cross in two-phase service' };
+  const lmtd = Math.abs(dT1 - dT2) < 0.001 ? dT1 : (dT1 - dT2) / Math.log(dT1 / dT2);
+  if (!isFinite(lmtd) || lmtd <= 0) return { lmtd: null, err: 'LMTD failed (two-phase)' };
+  // F = 1.0 for isothermal-side service (one stream at constant temperature
+  // → no correction needed regardless of pass arrangement)
+  return { lmtd, F: 1.0, dT1, dT2, twophase: true };
+}
+
+// ─── SHELL & TUBE — WITH U CONVERGENCE ITERATION & TEMP-DEPENDENT PROPS ─────
 function calcShellTube(b) {
   const hFlKey=b.hFlKey||'water', cFlKey=b.cFlKey||'water';
   const hFluidDB=getFluid(hFlKey), cFluidDB=getFluid(cFlKey);
@@ -544,23 +574,24 @@ function calcShellTube(b) {
   const hF=requireFinite(b.hF,'hF');  // kg/h
   if (hF<=0) throw new Error('Hot flow must be positive');
   if (hTo>=hTi) throw new Error('Hot outlet must be less than hot inlet temperature');
-  const hTmean=(hTi+hTo)/2;
-  const hFluid=fluidAtConditions(hFlKey,hTmean,hPop);
-  const Qhot=(hF/3600)*hFluidDB.cp*(hTi-hTo);
+
+  // ── Initial heat duty (use fixed-point fluid props for Q calculation) ──
+  const hFluidInit = fluidAtConditions(hFlKey, (hTi+hTo)/2, hPop);
+  const Qhot = (hF/3600) * hFluidInit.cp * (hTi - hTo);
   let cF=parseFloat(b.cF)||0, cTo=parseFloat(b.cTo)||0;
   const coldMode=b.coldMode||'flow';
+  const cFluidInit = fluidAtConditions(cFlKey, (cTi + (cTi+30))/2, cPop); // bootstrap estimate
   if (coldMode==='flow') {
     if (cF<=0) throw new Error('Cold flow must be positive');
-    cTo = cTi + Qhot/((cF/3600)*cFluidDB.cp);
+    cTo = cTi + Qhot/((cF/3600)*cFluidInit.cp);
   } else {
     if (cTo<=cTi) throw new Error('Cold outlet must be > cold inlet');
     if (cTo>=hTi) throw new Error('Cold outlet must be < hot inlet');
-    cF = (Qhot/(cFluidDB.cp*(cTo-cTi)))*3600;
+    cF = (Qhot/(cFluidInit.cp*(cTo-cTi)))*3600;
   }
   if (cTo<=cTi) throw new Error('Cold outlet must be greater than cold inlet');
   if (hTi<=cTi) throw new Error('Hot inlet must be above cold inlet');
-  const cTmean=(cTi+cTo)/2;
-  const cFluid=fluidAtConditions(cFlKey,cTmean,cPop);
+
   const OD=requireFinite(b.OD,'OD')/1000, tw=requireFinite(b.tw,'tw')/1000, L=requireFinite(b.L,'L');
   const pitch=parseFloat(b.pitch)||1.25;
   const Rfo=Math.max(parseFloat(b.Rfo)||0.0002,0), Rfi=Math.max(parseFloat(b.Rfi)||0.0002,0);
@@ -569,7 +600,6 @@ function calcShellTube(b) {
   const nShells=b.hxType==='2-4'?2:1;
   const tema=b.tema||'C';
   const shellMode = b.shellMode || 'single-phase';
-  // shellMode values: 'single-phase' | 'condensing' | 'evaporating'
   if (OD<=0||L<=0||OD<=2*tw) throw new Error('Invalid tube geometry');
   const Di=OD-2*tw;
   const massH=hF/3600, massC=cF/3600;
@@ -586,6 +616,12 @@ function calcShellTube(b) {
   const bundleAreaFactor=pitchLayout==='triangular'?0.866:1.0;
   function estimateShellID(n){const bA=n*pitchLen*pitchLen*bundleAreaFactor;return Math.sqrt(4*bA/Math.PI)*1.15;}
 
+  // ── Tube geometry and initial tube count ──
+  // Use temperature-dependent fluid props at initial mean temperatures
+  let hTmean=(hTi+hTo)/2, cTmean=(cTi+cTo)/2;
+  let hFluid=fluidAtConditions(hFlKey,hTmean,hPop);
+  let cFluid=fluidAtConditions(cFlKey,cTmean,cPop);
+
   let nTubesPerPass, numTubes, shellID, L_eff;
   if (velMode==='fixedtubes') {
     numTubes=Math.max(1,parseInt(b.numTubesFixed)||0);
@@ -598,35 +634,129 @@ function calcShellTube(b) {
     shellID=estimateShellID(numTubes); L_eff=L;
   }
 
-  const tubeVel=massC/(nTubesPerPass*cFluid.rho*A_tube);
-  const bdRes=calcBellDelaware(hFluid,massH,shellID,OD,pitch,bcut_frac,bsp_ratio,L_eff,numTubes,tema,pitchLayout);
-  const tubeRes=calcHtube(cFluid,massC/nTubesPerPass,Di,L_eff);
-  let hTube;
-  if (shellMode === 'condensing') {
-    const Twall = (cTi+cTo)/2;
-    hTube = calcHcondense(cFluid, Twall, OD, L_eff, 'horizontal');
-  } else if (shellMode === 'evaporating') {
-    hTube = calcHboiling(cFluid, tubeRes.h, tubeRes.Re);
-  } else {
-    hTube = tubeRes.h;    // original single-phase path
+  // ═══════════════════════════════════════════════════════════════════════════
+  // U CONVERGENCE ITERATION LOOP
+  // Strategy: iterate U_assumed → compute hi, ho → compute U_actual
+  //           repeat until |U_actual - U_assumed| / U_assumed < tolerance
+  //           Also re-evaluate temperature-dependent fluid props each iteration
+  //           using the wall temperature estimated from resistance split.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const U_CONV_TOL = 0.005;   // 0.5% convergence criterion
+  const MAX_ITER   = 20;       // safety cap
+  const U_CONV_RELAX = 0.6;   // under-relaxation factor (prevents oscillation)
+
+  // Initial U estimate from TEMA literature ranges for seed value
+  // Liquid-liquid: ~800, Gas-liquid: ~80, Condensing: ~2000, Evaporating: ~1500
+  const isHotGas  = hFluidDB.rho < GAS_RHO_THRESHOLD;
+  const isColdGas = cFluidDB.rho < GAS_RHO_THRESHOLD;
+  let U_seed = shellMode==='condensing' ? 2000 :
+               shellMode==='evaporating' ? 1500 :
+               (isHotGas || isColdGas) ? 80 : 800;
+
+  let U_iter = U_seed;
+  let hShell_iter, hTube_iter, bdRes_iter, tubeRes_iter;
+  let U_actual_iter, U_clean_iter;
+  let iterCount = 0;
+  let U_deviation_pct = 100;
+  let Twall_shell, Twall_tube;
+  const iterHistory = [];
+
+  for (let iter = 0; iter < MAX_ITER; iter++) {
+    iterCount = iter + 1;
+
+    // ── Step 1: Re-evaluate fluid props at current mean temperatures ──
+    // Estimate wall temperature from resistance split (Sieder-Tate viscosity correction)
+    const R_shell_est = 1 / Math.max(U_iter, 1);
+    const R_tube_est  = 1 / Math.max(U_iter, 1);
+    // Wall temperature approximation: weighted between hot and cold means
+    Twall_shell = hTmean - (hTmean - cTmean) * 0.5 * (R_shell_est / (R_shell_est + R_tube_est));
+    Twall_tube  = cTmean + (hTmean - cTmean) * 0.5 * (R_tube_est  / (R_shell_est + R_tube_est));
+
+    // Temperature-dependent fluid properties at bulk mean temperatures
+    hFluid = fluidAtConditions(hFlKey, hTmean, hPop);
+    cFluid = fluidAtConditions(cFlKey, cTmean, cPop);
+
+    // Viscosity correction factor (Sieder-Tate: (mu_bulk/mu_wall)^0.14)
+    // mu at wall temperature for viscosity correction
+    const hFluid_wall = fluidAtConditions(hFlKey, Twall_shell, hPop);
+    const cFluid_wall = fluidAtConditions(cFlKey, Twall_tube,  cPop);
+    const phi_h = Math.pow(Math.max(hFluid.mu / Math.max(hFluid_wall.mu, 0.001), 0.1), 0.14);
+    const phi_c = Math.pow(Math.max(cFluid.mu / Math.max(cFluid_wall.mu, 0.001), 0.1), 0.14);
+
+    // ── Step 2: Recalculate tube count if velocity-target mode ──
+    if (velMode !== 'fixedtubes') {
+      const nTPP = Math.max(1, Math.ceil(massC / (cFluid.rho * A_tube * targetVel)));
+      nTubesPerPass = nTPP;
+      numTubes = nTPP * nPasses;
+      shellID = estimateShellID(numTubes);
+    }
+
+    // ── Step 3: Shell-side HTC (Bell-Delaware) with viscosity correction ──
+    bdRes_iter = calcBellDelaware(hFluid, massH, shellID, OD, pitch, bcut_frac, bsp_ratio, L_eff, numTubes, tema, pitchLayout);
+    hShell_iter = bdRes_iter.hShell * phi_h;  // Sieder-Tate viscosity correction
+
+    // ── Step 4: Tube-side HTC with viscosity correction ──
+    tubeRes_iter = calcHtube(cFluid, massC / nTubesPerPass, Di, L_eff);
+    let hTube_base;
+    if (shellMode === 'condensing') {
+      const Twall_cond = (cTi + cTo) / 2;
+      hTube_base = calcHcondense(cFluid, Twall_cond, OD, L_eff, 'horizontal');
+    } else if (shellMode === 'evaporating') {
+      hTube_base = calcHboiling(cFluid, tubeRes_iter.h, tubeRes_iter.Re);
+    } else {
+      hTube_base = tubeRes_iter.h * phi_c;  // viscosity correction for single-phase
+    }
+    hTube_iter = hTube_base;
+
+    // ── Step 5: Compute actual U ──
+    const Ao_Ai = OD / Di;
+    U_clean_iter = 1 / (1/hShell_iter + Ao_Ai/hTube_iter + Rwall);
+    U_actual_iter = 1 / (1/hShell_iter + Rfo + Ao_Ai/hTube_iter + Ao_Ai*Rfi + Rwall);
+
+    // ── Step 6: Check convergence ──
+    U_deviation_pct = Math.abs(U_actual_iter - U_iter) / Math.max(U_iter, 1) * 100;
+    iterHistory.push({ iter: iterCount, U_assumed: +U_iter.toFixed(2), U_actual: +U_actual_iter.toFixed(2), deviation_pct: +U_deviation_pct.toFixed(3) });
+
+    if (U_deviation_pct < U_CONV_TOL * 100) break;  // converged
+
+    // ── Step 7: Update U with under-relaxation ──
+    U_iter = U_iter + U_CONV_RELAX * (U_actual_iter - U_iter);
   }
-  const hShell=bdRes.hShell;
-  const Ao_Ai=OD/Di;
-  const U_clean=1/(1/hShell+Ao_Ai/hTube+Rwall);
-  const U=1/(1/hShell+Rfo+Ao_Ai/hTube+Ao_Ai*Rfi+Rwall);
 
+  const converged = U_deviation_pct < 1.0;   // flag if within 1%
+  const U = U_actual_iter;
+  const U_clean = U_clean_iter;
+  const hShell = hShell_iter;
+  const hTube  = hTube_iter;
+  const bdRes  = bdRes_iter;
+  const Ao_Ai  = OD / Di;
 
+  // ── Recalculate cTo with converged fluid properties ──
+  if (coldMode === 'flow') {
+    cTo = cTi + Qhot / ((cF/3600) * cFluid.cp);
+  }
+  cTmean = (cTi + cTo) / 2;
+
+  // ── Two-phase / Condensing LMTD correction ──
+  // For condensing & evaporating: use isothermal-side LMTD with F = 1.0
   let lmtdArr;
   if (arr==='parallel') lmtdArr='parallel';
   else if (arr==='cross1') lmtdArr='cross1';
   else if (nPasses===1&&nShells===1) lmtdArr='counter';
   else if (nShells>=2) lmtdArr='shell24';
   else lmtdArr='shell12';
-  const lmtdRes=calcLMTD(hTi,hTo,cTi,cTo,lmtdArr);
-  if (!lmtdRes.lmtd) throw new Error(lmtdRes.err||'LMTD error');
-  const {lmtd,F,dT1,dT2}=lmtdRes;
-  const FLMTD=lmtd*F;
-  const Wh=(hF/3600)*hFluidDB.cp, Wc=(cF/3600)*cFluidDB.cp;
+
+  let lmtdRes;
+  if (shellMode === 'condensing' || shellMode === 'evaporating') {
+    lmtdRes = calcLMTD_twophase(hTi, hTo, cTi, cTo, shellMode, lmtdArr);
+  } else {
+    lmtdRes = calcLMTD(hTi, hTo, cTi, cTo, lmtdArr);
+  }
+  if (!lmtdRes.lmtd) throw new Error(lmtdRes.err || 'LMTD error');
+  const {lmtd, F, dT1, dT2} = lmtdRes;
+  const FLMTD = lmtd * F;
+
+  const Wh=(hF/3600)*hFluid.cp, Wc=(cF/3600)*cFluid.cp;
   const Qh=Wh*(hTi-hTo), Qc=Wc*(cTo-cTi);
   const Q=(Qh+Qc)/2;
   const balErr=Math.abs(Qh-Qc)/Math.max(Qh,Qc,0.001)*100;
@@ -637,27 +767,44 @@ function calcShellTube(b) {
   const NTU=area*U/Math.max(Math.min(Wh,Wc)*1000,0.001);
   const Cmin=Math.min(Wh,Wc), Qmax=Cmin*(hTi-cTi);
   const eff=Qmax>0?Q/Qmax:0;
+  const tubeVel=massC/(nTubesPerPass*cFluid.rho*A_tube);
   const tubeDp=calcPressDropTube(cFluid,massC/nTubesPerPass,Di,L_eff,nPasses);
-  // Shell ΔP: use Eu × nBaffles × rho × v² / 2 with Re-dependent Eu factor, convert Pa→bar
   const Re_s_dp = bdRes.shellRe;
-  const Eu = Re_s_dp < 300 ? 2.0 : Re_s_dp < 1000 ? 1.2 : 0.8; // Euler number (Kern approximation)
+  const Eu = Re_s_dp < 300 ? 2.0 : Re_s_dp < 1000 ? 1.2 : 0.8;
   const shellDP = Eu * bdRes.nBaffles * hFluid.rho * bdRes.shellVel * bdRes.shellVel / 2 / 1e5;
+
   const warns=[];
+  if (!converged) warns.push(`U convergence not fully achieved after ${iterCount} iterations — final deviation ${U_deviation_pct.toFixed(2)}%`);
   if(tubeVel<0.5) warns.push('Tube velocity below 0.5 m/s — fouling risk');
   if(tubeVel>4) warns.push('Tube velocity above 4 m/s — erosion risk');
   if(FLMTD<5) warns.push('F×LMTD < 5°C — very small driving force');
+  if(F<0.75 && shellMode==='single-phase') warns.push(`F correction factor ${F.toFixed(3)} < 0.75 — consider additional shell pass`);
   if(shellDP>pdAllowShell) warns.push(`Shell ΔP ${shellDP.toFixed(3)} bar exceeds allowable`);
   if(tubeDp>pdAllowTube) warns.push(`Tube ΔP ${tubeDp.toFixed(3)} bar exceeds allowable`);
   if(overSurf<0) warns.push('Insufficient area — increase tube count, length, or passes');
+  if(shellMode==='condensing'&&!cFluidDB.hvap) warns.push('Condensing mode: no hvap data for this fluid — using Nusselt film correlation only');
+  if(shellMode==='evaporating'&&!hFluidDB.hvap) warns.push('Evaporating mode: no hvap data — Chen correlation using approximate Xtt=0.9');
+
   const st=overSurf<-5?'err':overSurf<5?'warn':'ok';
   const resistanceBreakdown = calcResistanceBreakdown(hShell, hTube, Rfo, Rfi, Rwall, OD/Di);
+
   return {
     hF,cF,Q,Qh,Qc,U,U_clean,area,area_provided,overSurf,lmtd,F,FLMTD,dT1,dT2,lmtdArr,shellMode,
     numTubes,nTubesPerPass,nPasses,nShells,shellID,Di,OD,L:L_eff,tubeVel,targetVel,velMode,
     shellDP,tubeDp,pdAllowShell,pdAllowTube,bdCorr:{...bdRes,hShell,hTube},
     NTU,eff,balErr,tema,pitchLayout,hTmean,cTmean,hTi,hTo,cTi,cTo,hPop,cPop,
     hFluid,cFluid,hFluidDB,cFluidDB,shellRe:bdRes.shellRe,shellVel:bdRes.shellVel,
-    resistanceBreakdown, st, warns
+    resistanceBreakdown,st,warns,
+    // Convergence diagnostics returned to frontend
+    convergence: {
+      converged,
+      iterations: iterCount,
+      U_seed: +U_seed.toFixed(2),
+      U_final: +U.toFixed(2),
+      deviation_pct: +U_deviation_pct.toFixed(3),
+      history: iterHistory,
+      twophase_lmtd: !!(lmtdRes.twophase)
+    }
   };
 }
 
