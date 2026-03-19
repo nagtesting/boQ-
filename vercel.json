@@ -13,6 +13,11 @@
       "maxDuration": 10,
       "memory": 256
     },
+    "api/steam-calcs.py": {
+      "maxDuration": 30,
+      "memory": 512,
+      "runtime": "python3.9"
+    },
     "api/heat-exchanger.js": {
       "maxDuration": 10,
       "memory": 256
@@ -23,6 +28,38 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api/steam",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/steam/",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/steam-quench",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/steam-quench/",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/steam-turbine-power",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/steam-turbine-power/",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/rankine",
+      "destination": "/api/steam-calcs.py"
+    },
+    {
+      "source": "/api/rankine/",
+      "destination": "/api/steam-calcs.py"
+    },
     {
       "source": "/api/civil-engineering-calculators",
       "destination": "/api/civil-electrical-mechanical-instrumentation"
@@ -86,38 +123,6 @@
     {
       "source": "/api/psychrometric/",
       "destination": "/api/materials-utilities"
-    },
-    {
-      "source": "/api/steam",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/steam/",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/steam-quench",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/steam-quench/",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/steam-turbine-power",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/steam-turbine-power/",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/rankine",
-      "destination": "/api/steam-calculators"
-    },
-    {
-      "source": "/api/rankine/",
-      "destination": "/api/steam-calculators"
     },
     {
       "source": "/api/pump",
