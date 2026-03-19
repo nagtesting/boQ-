@@ -1110,7 +1110,8 @@ async function steamQuench_handler(req, res) {
       dP_allow: +dP_allow.toFixed(2),
       FL,
     };
-  }
+  }  // end else (Pw > Ps+0.1)
+  }  // end if (cv_in > 0)
 
   const shStatus = sh_out >= 20 ? 'ADEQUATE' : sh_out >= sh_min ? 'LOW' : 'INSUFFICIENT';
 
