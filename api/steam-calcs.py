@@ -602,29 +602,44 @@ class handler(BaseHTTPRequestHandler):
 
     def _section_c(self, body):
         action = body.get('action', 'calculate')
-        if   action == 'inletProps':   return self._c_inlet(body)
-        elif action == 'exhaustProps': return self._c_exhaust(body)
-        elif action == 'calculate':    return self._c_calc(body)
-        return {'error': f'Unknown action: {action}'}
+        try:
+            if   action == 'inletProps':   return self._c_inlet(body)
+            elif action == 'exhaustProps': return self._c_exhaust(body)
+            elif action == 'calculate':    return self._c_calc(body)
+            return {'error': f'Unknown action: {action}'}
+        except Exception as e:
+            return {'error': f'section_c error ({action}): {str(e)}'}
 
     def _c_inlet(self, body):
-        P_bar = float(body['P_bar'])
-        T_C   = float(body['T_C']) if body.get('T_C') is not None else None
-        liq, vap = _sat_pair(P_bar=P_bar); Tsat_C = liq.T-273.15
-        if T_C is None or T_C <= Tsat_C+0.5:
-            return {'h':round(vap.h,3),'s':round(vap.s,5),'v':round(vap.v,7),'T_sat':round(Tsat_C,3),'phase':'sat'}
-        st = IAPWS97(P=P_bar/10, T=T_C+273.15)
-        return {'h':round(st.h,3),'s':round(st.s,5),'v':round(st.v,7),'T_sat':round(Tsat_C,3),'phase':'superheated'}
+        try:
+            P_bar = float(body.get('P_bar') or 0)
+            T_C   = float(body['T_C']) if body.get('T_C') is not None else None
+            if not P_bar or P_bar <= 0:
+                return {'error': 'P_bar required and must be > 0'}
+            P_bar = max(0.00611, min(220.64, P_bar))
+            liq, vap = _sat_pair(P_bar=P_bar); Tsat_C = liq.T-273.15
+            if T_C is None or T_C <= Tsat_C+0.5:
+                return {'h':round(vap.h,3),'s':round(vap.s,5),'v':round(vap.v,7),'T_sat':round(Tsat_C,3),'phase':'sat'}
+            st = IAPWS97(P=P_bar/10, T=T_C+273.15)
+            return {'h':round(st.h,3),'s':round(st.s,5),'v':round(st.v,7),'T_sat':round(Tsat_C,3),'phase':'superheated'}
+        except Exception as e:
+            return {'error': f'inletProps error: {e}'}
 
     def _c_exhaust(self, body):
-        P_bar = float(body['P_bar'])
-        s1    = float(body.get('s1_SI', 0))
-        T2_C  = float(body['T2_C']) if body.get('T2_C') is not None else None
-        liq2, vap2 = _sat_pair(P_bar=P_bar)
-        h2s, phase = _isentropic_exhaust(s1 or vap2.s, P_bar, T2_C)
-        return {'h2s':round(h2s,3),'hf':round(liq2.h,3),'hg':round(vap2.h,3),
-                'hfg':round(vap2.h-liq2.h,3),'T_sat':round(liq2.T-273.15,3),
-                'sf':round(liq2.s,5),'sg':round(vap2.s,5),'phase':phase}
+        try:
+            P_bar = float(body.get('P_bar') or 0)
+            s1    = float(body.get('s1_SI') or 0)
+            T2_C  = float(body['T2_C']) if body.get('T2_C') is not None else None
+            if not P_bar or P_bar <= 0:
+                return {'error': 'P_bar required and must be > 0'}
+            P_bar = max(0.00611, min(220.64, P_bar))
+            liq2, vap2 = _sat_pair(P_bar=P_bar)
+            h2s, phase = _isentropic_exhaust(s1 or vap2.s, P_bar, T2_C)
+            return {'h2s':round(h2s,3),'hf':round(liq2.h,3),'hg':round(vap2.h,3),
+                    'hfg':round(vap2.h-liq2.h,3),'T_sat':round(liq2.T-273.15,3),
+                    'sf':round(liq2.s,5),'sg':round(vap2.s,5),'phase':phase}
+        except Exception as e:
+            return {'error': f'exhaustProps error: {e}'}
 
     def _c_calc(self, body):
         try:
