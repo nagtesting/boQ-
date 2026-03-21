@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url><loc>https://multicalci.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+
+  <!-- 27 Unit Converter Categories -->
+  <url><loc>https://multicalci.com/unit-converter/pressure/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/temperature/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/length/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/area/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/volume/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/mass/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/power/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/energy/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/velocity/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/acceleration/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/force/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/torque/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/flow-rate-volume/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/flow-rate-mass/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/density/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/dynamic-viscosity/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/kinematic-viscosity/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/thermal-conductivity/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/specific-heat/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/heat-flux/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/heat-transfer-coefficient/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/stress-pressure-structural/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/fuel-economy/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/frequency/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/angle/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/time/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/unit-converter/concentration/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Engineering Calculators -->
+  <url><loc>https://multicalci.com/steam-properties-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/heat-exchanger-design/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/control-valve-sizing/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/pressure-drop-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/orifice-flow-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/fluid-machinery-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/steam-turbine-power-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/rankine-cycle-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/steam-quench-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/cooling-tower-performance/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/psychrometric-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/gas-equation-of-state/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/vessel-separator-sizing/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/npsh-calculator/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://multicalci.com/head-pressure-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/material-grades-library/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/material-of-construction/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/water-treatment-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/civil-engineering-calculators/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/electrical-engineering-calculators/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/mechanical-engineering-calculators/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://multicalci.com/instrumentation-calculators/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+</urlset>
