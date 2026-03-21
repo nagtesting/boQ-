@@ -28,6 +28,222 @@
   },
   "rewrites": [
     {
+      "source": "/unit-converter/pressure",
+      "destination": "/unit-converter/pressure/index.html"
+    },
+    {
+      "source": "/unit-converter/pressure/",
+      "destination": "/unit-converter/pressure/index.html"
+    },
+    {
+      "source": "/unit-converter/temperature",
+      "destination": "/unit-converter/temperature/index.html"
+    },
+    {
+      "source": "/unit-converter/temperature/",
+      "destination": "/unit-converter/temperature/index.html"
+    },
+    {
+      "source": "/unit-converter/length",
+      "destination": "/unit-converter/length/index.html"
+    },
+    {
+      "source": "/unit-converter/length/",
+      "destination": "/unit-converter/length/index.html"
+    },
+    {
+      "source": "/unit-converter/area",
+      "destination": "/unit-converter/area/index.html"
+    },
+    {
+      "source": "/unit-converter/area/",
+      "destination": "/unit-converter/area/index.html"
+    },
+    {
+      "source": "/unit-converter/volume",
+      "destination": "/unit-converter/volume/index.html"
+    },
+    {
+      "source": "/unit-converter/volume/",
+      "destination": "/unit-converter/volume/index.html"
+    },
+    {
+      "source": "/unit-converter/mass",
+      "destination": "/unit-converter/mass/index.html"
+    },
+    {
+      "source": "/unit-converter/mass/",
+      "destination": "/unit-converter/mass/index.html"
+    },
+    {
+      "source": "/unit-converter/power",
+      "destination": "/unit-converter/power/index.html"
+    },
+    {
+      "source": "/unit-converter/power/",
+      "destination": "/unit-converter/power/index.html"
+    },
+    {
+      "source": "/unit-converter/energy",
+      "destination": "/unit-converter/energy/index.html"
+    },
+    {
+      "source": "/unit-converter/energy/",
+      "destination": "/unit-converter/energy/index.html"
+    },
+    {
+      "source": "/unit-converter/velocity",
+      "destination": "/unit-converter/velocity/index.html"
+    },
+    {
+      "source": "/unit-converter/velocity/",
+      "destination": "/unit-converter/velocity/index.html"
+    },
+    {
+      "source": "/unit-converter/acceleration",
+      "destination": "/unit-converter/acceleration/index.html"
+    },
+    {
+      "source": "/unit-converter/acceleration/",
+      "destination": "/unit-converter/acceleration/index.html"
+    },
+    {
+      "source": "/unit-converter/force",
+      "destination": "/unit-converter/force/index.html"
+    },
+    {
+      "source": "/unit-converter/force/",
+      "destination": "/unit-converter/force/index.html"
+    },
+    {
+      "source": "/unit-converter/torque",
+      "destination": "/unit-converter/torque/index.html"
+    },
+    {
+      "source": "/unit-converter/torque/",
+      "destination": "/unit-converter/torque/index.html"
+    },
+    {
+      "source": "/unit-converter/flow-rate-volume",
+      "destination": "/unit-converter/flow-rate-volume/index.html"
+    },
+    {
+      "source": "/unit-converter/flow-rate-volume/",
+      "destination": "/unit-converter/flow-rate-volume/index.html"
+    },
+    {
+      "source": "/unit-converter/flow-rate-mass",
+      "destination": "/unit-converter/flow-rate-mass/index.html"
+    },
+    {
+      "source": "/unit-converter/flow-rate-mass/",
+      "destination": "/unit-converter/flow-rate-mass/index.html"
+    },
+    {
+      "source": "/unit-converter/density",
+      "destination": "/unit-converter/density/index.html"
+    },
+    {
+      "source": "/unit-converter/density/",
+      "destination": "/unit-converter/density/index.html"
+    },
+    {
+      "source": "/unit-converter/dynamic-viscosity",
+      "destination": "/unit-converter/dynamic-viscosity/index.html"
+    },
+    {
+      "source": "/unit-converter/dynamic-viscosity/",
+      "destination": "/unit-converter/dynamic-viscosity/index.html"
+    },
+    {
+      "source": "/unit-converter/kinematic-viscosity",
+      "destination": "/unit-converter/kinematic-viscosity/index.html"
+    },
+    {
+      "source": "/unit-converter/kinematic-viscosity/",
+      "destination": "/unit-converter/kinematic-viscosity/index.html"
+    },
+    {
+      "source": "/unit-converter/thermal-conductivity",
+      "destination": "/unit-converter/thermal-conductivity/index.html"
+    },
+    {
+      "source": "/unit-converter/thermal-conductivity/",
+      "destination": "/unit-converter/thermal-conductivity/index.html"
+    },
+    {
+      "source": "/unit-converter/specific-heat",
+      "destination": "/unit-converter/specific-heat/index.html"
+    },
+    {
+      "source": "/unit-converter/specific-heat/",
+      "destination": "/unit-converter/specific-heat/index.html"
+    },
+    {
+      "source": "/unit-converter/heat-flux",
+      "destination": "/unit-converter/heat-flux/index.html"
+    },
+    {
+      "source": "/unit-converter/heat-flux/",
+      "destination": "/unit-converter/heat-flux/index.html"
+    },
+    {
+      "source": "/unit-converter/heat-transfer-coefficient",
+      "destination": "/unit-converter/heat-transfer-coefficient/index.html"
+    },
+    {
+      "source": "/unit-converter/heat-transfer-coefficient/",
+      "destination": "/unit-converter/heat-transfer-coefficient/index.html"
+    },
+    {
+      "source": "/unit-converter/stress-pressure-structural",
+      "destination": "/unit-converter/stress-pressure-structural/index.html"
+    },
+    {
+      "source": "/unit-converter/stress-pressure-structural/",
+      "destination": "/unit-converter/stress-pressure-structural/index.html"
+    },
+    {
+      "source": "/unit-converter/fuel-economy",
+      "destination": "/unit-converter/fuel-economy/index.html"
+    },
+    {
+      "source": "/unit-converter/fuel-economy/",
+      "destination": "/unit-converter/fuel-economy/index.html"
+    },
+    {
+      "source": "/unit-converter/frequency",
+      "destination": "/unit-converter/frequency/index.html"
+    },
+    {
+      "source": "/unit-converter/frequency/",
+      "destination": "/unit-converter/frequency/index.html"
+    },
+    {
+      "source": "/unit-converter/angle",
+      "destination": "/unit-converter/angle/index.html"
+    },
+    {
+      "source": "/unit-converter/angle/",
+      "destination": "/unit-converter/angle/index.html"
+    },
+    {
+      "source": "/unit-converter/time",
+      "destination": "/unit-converter/time/index.html"
+    },
+    {
+      "source": "/unit-converter/time/",
+      "destination": "/unit-converter/time/index.html"
+    },
+    {
+      "source": "/unit-converter/concentration",
+      "destination": "/unit-converter/concentration/index.html"
+    },
+    {
+      "source": "/unit-converter/concentration/",
+      "destination": "/unit-converter/concentration/index.html"
+    },
+    {
       "source": "/api/steam",
       "destination": "/api/steam-calcs.py"
     },
@@ -121,7 +337,7 @@
     },
     {
       "source": "/api/psychrometric/",
-      "destination": "/api/materials-utilities"
+      "destination": "/api/steam-calculators"
     },
     {
       "source": "/api/pump",
@@ -527,6 +743,58 @@
         {
           "key": "Access-Control-Max-Age",
           "value": "86400"
+        }
+      ]
+    },
+    {
+      "source": "/unit-converter/unit-converter.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/unit-converter/unit-converter.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/unit-converter/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/unit-converter/:slug/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         }
       ]
     }
