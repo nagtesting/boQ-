@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Head ↔ Pressure Converter — Any Fluid, Any Unit | multicalci.com</title>
+<meta name="description" content="Convert between fluid column head and pressure for 31 engineering fluids. Temperature-corrected density, 11 pressure units, fluid library. Free engineering tool.">
+<meta name="keywords" content="head to pressure converter, pressure to head calculator, fluid head calculator, hydraulic head pressure, pump head calculator, water column pressure, engineering fluid calculator">
+<meta name="author" content="multicalci.com">
+<link rel="canonical" href="https://multicalci.com/head-pressure-calculator/">
+<meta property="og:title" content="Head ↔ Pressure Converter — Any Fluid, Any Unit">
+<meta property="og:description" content="31 fluids, temperature-corrected density, 11 pressure units. Free engineering calculator.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+
+<!-- Google tag -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFPWC93KGX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-KFPWC93KGX');</script>
+
+<!-- Structured Data -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Head to Pressure Converter","description":"Engineering calculator to convert between fluid head and pressure for any process fluid with temperature-corrected density.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/head-pressure-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert metres of water to bar?","acceptedAnswer":{"@type":"Answer","text":"Use P (bar) = H (m) x density (kg/m3) x 9.81 / 100000. For water at 20C: P = H x 0.09791."}},{"@type":"Question","name":"What is fluid head in pump engineering?","acceptedAnswer":{"@type":"Answer","text":"Fluid head H is the equivalent height of a fluid column that produces a given pressure. H = P / (rho x g). Pump curves use metres of head because head is independent of fluid density."}}]}</script>
+
+<!-- Fonts — non-render-blocking -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;800&display=swap"></noscript>
+
+<!-- External CSS -->
+<link rel="stylesheet" href="/head-pressure-calculator/head-pressure.css">
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<header>
+  <div class="hdr-inner">
+    <a href="https://multicalci.com/" class="logo">
+      <div class="logo-mark">mc</div>
+      <span class="logo-name">multi<span>calci</span>.com</span>
+    </a>
+    <div class="hdr-sep"></div>
+    <a href="https://multicalci.com/" class="hdr-link">&#8592; All Calculators</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">Engineering Calculator</div>
+    <h1>Head <span class="accent">&#8596;</span> Pressure <span class="accent">Converter</span></h1>
+    <p class="hero-sub">Convert between fluid column head and pressure for any process fluid — with temperature-corrected density and 11 pressure units.</p>
+    <div class="tags">
+      <span class="tag hi">31 Fluids</span>
+      <span class="tag hi">Temp-corrected &#961;</span>
+      <span class="tag hi">11 Pressure Units</span>
+      <span class="tag">Head &#8594; Pressure</span>
+      <span class="tag">Pressure &#8594; Head</span>
+      <span class="tag">SI &amp; Imperial</span>
+      <span class="tag">Free · No login</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT COLUMN: INPUTS -->
+    <div>
+      <!-- Mode toggle -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar navy"></div>
+          <span class="card-ttl">Conversion Mode</span>
+        </div>
+        <div class="card-bd">
+          <div class="mode-tog">
+            <button class="mbtn active" id="btnHP" onclick="setMode('hp')">Head &#8594; Pressure</button>
+            <button class="mbtn" id="btnPH" onclick="setMode('ph')">Pressure &#8594; Head</button>
+          </div>
+
+          <!-- Input value -->
+          <div class="frow">
+            <label class="flbl" id="valLbl">Head value</label>
+            <div class="inp-grp">
+              <input type="number" id="valInp" class="finp" placeholder="e.g. 10" oninput="calc()" min="0" step="any">
+              <select id="inUnit" class="fsel" onchange="calc()"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fluid selection -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar navy"></div>
+          <span class="card-ttl">Fluid</span>
+          <span class="card-sub">31 fluids available</span>
+        </div>
+        <div class="card-bd">
+          <div class="frow">
+            <label class="flbl">Select fluid</label>
+            <select id="fluidSel" class="fsel w100" onchange="onFluidChange()"></select>
+          </div>
+
+          <!-- Fluid meta -->
+          <div class="fluid-meta" id="fluidMeta"></div>
+
+          <!-- Density override -->
+          <details class="override-panel">
+            <summary class="ov-sum">&#9881;&#65039; Override density / SG</summary>
+            <div class="ov-body">
+              <div class="ov-row">
+                <div class="ov-grp">
+                  <label class="flbl">Density (kg/m&#179;)</label>
+                  <input type="number" id="rhoOv" class="finp" placeholder="auto" oninput="onRhoChange()" min="0" step="any">
+                </div>
+                <div class="ov-grp">
+                  <label class="flbl">Spec. Gravity</label>
+                  <input type="number" id="sgOv" class="finp" placeholder="auto" oninput="onSGChange()" min="0" step="any">
+                </div>
+              </div>
+              <button class="clr-btn" onclick="clearOverride()">&#10005; Clear override</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Temperature -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar amber"></div>
+          <span class="card-ttl">Temperature</span>
+          <span class="card-sub" id="tempBadge">20&#176;C</span>
+        </div>
+        <div class="card-bd">
+          <div class="frow">
+            <div class="inp-grp">
+              <input type="number" id="tempInp" class="finp" value="20" oninput="onTempInput()" step="any">
+              <select id="tempUnit" class="fsel" onchange="onTempUnitChange()">
+                <option value="C">&#176;C</option>
+                <option value="F">&#176;F</option>
+                <option value="K">K</option>
+              </select>
+            </div>
+          </div>
+          <div class="sl-wrap">
+            <span class="sl-lbl">0&#176;C</span>
+            <input type="range" id="tempSl" class="sl" min="0" max="150" value="20" oninput="onTempSlider()" style="--pct:13.3%">
+            <span class="sl-lbl">150&#176;C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gravity -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar navy"></div>
+          <span class="card-ttl">Gravity (m/s&#178;)</span>
+        </div>
+        <div class="card-bd">
+          <div class="frow">
+            <input type="number" id="gravInp" class="finp" value="9.81" oninput="calc()" step="0.001" min="0">
+          </div>
+          <div class="grav-presets">
+            <button class="gp" onclick="setGrav(9.80665)">Standard (9.80665)</button>
+            <button class="gp" onclick="setGrav(9.81)">Common (9.81)</button>
+            <button class="gp" onclick="setGrav(9.807)">Precise (9.807)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: RESULTS -->
+    <div>
+      <div class="card results-card" id="resultsPanel">
+        <!-- Placeholder -->
+        <div class="placeholder" id="placeholder">
+          <div class="ph-icon">&#8597;</div>
+          <p class="ph-txt">Enter a value on the left to see results</p>
+        </div>
+
+        <!-- Big result -->
+        <div class="big-result" id="bigResult">
+          <div class="br-lbl" id="brLbl">RESULTING PRESSURE</div>
+          <div class="br-val-row">
+            <span class="br-val" id="brVal">—</span>
+            <span class="br-unit" id="brUnit">bar</span>
+          </div>
+          <div class="br-formula" id="brFormula"></div>
+        </div>
+
+        <!-- Unit grid -->
+        <div class="ug-hd">All units</div>
+        <div class="units-grid" id="unitsGrid"></div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar navy"></div>
+          <span class="card-ttl">FAQ</span>
+        </div>
+        <div class="card-bd">
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-btn" onclick="toggleFaq(this)">
+                <span>How do I convert metres of water to bar?</span>
+                <span class="faq-arr">&#9660;</span>
+              </button>
+              <div class="faq-ans">Use P (bar) = H (m) &#215; density (kg/m&#179;) &#215; 9.81 / 100,000. For water at 20&#176;C: P = H &#215; 0.09791 bar.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" onclick="toggleFaq(this)">
+                <span>What is fluid head in pump engineering?</span>
+                <span class="faq-arr">&#9660;</span>
+              </button>
+              <div class="faq-ans">Fluid head H is the equivalent height of a fluid column producing a given pressure. H = P / (&#961; &#215; g). Pump curves use metres of head because head is independent of fluid density.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" onclick="toggleFaq(this)">
+                <span>Why does temperature affect the conversion?</span>
+                <span class="faq-arr">&#9660;</span>
+              </button>
+              <div class="faq-ans">Fluid density changes with temperature. Water at 20&#176;C is 998.2 kg/m&#179; but at 80&#176;C only 971.8 kg/m&#179; — a 2.6% difference that directly affects head-pressure conversion accuracy.</div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" onclick="toggleFaq(this)">
+                <span>What is specific gravity and how is it used?</span>
+                <span class="faq-arr">&#9660;</span>
+              </button>
+              <div class="faq-ans">Specific gravity (SG) is fluid density relative to water at 4&#176;C (1000 kg/m&#179;). SG = &#961; / 1000. The calculator lets you override density or SG directly for custom fluids.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- External JS — deferred, never blocks render -->
+<script defer src="/head-pressure-calculator/head-pressure.js"></script>
+
+</body>
+</html>
