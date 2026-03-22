@@ -24,6 +24,10 @@
     "api/process-calculators.js": {
       "maxDuration": 10,
       "memory": 256
+    },
+    "api/water-treatment-calculator.js": {
+      "maxDuration": 10,
+      "memory": 256
     }
   },
   "rewrites": [
@@ -714,6 +718,14 @@
     {
       "source": "/material-of-construction/",
       "destination": "/material-of-construction/index.html"
+    },
+    {
+      "source": "/api/water-treatment",
+      "destination": "/api/water-treatment-calculator"
+    },
+    {
+      "source": "/api/water-treatment/",
+      "destination": "/api/water-treatment-calculator"
     },
     {
       "source": "/water-treatment-calculator",
