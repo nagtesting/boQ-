@@ -1,0 +1,1662 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Head ↔ Pressure Converter — Any Fluid, Any Unit | multicalci.com</title>
+<meta name="description" content="Convert between fluid column head and pressure for 31 engineering fluids. Temperature-corrected density, 11 pressure units, fluid library. Free engineering tool.">
+<meta name="keywords" content="head to pressure converter, pressure to head calculator, fluid head calculator, hydraulic head pressure, pump head calculator, water column pressure, engineering fluid calculator">
+<meta name="author" content="multicalci.com">
+<link rel="canonical" href="https://multicalci.com/head-pressure-converter/">
+<meta property="og:title" content="Head ↔ Pressure Converter — Any Fluid, Any Unit">
+<meta property="og:description" content="31 fluids, temperature-corrected density, 11 pressure units. Free engineering calculator.">
+<meta property="og:type" content="website">
+    <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Head to Pressure Converter","description":"Engineering calculator to convert between fluid head and pressure for any process fluid with temperature-corrected density.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/head-pressure-converter/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert metres of water to bar?","acceptedAnswer":{"@type":"Answer","text":"Use P (bar) = H (m) x density (kg/m3) x 9.81 / 100000. For water at 20C: P = H x 0.09791."}},{"@type":"Question","name":"What is fluid head in pump engineering?","acceptedAnswer":{"@type":"Answer","text":"Fluid head H is the equivalent height of a fluid column that produces a given pressure. H = P / (rho x g). Pump curves use metres of head because head is independent of fluid density."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:    #ffffff;
+  --bg:       #f7f8fa;
+  --bg2:      #eef0f4;
+  --bg3:      #e4e7ed;
+  --txt:      #111827;
+  --txt2:     #374151;
+  --txt3:     #6b7280;
+  --txt4:     #9ca3af;
+  --navy:     #1a3a6b;
+  --navy2:    #1e4585;
+  --navy3:    #e8f0fc;
+  --amber:    #e8920a;
+  --amber2:   #fef3dc;
+  --green:    #15803d;
+  --red:      #dc2626;
+  --border:   #e5e7eb;
+  --border2:  #d1d5db;
+  --shadow:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow2:  0 4px 16px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.06);
+  --r:        8px;
+  --r2:       12px;
+  --font:     'DM Sans', sans-serif;
+  --mono:     'DM Mono', monospace;
+  --display:  'Playfair Display', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* HEADER */
+header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 20px;
+}
+.hdr-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--navy);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.logo-name { font-family: var(--font); font-size: .95rem; font-weight: 700; color: var(--txt); }
+.logo-name span { color: var(--navy); }
+.hdr-sep { flex: 1; }
+.hdr-link {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--txt3);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all .15s;
+}
+.hdr-link:hover { background: var(--navy3); color: var(--navy); }
+
+/* WRAP */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* HERO */
+.hero {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 500;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--navy);
+  border-radius: 2px;
+}
+h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--txt);
+  margin-bottom: 12px;
+}
+h1 .accent { color: var(--navy); }
+.hero-sub {
+  font-size: 1rem;
+  color: var(--txt3);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--txt3);
+  background: var(--white);
+}
+.tag.hi { border-color: rgba(26,58,107,.2); color: var(--navy); background: var(--navy3); }
+
+/* MAIN GRID */
+.main-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .main-grid { grid-template-columns: 1fr; }
+}
+
+/* CARD */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.card:last-child { margin-bottom: 0; }
+.card-hd {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+}
+.card-hd-bar { width: 3px; height: 18px; border-radius: 2px; flex-shrink: 0; }
+.card-hd-bar.navy  { background: var(--navy); }
+.card-hd-bar.amber { background: var(--amber); }
+.card-ttl {
+  font-family: var(--font);
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--txt);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+.card-sub { margin-left: auto; font-family: var(--mono); font-size: .58rem; color: var(--txt4); }
+.card-bd { padding: 18px; }
+
+/* MODE TOGGLE */
+.mode-tog {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 18px;
+  background: var(--bg);
+}
+.mbtn {
+  flex: 1;
+  padding: 10px 6px;
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--txt3);
+  cursor: pointer;
+  transition: all .18s;
+  letter-spacing: .2px;
+}
+.mbtn.on { background: var(--navy); color: #fff; border-radius: calc(var(--r) - 1px); }
+.mbtn:hover:not(.on) { background: var(--bg2); color: var(--txt); }
+
+/* FORM */
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.flbl {
+  display: block;
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--txt3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.inp-row { display: flex; gap: 6px; align-items: stretch; }
+.inp {
+  flex: 1;
+  padding: 10px 13px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--txt);
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.inp:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26,58,107,.1);
+}
+.inp::placeholder { color: var(--txt4); font-weight: 400; }
+.sel {
+  width: 100%;
+  padding: 10px 32px 10px 13px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-family: var(--font);
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--txt);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color .15s;
+}
+.sel:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26,58,107,.1);
+}
+.unit-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  background: var(--navy3);
+  border: 1.5px solid rgba(26,58,107,.2);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+  min-width: 46px;
+  flex-shrink: 0;
+}
+.hint { font-size: .68rem; color: var(--txt4); margin-top: 5px; line-height: 1.5; }
+
+/* TEMPERATURE SLIDER */
+.temp-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.tslider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--navy) var(--pct, 13%), var(--bg3) var(--pct, 13%));
+  outline: none;
+}
+.tslider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--navy);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.tslider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--navy);
+  cursor: pointer;
+}
+.tbadge {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--navy);
+  min-width: 46px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* FLUID META CHIPS */
+.fmeta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.fmc {
+  padding: 8px 11px;
+  border-radius: var(--r);
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.fmc .lbl {
+  font-size: .55rem;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--txt4);
+  display: block;
+}
+.fmc .val {
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--txt);
+  margin-top: 1px;
+}
+
+/* CONVERT BUTTON */
+.btn-calc {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: var(--r);
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font);
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: .4px;
+  cursor: pointer;
+  transition: all .18s;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-calc:hover { background: var(--navy2); box-shadow: var(--shadow2); transform: translateY(-1px); }
+.btn-calc:active { transform: translateY(0); }
+
+/* RESULTS */
+.results-panel { display: none; }
+.results-panel.show { display: block; }
+
+.big-readout {
+  background: var(--navy);
+  border-radius: var(--r2);
+  padding: 24px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.big-readout::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle at top right, rgba(255,255,255,.06), transparent 70%);
+  pointer-events: none;
+}
+.br-lbl {
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 500;
+  color: rgba(255,255,255,.5);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.br-val {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.br-unit { font-family: var(--font); font-size: .85rem; font-weight: 500; color: rgba(255,255,255,.65); margin-top: 6px; }
+.br-formula {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: rgba(255,255,255,.5);
+  line-height: 2;
+}
+.br-formula .hi { color: rgba(255,255,255,.9); font-weight: 600; }
+.br-formula .eq { color: #fbbf24; }
+
+/* UNIT GRID */
+.units-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+@media (max-width: 500px) { .units-grid { grid-template-columns: repeat(2, 1fr); } }
+.uc {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 11px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.uc:hover { border-color: var(--navy); background: var(--navy3); }
+.uc.p { border-color: var(--navy); background: var(--navy3); position: relative; }
+.uc.p::after { content: '★'; position: absolute; top: 4px; right: 6px; font-size: .42rem; color: var(--navy); }
+.uc-lbl { font-size: .52rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .8px; color: var(--txt4); margin-bottom: 2px; }
+.uc-val { font-family: var(--mono); font-size: .88rem; font-weight: 600; color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uc-unit { font-size: .58rem; font-family: var(--mono); color: var(--txt4); margin-top: 1px; }
+
+
+
+/* PLACEHOLDER */
+#placeholder { padding: 48px 24px; text-align: center; }
+.ph-eq { font-family: var(--display); font-size: 3rem; font-weight: 800; color: var(--bg3); line-height: 1; margin-bottom: 12px; }
+.ph-sub { font-family: var(--mono); font-size: .62rem; color: var(--txt4); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+.ph-examples { display: flex; flex-direction: column; gap: 6px; max-width: 300px; margin: 0 auto; text-align: left; }
+.ph-ex { font-family: var(--mono); font-size: .65rem; color: var(--txt4); padding: 8px 12px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border); line-height: 1.6; }
+.ph-ex strong { color: var(--txt2); }
+
+/* EDUCATION SECTION */
+.section-ttl { font-family: var(--display); font-size: 1.6rem; font-weight: 700; color: var(--txt); margin-bottom: 4px; }
+.section-sub { font-size: .88rem; color: var(--txt3); margin-bottom: 20px; }
+
+.edu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+@media (max-width: 640px) { .edu-grid { grid-template-columns: 1fr; } }
+.edu-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: border-color .2s, box-shadow .2s;
+}
+.edu-card:hover { border-color: rgba(26,58,107,.2); box-shadow: var(--shadow2); }
+.edu-card-hd {
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.edu-num {
+  font-family: var(--mono);
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--navy);
+  border: 1.5px solid rgba(26,58,107,.25);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.edu-ttl { font-family: var(--font); font-size: .82rem; font-weight: 700; color: var(--txt); }
+.edu-bd { padding: 16px; font-size: .88rem; color: var(--txt2); line-height: 1.8; }
+.edu-bd strong { color: var(--txt); font-weight: 600; }
+.eqb {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--navy);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--txt);
+  line-height: 2;
+}
+.eqb .kw { color: var(--navy); font-weight: 600; }
+.eqb .nt { color: var(--txt4); font-size: .65rem; }
+.notebox {
+  background: var(--amber2);
+  border: 1px solid rgba(232,146,10,.25);
+  border-radius: var(--r);
+  padding: 10px 13px;
+  margin: 10px 0;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: #92400e;
+  line-height: 1.7;
+}
+.infobox {
+  background: var(--navy3);
+  border: 1px solid rgba(26,58,107,.15);
+  border-radius: var(--r);
+  padding: 10px 13px;
+  margin: 10px 0;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--navy);
+  line-height: 1.7;
+}
+.edu-bd table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .76rem; font-family: var(--mono); }
+.edu-bd table th { background: var(--bg); color: var(--txt3); padding: 6px 9px; font-size: .58rem; text-transform: uppercase; letter-spacing: .6px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 600; }
+.edu-bd table td { padding: 6px 9px; border-bottom: 1px solid var(--border); color: var(--txt2); }
+.edu-bd table td:first-child { color: var(--txt); }
+.edu-bd ul { margin: 8px 0 8px 16px; }
+.edu-bd ul li { margin-bottom: 4px; }
+
+/* FAQ */
+.faq-ttl { font-family: var(--display); font-size: 1.6rem; font-weight: 700; color: var(--txt); margin-bottom: 16px; }
+.faq-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 8px; overflow: hidden; }
+.faq-q {
+  padding: 14px 18px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--txt);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  transition: background .15s;
+  user-select: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.faq-q:hover { background: var(--bg); }
+.faq-q .arr { transition: transform .25s; font-size: .8rem; color: var(--txt4); flex-shrink: 0; }
+.faq-item.open .faq-q { color: var(--navy); background: var(--navy3); }
+.faq-item.open .arr { transform: rotate(180deg); color: var(--navy); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; font-size: .88rem; color: var(--txt2); line-height: 1.8; }
+.faq-item.open .faq-a { max-height: 500px; }
+.faq-ai { padding: 14px 18px; border-top: 1px solid var(--border); }
+.faq-ai strong { color: var(--txt); font-weight: 600; }
+.faq-ai code { font-family: var(--mono); font-size: .78rem; color: var(--navy); background: var(--navy3); padding: 1px 5px; border-radius: 4px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--txt);
+  color: #fff;
+  font-family: var(--font);
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 20px;
+  transition: transform .25s;
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); margin-top: 60px; padding: 24px 20px; background: var(--white); }
+.foot { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.foot-txt { font-size: .68rem; color: var(--txt4); font-family: var(--mono); }
+.foot-links { display: flex; gap: 14px; margin-left: auto; }
+.foot-links a { font-size: .68rem; color: var(--txt4); text-decoration: none; font-family: var(--mono); transition: color .15s; }
+.foot-links a:hover { color: var(--navy); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.results-panel.show .big-readout  { animation: fadeUp .28s ease both; }
+.results-panel.show .units-grid   { animation: fadeUp .28s .06s ease both; }
+
+
+/* MOBILE */
+@media (max-width: 640px) {
+  h1 { font-size: 1.9rem; }
+  .hero { padding: 28px 0 24px; margin-bottom: 24px; }
+  .card-bd { padding: 14px; }
+  .big-readout { padding: 18px; }
+  .br-val { font-size: 2.2rem; }
+  .hdr-link { display: none; }
+  .hdr-link:first-of-type { display: block; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="hdr-inner">
+    <a href="https://multicalci.com/" class="logo">
+      <div class="logo-mark">M</div>
+      <span class="logo-name">multi<span>calci</span></span>
+    </a>
+    <div class="hdr-sep"></div>
+    <a href="https://multicalci.com/" class="hdr-link" style="background:var(--navy);color:#fff;font-weight:700;">🏠 Home</a>
+    <a href="/npsh-calculator/" class="hdr-link">NPSH Calc</a>
+    <a href="#learn" class="hdr-link">Guide</a>
+    <a href="#faq" class="hdr-link">FAQ</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Engineering Fluid Calculator</div>
+    <h1>Head <span class="accent">&#x21C4;</span> Pressure<br>Converter</h1>
+    <p class="hero-sub">
+      Convert between fluid column head and pressure for any process fluid —
+      with temperature-corrected density, 11 output units, and a full fluid library.
+    </p>
+    <div class="tags">
+      <span class="tag hi">31 Fluids</span>
+      <span class="tag hi">11 Pressure Units</span>
+      <span class="tag hi">Temperature Correction</span>
+      <span class="tag hi">Custom Density / SG</span>
+      <span class="tag">Fluid Comparison</span>
+      <span class="tag">Click-to-Copy</span>
+      <span class="tag">SI + Imperial</span>
+      <span class="tag">Free &middot; No Login</span>
+    </div>
+  </section>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- LEFT: Inputs -->
+    <div>
+
+      <!-- Converter Card -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar navy"></div>
+          <span class="card-ttl">Converter</span>
+          <span class="card-sub">P = &rho;&middot;g&middot;H</span>
+        </div>
+        <div class="card-bd">
+
+          <div class="mode-tog">
+            <button class="mbtn on" id="btnHP" onclick="setMode('hp')">Head &rarr; Pressure</button>
+            <button class="mbtn"    id="btnPH" onclick="setMode('ph')">Pressure &rarr; Head</button>
+          </div>
+
+          <div class="field">
+            <label class="flbl" id="inputLbl">Fluid Head (H)</label>
+            <div class="inp-row">
+              <input class="inp" type="number" id="valInp"
+                     value="10" step="any" min="0"
+                     oninput="calc()" inputmode="decimal">
+              <div class="unit-pill" id="inPill">m</div>
+            </div>
+            <select class="sel" id="inUnit" onchange="onUnitChange()" style="margin-top:6px"></select>
+            <p class="hint" id="inputHint">Enter the fluid column height in your chosen unit.</p>
+          </div>
+
+          <div class="field">
+            <label class="flbl">Process Fluid</label>
+            <select class="sel" id="fluidSel" onchange="onFluidChange()"></select>
+          </div>
+
+          <div class="field">
+            <label class="flbl">Operating Temperature</label>
+            <div class="temp-row">
+              <input type="range" class="tslider" id="tempSl"
+                     min="0" max="150" value="20"
+                     oninput="onTempSlider()">
+              <span class="tbadge" id="tempBadge">20&deg;C</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr auto; gap:6px; margin-top:4px">
+              <input class="inp" type="number" id="tempInp"
+                     value="20" step="1" oninput="onTempInput()" inputmode="decimal">
+              <select class="sel" id="tempUnit" onchange="onTempUnitChange()" style="min-width:62px">
+                <option value="C">&deg;C</option>
+                <option value="F">&deg;F</option>
+                <option value="K">K</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fluid property chips -->
+          <div class="fmeta" id="fluidMeta"></div>
+
+          <div class="field" style="margin-top:14px">
+            <label class="flbl">Gravitational Acceleration</label>
+            <div class="inp-row">
+              <input class="inp" type="number" id="gravInp"
+                     value="9.81" step="0.001" oninput="calc()" inputmode="decimal">
+              <div class="unit-pill">m/s&sup2;</div>
+            </div>
+            <p class="hint">Earth 9.81 &middot; Moon 1.62 &middot; Mars 3.72 &middot; Jupiter 24.79</p>
+          </div>
+
+          <button class="btn-calc" onclick="calc()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Convert
+          </button>
+
+        </div>
+      </div><!-- /Converter Card -->
+
+      <!-- Custom Density Card -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-bar amber"></div>
+          <span class="card-ttl">Custom Density</span>
+          <span class="card-sub">optional override</span>
+        </div>
+        <div class="card-bd">
+          <div class="field">
+            <label class="flbl">Density Override</label>
+            <div class="inp-row">
+              <input class="inp" type="number" id="rhoOv"
+                     placeholder="auto (from fluid + temp)"
+                     step="any" oninput="calc()" inputmode="decimal">
+              <div class="unit-pill">kg/m&sup3;</div>
+            </div>
+            <p class="hint">Leave empty for auto temperature-corrected density. Use for slurries or unlisted fluids.</p>
+          </div>
+          <div class="field">
+            <label class="flbl">Specific Gravity (SG)</label>
+            <div class="inp-row">
+              <input class="inp" type="number" id="sgOv"
+                     placeholder="e.g. 1.25"
+                     step="0.001" oninput="onSGChange()" inputmode="decimal">
+              <div class="unit-pill">SG</div>
+            </div>
+            <p class="hint">Entering SG auto-fills density. SG = &rho; / 1000 kg/m&sup3;.</p>
+          </div>
+        </div>
+      </div><!-- /Custom Density -->
+
+    </div><!-- /Left -->
+
+    <!-- RIGHT: Results -->
+    <div>
+
+      <div class="results-panel" id="resultsPanel">
+        <div class="big-readout">
+          <div class="br-lbl" id="brLbl">RESULT</div>
+          <div class="br-val" id="brVal">&mdash;</div>
+          <div class="br-unit" id="brUnit"></div>
+          <div class="br-formula" id="brFormula"></div>
+        </div>
+        <div class="units-grid" id="unitsGrid"></div>
+
+      </div>
+
+      <div id="placeholder" class="card">
+        <div class="ph-eq">P = &rho;&middot;g&middot;H</div>
+        <div class="ph-sub">Select fluid &middot; set value &middot; press convert</div>
+        <div class="ph-examples">
+          <div class="ph-ex">&#x25BA; 10 m of <strong>water</strong> = 0.981 bar = 14.22 psi</div>
+          <div class="ph-ex">&#x25BA; 10 m of <strong>mercury</strong> = 13.29 bar = 192.8 psi</div>
+          <div class="ph-ex">&#x25BA; 1 bar = 10.20 m of water = 33.47 ft</div>
+          <div class="ph-ex">&#x25BA; 1 psi = 0.703 m H&sup2;O = 2.307 ft H&sup2;O</div>
+          <div class="ph-ex">&#x25BA; 760 mmHg = 1 atm = 10.33 m H&sup2;O</div>
+        </div>
+      </div>
+
+    </div><!-- /Right -->
+
+  </div><!-- /main-grid -->
+
+
+  <!-- ENGINEERING REFERENCE -->
+  <section id="learn" style="margin-top:52px">
+    <div class="section-ttl">Engineering Reference</div>
+    <p class="section-sub">Physics, formulas and practical guidance for every engineer</p>
+
+    <div class="edu-grid">
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">1</div><div class="edu-ttl">The Fundamental Formula</div></div>
+        <div class="edu-bd">
+          The relationship between <strong>fluid head H</strong> and <strong>pressure P</strong>
+          comes from hydrostatics:
+          <div class="eqb">
+            <span class="kw">P = &rho; &times; g &times; H</span><br>
+            <span class="kw">H = P / (&rho; &times; g)</span><br>
+            <span class="nt">P = pressure (Pa) &nbsp;|&nbsp; &rho; = density (kg/m&sup3;)</span><br>
+            <span class="nt">g = gravity (m/s&sup2;) &nbsp;|&nbsp; H = head (m)</span>
+          </div>
+          Head is <strong>fluid-specific</strong>. 10 m of mercury exerts 13.5&times; more pressure
+          than 10 m of water.
+          <div class="infobox">
+            &nbsp;&#x2139;&nbsp; Quick check: 1 m of water at 20&deg;C &asymp; 0.0979 bar &asymp; 1.420 psi &asymp; 9.79 kPa.
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">2</div><div class="edu-ttl">Why Pump Curves Use Head</div></div>
+        <div class="edu-bd">
+          Centrifugal pump curves are in <strong>metres of head</strong> — the same impeller
+          at the same speed produces the same head for any fluid.<br><br>
+          Example &mdash; 50 m head pump:
+          <ul>
+            <li><strong>Water</strong> (998 kg/m&sup3;) &rarr; 4.89 bar</li>
+            <li><strong>Diesel</strong> (840 kg/m&sup3;) &rarr; 4.12 bar</li>
+            <li><strong>Sulfuric acid</strong> (1840 kg/m&sup3;) &rarr; 9.01 bar</li>
+          </ul>
+          <div class="notebox">
+            &nbsp;&#x26A0;&nbsp; Never size pipe or valves using water pressure if pumping a denser fluid like acid, brine, or mercury.
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">3</div><div class="edu-ttl">Temperature &amp; Density</div></div>
+        <div class="edu-bd">
+          Most liquids expand when heated &mdash; density decreases.
+          <div class="eqb">
+            <span class="kw">&rho;(T) &asymp; &rho;&sub2;&sub0; &times; [1 &minus; &beta; &times; (T &minus; 20)]</span><br>
+            <span class="nt">&beta; = thermal expansion coefficient (1/&deg;C)</span><br>
+            <span class="nt">Water: &beta; &asymp; 2.1&times;10&sup2;/&deg;C</span>
+          </div>
+          <table>
+            <thead><tr><th>Temp</th><th>Water &rho; (kg/m&sup3;)</th><th>m per bar</th></tr></thead>
+            <tbody>
+              <tr><td>4&deg;C</td><td>1000.0</td><td>10.197</td></tr>
+              <tr><td>20&deg;C</td><td>998.2</td><td>10.215</td></tr>
+              <tr><td>60&deg;C</td><td>983.2</td><td>10.372</td></tr>
+              <tr><td>100&deg;C</td><td>958.4</td><td>10.639</td></tr>
+            </tbody>
+          </table>
+          For organic solvents &beta; is 4&ndash;7&times; higher &mdash; always apply temperature correction.
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">4</div><div class="edu-ttl">Pressure Unit Conversions</div></div>
+        <div class="edu-bd">
+          <div class="eqb">
+            <span class="kw">1 bar = 100,000 Pa</span><br>
+            <span class="kw">1 psi = 6,894.757 Pa</span><br>
+            <span class="kw">1 atm = 101,325 Pa</span><br>
+            <span class="kw">1 mmHg = 133.322 Pa</span><br>
+            <span class="nt">1 bar &asymp; 14.504 psi &asymp; 0.987 atm &asymp; 750.1 mmHg</span>
+          </div>
+          <table>
+            <thead><tr><th>Unit</th><th>Typical Use</th></tr></thead>
+            <tbody>
+              <tr><td>bar / mbar</td><td>Process plants, Europe</td></tr>
+              <tr><td>psi / psig</td><td>USA industry, piping</td></tr>
+              <tr><td>kPa / MPa</td><td>SI standard, civil</td></tr>
+              <tr><td>atm</td><td>Chemistry, altitude</td></tr>
+              <tr><td>mmHg / inHg</td><td>Medical, barometers</td></tr>
+              <tr><td>m H&sub2;O / ft H&sub2;O</td><td>Pumps, HVAC</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">5</div><div class="edu-ttl">Gauge vs Absolute Pressure</div></div>
+        <div class="edu-bd">
+          <div class="eqb">
+            <span class="kw">P_abs = P_gauge + P_atm</span><br>
+            <span class="nt">P_atm = 1.01325 bar = 14.696 psia</span>
+          </div>
+          <strong>Absolute pressure</strong> is measured from perfect vacuum.
+          Used for NPSH, vapour pressure, and gas law calculations.<br><br>
+          <strong>Gauge pressure</strong> is measured above atmospheric.
+          What industrial gauges display.
+          <div class="notebox">
+            &nbsp;&#x26A0;&nbsp; For NPSHa calculations always use absolute pressures.
+            See our <a href="/npsh-calculator/" style="color:var(--navy);font-weight:600">NPSH Calculator</a>.
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-card-hd"><div class="edu-num">6</div><div class="edu-ttl">Specific Gravity &amp; Custom Fluids</div></div>
+        <div class="edu-bd">
+          <strong>Specific gravity (SG)</strong> = fluid density / 1000 (dimensionless):
+          <div class="eqb">
+            <span class="kw">SG = &rho;_fluid / 1000</span><br>
+            <span class="kw">P = H &times; SG &times; 1000 &times; g</span><br>
+            <span class="nt">For slurries: &rho;_mix = &rho;_liq &times;(1&minus;Cv) + &rho;_sol &times;Cv</span>
+          </div>
+          Common SG: diesel 0.84 &middot; seawater 1.025 &middot; H&sub2;SO&sub4; 1.84 &middot; mercury 13.55
+          <div class="infobox">
+            &nbsp;&#x2139;&nbsp; Enter SG in the Custom Density panel for any slurry, blend, or mixture.
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card" style="grid-column: 1 / -1">
+        <div class="edu-card-hd"><div class="edu-num">7</div><div class="edu-ttl">How to Read Pump Curves</div></div>
+        <div class="edu-bd">
+
+          <p style="margin-bottom:12px">
+            A <strong>pump performance curve</strong> is a graph published by the pump manufacturer showing how a specific
+            pump model behaves across its full operating range. Understanding it is essential for correct pump selection,
+            system design, and troubleshooting. Every pump curve contains the same core elements.
+          </p>
+
+          <!-- SVG Pump Curve Diagram -->
+          <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--r2); padding:20px; margin:14px 0; overflow-x:auto">
+            <svg viewBox="0 0 620 320" width="100%" style="max-width:620px; display:block; margin:0 auto; font-family:'DM Sans',sans-serif">
+
+              <!-- Grid lines -->
+              <defs>
+                <pattern id="grid" width="52" height="40" patternUnits="userSpaceOnUse" x="60" y="20">
+                  <path d="M 52 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect x="60" y="20" width="520" height="240" fill="url(#grid)"/>
+              <rect x="60" y="20" width="520" height="240" fill="none" stroke="#d1d5db" stroke-width="1.5"/>
+
+              <!-- Axis labels -->
+              <text x="320" y="315" text-anchor="middle" fill="#6b7280" font-size="12" font-weight="600">Flow Rate Q (m³/h)</text>
+              <text x="14" y="140" text-anchor="middle" fill="#6b7280" font-size="12" font-weight="600" transform="rotate(-90,14,140)">Head H (m)</text>
+              <text x="595" y="140" text-anchor="middle" fill="#6b7280" font-size="11" transform="rotate(90,595,140)">Efficiency η (%)  /  Power P (kW)</text>
+
+              <!-- X axis ticks & labels -->
+              <text x="60"  y="278" text-anchor="middle" fill="#9ca3af" font-size="10">0</text>
+              <text x="164" y="278" text-anchor="middle" fill="#9ca3af" font-size="10">50</text>
+              <text x="268" y="278" text-anchor="middle" fill="#9ca3af" font-size="10">100</text>
+              <text x="372" y="278" text-anchor="middle" fill="#9ca3af" font-size="10">150</text>
+              <text x="476" y="278" text-anchor="middle" fill="#9ca3af" font-size="10">200</text>
+              <text x="580" y="278" text-anchor="middle" fill="#9ca3af" font-size="10">250</text>
+
+              <!-- Y axis ticks & labels (Head) -->
+              <text x="52" y="264" text-anchor="end" fill="#9ca3af" font-size="10">0</text>
+              <text x="52" y="224" text-anchor="end" fill="#9ca3af" font-size="10">10</text>
+              <text x="52" y="184" text-anchor="end" fill="#9ca3af" font-size="10">20</text>
+              <text x="52" y="144" text-anchor="end" fill="#9ca3af" font-size="10">30</text>
+              <text x="52" y="104" text-anchor="end" fill="#9ca3af" font-size="10">40</text>
+              <text x="52" y="64"  text-anchor="end" fill="#9ca3af" font-size="10">50</text>
+              <text x="52" y="24"  text-anchor="end" fill="#9ca3af" font-size="10">60</text>
+
+              <!-- H-Q CURVE (navy, bold) — falls from top-left to bottom-right -->
+              <path d="M 60,52 C 130,56 220,72 320,120 C 400,158 470,200 580,258"
+                    fill="none" stroke="#1a3a6b" stroke-width="3" stroke-linecap="round"/>
+              <text x="90" y="48" fill="#1a3a6b" font-size="11" font-weight="700">H-Q curve</text>
+
+              <!-- EFFICIENCY CURVE (green, dashed) — bell shape peaking around BEP -->
+              <path d="M 100,255 C 160,230 240,130 320,108 C 390,90 440,105 510,155 C 540,178 560,210 580,240"
+                    fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="6,3" stroke-linecap="round"/>
+              <text x="310" y="96" fill="#15803d" font-size="11" font-weight="600">η curve</text>
+
+              <!-- POWER CURVE (amber) — rises left to right -->
+              <path d="M 60,240 C 150,228 270,210 380,195 C 460,184 520,178 580,172"
+                    fill="none" stroke="#e8920a" stroke-width="2" stroke-linecap="round"/>
+              <text x="430" y="172" fill="#e8920a" font-size="11" font-weight="600">P curve</text>
+
+              <!-- SYSTEM CURVE (dashed red) — parabola from origin -->
+              <path d="M 60,260 C 150,245 250,200 360,148 C 430,115 500,90 560,68"
+                    fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,4" stroke-linecap="round"/>
+              <text x="530" y="58" fill="#dc2626" font-size="11" font-weight="600">System</text>
+
+              <!-- OPERATING POINT — intersection of H-Q and system curve -->
+              <!-- Approx intersection at Q≈150, H≈120 → svg x=372, y=120 -->
+              <circle cx="372" cy="120" r="7" fill="white" stroke="#1a3a6b" stroke-width="2.5"/>
+              <circle cx="372" cy="120" r="3" fill="#1a3a6b"/>
+              <!-- Drop lines -->
+              <line x1="372" y1="120" x2="372" y2="260" stroke="#1a3a6b" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+              <line x1="60"  y1="120" x2="372" y2="120" stroke="#1a3a6b" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+              <text x="376" y="115" fill="#1a3a6b" font-size="10" font-weight="700">Operating</text>
+              <text x="376" y="127" fill="#1a3a6b" font-size="10" font-weight="700">Point</text>
+
+              <!-- BEP marker on efficiency curve — peak ~Q=150 -->
+              <circle cx="320" cy="108" r="5" fill="#15803d" opacity="0.85"/>
+              <text x="286" y="100" fill="#15803d" font-size="10" font-weight="700">BEP</text>
+
+              <!-- NPSH required curve (light blue, at bottom) -->
+              <path d="M 60,250 C 160,248 280,244 380,236 C 460,230 520,220 580,206"
+                    fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <text x="450" y="222" fill="#0ea5e9" font-size="10" font-weight="600">NPSHr</text>
+
+              <!-- Shutoff head label -->
+              <text x="64" y="49" fill="#374151" font-size="10">Shutoff</text>
+              <text x="64" y="60" fill="#374151" font-size="10">head</text>
+
+            </svg>
+          </div>
+
+          <!-- Legend -->
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--txt2)">
+              <svg width="28" height="4"><line x1="0" y1="2" x2="28" y2="2" stroke="#1a3a6b" stroke-width="3"/></svg> H-Q Curve
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--txt2)">
+              <svg width="28" height="4"><line x1="0" y1="2" x2="28" y2="2" stroke="#15803d" stroke-width="2" stroke-dasharray="6,3"/></svg> Efficiency &eta;
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--txt2)">
+              <svg width="28" height="4"><line x1="0" y1="2" x2="28" y2="2" stroke="#e8920a" stroke-width="2"/></svg> Power P
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--txt2)">
+              <svg width="28" height="4"><line x1="0" y1="2" x2="28" y2="2" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,4"/></svg> System Curve
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--txt2)">
+              <svg width="28" height="4"><line x1="0" y1="2" x2="28" y2="2" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="3,3"/></svg> NPSHr
+            </div>
+          </div>
+
+          <!-- Explanation table -->
+          <table>
+            <thead>
+              <tr>
+                <th>Curve / Point</th>
+                <th>What It Shows</th>
+                <th>How to Use It</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:var(--navy)">H-Q curve</strong></td>
+                <td>Head (m) the pump delivers at each flow rate. Always falls from left (high head, zero flow) to right (low head, max flow).</td>
+                <td>For your required flow Q, read up to this curve to find the head the pump will produce. Convert to pressure using P = &rho;gH.</td>
+              </tr>
+              <tr>
+                <td><strong>Shutoff head</strong></td>
+                <td>Maximum head at zero flow — where the H-Q curve meets the Y-axis. Pump is running but no fluid is moving.</td>
+                <td>Never operate at shutoff for more than a few seconds. Heat builds rapidly in the casing and can damage the pump.</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--green)">BEP</strong></td>
+                <td>Best Efficiency Point — the flow rate where the pump converts the most shaft power into useful hydraulic energy. Efficiency peaks here.</td>
+                <td>Select a pump so normal operating flow is within &plusmn;10% of BEP. Operating far from BEP increases vibration, heat, and wear.</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--green)">&eta; curve</strong></td>
+                <td>Pump efficiency (%) at each flow rate. Bell-shaped, peaking at BEP. Typical centrifugal pumps peak at 70&ndash;90%.</td>
+                <td>Use to calculate shaft power: P_shaft = (&rho; &times; g &times; Q &times; H) / &eta;. Higher efficiency = lower running cost.</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--amber)">P curve</strong></td>
+                <td>Shaft power (kW) drawn from the motor at each flow rate. For most centrifugal pumps, power rises with flow.</td>
+                <td>Motor must be sized for the maximum power point on the curve (usually at max flow). Add 10&ndash;15% safety margin.</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--red)">System curve</strong></td>
+                <td>The head your <em>system</em> demands at each flow rate: H_sys = static head + (friction losses &times; Q&sup2;). Parabola from the static head point.</td>
+                <td>Draw your system curve on the pump curve. Where they intersect is the <strong>operating point</strong> — actual flow and head in service.</td>
+              </tr>
+              <tr>
+                <td><strong>Operating point</strong></td>
+                <td>The intersection of the H-Q curve and the system curve. This is where the pump will actually run.</td>
+                <td>Read off the flow (Q) and head (H) — use this calculator to convert that head to pressure for your fluid.</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#0ea5e9">NPSHr curve</strong></td>
+                <td>Net Positive Suction Head <em>required</em> by the pump at each flow. Rises steeply at high flows. Pump will cavitate if NPSHa &lt; NPSHr.</td>
+                <td>Your available NPSHa (calculated from suction conditions) must always exceed NPSHr + 0.5 m safety margin. Use our NPSH Calculator.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="notebox" style="margin-top:14px">
+            &nbsp;&#x26A0;&nbsp; <strong>Pump curves are for water at 20&deg;C.</strong> When pumping a different fluid, head stays the same but pressure changes with density (P = &rho;gH). Motor power also changes &mdash; denser fluids draw more power at the same flow.
+          </div>
+
+          <div class="infobox" style="margin-top:10px">
+            &nbsp;&#x2139;&nbsp; <strong>Multiple impeller speeds:</strong> Manufacturers often publish a family of curves at different speeds or impeller diameters on one chart. The Affinity Laws govern how head, flow and power scale: Q &prop; N, H &prop; N&sup2;, P &prop; N&sup3;.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="margin-top:44px">
+    <h2 class="faq-ttl">Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do I convert metres of water to bar?
+        <span class="arr">&#x25BE;</span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-ai">
+          Multiply head in metres by fluid density and gravity, then divide by 100,000:
+          <code>P (bar) = H (m) &times; &rho; (kg/m&sup3;) &times; 9.81 / 100,000</code>.
+          For water at 20&deg;C (&rho; = 998.2 kg/m&sup3;): <code>P = H &times; 0.09791</code>.
+          So 10 metres of water = 0.979 bar.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is the difference between head and pressure?
+        <span class="arr">&#x25BE;</span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-ai">
+          <strong>Pressure</strong> (Pa, bar, psi) is force per unit area.
+          <strong>Head</strong> is the equivalent height of fluid that generates that pressure: <code>H = P / (&rho; &times; g)</code>.
+          1 bar = 10.2 m of water = 0.75 m of mercury.
+          Pump engineers use head because pump curves in metres are valid for any fluid.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do I convert psi to feet of water?
+        <span class="arr">&#x25BE;</span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-ai">
+          For water at 20&deg;C (SG = 0.998): <code>H (ft) = P (psi) &times; 2.308</code>.
+          So 1 psi = 2.31 ft of water.
+          Exact formula: <code>H (ft) = P (psi) &times; 6894.757 / (&rho; &times; 9.81 &times; 0.3048)</code>.
+          For non-water fluids, divide the water result by the SG of your fluid.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Why does the same pump head produce different pressures for different fluids?
+        <span class="arr">&#x25BE;</span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-ai">
+          Because <code>&Delta;P = &rho; &times; g &times; H</code> &mdash; pressure depends on fluid density.
+          A pump producing 50 m of head gives 4.89 bar with water but 9.01 bar with sulfuric acid (1840 kg/m&sup3;).
+          Pump curves use head precisely because head is independent of fluid density.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How does temperature affect head-to-pressure conversion?
+        <span class="arr">&#x25BE;</span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-ai">
+          Higher temperature &rarr; lower density (most liquids) &rarr; less pressure per metre of head.
+          For water, this is about 0.2% per 10&deg;C.
+          For organic solvents the thermal expansion is 4&ndash;7&times; higher &mdash;
+          temperature correction is much more important.
+          This calculator applies temperature-corrected density automatically using each fluid's expansion coefficient.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="foot">
+    <span class="foot-txt">&copy; 2025&ndash;2026 multicalci.com &mdash; Professional engineering calculators, free forever</span>
+    <div class="foot-links">
+      <a href="/npsh-calculator/">NPSH Calculator</a>
+      <a href="#learn">Engineering Guide</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<!-- ============================================================
+     JAVASCRIPT — clean, unminified, no obfuscation
+     ============================================================ -->
+<script>
+'use strict';
+
+// Helper: get element by id
+function E(id) {
+  return document.getElementById(id);
+}
+
+// Helper: format number
+function fN(v, dp) {
+  if (dp === undefined) { dp = 3; }
+  if (isNaN(v) || !isFinite(v)) { return '\u2014'; }
+  return Number(v).toFixed(dp);
+}
+
+// ── FLUID LIBRARY ───────────────────────────────────────────────
+// rho20 = density at 20°C (kg/m³)
+// beta  = volumetric thermal expansion coefficient (1/°C)
+var FLUIDS = [
+  // Water & Aqueous
+  { name: 'Water (pure)',             rho20: 998.2,   beta: 2.1e-4,  group: 'Water & Aqueous'   },
+  { name: 'Seawater (3.5% NaCl)',     rho20: 1025.0,  beta: 2.2e-4,  group: 'Water & Aqueous'   },
+  { name: 'Brine (NaCl 20%)',         rho20: 1148.0,  beta: 4.0e-4,  group: 'Water & Aqueous'   },
+  { name: 'Glycol-water (50%)',       rho20: 1065.0,  beta: 5.0e-4,  group: 'Water & Aqueous'   },
+  // Hydrocarbons
+  { name: 'Gasoline',                 rho20: 720.0,   beta: 9.5e-4,  group: 'Hydrocarbons'      },
+  { name: 'Kerosene / Jet A-1',       rho20: 800.0,   beta: 9.0e-4,  group: 'Hydrocarbons'      },
+  { name: 'Diesel / Gas oil',         rho20: 840.0,   beta: 8.5e-4,  group: 'Hydrocarbons'      },
+  { name: 'Crude oil (light)',        rho20: 800.0,   beta: 7.5e-4,  group: 'Hydrocarbons'      },
+  { name: 'Crude oil (heavy)',        rho20: 950.0,   beta: 7.0e-4,  group: 'Hydrocarbons'      },
+  { name: 'Fuel oil (heavy)',         rho20: 980.0,   beta: 6.0e-4,  group: 'Hydrocarbons'      },
+  { name: 'Lubricating oil SAE30',    rho20: 880.0,   beta: 7.2e-4,  group: 'Hydrocarbons'      },
+  // Chemicals
+  { name: 'Methanol',                 rho20: 791.0,   beta: 1.18e-3, group: 'Chemicals'         },
+  { name: 'Ethanol (96%)',            rho20: 789.0,   beta: 1.10e-3, group: 'Chemicals'         },
+  { name: 'Acetone',                  rho20: 791.0,   beta: 1.43e-3, group: 'Chemicals'         },
+  { name: 'Toluene',                  rho20: 867.0,   beta: 1.08e-3, group: 'Chemicals'         },
+  { name: 'Benzene',                  rho20: 879.0,   beta: 1.24e-3, group: 'Chemicals'         },
+  { name: 'Glycerol',                 rho20: 1261.0,  beta: 4.8e-4,  group: 'Chemicals'         },
+  { name: 'Sulfuric acid (98%)',      rho20: 1840.0,  beta: 5.7e-4,  group: 'Chemicals'         },
+  { name: 'HCl solution (32%)',       rho20: 1160.0,  beta: 4.5e-4,  group: 'Chemicals'         },
+  { name: 'Caustic soda (50%)',       rho20: 1525.0,  beta: 5.2e-4,  group: 'Chemicals'         },
+  { name: 'Phosphoric acid (85%)',    rho20: 1685.0,  beta: 5.0e-4,  group: 'Chemicals'         },
+  { name: 'Methylene chloride',       rho20: 1325.0,  beta: 1.37e-3, group: 'Chemicals'         },
+  // Metal & Specialty
+  { name: 'Mercury',                  rho20: 13546.0, beta: 1.82e-4, group: 'Metal & Specialty' },
+  { name: 'Molten salt (nitrate)',    rho20: 1899.0,  beta: 5.0e-4,  group: 'Metal & Specialty' },
+  { name: 'Liquid sodium (200\u00b0C)', rho20: 927.0, beta: 2.5e-4,  group: 'Metal & Specialty' },
+  // Cryogenic
+  { name: 'Liquid nitrogen (LN\u2082)',      rho20: 808.0,  beta: 5.5e-3,  group: 'Cryogenic' },
+  { name: 'Liquid oxygen (LOX)',             rho20: 1141.0, beta: 4.0e-3,  group: 'Cryogenic' },
+  { name: 'Liquid ammonia',                  rho20: 682.0,  beta: 2.45e-3, group: 'Cryogenic' },
+  { name: 'Liquid CO\u2082 (pressurised)',   rho20: 770.0,  beta: 5.0e-3,  group: 'Cryogenic' },
+  { name: 'Liquid hydrogen (LH\u2082)',      rho20: 70.8,   beta: 1.0e-2,  group: 'Cryogenic' },
+  { name: 'Propane (liquid)',                rho20: 510.0,  beta: 2.8e-3,  group: 'Cryogenic' }
+];
+
+// Comparison reference fluids
+var COMPARE = [
+  { name: 'Water',              rho: 998.2   },
+  { name: 'Seawater',          rho: 1025.0  },
+  { name: 'Gasoline',          rho: 720.0   },
+  { name: 'Diesel',            rho: 840.0   },
+  { name: 'Crude (light)',     rho: 800.0   },
+  { name: 'Sulfuric acid 98%', rho: 1840.0  },
+  { name: 'Mercury',           rho: 13546.0 },
+  { name: 'Methanol',          rho: 791.0   }
+];
+
+// Head units
+var HEAD_UNITS = [
+  { id: 'm',  label: 'Metres (m)',       toM: 1        },
+  { id: 'mm', label: 'Millimetres (mm)', toM: 0.001    },
+  { id: 'cm', label: 'Centimetres (cm)', toM: 0.01     },
+  { id: 'km', label: 'Kilometres (km)',  toM: 1000     },
+  { id: 'ft', label: 'Feet (ft)',        toM: 0.3048   },
+  { id: 'in', label: 'Inches (in)',      toM: 0.0254   },
+  { id: 'yd', label: 'Yards (yd)',       toM: 0.9144   }
+];
+
+// Pressure units
+var PRESSURE_UNITS = [
+  { id: 'Pa',    label: 'Pascal (Pa)',                       fromPa: 1                   },
+  { id: 'kPa',   label: 'Kilopascal (kPa)',                  fromPa: 1e-3                },
+  { id: 'MPa',   label: 'Megapascal (MPa)',                  fromPa: 1e-6                },
+  { id: 'bar',   label: 'Bar (bar)',                         fromPa: 1e-5                },
+  { id: 'mbar',  label: 'Millibar (mbar)',                   fromPa: 0.01                },
+  { id: 'psi',   label: 'PSI (psi)',                         fromPa: 1 / 6894.757        },
+  { id: 'atm',   label: 'Atmosphere (atm)',                  fromPa: 1 / 101325          },
+  { id: 'mmHg',  label: 'mmHg / Torr',                      fromPa: 1 / 133.322         },
+  { id: 'inHg',  label: 'Inches Hg (inHg)',                 fromPa: 1 / 3386.39         },
+  { id: 'mH2O',  label: 'Metres H\u2082O (mH\u2082O)',      fromPa: 1 / 9810            },
+  { id: 'ftH2O', label: 'Feet H\u2082O (ftH\u2082O)',       fromPa: 1 / (9810 * 0.3048) }
+];
+
+// ── App State ─────────────────────────────────────────────────
+var MODE = 'hp';         // 'hp' = head to pressure, 'ph' = pressure to head
+var tempUnitCur = 'C';   // current temperature unit
+
+// ── Initialise ────────────────────────────────────────────────
+function init() {
+  buildFluidDropdown();
+  updateUnitDrop();
+  onFluidChange();
+  updateSlider();
+}
+
+function buildFluidDropdown() {
+  var sel = E('fluidSel');
+  var lastGroup = '';
+
+  for (var i = 0; i < FLUIDS.length; i++) {
+    var fluid = FLUIDS[i];
+
+    if (fluid.group !== lastGroup) {
+      var og = document.createElement('optgroup');
+      og.label = fluid.group;
+      sel.appendChild(og);
+      lastGroup = fluid.group;
+    }
+
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = fluid.name;
+    sel.appendChild(opt);
+  }
+}
+
+// ── Mode Toggle ───────────────────────────────────────────────
+function setMode(m) {
+  MODE = m;
+  E('btnHP').classList.toggle('on', m === 'hp');
+  E('btnPH').classList.toggle('on', m === 'ph');
+  updateUnitDrop();
+  calc();
+}
+
+// ── Unit Dropdown ─────────────────────────────────────────────
+function updateUnitDrop() {
+  var sel = E('inUnit');
+  if (!sel) { return; }
+  sel.innerHTML = '';
+
+  var units = (MODE === 'hp') ? HEAD_UNITS : PRESSURE_UNITS;
+
+  for (var i = 0; i < units.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = units[i].id;
+    opt.textContent = units[i].label;
+    sel.appendChild(opt);
+  }
+
+  sel.value = (MODE === 'hp') ? 'm' : 'bar';
+  E('inPill').textContent = (MODE === 'hp') ? 'm' : 'bar';
+  E('inputLbl').textContent = (MODE === 'hp') ? 'Fluid Head (H)' : 'Pressure (P)';
+  E('inputHint').textContent = (MODE === 'hp')
+    ? 'Enter the fluid column height in your chosen unit.'
+    : 'Enter the pressure value to convert to fluid head.';
+}
+
+function onUnitChange() {
+  E('inPill').textContent = E('inUnit').value;
+  calc();
+}
+
+// ── Fluid Change ──────────────────────────────────────────────
+function onFluidChange() {
+  updateMeta();
+  calc();
+}
+
+// ── Density ───────────────────────────────────────────────────
+function getRho() {
+  // Manual override
+  var ov = parseFloat(E('rhoOv').value);
+  if (!isNaN(ov) && ov > 0) {
+    return ov;
+  }
+
+  // Temperature-corrected from fluid library
+  var idx = parseInt(E('fluidSel').value) || 0;
+  var fluid = FLUIDS[idx];
+  var T = getTempC();
+  var rho = fluid.rho20 * (1 - fluid.beta * (T - 20));
+  return Math.max(1, rho);
+}
+
+function getTempC() {
+  var v = parseFloat(E('tempInp').value);
+  if (isNaN(v)) { v = 20; }
+  if (tempUnitCur === 'C') { return v; }
+  if (tempUnitCur === 'F') { return (v - 32) * 5 / 9; }
+  return v - 273.15;   // Kelvin
+}
+
+// ── Fluid Meta Chips ──────────────────────────────────────────
+function updateMeta() {
+  var metaEl = E('fluidMeta');
+  if (!metaEl) { return; }
+  var rho = getRho();
+  var g = parseFloat(E('gravInp').value) || 9.81;
+  var sg = rho / 1000;
+  var mPerBar = 1e5 / (rho * g);
+
+  metaEl.innerHTML =
+    '<div class="fmc"><span class="lbl">Density \u03c1</span><span class="val">' +
+    fN(rho, 1) + ' kg/m\u00b3</span></div>' +
+    '<div class="fmc"><span class="lbl">Spec. Gravity</span><span class="val">' +
+    fN(sg, 4) + '</span></div>' +
+    '<div class="fmc"><span class="lbl">Temp (T)</span><span class="val">' +
+    fN(getTempC(), 1) + ' \u00b0C</span></div>' +
+    '<div class="fmc"><span class="lbl">m head / bar</span><span class="val">' +
+    fN(mPerBar, 3) + ' m</span></div>';
+}
+
+// ── SG Override ───────────────────────────────────────────────
+function onSGChange() {
+  var sg = parseFloat(E('sgOv').value);
+  if (!isNaN(sg) && sg > 0) {
+    E('rhoOv').value = fN(sg * 1000, 1);
+  } else {
+    E('rhoOv').value = '';
+  }
+  updateMeta();
+  calc();
+}
+
+// ── Temperature ───────────────────────────────────────────────
+function onTempInput() {
+  updateSlider();
+  updateMeta();
+  calc();
+}
+
+function onTempSlider() {
+  var v = parseFloat(E('tempSl').value);
+  var displayVal = v;
+  if (tempUnitCur === 'F') { displayVal = v * 9 / 5 + 32; }
+  if (tempUnitCur === 'K') { displayVal = v + 273.15; }
+  E('tempInp').value = fN(displayVal, 0);
+  E('tempBadge').textContent = fN(v, 0) + '\u00b0C';
+  E('tempSl').style.setProperty('--pct', (v / 150 * 100).toFixed(1) + '%');
+  updateMeta();
+  calc();
+}
+
+function onTempUnitChange() {
+  tempUnitCur = E('tempUnit').value;
+  var newVal = 20;
+  if (tempUnitCur === 'F') { newVal = 68; }
+  if (tempUnitCur === 'K') { newVal = 293.15; }
+  E('tempInp').value = fN(newVal, 1);
+  updateSlider();
+  updateMeta();
+  calc();
+}
+
+function updateSlider() {
+  var Tc = Math.max(0, Math.min(150, getTempC()));
+  E('tempSl').value = Tc;
+  E('tempBadge').textContent = fN(Tc, 0) + '\u00b0C';
+  E('tempSl').style.setProperty('--pct', (Tc / 150 * 100).toFixed(1) + '%');
+}
+
+// ── Main Calculation ──────────────────────────────────────────
+function calc() {
+  var valEl = E('valInp');
+  if (!valEl) { return; }
+
+  var val = parseFloat(valEl.value);
+  if (isNaN(val) || val < 0) { return; }
+
+  var rho = getRho();
+  var g   = parseFloat(E('gravInp').value) || 9.81;
+  var unitId = E('inUnit').value;
+
+  updateMeta();
+
+  var H_m, P_Pa, i;
+
+  if (MODE === 'hp') {
+    var headUnit = null;
+    for (i = 0; i < HEAD_UNITS.length; i++) {
+      if (HEAD_UNITS[i].id === unitId) { headUnit = HEAD_UNITS[i]; break; }
+    }
+    H_m  = val * (headUnit ? headUnit.toM : 1);
+    P_Pa = rho * g * H_m;
+  } else {
+    var pressUnit = null;
+    for (i = 0; i < PRESSURE_UNITS.length; i++) {
+      if (PRESSURE_UNITS[i].id === unitId) { pressUnit = PRESSURE_UNITS[i]; break; }
+    }
+    P_Pa = val / (pressUnit ? pressUnit.fromPa : 1);
+    H_m  = P_Pa / (rho * g);
+  }
+
+  showResults(H_m, P_Pa, rho, g);
+}
+
+// ── Display Results ───────────────────────────────────────────
+function showResults(H_m, P_Pa, rho, g) {
+  var panel       = E('resultsPanel');
+  var placeholder = E('placeholder');
+  var grid        = E('unitsGrid');
+  if (!panel || !grid) { return; }
+
+  panel.classList.add('show');
+  if (placeholder) { placeholder.style.display = 'none'; }
+
+  var fluidIdx = parseInt(E('fluidSel').value) || 0;
+  var fluidName = FLUIDS[fluidIdx].name;
+  var Tc = fN(getTempC(), 1);
+
+  if (MODE === 'hp') {
+    E('brLbl').textContent = 'RESULTING PRESSURE';
+    E('brVal').textContent = fN(P_Pa / 1e5, 5);
+    E('brUnit').textContent = 'bar  (differential pressure from fluid column)';
+    E('brFormula').innerHTML =
+      '<span class="hi">P = \u03c1 \u00d7 g \u00d7 H</span><br>' +
+      'P = ' + fN(rho, 1) + ' kg/m\u00b3 \u00d7 ' + fN(g, 3) + ' m/s\u00b2 \u00d7 ' + fN(H_m, 4) + ' m<br>' +
+      'P = <span class="eq">' + fN(P_Pa, 1) + ' Pa = ' + fN(P_Pa / 1e5, 5) + ' bar = ' +
+      fN(P_Pa / 6894.757, 4) + ' psi = ' + fN(P_Pa / 1000, 3) + ' kPa</span><br>' +
+      'Fluid: ' + fluidName + '  \u00b7  T = ' + Tc + '\u00b0C  \u00b7  \u03c1 = ' + fN(rho, 1) + ' kg/m\u00b3';
+  } else {
+    E('brLbl').textContent = 'RESULTING HEAD';
+    E('brVal').textContent = fN(H_m, 4);
+    E('brUnit').textContent = 'metres of fluid column';
+    E('brFormula').innerHTML =
+      '<span class="hi">H = P / (\u03c1 \u00d7 g)</span><br>' +
+      'H = ' + fN(P_Pa, 1) + ' Pa \u00f7 (' + fN(rho, 1) + ' \u00d7 ' + fN(g, 3) + ')<br>' +
+      'H = <span class="eq">' + fN(H_m, 5) + ' m = ' + fN(H_m / 0.3048, 4) + ' ft = ' +
+      fN(H_m * 1000, 2) + ' mm</span><br>' +
+      'Fluid: ' + fluidName + '  \u00b7  T = ' + Tc + '\u00b0C  \u00b7  \u03c1 = ' + fN(rho, 1) + ' kg/m\u00b3';
+  }
+
+  // Unit conversion grid
+  var pressureOuts = [
+    { lbl: 'Pascal',      unit: 'Pa',              v: P_Pa,                    p: false },
+    { lbl: 'Kilopascal',  unit: 'kPa',             v: P_Pa / 1e3,              p: false },
+    { lbl: 'Bar',         unit: 'bar',             v: P_Pa / 1e5,              p: true  },
+    { lbl: 'Millibar',    unit: 'mbar',            v: P_Pa * 0.01,             p: false },
+    { lbl: 'PSI',         unit: 'psi',             v: P_Pa / 6894.757,         p: true  },
+    { lbl: 'Atmosphere',  unit: 'atm',             v: P_Pa / 101325,           p: false },
+    { lbl: 'mmHg',        unit: 'mmHg',            v: P_Pa / 133.322,          p: false },
+    { lbl: 'm H\u2082O',  unit: 'mH\u2082O',       v: P_Pa / (998.2 * 9.81),  p: false }
+  ];
+
+  var headOuts = [
+    { lbl: 'Metres',      unit: 'm',    v: H_m,            p: true  },
+    { lbl: 'Millimetres', unit: 'mm',   v: H_m * 1000,     p: false },
+    { lbl: 'Centimetres', unit: 'cm',   v: H_m * 100,      p: false },
+    { lbl: 'Feet',        unit: 'ft',   v: H_m / 0.3048,   p: true  },
+    { lbl: 'Inches',      unit: 'in',   v: H_m / 0.0254,   p: false },
+    { lbl: 'Kilometres',  unit: 'km',   v: H_m / 1000,     p: false },
+    { lbl: 'Yards',       unit: 'yd',   v: H_m / 0.9144,   p: false },
+    { lbl: 'Miles',       unit: 'mi',   v: H_m / 1609.34,  p: false }
+  ];
+
+  var outputs = (MODE === 'hp') ? pressureOuts : headOuts;
+  grid.innerHTML = '';
+
+  for (var k = 0; k < outputs.length; k++) {
+    var o = outputs[k];
+    var absV = Math.abs(o.v);
+    var dp = absV > 1000 ? 1 : absV > 10 ? 3 : absV > 0.01 ? 5 : 7;
+    var d = document.createElement('div');
+    d.className = 'uc' + (o.p ? ' p' : '');
+    d.title = 'Click to copy';
+    (function(val, unit, places) {
+      d.onclick = function() { copyVal(fN(val, places) + ' ' + unit); };
+    })(o.v, o.unit, dp);
+    d.innerHTML =
+      '<div class="uc-lbl">' + o.lbl + '</div>' +
+      '<div class="uc-val">' + fN(o.v, dp) + '</div>' +
+      '<div class="uc-unit">' + o.unit + '</div>';
+    grid.appendChild(d);
+  }
+
+
+}
+
+// ── Copy to Clipboard ─────────────────────────────────────────
+function copyVal(txt) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function() {
+      showToast('Copied: ' + txt);
+    }).catch(function() {
+      fallbackCopy(txt);
+    });
+  } else {
+    fallbackCopy(txt);
+  }
+}
+
+function fallbackCopy(txt) {
+  var ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast('Copied: ' + txt); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function showToast(msg) {
+  var t = E('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+
+// ── FAQ Accordion ─────────────────────────────────────────────
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var wasOpen = item.classList.contains('open');
+  var allOpen = document.querySelectorAll('.faq-item.open');
+  for (var i = 0; i < allOpen.length; i++) {
+    allOpen[i].classList.remove('open');
+  }
+  if (!wasOpen) {
+    item.classList.add('open');
+  }
+}
+
+// ── Boot ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
