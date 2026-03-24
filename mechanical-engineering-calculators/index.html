@@ -3678,7 +3678,9 @@ function eduTab(name, btn) {
   if (btn) btn.classList.add('active');
   if (name === 'quiz' && !mechQuizBuilt) buildMechQuiz();
 }
-
+document.querySelectorAll('.edu-panel').forEach(function(p){
+  if(!p.classList.contains('active')) p.style.display='none';
+});
 /* ── Quiz Engine ──────────────────────────────────── */
 let mechQuizBuilt = false, mechQuizAnswers = {};
 
