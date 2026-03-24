@@ -17,6 +17,98 @@
 <meta name="twitter:title" content="Cooling Tower Performance Calculator — CTI ATC-105 | multicalci.com">
 <meta name="twitter:image" content="https://multicalci.com/assets/og-image.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Cooling Tower Performance Calculator","description":"CTI ATC-105 Merkel method cooling tower performance calculator with KaV/L, NTU, approach temperature and degradation assessment.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/cooling-tower-performance/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+======================================================================
+FILE: cooling-tower-performance/index.html
+INSERT this <script> block inside <head> (after existing ld+json if any)
+======================================================================
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "name": "Cooling Tower Performance Calculator (CTI ATC-105) \u2014 multicalci.com",
+      "url": "https://multicalci.com/cooling-tower-performance/",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why can't a cooling tower cool water below the wet-bulb temperature?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The wet-bulb temperature is the thermodynamic lower limit of evaporative cooling. Consider what happens as a water droplet evaporates into air: water molecules leave the liquid surface, carrying away latent heat. This continues as long as the vapour pressure of the water surface (which depends on surface temperature) exceeds the partial pressure of water vapour in the surrounding air. The WBT is precisely the temperature at which these two pressures are equal \u2014 where the driving force for evaporation reaches zero. Mathematically: at WBT, the enthalpy of saturated air h_s(WBT) equals the enthalpy of the actual incoming air h_a. The driving force for the Merkel equation (h_s \u2212 h_a) = 0, meaning the NTU integral diverges to infinity. You would need an infinitely large tower to reach WBT. In practice, well-designed towers achieve approaches of 3\u20135\u00b0C above WBT, which requires a reasonable but finite amount of fill."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between counterflow and crossflow towers? Which is better?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Counterflow: Air flows upward through the fill while water falls downward \u2014 they flow in opposite directions. This creates a true counterflow heat exchanger arrangement where the coldest water (at the fill exit/top) contacts the wettest, coolest incoming air, and the hottest water (at fill entry/bottom) contacts the driest, hottest exit air. Thermodynamically, counterflow is more efficient for a given fill volume \u2014 it can achieve a smaller approach for the same fill depth, or the same approach with less fill. Crossflow: Air flows horizontally across the fill while water falls vertically. The fill is typically on the sides of the tower with air entering through louvered walls. Simpler structural arrangement, easier to clean and inspect fill, lower fan static pressure. Less thermodynamically efficient than counterflow for the same fill volume. For most applications, counterflow is thermally superior (lower approach per m\u00b3 of fill) and dominates for HVAC applications. Crossflow is preferred when: fill cleaning is a priority (easier access), very large flow rates create distribution challenges, or makeup air approaches (packaged towers for certain industrial uses). Neither is universal"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my tower perform worse in summer even though I haven't changed anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because cooling tower performance is fundamentally limited by ambient wet-bulb temperature, and WBT is higher in summer. Even if your tower is in perfect condition, a higher WBT means: The approach is larger (CWT \u2212 WBT stays roughly constant for a well-performing tower, so CWT rises with WBT) The enthalpy difference (h_s \u2212 h_a) driving force is reduced \u2014 the air entering the tower is already closer to saturation The chiller condenser sees higher entering water temperature \u2192 higher condensing pressure \u2192 higher compressor power and lower COP This is not a fault \u2014 it is normal seasonal variation. The tower was designed for a specific design WBT (say 26\u00b0C). On days when WBT exceeds 26\u00b0C, the tower cannot meet its design approach. This is why HVAC systems are designed with some margin and why the design WBT is chosen at the 0.4% exceedance level (approximately 35 hours/year above that temperature). If you believe summer performance has degraded beyond normal seasonal variation, check for: fill fouling by biological growth (algae, scale), reduced fan airflow (blade pitch drift, belt wear), increased water flow above design (increasing L/G), or recirculation of exhaust air back to inlet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the Merkel number KaV/L physically represent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "KaV/L (pronounced \"KaV over L\") is the cooling tower's equivalent of the Number of Transfer Units (NTU) in conventional heat exchanger theory. It is a dimensionless measure of the tower's heat and mass transfer capacity relative to the water flow rate. Physically it represents how much air-water contact surface area the fill provides per unit of water flowing through it: Ka = overall mass transfer coefficient \u00d7 interfacial area per unit fill volume (kg/m\u00b3\u00b7s) \u2014 a property of the fill geometry, air velocity, and water distribution quality V = fill volume (m\u00b3) \u2014 more fill depth or larger cross-section increases V L = water mass flow rate (kg/s) \u2014 more water means each litre spends less time in contact with air A higher KaV/L means the fill can achieve a smaller approach (or larger range) for the same conditions. Typical values: 0.8\u20131.2 for small approach HVAC towers; 1.5\u20132.5 for process towers with large range; 2.5\u20134.0 for demanding industrial applications. KaV/L > 4 requires very deep fill or specialised high-performance media and is unusual in practice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is altitude/elevation accounted for in cooling tower calculations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Higher altitude means lower atmospheric pressure, which affects cooling tower performance in several ways: Lower air density: A fan moving the same volume of air delivers less mass flow of air. Since the Merkel equation uses mass flow (kg/s of air), a tower at altitude requires a higher-capacity fan (larger diameter or faster speed) than the same tower at sea level. Higher saturation humidity ratio: At lower pressure, water evaporates more readily. The saturation humidity ratio w_s = 0.62198 \u00d7 P_sat / (P_atm \u2212 P_sat) increases as P_atm decreases. This increases the driving force for mass transfer \u2014 partially offsetting the reduced air density. Lower boiling point: At 2000 m, water boils at ~93\u00b0C. This has no practical impact on cooling tower calculations but affects steam systems nearby. P_atm(elev) = 101.325 \u00d7 (1 \u2212 2.2558\u00d710\u207b\u2075 \u00d7 elev_m)^5.2559 [kPa] At 1000 m: P_atm \u2248 89.9 kPa (11.3% below sea level) At 2000 m: P_atm \u2248 79.5 kPa (21.6% below sea level) Towers at high altitude (Johannesburg 1753 m, Mexico City 2240 m, La Paz 3640 m) require significantly larger fill cross-sections or deeper fill than equivalent sea-level installations. Always enter accurate elevation in this calcula"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is \"cycles of concentration\" and why does it matter?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cycles of concentration (CoC) is the ratio of dissolved solids concentration in the circulating water to the concentration in the make-up water. Because evaporation removes pure water and leaves dissolved salts behind, the circulating water becomes progressively more concentrated. CoC is controlled by blowdown (intentionally draining a portion of the concentrated circulating water and replacing with fresh make-up). Typical operating CoC: 3\u20138 for most cooling towers. At CoC = 5: circulating water has 5\u00d7 the dissolved solids of make-up water. Blowdown rate = Evaporation / (CoC \u2212 1). At CoC = 5 and 2% evaporation rate: blowdown = 2%/(5\u22121) = 0.5% of circulation rate. Why CoC matters for performance: Scale formation: As CaCO\u2083 (calcium carbonate) concentrates, it precipitates on fill surfaces and heat exchanger tubes. Film fill is especially vulnerable \u2014 1 mm of CaCO\u2083 scale on fill sheets can reduce KaV/L by 10\u201320% and eventually block the fill entirely. Corrosion: Chloride and sulphate concentration at high CoC accelerates corrosion of basin, casing, and heat exchangers. Biological activity: High dissolved solids and warm water create ideal conditions for Legionella and other microorgan"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Lewis number and does it matter for cooling tower calculations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Lewis number (Le) is the ratio of thermal diffusivity to mass diffusivity in the air-water system: Le = \u03b1/D_AB. For the air-water system at atmospheric conditions, Le \u2248 0.865 (not exactly 1.0 as the Merkel simplification assumes). The Merkel equation assumes Le = 1 (the Lewis relation), which means the heat transfer coefficient and mass transfer coefficient are in a fixed ratio that allows collapsing the two-variable problem into a single enthalpy driving force. In practice, Le = 0.865 means the Merkel method slightly overestimates the required KaV/L \u2014 the fill needs to be about 1\u20133% larger than Merkel predicts for the same approach. The Poppe method is an alternative that accounts for Le \u2260 1 and tracks air humidity explicitly (not just enthalpy). It gives more accurate results especially at large temperature ranges (HWT \u2212 CWT > 15\u00b0C) and high L/G ratios. However, the Merkel method is specified by CTI ATC-105 for acceptance testing \u2014 using Poppe for acceptance testing is not standard and results would not be directly comparable to published fill performance data. For design, Poppe gives better accuracy; for acceptance testing, Merkel is required."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Cooling Tower Performance Calculator (CTI ATC-105) \u2014 multicalci.com",
+      "url": "https://multicalci.com/cooling-tower-performance/",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Any web browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "multicalci.com",
+        "url": "https://multicalci.com"
+      }
+    }
+  ]
+}
+</script>
+
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
