@@ -22,6 +22,89 @@
 <meta name="robots" content="index, follow">
 <meta name="author" content="multicalci.com">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Pressure Drop Calculator","description":"Free pipe pressure drop calculator using Darcy-Weisbach equation with Colebrook-White friction factor.","applicationCategory":"EngineeringApplication","operatingSystem":"Web","url":"https://multicalci.com/pressure-drop-calculator/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+======================================================================
+FILE: pressure-drop-calculator/index.html
+INSERT this <script> block inside <head> (after existing ld+json if any)
+======================================================================
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "name": "Pipe Pressure Drop Calculator (Darcy-Weisbach / Colebrook-White) \u2014 multicalci.com",
+      "url": "https://multicalci.com/pressure-drop-calculator/",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does \u0394P increase so steeply when I increase flow rate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In turbulent flow, \u0394P scales with approximately V\u00b2, and velocity is proportional to flow rate. Doubling flow rate doubles velocity and quadruples pressure drop. Turbulent: \u0394P &#8733; Q^1.75 to Q^2.0 (f weakly depends on Re) Laminar: \u0394P &#8733; Q^1.0 (Hagen-Poiseuille: strictly linear) Example: 2x flow rate &#8594; approx. 4x pump power demand Going from 50 mm to 65 mm pipe (30% larger) reduces velocity by 41% &#8594; friction \u0394P drops ~62%. Extra pipe cost pays back quickly in energy savings for continuous-flow systems."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is there a velocity head term in the NPSH formula?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "NPSH available represents the total energy at the pump suction flange above vapour pressure. Total energy per unit weight = pressure head + velocity head. Omitting V\u00b2/(2g) overestimates NPSH A and risks unexpected cavitation in high-velocity suction lines. V = 2.0 m/s: V\u00b2/(2g) = 0.20 m &#8594; small but real V = 3.5 m/s: V\u00b2/(2g) = 0.62 m &#8594; significant V = 5.0 m/s: V\u00b2/(2g) = 1.27 m &#8594; must always include"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Darcy-Weisbach for compressible gas flow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 with caveats. The incompressible model is valid for gases when \u0394P/P&#8321; < 10% . Beyond this, gas density changes significantly along the pipe. \u0394P/P&#8321; < 10%: Incompressible Darcy-Weisbach acceptable. Use average density. 10&#8211;20%: Use isothermal compressible flow equations. >20%: Use Weymouth, Panhandle, or Fanno flow equations. Also check Mach number: if V > 0.3 &#215; speed of sound (\u2248100 m/s in air at 1 bar), compressibility matters regardless of \u0394P/P&#8321;."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What causes water hammer and how does velocity relate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Water hammer is the pressure surge when flow is suddenly stopped \u2014 most commonly by rapid valve closure. The Joukowski equation gives the peak surge: \u0394P surge = \u03c1 &#183; a &#183; \u0394V [Pa] a = pressure wave speed \u2248 900&#8211;1,400 m/s (water in steel pipe) Example: V = 2 m/s, \u03c1 = 1000, a = 1200 m/s \u0394P = 1000 &#215; 1200 &#215; 2 = 2,400,000 Pa = 24 bar &#8594; potentially catastrophic! Mitigation: slow-closing valves (closure time > 2L/a), surge vessels, PRVs. Higher velocity &#8594; directly proportional larger surge &#8594; strongest argument for keeping liquid velocities below 3 m/s."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Darcy vs Fanning friction factor \u2014 which does this calculator use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This calculator uses the Darcy (Moody) friction factor throughout : f Darcy = 4 &#215; f Fanning &#160;&#160;(laminar: f D =64/Re vs f F =16/Re) Darcy-Weisbach: \u0394P = f D &#215; (L/D) &#215; (\u03c1V\u00b2/2) &#8592; this calculator Red flag: if a textbook gives f \u2248 0.005 for turbulent water in steel &#8594; it is Fanning (f Darcy would be \u2248 0.020 for same conditions) Mixing the two definitions doubles or halves your calculated \u0394P."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use Hazen-Williams vs Darcy-Weisbach?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hazen-Williams (1906) is empirically calibrated for water in municipal distribution networks only. Use H-W when: water distribution, irrigation, fire suppression (NFPA 13 mandates H-W for sprinkler hydraulics). C-factor data available from field tests. Working with utility standards. Use Darcy-Weisbach when: any fluid other than water; T outside 5&#8211;30&#176;C; Re < 100,000; pipe < 50 mm; viscous fluid, gas, or steam; rigorous engineering analysis required. H-W gives large errors outside its calibration range. For all process engineering, Darcy-Weisbach with Colebrook-White is the correct method."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Pipe Pressure Drop Calculator (Darcy-Weisbach / Colebrook-White) \u2014 multicalci.com",
+      "url": "https://multicalci.com/pressure-drop-calculator/",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Any web browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "multicalci.com",
+        "url": "https://multicalci.com"
+      }
+    }
+  ]
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════
