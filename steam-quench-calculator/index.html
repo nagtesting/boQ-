@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -817,411 +818,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 
 </div><!-- end page -->
 
+
 <script>
 'use strict';
 
 /* ════════════════════════════════════════════════════════════════
-   STEAM PROPERTIES — IAPWS-IF97 Tables + PCHIP Engine  v3.1
-   Version: v3.1  |  Calc-ID: stamped per session (see CALC_ID)
-   ── Deterministic · No external runtime · Same result every run ──
+   Steam Quench Calculator — Client Script  v3.2
+   ── ALL thermodynamic logic moved to /api/steam-quench (server) ──
+   ── Client handles only: UI, unit conversion, display, PDF      ──
 
-   Method (per property region):
-     Sat. P(T):        Wagner equation — IAPWS-IF97 §8.1 (exact)
-     Sat. T(P):        Newton–Raphson + bisection fallback (< 1e-7°C residual)
-     Sat. props:       NIST-IF97 tables (0.01–374°C) + PCHIP monotone interp
-     Superheated h,s,v: NIST-IF97 tables (dense grid) + log-P PCHIP interp (B3)
-     Compressed liq. h: Poynting + isothermal-compressibility correction (B4)
-     Critical region:  Detected (T>360°C & P>180 bar) + user warning (B5)
+   API endpoints used:
+     POST /api/steam-quench  { action:'preview', P_s, T1, Tw, Pw, T2 }
+       → { Ts, h1, v1, s1, sh_in, inlet_ok, h2, sh_out, hw, Tsat_w, water_ok }
 
-   Accuracy (vs certified IAPWS-IF97 software):
-     h:  ±0.3 kJ/kg  (sat, normal conditions)
-         ±1.0 kJ/kg  (superheated interpolation)
-         ±5–15 kJ/kg (near-critical region — warning shown)
-     s:  ±0.002 kJ/(kg·K)
-     v:  ±0.2%
+     POST /api/steam-quench  { P_s, T1, Tw, Pw, T2, m_in, sh_min,
+                                f_min, f_max, cv_in }
+       → full result object (mass balance, sensitivity, valve sizing)
 
-   NOT implemented (requires Region-3 Gibbs polynomial):
-     IF97 Region-3 (T > 350°C AND P > 165 bar exactly)
-     For those conditions results are interpolated with reduced accuracy.
+   Nothing in this file can be used to reverse-engineer steam tables.
 ════════════════════════════════════════════════════════════════ */
 
-/* ── B25: Version stamp + per-session traceability ── */
-const CALC_VERSION = 'v3.1';
+/* ── Session traceability (display only — no calc logic) ── */
+const CALC_VERSION = 'v3.2';
 const CALC_ID = 'SQC-' + Date.now().toString(36).toUpperCase();
 
-/* ── Wagner saturation-pressure equation (IAPWS-IF97 §8.1) ── */
-function pSat(T_C) {           // returns bar
-  const T = T_C + 273.15;
-  const Tc = 647.096, Pc = 220.64;
-  if (T >= Tc) return Pc;
-  if (T < 273.15) return NaN;
-  const tau = 1 - T / Tc;
-  const arg = (Tc / T) * (
-    -7.85951783  * tau                  +
-     1.84408259  * Math.pow(tau, 1.5)   +
-    -11.7866497  * Math.pow(tau, 3)     +
-     22.6807411  * Math.pow(tau, 3.5)   +
-    -15.9618719  * Math.pow(tau, 4)     +
-     1.80122502  * Math.pow(tau, 7.5)
-  );
-  return Pc * Math.exp(arg);
-}
-
-/* ── Robust Tsat: Newton + bisection fallback (Bug 4 fix) ── */
-let _tSatConvWarn = false;
-function tSat(P_bar) {
-  _tSatConvWarn = false;
-  if (!isFinite(P_bar) || P_bar <= 0) return NaN;
-  if (P_bar >= 220.64) return 374.14;
-  if (P_bar < 0.006) return NaN;
-  // Improved initial guess (empirical fit to NIST)
-  let T;
-  if      (P_bar < 1)  T = 45 * Math.pow(P_bar, 0.28) + 20;
-  else if (P_bar < 10) T = 100 + 55 * Math.log10(P_bar);
-  else                 T = 160 + 65 * Math.log10(P_bar / 10);
-  T = Math.max(1, Math.min(373, T));
-  // Newton iterations (central-difference derivative)
-  let converged = false;
-  for (let i = 0; i < 80; i++) {
-    const P  = pSat(T);
-    if (!isFinite(P)) break;
-    const dP = (pSat(T + 0.005) - pSat(T - 0.005)) / 0.01;
-    if (!isFinite(dP) || Math.abs(dP) < 1e-12) break;
-    const dT = (P - P_bar) / dP;
-    T -= Math.max(-20, Math.min(20, dT));
-    if (Math.abs(dT) < 5e-8) { converged = true; break; }
-  }
-  if (!converged) {
-    // Bisection fallback (Bug 4 – no convergence failure)
-    _tSatConvWarn = true;
-    let lo = 0.01, hi = 373.9;
-    for (let i = 0; i < 100; i++) {
-      const mid = (lo + hi) / 2;
-      const P   = pSat(mid);
-      if (!isFinite(P)) break;
-      if (Math.abs(P - P_bar) < 1e-6) { T = mid; break; }
-      if (P < P_bar) lo = mid; else hi = mid;
-      T = mid;
-    }
-  }
-  return Math.max(0.01, Math.min(374.14, T));
-}
-
-/* MPa-interface aliases for legacy call sites */
-function Psat(T_C)   { return pSat(T_C) / 10; }   // bar → MPa
-function Tsat(P_MPa) { return tSat(P_MPa * 10); }  // MPa → °C
-
-/* ── NIST saturation table by temperature (0.01–240°C) ── */
-const SAT_T = [
-  [  0.01,   0.00, 2501.4, 2501.4, 0.0000, 9.1562, 9.1562, 0.0010002, 206.140],
-  [     5,  21.02, 2489.6, 2510.6, 0.0763, 8.9496, 9.0259, 0.0010001, 147.120],
-  [    10,  42.02, 2477.7, 2519.7, 0.1511, 8.7488, 8.8999, 0.0010003, 106.380],
-  [    15,  62.98, 2465.9, 2528.9, 0.2245, 8.5566, 8.7811, 0.0010009,  77.926],
-  [    20,  83.91, 2453.6, 2537.5, 0.2966, 8.3706, 8.6671, 0.0010018,  57.791],
-  [    25, 104.87, 2441.7, 2546.5, 0.3673, 8.1910, 8.5583, 0.0010029,  43.360],
-  [    30, 125.77, 2430.0, 2555.8, 0.4369, 8.0164, 8.4533, 0.0010044,  32.894],
-  [    35, 146.66, 2418.2, 2564.9, 0.5052, 7.8478, 8.3530, 0.0010060,  25.216],
-  [    40, 167.54, 2406.0, 2573.5, 0.5724, 7.6845, 8.2569, 0.0010079,  19.523],
-  [    45, 188.44, 2393.9, 2582.4, 0.6386, 7.5261, 8.1647, 0.0010099,  15.258],
-  [    50, 209.33, 2382.0, 2591.3, 0.7037, 7.3725, 8.0762, 0.0010121,  12.032],
-  [    60, 251.18, 2357.7, 2608.8, 0.8313, 7.0784, 7.9096, 0.0010171,   7.671],
-  [    70, 292.97, 2333.0, 2626.0, 0.9548, 6.7989, 7.7537, 0.0010228,   5.042],
-  [    80, 334.88, 2307.8, 2642.7, 1.0753, 6.5366, 7.6119, 0.0010292,   3.407],
-  [    90, 376.90, 2282.2, 2659.1, 1.1924, 6.2866, 7.4790, 0.0010361,   2.361],
-  [   100, 419.06, 2256.9, 2676.0, 1.3069, 6.0480, 7.3549, 0.0010435,  1.6720],
-  [   110, 461.14, 2229.7, 2690.8, 1.4185, 5.8194, 7.2379, 0.0010516,  1.2101],
-  [   120, 503.78, 2202.6, 2706.3, 1.5279, 5.6006, 7.1284, 0.0010603,  0.8917],
-  [   130, 546.37, 2174.2, 2720.5, 1.6346, 5.3906, 7.0252, 0.0010700,  0.6685],
-  [   140, 589.16, 2144.9, 2734.0, 1.7391, 5.1894, 6.9285, 0.0010803,  0.5089],
-  [   150, 632.18, 2114.3, 2746.5, 1.8416, 4.9961, 6.8377, 0.0010912,  0.3924],
-  [   160, 675.55, 2082.6, 2758.1, 1.9422, 4.8100, 6.7522, 0.0011029,  0.3071],
-  [   170, 719.08, 2049.5, 2768.5, 2.0412, 4.6297, 6.6709, 0.0011150,  0.2428],
-  [   180, 763.06, 2015.3, 2778.2, 2.1387, 4.4547, 6.5934, 0.0011281,  0.1940],
-  [   190, 807.57, 1979.0, 2786.4, 2.2349, 4.2844, 6.5192, 0.0011420,  0.1565],
-  [   200, 852.38, 1940.7, 2793.1, 2.3300, 4.1179, 6.4479, 0.0011565, 0.12721],
-  [   210, 897.76, 1900.7, 2798.5, 2.4245, 3.9583, 6.3828, 0.0011726, 0.10441],
-  [   220, 943.58, 1858.5, 2802.1, 2.5175, 3.7927, 6.3102, 0.0011891, 0.08619],
-  [   230, 990.21, 1813.8, 2804.0, 2.6099, 3.6234, 6.2333, 0.0012075, 0.07158],
-  [   240,1037.6,  1769.4, 2807.0, 2.7018, 3.4735, 6.1753, 0.0012270, 0.05977],
-];
-/* NIST saturation table by pressure (1–220.64 bar) */
-const SAT_P = [
-  [  1.0,  99.63,  417.44, 2675.6, 1.3026, 7.3594, 0.001043, 1.6941],
-  [  2.0, 120.23,  504.68, 2706.7, 1.5301, 7.1268, 0.001061, 0.88574],
-  [  3.0, 133.55,  561.43, 2725.3, 1.6716, 6.9909, 0.001073, 0.60582],
-  [  4.0, 143.63,  604.66, 2738.1, 1.7764, 6.8959, 0.001084, 0.46242],
-  [  5.0, 151.86,  640.09, 2748.1, 1.8604, 6.8212, 0.001093, 0.37483],
-  [  6.0, 158.85,  670.38, 2756.4, 1.9308, 6.7600, 0.001101, 0.31567],
-  [  7.0, 165.00,  697.07, 2763.4, 1.9918, 6.7080, 0.001108, 0.27279],
-  [  8.0, 170.43,  720.87, 2769.1, 2.0461, 6.6628, 0.001115, 0.24049],
-  [  9.0, 175.38,  742.56, 2773.8, 2.0946, 6.6226, 0.001121, 0.21497],
-  [ 10.0, 179.91,  762.81, 2778.1, 2.1387, 6.5865, 0.001127, 0.19444],
-  [ 12.0, 187.99,  798.65, 2784.8, 2.2166, 6.5233, 0.001139, 0.16333],
-  [ 14.0, 195.07,  830.08, 2790.0, 2.2837, 6.4693, 0.001149, 0.14078],
-  [ 16.0, 201.41,  858.56, 2794.0, 2.3440, 6.4218, 0.001159, 0.12374],
-  [ 18.0, 207.11,  885.17, 2797.6, 2.3976, 6.3794, 0.001168, 0.11043],
-  [ 20.0, 212.42,  908.47, 2799.5, 2.4468, 6.3409, 0.001177, 0.099585],
-  [ 25.0, 224.00,  962.11, 2803.3, 2.5547, 6.2575, 0.001197, 0.079977],
-  [ 30.0, 233.90, 1008.4,  2804.2, 2.6457, 6.1869, 0.001216, 0.066628],
-  [ 35.0, 242.60, 1049.8,  2803.8, 2.7253, 6.1253, 0.001235, 0.057063],
-  [ 40.0, 250.40, 1087.4,  2801.4, 2.7966, 6.0696, 0.001252, 0.049779],
-  [ 45.0, 257.49, 1122.1,  2798.3, 2.8612, 6.0190, 0.001269, 0.044079],
-  [ 50.0, 263.99, 1154.4,  2794.3, 2.9202, 5.9737, 0.001286, 0.039457],
-  [ 60.0, 275.64, 1213.7,  2784.3, 3.0248, 5.8902, 0.001319, 0.032445],
-  [ 70.0, 285.88, 1267.4,  2772.1, 3.1210, 5.8133, 0.001352, 0.027370],
-  [ 80.0, 295.06, 1317.1,  2758.4, 3.2076, 5.7450, 0.001384, 0.023525],
-  [ 90.0, 303.40, 1363.2,  2742.8, 3.2857, 5.6811, 0.001418, 0.020489],
-  [100.0, 311.06, 1407.6,  2724.5, 3.3596, 5.6141, 0.001452, 0.018026],
-  [110.0, 318.15, 1450.3,  2705.0, 3.4295, 5.5473, 0.001489, 0.015985],
-  [120.0, 324.75, 1491.8,  2684.9, 3.4962, 5.4924, 0.001527, 0.014267],
-  [130.0, 330.93, 1532.0,  2662.9, 3.5605, 5.4295, 0.001567, 0.012721],
-  [140.0, 336.75, 1571.0,  2638.7, 3.6229, 5.3717, 0.001611, 0.011485],
-  [150.0, 342.24, 1609.0,  2614.5, 3.6834, 5.3108, 0.001658, 0.010340],
-  [160.0, 347.44, 1650.5,  2580.6, 3.7428, 5.2455, 0.001710, 0.0093499],
-  [170.0, 352.37, 1690.7,  2548.5, 3.7996, 5.1832, 0.001765, 0.0083849],
-  [180.0, 357.06, 1732.0,  2509.1, 3.8553, 5.1044, 0.001840, 0.0074920],
-  [190.0, 361.54, 1776.5,  2468.4, 3.9102, 5.0218, 0.001926, 0.0066531],
-  [200.0, 365.81, 1826.3,  2409.7, 4.0139, 4.9269, 0.002036, 0.0058750],
-  [210.0, 369.89, 1886.3,  2336.8, 4.1014, 4.8013, 0.002213, 0.0051020],
-  [220.0, 373.71, 2010.3,  2192.4, 4.2887, 4.5481, 0.002790, 0.0037800],
-  [220.64,374.14, 2099.3,  2099.3, 4.4120, 4.4120, 0.003155, 0.0031550],
-];
-
-/* ── PCHIP (Fritsch-Carlson) monotone interpolation (Bug 1/3 fix) ──
-   Guarantees no overshoot between table nodes — physically correct
-   for all thermodynamic properties including near the critical point. */
-function pchipInterp(xs, ys, x) {
-  const n = xs.length;
-  if (x <= xs[0])    return ys[0];
-  if (x >= xs[n-1])  return ys[n-1];
-  // Find interval
-  let k = 0;
-  for (let j = 0; j < n-1; j++) { if (x >= xs[j] && x <= xs[j+1]) { k=j; break; } }
-  // Compute finite differences
-  const h  = xs[k+1] - xs[k];
-  const d  = (ys[k+1] - ys[k]) / h;
-  // One-sided slopes at each end, otherwise centered
-  const m0 = k === 0
-    ? d
-    : ((ys[k]-ys[k-1])/(xs[k]-xs[k-1]) + d) / 2;
-  const m1 = k === n-2
-    ? d
-    : (d + (ys[k+2]-ys[k+1])/(xs[k+2]-xs[k+1])) / 2;
-  // Fritsch-Carlson monotonicity constraints
-  let mk0 = m0, mk1 = m1;
-  if (Math.abs(d) < 1e-14) {
-    mk0 = 0; mk1 = 0;
-  } else {
-    const alpha = mk0 / d, beta = mk1 / d;
-    const tau   = alpha*alpha + beta*beta;
-    if (tau > 9) { mk0 = 3*d*alpha/Math.sqrt(tau); mk1 = 3*d*beta/Math.sqrt(tau); }
-  }
-  // Hermite basis
-  const t  = (x - xs[k]) / h;
-  const t2 = t*t, t3 = t2*t;
-  return ys[k]*(2*t3-3*t2+1) + ys[k+1]*(-2*t3+3*t2)
-       + mk0*h*(t3-2*t2+t)   + mk1*h*(t3-t2);
-}
-// Alias used by satByT_fb / satByP_fb
-const csplineInterp = pchipInterp;
-
-/* Saturated properties by temperature (fallback) */
-function satByT_fb(T_C) {
-  if (T_C < 0.01 || T_C > 374.14) return null;
-  let row;
-  if (T_C <= 240) {
-    const xs = SAT_T.map(r=>r[0]);
-    const interp = c => csplineInterp(xs, SAT_T.map(r=>r[c]), T_C);
-    row = { T:T_C, hf:interp(1), hfg:interp(2), hg:interp(3),
-            sf:interp(4), sfg:interp(5), sg:interp(6),
-            vf:interp(7), vg:interp(8), P:pSat(T_C) };
-  } else {
-    row = satByP_fb(pSat(T_C));
-  }
-  return row;
-}
-/* Saturated properties by pressure in bar (fallback) */
-function satByP_fb(P_bar) {
-  if (P_bar < 0.006 || P_bar > 220.9) return null;
-  const xs = SAT_P.map(r=>r[0]);
-  const interp = c => csplineInterp(xs, SAT_P.map(r=>r[c]), P_bar);
-  const Ts=interp(1), hf=interp(2), hg=interp(3),
-        sf=interp(4), sg=interp(5), vf=interp(6), vg=interp(7);
-  return { T:Ts, P:P_bar, hf, hfg:hg-hf, hg, sf, sfg:sg-sf, sg, vf, vg };
-}
-
-/* ════════════════════════════════════════════════════════════════
-   SUPERHEATED STEAM TABLE  (B2 fix: denser grid; B3 fix: log-P interp)
-   Source: NIST WebBook / IAPWS-IF97 certified values
-   Columns per row: [T°C, h kJ/kg, s kJ/(kg·K), v m³/kg]
-   Pressures: 14 levels from 1–220 bar (was 13, added 15 & 30 bar)
-   Temperature points: 13 per band (added 450°C throughout)
-════════════════════════════════════════════════════════════════ */
-const SH_FB = [
-  {P:1,   d:[[100,2676.2,7.3614,1.6958],[120,2716.9,7.4668,1.7931],[150,2776.5,7.6150,1.9364],[200,2875.5,7.8343,2.1724],[250,2974.5,8.0333,2.4062],[300,3074.3,8.2166,2.6389],[350,3175.8,8.3905,2.8710],[400,3279.6,8.5456,3.1026],[450,3384.9,8.6927,3.3337],[500,3488.1,8.8342,3.5645],[600,3705.4,9.1018,4.0279],[700,3928.7,9.3499,4.4900],[800,4159.0,9.5822,4.9519]]},
-  {P:2,   d:[[120,2713.6,7.3282,0.8875],[150,2769.1,7.4085,0.9596],[200,2870.5,7.7079,1.0803],[250,2971.2,7.9085,1.1988],[300,3071.8,8.0926,1.3162],[350,3174.1,8.2669,1.4328],[400,3278.2,8.4224,1.5492],[450,3383.6,8.5697,1.6652],[500,3487.1,8.7113,1.7811],[600,3704.7,9.7909,2.0124],[700,3928.2,9.2393,2.2433],[800,4158.6,9.4720,2.4739]]},
-  {P:5,   d:[[152,2748.7,6.8213,0.3748],[200,2855.4,7.0592,0.4249],[250,2961.0,7.2724,0.4744],[300,3064.2,7.4599,0.5226],[350,3168.1,7.6329,0.5705],[400,3272.3,7.7938,0.6181],[450,3378.0,7.9432,0.6654],[500,3484.9,8.0873,0.7127],[600,3704.3,8.3522,0.8072],[700,3927.1,8.6053,0.9015],[800,4157.8,8.8398,0.9958]]},
-  {P:10,  d:[[180,2778.1,6.5865,0.1944],[200,2827.9,6.6940,0.2060],[250,2942.6,6.9247,0.2327],[300,3051.2,7.1229,0.2579],[350,3157.7,7.3011,0.2825],[400,3264.5,7.4651,0.3066],[450,3372.1,7.6180,0.3304],[500,3480.6,7.7622,0.3541],[600,3697.9,8.0290,0.4011],[700,3922.5,8.2808,0.4479],[800,4154.5,8.5153,0.4945]]},
-  {P:15,  d:[[198,2796.8,6.4448,0.1325],[200,2797.2,6.4462,0.1326],[250,2923.5,6.7090,0.1520],[300,3037.6,6.9179,0.1697],[350,3147.5,7.1019,0.1865],[400,3256.5,7.2690,0.2030],[450,3365.5,7.4241,0.2193],[500,3474.8,7.5698,0.2354],[600,3693.2,7.8394,0.2672],[700,3918.5,8.0937,0.2988],[800,4151.2,8.3297,0.3302]]},
-  {P:20,  d:[[212,2799.5,6.3409,0.0996],[250,2902.5,6.5453,0.1115],[300,3023.5,6.7684,0.1255],[350,3137.0,6.9583,0.1386],[400,3248.7,7.1292,0.1520],[450,3360.7,7.2867,0.1650],[500,3472.6,7.4317,0.1781],[600,3694.8,7.7024,0.1996],[700,3915.0,7.9583,0.2210],[800,4147.9,8.1962,0.2466]]},
-  {P:30,  d:[[234,2803.3,6.1869,0.0667],[250,2856.0,6.2872,0.0706],[300,2994.3,6.5412,0.0811],[350,3115.3,6.7450,0.0906],[400,3230.9,6.9212,0.0996],[450,3344.5,7.0856,0.1082],[500,3457.2,7.2358,0.1167],[600,3680.8,7.5123,0.1333],[700,3906.1,7.7705,0.1497],[800,4140.3,8.0120,0.1660]]},
-  {P:40,  d:[[250,2801.4,6.0696,0.0498],[300,2962.0,6.3615,0.0589],[350,3092.5,6.5843,0.0666],[400,3213.6,6.7714,0.0734],[450,3330.3,6.9386,0.0800],[500,3445.3,7.0919,0.0864],[600,3670.3,7.3688,0.0989],[700,3894.9,7.6299,0.1112],[800,4122.0,7.8729,0.1234]]},
-  {P:60,  d:[[275,2784.3,5.8902,0.0324],[300,2885.5,6.0702,0.0362],[350,3043.4,6.3357,0.0422],[400,3178.3,6.5432,0.0474],[450,3305.0,6.7198,0.0521],[500,3422.2,6.8826,0.0567],[600,3658.4,7.1693,0.0653],[700,3876.1,7.4085,0.0736],[800,4095.0,7.6673,0.0818]]},
-  {P:80,  d:[[295,2758.4,5.7450,0.0235],[300,2786.5,5.7937,0.0243],[350,2988.1,6.1321,0.0299],[400,3139.4,6.3658,0.0343],[450,3274.0,6.5559,0.0383],[500,3398.3,6.7266,0.0398],[600,3633.2,7.0592,0.0480],[700,3857.2,7.3205,0.0543],[800,4074.0,7.5625,0.0604]]},
-  {P:100, d:[[311,2725.5,5.6141,0.0180],[350,2924.5,5.9450,0.0228],[400,3096.5,6.2120,0.0264],[450,3249.0,6.4190,0.0297],[500,3374.2,6.5990,0.0328],[550,3491.4,6.7690,0.0357],[600,3625.3,6.9029,0.0384],[700,3838.2,7.1765,0.0427],[800,4053.0,7.4183,0.0487]]},
-  {P:120, d:[[325,2684.9,5.4924,0.0143],[360,2820.0,5.7520,0.0165],[400,3051.6,6.0040,0.0208],[450,3215.9,6.2330,0.0236],[500,3350.7,6.4250,0.0262],[550,3476.3,6.6010,0.0286],[600,3582.3,6.7420,0.0308],[700,3793.5,7.0270,0.0351],[800,4032.0,7.2710,0.0405]]},
-  {P:140, d:[[337,2637.6,5.3717,0.0115],[360,2753.0,5.5810,0.0132],[400,3001.9,5.8450,0.0166],[450,3182.5,6.0860,0.0191],[500,3323.1,6.2850,0.0214],[550,3454.2,6.4650,0.0236],[600,3541.2,6.6040,0.0260],[700,3762.2,6.8980,0.0302],[800,4011.0,7.1430,0.0352]]},
-  {P:160, d:[[347,2580.6,5.2455,0.0093],[380,2745.0,5.5080,0.0115],[400,2947.0,5.6930,0.0132],[450,3146.1,5.9510,0.0157],[500,3295.0,6.1560,0.0178],[550,3432.4,6.3390,0.0198],[600,3561.1,6.5130,0.0214],[700,3732.3,6.7810,0.0256],[800,3989.0,7.0290,0.0302]]},
-  {P:180, d:[[357,2509.1,5.1044,0.0075],[390,2748.0,5.4840,0.0100],[400,2880.1,5.5540,0.0107],[450,3104.9,5.8270,0.0130],[500,3266.1,6.0370,0.0149],[550,3410.7,6.2240,0.0167],[600,3542.0,6.4090,0.0181],[700,3701.4,6.6570,0.0218],[800,3968.0,6.9090,0.0260]]},
-  {P:200, d:[[366,2409.7,4.9269,0.0059],[395,2702.0,5.3780,0.0085],[400,2818.1,5.4720,0.0099],[450,3060.1,5.7960,0.0121],[500,3239.3,6.0180,0.0145],[550,3388.0,6.2060,0.0162],[600,3532.0,6.3360,0.0175],[700,3670.6,6.5890,0.0210],[800,3947.0,6.8450,0.0249]]},
-  {P:220, d:[[374,2192.4,4.5481,0.0038],[400,2672.0,5.2070,0.0076],[450,2996.0,5.7200,0.0107],[500,3213.0,5.9820,0.0131],[550,3372.0,6.1730,0.0148],[600,3516.0,6.3380,0.0165],[700,3653.0,6.5810,0.0199],[800,3931.0,6.8320,0.0236]]},
-];
-
-/* ── B3 fix: log-P PCHIP interpolation for superheated steam ──
-   Thermodynamic properties are much smoother in log(P) space.
-   Linear P interpolation between bands introduces systematic error
-   particularly at high pressures where bands are widely spaced. */
-function shProps_fb(P_bar, T_C) {
-  try {
-    const prs = SH_FB.map(b => b.P);
-    function atB(idx, T) {
-      const d = SH_FB[idx].d;
-      const ts = d.map(r=>r[0]);
-      return { h: pchipInterp(ts, d.map(r=>r[1]), T),
-               s: pchipInterp(ts, d.map(r=>r[2]), T),
-               v: pchipInterp(ts, d.map(r=>r[3]), T) };
-    }
-    if (P_bar <= prs[0])             return atB(0, T_C);
-    if (P_bar >= prs[prs.length-1])  return atB(prs.length-1, T_C);
-    let lo = 0;
-    for (let i = 0; i < prs.length-1; i++) {
-      if (prs[i] <= P_bar && P_bar <= prs[i+1]) { lo=i; break; }
-    }
-    /* B3 fix: interpolate in log(P) space for thermodynamic consistency */
-    const logP  = Math.log(P_bar);
-    const logP0 = Math.log(prs[lo]);
-    const logP1 = Math.log(prs[lo+1]);
-    const fP = (logP - logP0) / (logP1 - logP0);
-    const a = atB(lo, T_C), b = atB(lo+1, T_C);
-    return {
-      h: a.h + fP*(b.h - a.h),
-      s: a.s + fP*(b.s - a.s),
-      v: a.v + fP*(b.v - a.v)
-    };
-  } catch(e) {
-    /* B24: silent failure guard */
-    return { h: 2800, s: 6.5, v: 0.05 };
-  }
-}
-
-/* ── Unified saturation wrappers (deterministic — no Pyodide) ── */
-function satByT(T_C)   { return satByT_fb(T_C); }
-function satByP(P_bar) { return satByP_fb(P_bar); }
-
-/* ── Superheated steam properties (bar, °C) ── */
-function superheatedProps(P_bar, T_C) {
-  const fb = shProps_fb(P_bar, T_C);
-  return { h: fb.h, s: fb.s, v: fb.v };
-}
-
-/* ── B5: Critical region detection ──
-   IF97 Region-3 (T > 350°C, P > 165 bar) is NOT implemented.
-   Properties near the critical point (Tc=374.14°C, Pc=220.64 bar)
-   are extrapolated and carry increased uncertainty. */
-function isCriticalRegion(P_bar, T_C) {
-  return (T_C > 350 && P_bar > 165);
-}
-function criticalRegionWarning(P_bar, T_C) {
-  if (!isCriticalRegion(P_bar, T_C)) return null;
-  const dist = Math.sqrt(Math.pow((T_C-374.14)/24, 2) + Math.pow((P_bar-220.64)/56, 2));
-  if (dist < 0.5) return 'CRITICAL'; // within ~12°C & ~28 bar of critical point
-  return 'NEAR_CRITICAL';            // Region-3 territory
-}
-
-/* ─── Public adapter functions (MPa interface) ───
-   All internal maths in bar / °C — conversion only at this boundary. */
-
-// B24: all calls wrapped in try/catch — no silent NaN propagation
-function h_steam(Tc, P_MPa) {
-  try {
-    const r = superheatedProps(P_MPa * 10, Tc);
-    if (!isFinite(r.h) || r.h < 1000) throw new Error('h out of range');
-    return r.h;
-  } catch(e) {
-    const sat = satByP_fb(P_MPa * 10);
-    return sat ? sat.hg + 2.0 * Math.max(0, Tc - sat.T) : 2800;
-  }
-}
-function v_steam(Tc, P_MPa) {
-  try {
-    const r = superheatedProps(P_MPa * 10, Tc);
-    if (!isFinite(r.v) || r.v <= 0) throw new Error('v invalid');
-    return r.v;
-  } catch(e) {
-    const R = 0.461526, Tk = Tc + 273.15;
-    return Math.max(1e-4, R * Tk / (P_MPa * 1000));
-  }
-}
-function s_steam(Tc, P_MPa) {
-  try {
-    const r = superheatedProps(P_MPa * 10, Tc);
-    if (!isFinite(r.s) || r.s < 3.5) throw new Error('s out of range');
-    return r.s;
-  } catch(e) {
-    const sat = satByP_fb(P_MPa * 10);
-    return sat ? sat.sg + 0.003 * Math.max(0, Tc - sat.T) : 6.5;
-  }
-}
-
-// h_water: Poynting + isothermal compressibility (B4, already implemented)
-function h_water(Tc, P_MPa) {
-  try {
-    const P_bar = P_MPa * 10;
-    const sat = satByT_fb(Math.max(0.01, Math.min(Tc, 370)));
-    if (!sat) throw new Error('no sat data');
-    const dP_bar = P_bar - sat.P;
-    const dP_kPa = dP_bar * 100;
-    const kT = Math.max(1e-6, 4.5e-5 - 1.4e-7 * Tc);
-    const v_liq = sat.vf * Math.exp(-kT * dP_bar);
-    const v_avg = (sat.vf + v_liq) / 2;
-    const h = sat.hf + v_avg * dP_kPa;
-    if (!isFinite(h)) throw new Error('h_water NaN');
-    return Math.max(0, h);
-  } catch(e) {
-    const sat = satByT_fb(Math.min(Tc, 370));
-    return sat ? Math.max(0, sat.hf) : 0;
-  }
-}
-
-function hf_P(P_MPa) {
-  try { const s = satByP(P_MPa*10); return (s && isFinite(s.hf)) ? s.hf : NaN; }
-  catch(e) { return NaN; }
-}
-function hg_P(P_MPa) {
-  try { const s = satByP(P_MPa*10); return (s && isFinite(s.hg)) ? s.hg : NaN; }
-  catch(e) { return NaN; }
-}
-function vf_P(P_MPa) {
-  try { const s = satByP(P_MPa*10); return (s && isFinite(s.vf)) ? s.vf : 0.001; }
-  catch(e) { return 0.001; }
-}
-
-/* ── B18: Property uncertainty estimator ──
-   Returns ±kJ/kg for h, shown in results panel. */
-function propUncertainty(P_bar, T_C, isSuperheated) {
-  const crit = criticalRegionWarning(P_bar, T_C);
-  if (crit === 'CRITICAL')      return '±15 kJ/kg ⚠ critical region';
-  if (crit === 'NEAR_CRITICAL') return '±5 kJ/kg ⚠ near-critical';
-  if (isSuperheated) {
-    if (P_bar > 160) return '±2 kJ/kg';
-    if (P_bar > 80)  return '±1 kJ/kg';
-    return '±0.5 kJ/kg';
-  }
-  return '±0.3 kJ/kg';
-}
-
 /* ══════════════════════════════════════════════════
-   STATE & UNITS
+   STATE & UNIT HELPERS
 ══════════════════════════════════════════════════ */
 let SYS = 'SI', lastR = null, lastUnit = 'SI';
 
@@ -1229,9 +851,9 @@ const FU = [
   {id:'kgh', lbl:'kg/h',  sys:['SI'],  f:1},
   {id:'th',  lbl:'t/h',   sys:['SI'],  f:1000},
   {id:'kgs', lbl:'kg/s',  sys:['SI'],  f:3600},
-  {id:'lbh', lbl:'lb/h',  sys:['IMP'],f:0.453592},
-  {id:'lbs', lbl:'lb/s',  sys:['IMP'],f:1632.93},
-  {id:'klb', lbl:'klb/h', sys:['IMP'],f:453.592},
+  {id:'lbh', lbl:'lb/h',  sys:['IMP'], f:0.453592},
+  {id:'lbs', lbl:'lb/s',  sys:['IMP'], f:1632.93},
+  {id:'klb', lbl:'klb/h', sys:['IMP'], f:453.592},
 ];
 function popFlowU(id) {
   const s=E(id), cv=s.value; s.innerHTML='';
@@ -1251,10 +873,10 @@ const f4 = n=>n.toFixed(4);
 
 function toC(v)  { return SYS==='IMP' ? (v-32)*5/9 : v; }
 function frC(v)  { return SYS==='IMP' ? v*9/5+32 : v; }
-
-const fromC = v => frC(v);   // alias so both names work
+const fromC = v => frC(v);
 const toMPa = v => SYS==='IMP' ? v*0.006894757 : v*0.1;   // psia or bara → MPa
 const frPd  = v => SYS==='IMP' ? v/0.006894757 : v*10;    // MPa → psia or bara
+const toBar = v => SYS==='IMP' ? v/14.5038 : v;            // psia or bara → bara
 
 function setUnit(sys){
   SYS=sys;
@@ -1264,9 +886,8 @@ function setUnit(sys){
   [['u_T1',T],['u_T2',T],['u_Tw',T],['u_Ts',T],['u_sh',T]].forEach(([id,v])=>{ const e=E(id); if(e) e.textContent='('+v+')'; });
   [['u_P',P],['u_Pw',P]].forEach(([id,v])=>{ const e=E(id); if(e) e.textContent='('+v+')'; });
   popFlowU('ms_u');
-  E('u_ms').textContent='('+( sys==='IMP'?'lb/h':'kg/h' )+')';
+  E('u_ms').textContent='('+(sys==='IMP'?'lb/h':'kg/h')+')';
 
-  // Convert existing input values when toggling units
   const curP = parseFloat(E('P_s').value)||0;
   const curT1= parseFloat(E('T1').value)||0;
   const curTw= parseFloat(E('Tw').value)||0;
@@ -1275,7 +896,6 @@ function setUnit(sys){
   const curMs= parseFloat(E('ms_v').value)||0;
 
   if(sys==='IMP' && lastUnit==='SI'){
-    // SI → Imperial
     if(curP)  E('P_s').value = (curP*14.5038).toFixed(1);
     if(curT1) E('T1').value  = (curT1*9/5+32).toFixed(1);
     if(curTw) E('Tw').value  = (curTw*9/5+32).toFixed(1);
@@ -1284,7 +904,6 @@ function setUnit(sys){
     if(curMs) E('ms_v').value= (curMs*2.20462).toFixed(0);
     E('sh_min').value = ((parseFloat(E('sh_min').value)||10)*9/5).toFixed(1);
   } else if(sys==='SI' && lastUnit==='IMP'){
-    // Imperial → SI
     if(curP)  E('P_s').value = (curP/14.5038).toFixed(2);
     if(curT1) E('T1').value  = ((curT1-32)*5/9).toFixed(1);
     if(curTw) E('Tw').value  = ((curTw-32)*5/9).toFixed(1);
@@ -1302,7 +921,7 @@ function showAlert(msg,cls='wa'){ E('alertBox').innerHTML=msg; E('alertBox').cla
 function clrAlert(){ E('alertBox').className='wbox'; }
 
 /* ══════════════════════════════════════════════════
-   PRESETS (always stored in SI °C / bara)
+   PRESETS (stored in SI — converted on load if IMP)
 ══════════════════════════════════════════════════ */
 const PR={
   boiler: {P:100,T1:500,ms:100000,Tw:105,Pw:120,T2:420},
@@ -1331,51 +950,79 @@ function loadPreset(k,btn){
 
 /* ══════════════════════════════════════════════════
    LIVE PROPERTY DISPLAY
+   Calls /api/steam-quench with action:'preview'
+   All steam property maths runs on the server.
 ══════════════════════════════════════════════════ */
-function liveProp(){
+let _previewTimer = null;
+async function liveProp(){
   const T=SYS==='IMP'?'°F':'°C';
-  const Ps=toMPa(gv('P_s')), T1c=toC(gv('T1'));
-  if(Ps>0){
-    const Ts0=Tsat(Ps);
-    E('Tsat_disp').value=f1(fromC(Ts0));
-  } else {
-    E('Tsat_disp').value='\u2014';
-  }
-  if(Ps>0&&T1c>0){
-    const Ts=Tsat(Ps), h1=h_steam(T1c,Ps), v1=v_steam(T1c,Ps), s1=s_steam(T1c,Ps);
-    E('props_in').innerHTML=
-      `<strong>h₁</strong> ${f1(h1)} kJ/kg &nbsp;·&nbsp; `+
-      `<strong>Tsat</strong> ${f1(fromC(Ts))} ${T} &nbsp;·&nbsp; `+
-      `<strong>SH</strong> ${f1(SYS==='IMP'?(T1c-Ts)*9/5:T1c-Ts)} Δ${T} &nbsp;·&nbsp; `+
-      `<strong>v</strong> ${f4(v1)} m³/kg &nbsp;·&nbsp; `+
-      `<strong>s</strong> ${f3(s1)} kJ/kg·K`;
-  }
-  const Pw=toMPa(gv('Pw')), Twc=toC(gv('Tw'));
-  if(Pw>0&&Twc>=0){
-    const hw=h_water(Twc,Pw), Tsw=Tsat(Pw);
-    E('props_w').innerHTML=
-      `<strong>h_w</strong> ${f1(hw)} kJ/kg &nbsp;·&nbsp; `+
-      `<strong>State</strong> ${Twc<Tsw?'💧 Compressed liquid':'⚠ Near/above saturation!'} &nbsp;·&nbsp; `+
-      `<strong>Tsat@Pw</strong> ${f1(fromC(Tsw))} ${T}`;
-  }
-  const Ps2=toMPa(gv('P_s')), T2c=toC(gv('T2'));
-  if(Ps2>0&&T2c>0){
-    const Ts2=Tsat(Ps2), h2=h_steam(T2c,Ps2), sh2=T2c-Ts2;
-    E('props_out').innerHTML=
-      `<strong>h₂</strong> ${f1(h2)} kJ/kg &nbsp;·&nbsp; `+
-      `<strong>SH at outlet</strong> ${f1(SYS==='IMP'?sh2*9/5:sh2)} Δ${T} &nbsp;·&nbsp; `+
-      `<strong>${sh2<5?'⚠ Wet steam risk!':sh2<15?'⚠ Low superheat':'✅ Adequate superheat'}</strong>`;
-  }
+  const P_s_bar = toBar(gv('P_s'));
+  const T1c = toC(gv('T1'));
+  const Twc = toC(gv('Tw'));
+  const Pwc = toBar(gv('Pw'));
+  const T2c = toC(gv('T2'));
+
+  // Clear strips if no pressure entered yet
+  if(!P_s_bar){ E('Tsat_disp').value='—'; return; }
+
+  // Debounce — wait 180ms after last keystroke to avoid hammering API
+  clearTimeout(_previewTimer);
+  _previewTimer = setTimeout(async ()=>{
+    try {
+      const res = await fetch('/api/steam-quench', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          action:'preview',
+          P_s: P_s_bar,
+          T1:  T1c  || undefined,
+          Tw:  isFinite(Twc) && Twc >= 0 ? Twc : undefined,
+          Pw:  Pwc  || undefined,
+          T2:  T2c  || undefined,
+        })
+      });
+      if(!res.ok) return;
+      const d = await res.json();
+
+      // Tsat display
+      if(d.Ts != null) E('Tsat_disp').value = f1(fromC(d.Ts));
+
+      // Inlet steam strip
+      if(d.h1 != null && T1c > 0){
+        E('props_in').innerHTML =
+          `<strong>h₁</strong> ${f1(d.h1)} kJ/kg &nbsp;·&nbsp; ` +
+          `<strong>Tsat</strong> ${f1(fromC(d.Ts))} ${T} &nbsp;·&nbsp; ` +
+          `<strong>SH</strong> ${f1(SYS==='IMP'?d.sh_in*9/5:d.sh_in)} Δ${T} &nbsp;·&nbsp; ` +
+          `<strong>v</strong> ${f4(d.v1)} m³/kg &nbsp;·&nbsp; ` +
+          `<strong>s</strong> ${f3(d.s1)} kJ/kg·K`;
+      }
+
+      // Quench water strip
+      if(d.hw != null){
+        E('props_w').innerHTML =
+          `<strong>h_w</strong> ${f1(d.hw)} kJ/kg &nbsp;·&nbsp; ` +
+          `<strong>State</strong> ${d.water_ok?'💧 Compressed liquid':'⚠ Near/above saturation!'} &nbsp;·&nbsp; ` +
+          `<strong>Tsat@Pw</strong> ${f1(fromC(d.Tsat_w))} ${T}`;
+      }
+
+      // Outlet strip
+      if(d.h2 != null && T2c > 0){
+        const sh2 = d.sh_out;
+        E('props_out').innerHTML =
+          `<strong>h₂</strong> ${f1(d.h2)} kJ/kg &nbsp;·&nbsp; ` +
+          `<strong>SH at outlet</strong> ${f1(SYS==='IMP'?sh2*9/5:sh2)} Δ${T} &nbsp;·&nbsp; ` +
+          `<strong>${sh2<5?'⚠ Wet steam risk!':sh2<15?'⚠ Low superheat':'✅ Adequate superheat'}</strong>`;
+      }
+    } catch(e){ /* silent — preview is cosmetic */ }
+  }, 180);
 }
 
 /* ══════════════════════════════════════════════════
    MAIN CALCULATE
-   Energy balance (adiabatic attemperator):
-     ṁ_in·h₁ + ṁ_w·h_w = ṁ_out·h₂
-     ṁ_out = ṁ_in + ṁ_w
-   → ṁ_w = ṁ_in × (h₁ − h₂) / (h₂ − h_w)
+   All thermodynamic logic runs on the server.
+   Client sends SI inputs, receives full result.
 ══════════════════════════════════════════════════ */
-function calculate(){
+async function calculate(){
   clrAlert();
   const Ps_d=gv('P_s'), T1_d=gv('T1'), Tw_d=gv('Tw'), Pw_d=gv('Pw'), T2_d=gv('T2');
   const msv=gv('ms_v'), msu=E('ms_u').value;
@@ -1387,163 +1034,93 @@ function calculate(){
     return;
   }
 
-  // Convert to SI internal units
-  const Ps=toMPa(Ps_d), T1=toC(T1_d), Tw=toC(Tw_d), Pw=toMPa(Pw_d), T2=toC(T2_d);
-  const m_in=toKgh(msv,msu);
+  // Convert display units → SI for API (API always expects SI bara / °C / kg/h)
+  const P_s  = toBar(Ps_d);
+  const T1   = toC(T1_d);
+  const Tw   = toC(Tw_d);
+  const Pw   = toBar(Pw_d) || (P_s + 10);
+  const T2   = toC(T2_d);
+  const m_in = toKgh(msv, msu);
+  const sh_min_SI = SYS==='IMP' ? shMin_d*5/9 : shMin_d;
 
-  // Bug 18 — tSat convergence monitoring
-  _tSatConvWarn = false;
-  const Ts=Tsat(Ps);
-  const convWarn = _tSatConvWarn;
+  // Show loading indicator
+  showAlert('⏳ Calculating…','inf');
 
-  const shMin_C = SYS==='IMP' ? shMin_d*5/9 : shMin_d;
+  try {
+    const res = await fetch('/api/steam-quench', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        P_s, T1, Tw, Pw, T2, m_in,
+        sh_min: sh_min_SI,
+        f_min:  fMin,
+        f_max:  fMax,
+        cv_in:  cvIn || 0,
+      })
+    });
 
-  // Validation
-  const errs=[], warns=[];
-  if(convWarn) warns.push('⚠ Saturation temperature solver required bisection fallback — check inputs near critical region.');
-  if(!isFinite(Ts)) { showAlert('🔴 Could not compute saturation temperature. Check steam pressure range (0.006–220 bara).','err'); return; }
-  if(T1<=Ts+0.5) errs.push(`Inlet steam (${f1(fromC(T1))} ${SYS==='IMP'?'°F':'°C'}) is not superheated — must exceed Tsat (${f1(fromC(Ts))} ${SYS==='IMP'?'°F':'°C'}).`);
-  if(T2>=T1)     errs.push(`Target outlet (${f1(fromC(T2))}) must be LOWER than inlet (${f1(fromC(T1))}). Desuperheating cools the steam.`);
-  if(T2<=Ts+shMin_C) errs.push(`Outlet target too close to saturation. Min. superheat = ${f1(shMin_d)} Δ${SYS==='IMP'?'°F':'°C'}, so min. outlet = ${f1(fromC(Ts+shMin_C))} ${SYS==='IMP'?'°F':'°C'}.`);
-  if(Tw>=T2)     errs.push(`Water temperature (${f1(fromC(Tw))}) must be below outlet target (${f1(fromC(T2))}). No cooling possible.`);
-  if(m_in<=0)    errs.push('Steam mass flow rate must be positive.');
-  if(errs.length){ showAlert('🔴 '+errs.join('<br>🔴 '),'err'); return; }
+    const data = await res.json();
 
-  if(Tw>=Ts) warns.push(`⚠ Water temperature (${f1(fromC(Tw))} ${SYS==='IMP'?'°F':'°C'}) ≥ saturation temperature at steam pressure — flash and two-phase flow risk at injection point.`);
-  if(Pw>0&&Pw<=Ps+0.3) warns.push(`⚠ Water supply pressure margin very small (P_w − P_s = ${f2((Pw-Ps)*10)} bar). Need ≥ 3–5 bar margin for reliable injection.`);
-
-  // Properties
-  const h1=h_steam(T1,Ps);
-  const h2=h_steam(T2,Ps);
-  const hw=h_water(Tw,Pw);
-  const v1=v_steam(T1,Ps), v2=v_steam(T2,Ps);
-  const s1=s_steam(T1,Ps), s2=s_steam(T2,Ps);
-
-  // B5: critical region check
-  const critWarn1 = criticalRegionWarning(Ps*10, T1);
-  const critWarn2 = criticalRegionWarning(Ps*10, T2);
-  if (critWarn1 || critWarn2) {
-    const sev = (critWarn1==='CRITICAL'||critWarn2==='CRITICAL') ? 'CRITICAL' : 'NEAR_CRITICAL';
-    warns.push(`⚠ ${sev==='CRITICAL'?'🔴 Critical region':'Near-critical region'} detected (T>350°C & P>165 bar). ` +
-      `IF97 Region-3 is not fully implemented — property accuracy reduced to ±${sev==='CRITICAL'?15:5} kJ/kg. ` +
-      `Verify h₁, h₂ against certified steam tables before using in design.`);
-  }
-
-  // B18: property uncertainty estimates
-  const unc_h1 = propUncertainty(Ps*10, T1, true);
-  const unc_h2 = propUncertainty(Ps*10, T2, true);
-  const unc_hw = propUncertainty(Pw*10, Tw, false);
-
-  if(!isFinite(h1)||!isFinite(h2)||!isFinite(hw)){
-    showAlert('🔴 Property calculation failed. Verify that all temperatures and pressures are within valid steam table ranges.','err'); return;
-  }
-  if(h1<=h2) { showAlert('🔴 Inlet steam enthalpy ≤ outlet enthalpy — verify temperatures.','err'); return; }
-
-  // Bug 19 — robust denominator guard
-  const denom = h2 - hw;
-  if(denom < 20) {    // 20 kJ/kg minimum driving force (physically meaningful threshold)
-    showAlert(`🔴 Insufficient enthalpy driving force (h₂ − h_w = ${f1(denom)} kJ/kg). ` +
-      'Reduce water temperature or raise outlet target temperature. ' +
-      'Minimum recommended: 20 kJ/kg.','err');
-    return;
-  }
-
-  // Mass balance
-  const ratio  = (h1 - h2) / denom;           // ṁ_w / ṁ_in
-  const m_w    = m_in * ratio;
-  const m_out  = m_in + m_w;
-  const qPct   = (m_w / m_out) * 100;
-
-  // Heat duties
-  const Q_rem = m_in / 3600 * (h1 - h2);
-  const Q_abs = m_w  / 3600 * denom;
-  const sh_out = T2 - Ts;
-
-  // Bug 8 — near-saturation quality check
-  // If outlet is within 3°C of saturation, warn and estimate x
-  let outletQuality = null;
-  if (sh_out < 3 && sh_out >= 0) {
-    const satOut = satByP(Ps * 10);
-    if (satOut) {
-      const x_est = (h2 - satOut.hf) / Math.max(1, satOut.hfg);
-      outletQuality = Math.max(0, Math.min(1, x_est));
-      warns.push(`⚠ Outlet is very close to saturation (SH = ${f1(SYS==='IMP'?sh_out*9/5:sh_out)} Δ${SYS==='IMP'?'°F':'°C'}). ` +
-        `Estimated steam quality at outlet: x ≈ ${outletQuality.toFixed(3)}. Risk of wet steam — increase superheat margin.`);
+    if(!res.ok || data.error){
+      showAlert('🔴 ' + (data.error||'Server error — check inputs.'), 'err');
+      return;
     }
-  }
 
-  // Control range
-  const mw_min=m_w*fMin/100, mw_max=m_w*fMax/100;
-  const mo_min=m_in+mw_min,  mo_max=m_in+mw_max;
+    clrAlert();
+    if(data.warns && data.warns.length){
+      showAlert(data.warns.join('<br>'), 'wa');
+    }
 
-  // Bug 10/11 — ISA S75.01 / IEC 60534 valve Cv + cavitation check
-  let cv_res = null;
-  if (cvIn > 0) {
-    const Ps_bar  = Ps * 10;                   // bar  (internal unit)
-    const Pw_bar  = Pw * 10;                   // bar
-    const dP_bar  = Pw_bar - Ps_bar;           // differential pressure across valve
-    const dP_psi  = dP_bar * 14.5038;
-
-    // Water density at actual TEMPERATURE Tw (not at saturation pressure)
-    // Using satByT_fb(Tw) gives vf at the real fluid temperature for correct SG
-    const satWt   = satByT_fb(Math.max(1, Math.min(Tw, 370)));
-    const rho_w   = satWt ? (1 / satWt.vf) : 998;
-    const SG      = rho_w / 998.2;            // specific gravity vs water at 60°F
-
-    // Vapour pressure of water at water inlet temperature
-    const Pv_bar  = pSat(Tw);                 // bar — vapour pressure at Tw
-
-    // ISA S75.01 liquid Cv (incompressible, no choke)
-    const m_w_gpm = m_w / 0.453592 / 60 / 8.3454;   // kg/h → US gpm
-    const Cv_req  = dP_bar > 0.1
-      ? m_w_gpm / Math.sqrt(Math.max(0.01, dP_psi / SG))
-      : NaN;
-
-    // FL recovery factor (typical globe valve spray nozzle: 0.90)
-    const FL = 0.90;
-    // Allowable pressure drop (choked flow limit)
-    const dP_allow = FL * FL * (Pw_bar - Pv_bar);  // bar
-
-    // Cavitation index σ (Tullis/ISA) — Bug 11
-    const sigma = dP_bar > 0.01
-      ? (Pw_bar - Pv_bar) / dP_bar
-      : Infinity;
-    // Critical σ for incipient cavitation ≈ 2.0 (conservative for spray valves)
-    const cavitating = sigma < 2.0 && dP_bar > 0.1;
-    const flashing   = Pv_bar >= Pw_bar;
-
-    // Choked flow check
-    const choked = dP_bar > dP_allow;
-    const Kv_req  = isFinite(Cv_req) ? Cv_req / 1.1561 : NaN;
-
-    cv_res = {
-      Cv_req, Kv_req, Cv_inst: cvIn, Kv_inst: cvIn/1.1561, rat: isFinite(Cv_req) ? cvIn/Cv_req : NaN,
-      dP_psi, dP_bar, m_w_gpm, SG, rho_w,
-      Pv_bar, sigma, cavitating, flashing, choked, dP_allow,
-      FL
+    // Build shSt from API's shStatus field
+    const shStMap = {
+      'ADEQUATE':     {c:'ok', lbl:'ADEQUATE SUPERHEAT',     bb:'bb-ok'},
+      'LOW':          {c:'wa', lbl:'LOW SUPERHEAT MARGIN',    bb:'bb-wa'},
+      'INSUFFICIENT': {c:'bd', lbl:'INSUFFICIENT SUPERHEAT',  bb:'bb-bd'},
     };
+    const shSt = shStMap[data.shStatus] || shStMap['LOW'];
+
+    // Store result — using API field names directly (all SI)
+    lastR = {
+      // pressures stored as MPa (Ps) and bara (P_s) to match render expectations
+      Ps:   data.Ps,          // MPa — used in fPu(r.Ps) → frPd(MPa)*10=bara
+      P_s:  data.P_s,         // bara — for valve calcs
+      T1:   data.T1, T2: data.T2, Tw: data.Tw, Pw: data.Pw,
+      m_in: data.m_in, m_w: data.m_w, m_out: data.m_out,
+      ratio: data.ratio, qPct: data.qPct,
+      h1: data.h1, h2: data.h2, hw: data.hw,
+      v1: data.v1, v2: data.v2, s1: data.s1, s2: data.s2,
+      Ts: data.Ts,
+      sh_out: data.sh_out,
+      shMin_C: sh_min_SI,
+      Q_rem: data.Q_rem, Q_abs: data.Q_abs,
+      mw_min: data.mw_min, mw_max: data.mw_max,
+      mo_min: data.mo_min, mo_max: data.mo_max,
+      fMin, fMax,
+      cv_res: data.cv_res || null,
+      shSt,
+      warns: data.warns || [],
+      outletQuality: data.outletQuality !== undefined ? data.outletQuality : null,
+      unc_h1: data.unc_h1, unc_h2: data.unc_h2, unc_hw: data.unc_hw,
+      // sat boundary values — returned by API as hf_steam / hg_steam
+      hf_sat: data.hf_steam, hg_sat: data.hg_steam,
+      // sensitivity tables computed server-side
+      sensT: data.sensT || [],
+      sensW: data.sensW || [],
+      ms_uid: msu, ms_val_disp: msv,
+      isI: SYS==='IMP',
+      ts: new Date().toLocaleString(),
+    };
+
+    render();
+
+  } catch(err) {
+    showAlert('🔴 Network error: ' + err.message, 'err');
   }
-
-  const shSt = sh_out>=20?{c:'ok',lbl:'ADEQUATE SUPERHEAT',bb:'bb-ok'}
-             : sh_out>=shMin_C?{c:'wa',lbl:'LOW SUPERHEAT MARGIN',bb:'bb-wa'}
-             : {c:'bd',lbl:'INSUFFICIENT SUPERHEAT',bb:'bb-bd'};
-
-  if(warns.length) showAlert(warns.join('<br>'),'wa');
-
-  const isI = SYS==='IMP';
-  lastR={Ps,T1,Tw,Pw,T2,m_in,m_w,m_out,ratio,qPct,
-         h1,h2,hw,v1,v2,s1,s2,Ts,sh_out,shMin_C,
-         Q_rem,Q_abs,mw_min,mw_max,mo_min,mo_max,
-         fMin,fMax,cv_res,shSt,warns,outletQuality,
-         unc_h1, unc_h2, unc_hw,
-         ms_uid:msu, ms_val_disp:msv,
-         convWarn, isI,
-         ts:new Date().toLocaleString()};
-  render();
 }
 
 /* ══════════════════════════════════════════════════
-   RENDER
+   RENDER  — pure display, zero steam calculations
+   All computed values come from lastR (API response)
 ══════════════════════════════════════════════════ */
 function render(){
   const r=lastR;
@@ -1555,24 +1132,13 @@ function render(){
   const fFt= v => (v/1000).toFixed(2)+' t/h';
   const fKw= v => v.toFixed(1)+' kW';
 
-  // Sensitivity tables
-  const sensT=[], sensW=[];
-  for(let d=-10;d<=10;d+=2){
-    const T2s=r.T2+d;
-    if(T2s>r.T1||T2s<=r.Ts+r.shMin_C) continue;
-    const h2s=h_steam(T2s,r.Ps);
-    if(h2s<=r.hw+5) continue;
-    const mws=r.m_in*(r.h1-h2s)/(h2s-r.hw);
-    sensT.push({d,T2s,mws,pct:mws/(r.m_in+mws)*100,base:d===0});
-  }
-  for(let d=-20;d<=20;d+=5){
-    const Tws=r.Tw+d;
-    if(Tws<=0||Tws>=r.T2) continue;
-    const hws=h_water(Tws,r.Pw);
-    if(r.h2<=hws+5) continue;
-    const mws=r.m_in*(r.h1-r.h2)/(r.h2-hws);
-    sensW.push({d,Tws,mws,pct:mws/(r.m_in+mws)*100,base:d===0});
-  }
+  // Sensitivity tables — pre-computed by API (server-side)
+  const sensT = r.sensT || [];
+  const sensW = r.sensW || [];
+
+  // Sat boundary values from API response (no client-side steam calls)
+  const hf_sat_disp = r.hf_sat != null ? f1(r.hf_sat) : '—';
+  const hg_sat_disp = r.hg_sat != null ? f1(r.hg_sat) : '—';
 
   E('RP').innerHTML=`<div style="animation:fi .35s ease">
 
@@ -1713,7 +1279,7 @@ Substituting values:
           <tr class="tot">
             <td>Saturation @ P_steam</td>
             <td class="num">${fT(r.Ts)}</td><td class="num">${fPu(r.Ps)}</td>
-            <td class="num">${f1(hf_P(r.Ps))} / ${f1(hg_P(r.Ps))}</td>
+            <td class="num">${hf_sat_disp} / ${hg_sat_disp}</td>
             <td class="num">—</td>
             <td class="num" colspan="2">h_f / h_g</td>
             <td class="num">—</td><td>Sat. boundary</td>
@@ -2085,7 +1651,7 @@ function generatePDF(){
       ['Inlet Steam',  fT(r.T1), fPu(r.Ps), r.h1.toFixed(1), r.s1.toFixed(3), r.v1.toFixed(5), `${isI?((r.T1-r.Ts)*9/5).toFixed(1):(r.T1-r.Ts).toFixed(1)} Δ${T}`, 'Superheated'],
       ['Quench Water', fT(r.Tw), fPu(r.Pw), r.hw.toFixed(1), '—', '~0.00103', '—', 'Comp. Liquid'],
       ['Outlet Steam', fT(r.T2), fPu(r.Ps), r.h2.toFixed(1), r.s2.toFixed(3), r.v2.toFixed(5), `${isI?(r.sh_out*9/5).toFixed(1):r.sh_out.toFixed(1)} Δ${T}`, r.sh_out>=10?'OK':'⚠ Low SH'],
-      ['Saturation',   fT(r.Ts), fPu(r.Ps), `${hf_P(r.Ps).toFixed(1)} / ${hg_P(r.Ps).toFixed(1)}`,'—','—','0','h_f / h_g'],
+      ['Saturation',   fT(r.Ts), fPu(r.Ps), `${r.hf_sat!=null?r.hf_sat.toFixed(1):'—'} / ${r.hg_sat!=null?r.hg_sat.toFixed(1):'—'}`,'—','—','0','h_f / h_g'],
     ],
     styles:{fontSize:7.5,cellPadding:2},
     headStyles:{fillColor:[30,35,52],textColor:255,fontStyle:'bold',fontSize:7},
@@ -2178,6 +1744,10 @@ E('ms_u').addEventListener('change', ()=>{
 setUnit('SI');
 popFlowU('ms_u');
 loadPreset('boiler', document.querySelector('.pchip'));
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
