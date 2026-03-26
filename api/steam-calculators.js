@@ -737,12 +737,30 @@ function v_steam(T_C, P_MPa) {
   return R * T / (P_MPa * 1000) * pi * (g0_p + gr_p);
 }
 
-// Region-1 (compressed liquid): simplified enthalpy via NIST-consistent polynomial
+// Region-1 (compressed liquid): IAPWS-IF97 consistent enthalpy
+// Uses SAT_T_squench table for h_f(T) + Poynting pressure correction
+// h = h_f(T_sat_at_Psat) + vf * (P - Psat) * 1000
+// This matches the calcProps('compressed') method used in the steam-properties handler.
 function h_water(T_C, P_MPa) {
-  // Compressed-liquid enthalpy: h_f(T) + (P - Psat) * v_f
-  const T = Math.max(0.01, Math.min(T_C, 374));
-  const h_f = 4.1868 * T + 0.00028 * T*T - 2.09e-7 * T*T*T;   // kJ/kg (accurate ±0.5 kJ/kg to 250°C)
-  return h_f;
+  const T = Math.max(0.01, Math.min(T_C, 370));
+  const P_bar = P_MPa * 10;  // MPa → bar
+
+  // Look up saturation properties at water temperature
+  const sat = satByT_fb_squench(T);
+  if (!sat) {
+    // Fallback: simple polynomial (no pressure correction)
+    return 4.1868 * T + 0.00028 * T * T - 2.09e-7 * T * T * T;
+  }
+
+  // Saturation pressure at water temperature
+  const Psat_bar = pSat_squench(T);
+  const vf = sat.vf;   // m³/kg specific volume of saturated liquid
+
+  // Poynting correction: add (P - Psat) pressure work in kJ/kg
+  // (P_bar - Psat_bar) [bar] * 100 [kPa/bar] * vf [m³/kg] = kJ/kg
+  const h_f = sat.hf;
+  const dP_kPa = (P_bar - Psat_bar) * 100;
+  return h_f + vf * dP_kPa;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1130,7 +1148,7 @@ async function steamQuench_handler(req, res) {
     const dP_allow = FL*FL*(Pw - Pv_bar);
     const sigma    = dP_bar > 0.01 ? (Pw - Pv_bar)/dP_bar : Infinity;
     const cavitating = sigma < 2.0 && dP_bar > 0.1;
-    const flashing   = Pv_bar >= Pw;
+    const flashing   = P_s <= Pv_bar;  // valve outlet (steam line) below vapour pressure → two-phase
     const choked     = dP_bar > dP_allow;
     const Kv_req     = isFinite(Cv_req) ? Cv_req/1.1561 : NaN;
     cv_res = {
@@ -1153,7 +1171,7 @@ async function steamQuench_handler(req, res) {
   }  // end else (Pw > Ps+0.1)
   }  // end if (cv_in > 0)
 
-  const shStatus = sh_out >= 20 ? 'ADEQUATE' : sh_out >= sh_min ? 'LOW' : 'INSUFFICIENT';
+  const shStatus = sh_out >= sh_min + 10 ? 'ADEQUATE' : sh_out >= sh_min ? 'LOW' : 'INSUFFICIENT';
 
   const result = {
     // ── inputs reflected back ──
