@@ -79,19 +79,28 @@ jobs:
           echo "Target API: $BASE_URL/api/steam-quench"
 
       # ── 5. Smoke-check API reachability ───────────────────────────────────
+      # Uses a complete valid calculate body (not preview action) so the API
+      # must do real work — guarantees 200 if routing + logic both work.
+      # -w prints HTTP status on a new line after the body for easy parsing.
+      # Response body is echoed (first 400 chars) so failures are diagnosable.
       - name: Smoke-check API reachability
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L \
+          BODY='{"P_s":30,"T1":280,"Tw":80,"Pw":40,"T2":250,"m_in":40000,"sh_min":10,"f_min":30,"f_max":110,"cv_in":0}'
+          RESPONSE=$(curl -s -L \
             -X POST "$BASE_URL/api/steam-quench" \
             -H "Content-Type: application/json" \
-            -d '{"action":"preview","P_s":10,"T1":300,"Tw":80,"Pw":12,"T2":250}' \
-            --max-time 20)
-          echo "HTTP status: $STATUS"
+            -d "$BODY" \
+            -w "\n__STATUS__%{http_code}" \
+            --max-time 25)
+          STATUS=$(echo "$RESPONSE" | grep "__STATUS__" | sed 's/__STATUS__//')
+          BODY_OUT=$(echo "$RESPONSE" | grep -v "__STATUS__")
+          echo "HTTP status : $STATUS"
+          echo "Response    : ${BODY_OUT:0:400}"
           if [ "$STATUS" != "200" ]; then
-            echo "API returned $STATUS — aborting"
+            echo "::error::API returned HTTP $STATUS. Check vercel.json routing and that steam-quench handler is deployed."
             exit 1
           fi
-          echo "API reachable and returning 200"
+          echo "API reachable and returning 200 ✅"
 
       # ── 6. Run tests ──────────────────────────────────────────────────────
       - name: Run Steam Quench test suite
