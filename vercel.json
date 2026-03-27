@@ -28,9 +28,53 @@
     "api/water-treatment-calculator.js": {
       "maxDuration": 10,
       "memory": 256
+    },
+    "api/boq.js": {
+      "maxDuration": 20,
+      "memory": 512
     }
   },
   "rewrites": [
+    {
+      "source": "/boq-estimator",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/boq-estimator/",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/boq-capital-cost-estimator",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/boq-capital-cost-estimator/",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/capital-cost-estimator",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/capital-cost-estimator/",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/process-plant-boq",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/process-plant-boq/",
+      "destination": "/boq-capital-cost-estimator/index.html"
+    },
+    {
+      "source": "/api/boq",
+      "destination": "/api/boq"
+    },
+    {
+      "source": "/api/boq/",
+      "destination": "/api/boq"
+    },
     {
       "source": "/unit-converter/pressure",
       "destination": "/unit-converter/pressure/index.html"
@@ -737,6 +781,44 @@
     }
   ],
   "headers": [
+    {
+      "source": "/boq-capital-cost-estimator/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/api/boq",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
     {
       "source": "/api/(.*)",
       "headers": [
