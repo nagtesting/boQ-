@@ -1,5 +1,4 @@
 {
-  "trailingSlash": false,
   "functions": {
     "api/civil-electrical-mechanical-instrumentation.js": {
       "maxDuration": 10,
