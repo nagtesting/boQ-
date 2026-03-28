@@ -663,8 +663,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   color:var(--t1);font-family:var(--fb);font-size:12px;padding:7px 10px;outline:none;}
 .comment-inp:focus{border-color:var(--acc);}
 
-/* touch-friendly row tap highlight */
-@media(hover:none){
+/* ══ MONTE CARLO ══ */
+.mc-section{margin-top:18px;border-top:1px solid var(--bd);padding-top:14px;}
+.mc-histogram{display:flex;align-items:flex-end;gap:2px;height:80px;padding:0 2px;}
+.mc-bar{flex:1;border-radius:2px 2px 0 0;min-height:2px;opacity:.75;transition:opacity .12s;cursor:default;}
+.mc-bar:hover{opacity:1;}
+.mc-axis{display:flex;justify-content:space-between;font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:4px;padding:0 2px;}
+.mc-markers{position:relative;height:16px;margin:2px 2px 0;}
+.mc-marker{position:absolute;transform:translateX(-50%);font-family:var(--fm);font-size:10px;font-weight:700;white-space:nowrap;}
+.mc-marker.p10{color:var(--grn);}
+.mc-marker.p50{color:var(--teal);}
+.mc-marker.p90{color:var(--red);}
+.mc-interp{font-size:12px;color:var(--t2);line-height:1.65;margin-top:10px;background:var(--sf2);border-radius:var(--r);padding:10px 14px;}
+.mc-run-btn{background:rgba(10,124,110,.10);border:1px solid rgba(10,124,110,.30);color:var(--teal);border-radius:var(--r);font-family:var(--fm);font-size:12px;font-weight:600;padding:7px 16px;cursor:pointer;transition:all .15s;}
+.mc-run-btn:hover{background:rgba(10,124,110,.18);}
+.mc-run-btn:disabled{opacity:.4;cursor:default;}
+
+
   .boq-table tbody tr:active td{background:rgba(209,69,0,.04)!important;}
   .item-name{font-size:14px;}
 }
@@ -702,7 +717,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
         Live Market Data
         <button onclick="loadLiveData(true)" style="background:none;border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--t2)">↻</button>
       </div>
-      <div class="live-item" style="margin-bottom:5px">📊 CEPCI: <strong id="ld-cepci">—</strong> <span id="ld-cepci-src" style="color:var(--t3)"></span></div>
+      <div style="margin-bottom:8px">
+        <div class="live-item">📊 CEPCI estimate: <strong id="ld-cepci">—</strong></div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.5" id="ld-cepci-src">—</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:1px">
+          ⚠ Approximate — BLS PPI proxy ×1.94. Official CEPCI published quarterly by IHS Markit / AIChE.
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
         <div class="live-item">💱 INR: <strong id="ld-inr">—</strong></div>
         <div class="live-item">💱 EUR: <strong id="ld-eur">—</strong></div>
@@ -1134,11 +1155,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
           <div style="font-family:var(--fm);font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Tornado Chart — Impact per Factor</div>
           <div class="tornado-chart" id="tornado-chart"></div>
         </div>
+
+        <div class="mc-section">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+            <div style="font-family:var(--fm);font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em">Monte Carlo Simulation</div>
+            <span style="font-size:11px;color:var(--t3)">Triangular dist. · 1,000 iterations · uses P10/P90 bounds</span>
+            <button class="mc-run-btn" id="mc-run-btn" onclick="runMonteCarlo()">▶ Run Simulation</button>
+          </div>
+          <div id="mc-result" style="display:none">
+            <div style="position:relative">
+              <div class="mc-histogram" id="mc-histogram"></div>
+              <div class="mc-markers" id="mc-markers"></div>
+              <div class="mc-axis" id="mc-axis"></div>
+            </div>
+            <div class="mc-interp" id="mc-interp"></div>
+          </div>
+          <div id="mc-empty" style="font-size:12px;color:var(--t3)">Run a calculation first, then click Run Simulation.</div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- COMPARE TAB -->
   <div id="tab-compare" class="cat-section">
     <div class="card ani">
       <div class="card-head"><span class="card-icon">⚖️</span>
@@ -1340,30 +1376,42 @@ const MAT_LABELS = {
 // ─────────────────────────────────────────────────────────────
 // API HELPER
 // ─────────────────────────────────────────────────────────────
+// Sandbox-safe AbortController: some iframe environments (e.g. claude.ai preview)
+// throw DataCloneError when AbortSignal is passed across contexts.
+// Falls back to a plain fetch without signal — timeout still handled via Promise.race.
+function makeFetchWithTimeout(timeoutMs) {
+  try {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    return { signal: ctrl.signal, clearTimer: () => clearTimeout(timer) };
+  } catch (e) {
+    // AbortController unavailable or sandboxed — return no-op
+    return { signal: undefined, clearTimer: () => {} };
+  }
+}
+
 async function apiPost(url, body) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), API_TIMEOUT);
+  const { signal, clearTimer } = makeFetchWithTimeout(API_TIMEOUT);
   try {
     const r = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      signal: ctrl.signal,
+      ...(signal ? { signal } : {}),
     });
-    clearTimeout(timer);
+    clearTimer();
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || `HTTP ${r.status}`); }
     return await r.json();
-  } catch (e) { clearTimeout(timer); throw e; }
+  } catch (e) { clearTimer(); throw e; }
 }
 
 async function apiGet(url) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), API_TIMEOUT);
+  const { signal, clearTimer } = makeFetchWithTimeout(API_TIMEOUT);
   try {
-    const r = await fetch(url, { signal: ctrl.signal });
-    clearTimeout(timer);
+    const r = await fetch(url, signal ? { signal } : {});
+    clearTimer();
     return await r.json();
-  } catch (e) { clearTimeout(timer); throw e; }
+  } catch (e) { clearTimer(); throw e; }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1402,14 +1450,17 @@ async function loadLiveData(force = false) {
   }
   dot.className = 'live-dot stale'; label.textContent = 'Fetching…';
   try {
-    const ctrl2 = new AbortController();
-    const liveTimer = setTimeout(() => ctrl2.abort(), LIVE_TIMEOUT);
-    const data = await fetch(API_LIVE + '?type=all', { signal: ctrl2.signal }).then(r=>r.json()).finally(()=>clearTimeout(liveTimer));
+    const { signal: liveSignal, clearTimer: clearLiveTimer } = makeFetchWithTimeout(LIVE_TIMEOUT);
+    const data = await fetch(API_LIVE + '?type=all', liveSignal ? { signal: liveSignal } : {})
+      .then(r => r.json())
+      .finally(() => clearLiveTimer());
     LIVE_DATA = data;
     // Update strip
     const fx = data.fx?.rates || {};
-    setLive('ld-cepci',data.cepci?.cepci_estimate || '—');
-    setLive('ld-cepci-src',data.cepci?.source ? `(${data.cepci.source})` : '');
+    setLive('ld-cepci', data.cepci?.cepci_estimate || '—');
+    const cepciSrc = data.cepci?.source || 'BLS PPI proxy';
+    const cepciAge = data.cache_age_min != null ? ` · ${data.cache_age_min}m ago` : '';
+    setLive('ld-cepci-src', `Source: ${cepciSrc}${cepciAge}`);
     setLive('ld-inr',fx.INR  ? fx.INR.toFixed(1)  : '—');
     setLive('ld-eur',fx.EUR  ? fx.EUR.toFixed(4)  : '—');
     setLive('ld-gbp',fx.GBP  ? fx.GBP.toFixed(4)  : '—');
@@ -1419,7 +1470,7 @@ async function loadLiveData(force = false) {
     dot.className = 'live-dot live'; label.textContent = 'Live Data';
     const mini = document.getElementById('live-badge-mini');
     if (mini && LIVE_DATA?.cepci?.cepci_estimate) {
-      mini.textContent = ` · CEPCI ${LIVE_DATA.cepci.cepci_estimate}`;
+      mini.textContent = ` · CEPCI ~${LIVE_DATA.cepci.cepci_estimate}`;
     }
   } catch (e) {
     dot.className = 'live-dot';
@@ -1977,7 +2028,30 @@ function renderSummary() {
 
 
 
-  <div class="note-bar">
+  <div style="background:rgba(176,125,0,.07);border:1px solid rgba(176,125,0,.30);border-radius:var(--r);
+    padding:12px 16px;margin-top:10px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+    <span style="font-size:18px;line-height:1.2;flex-shrink:0">⚠️</span>
+    <div style="flex:1;min-width:200px">
+      <div style="font-family:var(--fm);font-size:12px;font-weight:700;color:var(--gold);
+        text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">
+        AACE Class 4 Estimate — Accuracy ±30% to ±50%
+      </div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.65">
+        <strong>Suitable for:</strong> Project screening, feasibility studies, order-of-magnitude budgets, technology selection.
+        &nbsp;|&nbsp;
+        <strong>Not suitable for:</strong> Budget authorization (Class 3), procurement, or client contract deliverables without independent verification.
+        <br>Parametric power-law scaling per Turton et al. (2018). Contingency of ${INDIRECT_PCT['cont'] || 15}%
+        included per AACE RP-18R-97 Class 4 guidance.
+      </div>
+    </div>
+    <div style="flex-shrink:0;text-align:center;background:rgba(176,125,0,.12);border:1px solid rgba(176,125,0,.28);
+      border-radius:5px;padding:6px 14px;font-family:var(--fm);color:var(--gold);">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">P50 base</div>
+      <div style="font-size:15px;font-weight:700;margin-top:1px">±30–50%</div>
+    </div>
+  </div>
+
+  <div class="note-bar" style="margin-top:6px">
     <strong>📌 Estimate Basis:</strong> Power-law scaling C·(S/Sref)^n per Turton et al. (2018). P/T correction factors applied per equipment type.
     Three-point estimating per AACE Class 4 (P10 = −15%, P90 = +25% on P50 base).
     Location and CEPCI escalation factors applied server-side. Indirect costs at ${INDIRECT_DEFS.reduce((a,d)=>a+INDIRECT_PCT[d.id],0).toFixed(0)}% of DEC.
@@ -2052,13 +2126,49 @@ function loadSnap(snap) {
 function saveProj() {
   const name = document.getElementById('pn').value.trim();
   if (!name) { alert('Enter a project name.'); return; }
-  const id = 'p' + Date.now(); const projs = getProjs();
-  const cost = SUMMARY?.grand?.total || 0; const sym = SUMMARY?.sym || getSymbol();
-  projs[id] = { id, name, client: document.getElementById('pc').value.trim(), number: document.getElementById('pno').value.trim(),
-    rev: document.getElementById('prev').value.trim(), desc: document.getElementById('pdesc').value.trim(),
-    cost, sym, ts: new Date().toISOString(), snap: snapState() };
-  saveProjs(projs); ACTIVE_PROJ_ID = id; localStorage.setItem('boq_v4_active', id);
-  renderProjList(); setActiveBar(projs[id]); alert(`"${name}" saved.`);
+
+  // Auto-increment revision: blank → Rev A, Rev A → Rev B, Rev Z → Rev AA, etc.
+  const revEl  = document.getElementById('prev');
+  let   revRaw = revEl.value.trim();
+  if (!revRaw) {
+    revRaw = 'Rev A';
+  } else {
+    const match = revRaw.match(/^(.*?)([A-Z]+)$/i);
+    if (match) {
+      const prefix  = match[1];
+      const letters = match[2].toUpperCase();
+      let carry = true;
+      let arr   = letters.split('');
+      for (let i = arr.length - 1; i >= 0 && carry; i--) {
+        if (arr[i] === 'Z') { arr[i] = 'A'; }
+        else { arr[i] = String.fromCharCode(arr[i].charCodeAt(0) + 1); carry = false; }
+      }
+      if (carry) arr.unshift('A');
+      revRaw = prefix + arr.join('');
+    }
+  }
+  revEl.value = revRaw;
+
+  const id    = 'p' + Date.now();
+  const projs = getProjs();
+  const cost  = SUMMARY?.grand?.total || 0;
+  const sym   = SUMMARY?.sym || getSymbol();
+  projs[id] = {
+    id, name,
+    client: document.getElementById('pc').value.trim(),
+    number: document.getElementById('pno').value.trim(),
+    rev:    revRaw,
+    desc:   document.getElementById('pdesc').value.trim(),
+    cost, sym,
+    ts:   new Date().toISOString(),
+    snap: snapState(),
+  };
+  saveProjs(projs);
+  ACTIVE_PROJ_ID = id;
+  localStorage.setItem('boq_v4_active', id);
+  renderProjList();
+  setActiveBar(projs[id]);
+  alert(`"${name}" saved as ${revRaw}.`);
 }
 function updateProj() {
   if (!ACTIVE_PROJ_ID) { alert('No active project.'); return; }
@@ -2128,8 +2238,10 @@ function initOfflineMode() {
   window.addEventListener('offline', updateBar);
   updateBar();
 
-  // Register service worker
-  if ('serviceWorker' in navigator) {
+  // Register service worker only on the production domain — skip in preview iframes,
+  // localhost, and any other origin where sw.js won't be served correctly.
+  const isProduction = window.location.hostname.includes('multicalci.com');
+  if ('serviceWorker' in navigator && isProduction) {
     navigator.serviceWorker.register('/boq-capital-cost-estimator/sw.js')
       .then(r => console.log('[BOQ] SW registered:', r.scope))
       .catch(e => console.log('[BOQ] SW registration skipped:', e.message));
@@ -2642,6 +2754,103 @@ function renderTornado() {
 function resetSensitivity() {
   SENS_FACTORS.forEach(f => SENS_VALUES[f.id] = 0);
   renderSensitivity();
+}
+
+// ─────────────────────────────────────────────────────────────
+// MONTE CARLO — client-side triangular distribution simulation
+// Uses SUMMARY.grand.lo (P10) and SUMMARY.grand.hi (P90)
+// already returned by api/boq calc_summary. Zero API calls.
+// ─────────────────────────────────────────────────────────────
+function runMonteCarlo() {
+  const btn = document.getElementById('mc-run-btn');
+  if (!SUMMARY?.grand?.total) {
+    document.getElementById('mc-empty').style.display  = '';
+    document.getElementById('mc-result').style.display = 'none';
+    return;
+  }
+  btn.disabled    = true;
+  btn.textContent = '⏳ Running…';
+
+  requestAnimationFrame(() => {
+    const N    = 1000;
+    const p50  = SUMMARY.grand.total;
+    const p10  = SUMMARY.grand.lo;
+    const p90  = SUMMARY.grand.hi;
+
+    // Triangular distribution — slight tail extension beyond P10/P90
+    const tMin  = p10 * 0.90;
+    const tMode = p50;
+    const tMax  = p90 * 1.10;
+    const range = tMax - tMin;
+    const Fc    = (tMode - tMin) / range;
+
+    function sampleTriangular() {
+      const u = Math.random();
+      return u < Fc
+        ? tMin + Math.sqrt(u * range * (tMode - tMin))
+        : tMax - Math.sqrt((1 - u) * range * (tMax - tMode));
+    }
+
+    const samples = Array.from({ length: N }, sampleTriangular).sort((a, b) => a - b);
+
+    const mcP10 = samples[Math.floor(N * 0.10)];
+    const mcP50 = samples[Math.floor(N * 0.50)];
+    const mcP90 = samples[Math.floor(N * 0.90)];
+
+    // 20-bucket histogram
+    const BUCKETS = 20;
+    const bMin    = samples[0];
+    const bMax    = samples[N - 1];
+    const bSize   = (bMax - bMin) / BUCKETS || 1;
+    const counts  = new Array(BUCKETS).fill(0);
+    samples.forEach(v => {
+      counts[Math.min(BUCKETS - 1, Math.floor((v - bMin) / bSize))]++;
+    });
+    const maxCount = Math.max(...counts);
+
+    const sym = SUMMARY.sym || getSymbol();
+
+    document.getElementById('mc-histogram').innerHTML = counts.map((c, i) => {
+      const bVal  = bMin + i * bSize;
+      const h     = Math.max(2, Math.round((c / maxCount) * 76));
+      const color = bVal < mcP10 ? 'var(--grn)' : bVal > mcP90 ? 'var(--red)' : 'var(--teal)';
+      return `<div class="mc-bar" style="height:${h}px;background:${color}"
+        title="${sym}${fmtBig(bVal)}–${sym}${fmtBig(bVal + bSize)}: ${c} runs"></div>`;
+    }).join('');
+
+    document.getElementById('mc-axis').innerHTML =
+      [0, 0.25, 0.5, 0.75, 1].map(f =>
+        `<span>${sym}${fmtBig(bMin + f * (bMax - bMin))}</span>`
+      ).join('');
+
+    function pctLeft(v) {
+      return (((v - bMin) / (bMax - bMin)) * 100).toFixed(1) + '%';
+    }
+    document.getElementById('mc-markers').innerHTML = `
+      <span class="mc-marker p10" style="left:${pctLeft(mcP10)}" title="P10: ${sym}${fmtBig(mcP10)}">P10</span>
+      <span class="mc-marker p50" style="left:${pctLeft(mcP50)}" title="P50: ${sym}${fmtBig(mcP50)}">P50</span>
+      <span class="mc-marker p90" style="left:${pctLeft(mcP90)}" title="P90: ${sym}${fmtBig(mcP90)}">P90</span>`;
+
+    const spread   = ((mcP90 - mcP10) / mcP50 * 100).toFixed(0);
+    const upside   = (((mcP50 - mcP10) / mcP50) * 100).toFixed(0);
+    const downside = (((mcP90 - mcP50) / mcP50) * 100).toFixed(0);
+    document.getElementById('mc-interp').innerHTML = `
+      <strong>Result:</strong> 80% of simulated outcomes fall between
+      <span style="color:var(--grn);font-weight:600">${sym}${fmtBig(mcP10)}</span> (P10) and
+      <span style="color:var(--red);font-weight:600">${sym}${fmtBig(mcP90)}</span> (P90) —
+      a spread of <strong>${spread}%</strong> around the P50 base of
+      <span style="color:var(--teal);font-weight:600">${sym}${fmtBig(mcP50)}</span>.
+      Upside: −${upside}% &nbsp;|&nbsp; Downside: +${downside}%.
+      <br><span style="font-size:11px;color:var(--t3)">
+        Triangular distribution, 1,000 iterations. Green = below P10, red = above P90.
+        Class 4 parametric simulation — not a substitute for formal QRA.
+      </span>`;
+
+    document.getElementById('mc-result').style.display  = '';
+    document.getElementById('mc-empty').style.display   = 'none';
+    btn.disabled    = false;
+    btn.textContent = '↻ Re-run';
+  });
 }
 
 // ══════════════════════════════════════════════════════════════════════
