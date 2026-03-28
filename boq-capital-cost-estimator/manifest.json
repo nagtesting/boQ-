@@ -1,0 +1,35 @@
+{
+  "name": "BOQ Capital Cost Estimator",
+  "short_name": "BOQ Estimator",
+  "description": "Professional process plant capital cost estimator — AACE Class 4, 214 equipment items, offline capable",
+  "start_url": "/boq-capital-cost-estimator/",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#d14500",
+  "orientation": "any",
+  "scope": "/boq-capital-cost-estimator/",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/icons/boq-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/boq-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "business"],
+  "screenshots": [
+    {
+      "src": "/screenshots/boq-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
