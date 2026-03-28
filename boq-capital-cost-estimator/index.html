@@ -1438,6 +1438,8 @@ async function loadCatalog() {
   try {
     const data = await apiPostWithFallback(API_CALC, { action: 'get_catalog' });
     CATALOG = data.items || [];
+    console.log('[BOQ] Catalog loaded:', CATALOG.length, 'items');
+    if (CATALOG.length === 0) console.error('[BOQ] WARNING: Catalog is empty — check API response:', data);
     // Init state
     CATALOG.forEach(it => {
       if (!STATE[it.id]) {
@@ -2136,13 +2138,24 @@ function initOfflineMode() {
 
 // Offline-aware API wrapper: falls back to localStorage-cached catalog if offline
 async function apiPostWithFallback(url, body) {
-  if (!navigator.onLine && body.action === 'get_catalog') {
-    const cached = localStorage.getItem('boq_catalog_cache');
-    if (cached) { console.log('[BOQ] Using cached catalog'); return JSON.parse(cached); }
+  if (body.action === 'get_catalog') {
+    // Clear any stale empty cache from previous failed loads
+    const rawCached = localStorage.getItem('boq_catalog_cache');
+    if (rawCached) {
+      try {
+        const parsed = JSON.parse(rawCached);
+        if (!parsed?.items?.length) {
+          localStorage.removeItem('boq_catalog_cache'); // purge invalid cache
+        } else if (!navigator.onLine) {
+          console.log('[BOQ] Offline — using cached catalog');
+          return parsed;
+        }
+      } catch { localStorage.removeItem('boq_catalog_cache'); }
+    }
   }
   const result = await apiPost(url, body);
   // Cache catalog for offline use
-  if (body.action === 'get_catalog' && result.ok) {
+  if (body.action === 'get_catalog' && result.ok && result.items?.length > 0) {
     localStorage.setItem('boq_catalog_cache', JSON.stringify(result));
   }
   return result;
