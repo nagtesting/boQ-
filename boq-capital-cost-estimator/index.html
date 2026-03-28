@@ -122,11 +122,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:12px;}
 .disc-card:hover{border-color:var(--acc);box-shadow:0 4px 16px rgba(0,0,0,.08);}
 .disc-card-icon{font-size:22px;flex-shrink:0;}
-.disc-card-body{flex:1;min-width:0;}
-.disc-card-name{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--t1);}
+.disc-card-body{flex:1;min-width:0;overflow:hidden;}
+.disc-card-name{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .disc-card-sub{font-size:11px;color:var(--t2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.disc-card-items{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:3px;}
-.disc-card-cost{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--teal);text-align:right;white-space:nowrap;}
+.disc-card-items{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.disc-card-cost{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--teal);text-align:right;white-space:nowrap;flex-shrink:0;max-width:90px;overflow:hidden;text-overflow:ellipsis;}
 .disc-card-active{border-color:var(--acc)!important;background:rgba(209,69,0,.03);}
 
 /* ══ v7: QUICK-ADD ROW ══ */
@@ -691,10 +691,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 <header class="topbar">
   <a href="https://multicalci.com" class="tb-logo">
     <div class="tb-icon">⚙</div>
-    <div class="tb-name">multicalci</div>
+    <div class="tb-name">multicalci.com</div>
   </a>
   <div class="tb-div"></div>
-  <div class="tb-title">BOQ Capital Cost Estimator v7</div>
+  <div class="tb-title">BOQ Capital Cost Estimator</div>
   <div class="tb-badges">
     <button onclick="backHome()" class="disc-back" id="nav-home-btn"
       style="display:none;font-size:11px;padding:4px 10px">🏠 Home</button>
@@ -3014,10 +3014,12 @@ function renderDiscHome() {
     const isActive    = activeItems.length > 0;
     return `<div class="disc-card${isActive?' disc-card-active':''}" onclick="openDisc('${key}')">
       <span class="disc-card-icon">${m.icon}</span>
-      <div class="disc-card-name">${m.name}</div>
-      <div class="disc-card-sub">${m.desc}</div>
-      <div class="disc-card-items">${count} equipment types · ${activeItems.length} active</div>
-      <div class="disc-card-cost">${total>0?sym+fmtBig(total):'No items selected'}</div>
+      <div class="disc-card-body">
+        <div class="disc-card-name">${m.name}</div>
+        <div class="disc-card-sub">${m.desc}</div>
+        <div class="disc-card-items">${count} equipment types · ${activeItems.length} active</div>
+      </div>
+      <div class="disc-card-cost">${total>0?sym+fmtBig(total):'No items'}</div>
     </div>`;
   }).join('');
 
