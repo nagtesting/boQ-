@@ -7,11 +7,11 @@
 <meta name="google-site-verification" content="M10BKRLTx8Yic0Twi6FclxZfED4qjBjR1-1PZyGPZIM"/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Free Engineering Calculators — Process, Civil, Electrical, Mechanical | multicalci.com</title>
-<meta name="description" content="70+ free browser-based engineering calculators for process, mechanical, electrical &amp; civil engineers. Pipe sizing, heat exchangers, steam tables, pump NPSH, orifice ISO 5167 and more. No login required.">
+<title>Free Engineering Calculators + BOQ Cost Estimator — Process, Civil, Electrical, Mechanical | multicalci.com</title>
+<meta name="description" content="70+ free browser-based engineering calculators for process, mechanical, electrical &amp; civil engineers — plus a professional BOQ Capital Cost Estimator (AACE Class 4, 214 equipment items). No login required.">
 <link rel="canonical" href="https://multicalci.com/">
-<meta property="og:title" content="Free Engineering Calculators — multicalci.com">
-<meta property="og:description" content="70+ free browser-based engineering calculators for process, mechanical, electrical &amp; civil engineers. No login required.">
+<meta property="og:title" content="Free Engineering Calculators + BOQ Cost Estimator — multicalci.com">
+<meta property="og:description" content="70+ free engineering calculators plus a professional BOQ Capital Cost Estimator (AACE Class 4, 214 equipment types, 19 countries). No login required.">
 <meta property="og:url" content="https://multicalci.com/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://multicalci.com/assets/og-image.png">
@@ -34,6 +34,7 @@
     {"@type":"Question","name":"Are the calculators free to use?","acceptedAnswer":{"@type":"Answer","text":"Yes — all calculators are completely free, run in your browser and require no login, registration or subscription. They work on any device with a modern browser."}},
     {"@type":"Question","name":"Which engineering standards are implemented?","acceptedAnswer":{"@type":"Answer","text":"ISO 5167 (orifice/flow), IEC 60534 (control valves), IAPWS-IF97 (steam properties), TEMA E/F/G/H/J/X (heat exchangers), ASME B31.3/VIII (piping/vessels), CTI ATC-105 (cooling towers), Darcy-Weisbach + Colebrook-White (pipe flow), ASME PTC 19.3 (thermowell analysis), API 12J (separators), Peng-Robinson & SRK EOS (gas properties)."}},
     {"@type":"Question","name":"Do calculators support both SI and Imperial units?","acceptedAnswer":{"@type":"Answer","text":"Yes. All process and fluid calculators support one-click switching between SI (metric) and US Customary (Imperial) unit systems. Results update instantly without re-entering data."}},
+    {"@type":"Question","name":"Is there a capital cost estimating tool?","acceptedAnswer":{"@type":"Answer","text":"Yes — multicalci.com includes a free BOQ Capital Cost Estimator (AACE Class 4). It covers 214 equipment types across Process, Mechanical, Civil, Electrical and Instrumentation disciplines with power-law Turton correlations, CEPCI escalation, location factors for 19 countries, P/T correction, indirect costs, sensitivity analysis and WBS tagging. No login required."}},
     {"@type":"Question","name":"Can results be used for final engineering designs?","acceptedAnswer":{"@type":"Answer","text":"These calculators are suitable for preliminary engineering, feasibility studies, educational use and cross-checking. All results must be independently verified by a qualified registered engineer against applicable codes and standards before use in final designs."}}
   ]}
 ]}
@@ -360,6 +361,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
       <a href="#heat">Heat &amp; Thermo</a>
       <a href="#vessels">Vessels</a>
       <a href="#suites">Suites</a>
+      <a href="/boq-capital-cost-estimator/" style="color:var(--accent);font-weight:700">💰 BOQ Estimator</a>
     </div>
     <div class="nav-right">
       <div class="nav-sw">
@@ -377,7 +379,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
     <div class="hero-brand">multi<em>calci</em><small>.com</small></div>
     <div class="hero-tag">Standards-based Engineering Calculators · Free · Browser-based · No login</div>
     <div class="hero-stats">
-      <div class="hstat"><div class="hstat-n">24</div><div class="hstat-l">Tools</div></div>
+      <div class="hstat"><div class="hstat-n">25</div><div class="hstat-l">Tools</div></div>
       <div class="hstat"><div class="hstat-n">7</div><div class="hstat-l">Disciplines</div></div>
       <div class="hstat"><div class="hstat-n">SI+US</div><div class="hstat-l">Units</div></div>
       <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
@@ -387,6 +389,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
     <div class="hbadge">⚡ Instant · No sign-up</div>
     <div class="hbadge">📐 SI &amp; Imperial</div>
     <div class="hbadge">✅ Free Always</div>
+    <a href="/boq-capital-cost-estimator/" class="hbadge" style="text-decoration:none;background:rgba(0,229,176,.18);border-color:rgba(0,229,176,.4)">💰 BOQ Estimator NEW</a>
     <button class="share-btn" onclick="sharesite()" aria-label="Share multicalci.com">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Share
@@ -511,6 +514,14 @@ footer{background:var(--surface);border-top:1px solid var(--border);
         <span class="fcard-arr">→</span>
       </a>
 
+      <!-- 13. BOQ Capital Cost Estimator — new flagship tool -->
+      <a href="/boq-capital-cost-estimator/" class="fcard" data-disc="process" data-s="boq capital cost estimator aace class 4 equipment cost turton cepci contingency indirect">
+        <div class="fcard-ico">💰</div>
+        <div class="fcard-title">BOQ Capital Cost Estimator</div>
+        <div class="fcard-std">AACE Class 4 · 214 Items · 19 Countries</div>
+        <span class="fcard-arr">→</span>
+      </a>
+
     </div>
   </div>
 
@@ -625,6 +636,41 @@ footer{background:var(--surface);border-top:1px solid var(--border);
     </div>
   </div>
 
+  <!-- ══ CAPITAL COST ESTIMATING ══ -->
+  <div class="section process" id="cost-estimating" data-disc="process" style="--dc:var(--accent)">
+    <div class="sec-hdr">
+      <div class="sec-bar" style="background:var(--accent)"></div>
+      <span class="sec-icon">💰</span>
+      <span class="sec-title">Capital Cost Estimating</span>
+      <span class="sec-count">1 tool</span>
+    </div>
+    <div class="cards">
+      <a href="/boq-capital-cost-estimator/" class="card" style="--dc:var(--accent)"
+        data-s="boq capital cost estimator aace class 4 equipment cost turton cepci cepci contingency indirect wbs sensitivity process plant">
+        <div class="card-top">
+          <span class="card-ico">💰</span>
+          <span class="card-title">BOQ Capital Cost Estimator</span>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card-desc">
+          Professional AACE Class 4 process plant capital cost estimator. 214 equipment types across 5 disciplines,
+          power-law Turton correlations with CEPCI escalation, location factors for 19 countries,
+          P/T correction, discipline-weighted indirect costs, sensitivity analysis, WBS tagging,
+          system view, offline mode and Quote List CSV export.
+        </div>
+        <div class="card-tags">
+          <span class="tag">AACE Class 4</span>
+          <span class="tag">214 Equipment Items</span>
+          <span class="tag">19 Countries</span>
+          <span class="tag">Turton Correlations</span>
+          <span class="tag">CEPCI Escalation</span>
+          <span class="tag">Sensitivity Analysis</span>
+          <span class="tag">Offline PWA</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
   <!-- ══ ENGINEERING SUITES — single 4-column row ══ -->
   <div id="suites" style="scroll-margin-top:110px;margin-bottom:28px;">
     <div class="featured-label" style="margin-bottom:8px">Engineering suites</div>
@@ -680,6 +726,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
         <li><a href="/pressure-drop-calculator/">Pipe Pressure Drop Calculator (Darcy-Weisbach)</a></li>
         <li><a href="/npsh-calculator/">NPSH Calculator — Net Positive Suction Head</a></li>
         <li><a href="/head-pressure-calculator/">Head &amp; Pressure Calculator</a></li>
+        <li><a href="/boq-capital-cost-estimator/">BOQ Capital Cost Estimator (AACE Class 4)</a></li>
       </ul>
     </div>
     <div>
@@ -716,6 +763,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
 <!-- ══ FAQ ══ -->
 <div class="faq">
   <h2>Frequently Asked Questions</h2>
+  <details><summary>Is there a capital cost estimating tool?</summary><p>Yes — the <a href="/boq-capital-cost-estimator/" style="color:var(--accent)">BOQ Capital Cost Estimator</a> is a free, browser-based AACE Class 4 estimating tool covering 214 equipment types across Process, Mechanical, Civil, Electrical and Instrumentation disciplines. It uses Turton power-law correlations with CEPCI escalation, location factors for 19 countries, P/T correction, discipline-weighted indirect costs, sensitivity analysis, WBS tagging, offline mode and downloadable Quote List CSV export. No login required.</p></details>
   <details><summary>Are the calculators free to use?</summary><p>Yes — all calculators are completely free, run in your browser and require no login, registration or subscription. They work on any device with a modern browser.</p></details>
   <details><summary>Which engineering standards are implemented?</summary><p>ISO 5167 (orifice/flow), IEC 60534 (control valves), IAPWS-IF97 (steam properties), TEMA E/F/G/H/J/X (heat exchangers), ASME B31.3/VIII (piping/vessels), CTI ATC-105 (cooling towers), Darcy-Weisbach + Colebrook-White (pipe flow), ASME PTC 19.3 (thermowell analysis), API 12J (separators), Peng-Robinson &amp; SRK EOS (gas properties).</p></details>
   <details><summary>Do calculators support both SI and Imperial units?</summary><p>Yes. All process and fluid calculators support one-click switching between SI (metric) and US Customary (Imperial) unit systems. Results update instantly without re-entering data.</p></details>
@@ -735,6 +783,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);
       <a href="/pressure-drop-calculator/">Pressure Drop</a>
       <a href="/npsh-calculator/">NPSH Calculator</a>
       <a href="/head-pressure-calculator/">Head Pressure</a>
+      <a href="/boq-capital-cost-estimator/" style="color:var(--accent);font-weight:600">BOQ Estimator ✦</a>
     </div>
     <div class="footer-col">
       <h4>Heat &amp; Thermo</h4>
