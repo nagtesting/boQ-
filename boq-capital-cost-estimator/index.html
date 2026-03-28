@@ -773,12 +773,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
     </div>
   </div>
 
-  <!-- LIVE DATA STRIP — collapsed to topbar icon -->
-  <div id="live-strip-hidden" style="display:none">
-    <span id="ld-cepci"></span><span id="ld-cepci-src"></span>
-    <span id="ld-inr"></span><span id="ld-eur"></span><span id="ld-gbp"></span>
-    <span id="ld-steel"></span><span id="ld-copper"></span><span id="ld-ts"></span>
-  </div>
+  <!-- LIVE DATA — hidden relay (no visible output needed, popover holds display) -->
+  <div style="display:none" aria-hidden="true"></div>
 
   <!-- GLOBAL SETTINGS -->
   <div class="gbar">
@@ -1281,7 +1277,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 // ─────────────────────────────────────────────────────────────
 const API_CALC    = '/api/boq';
 const API_LIVE    = '/api/boq';
-const API_TIMEOUT = 15000;
+const API_TIMEOUT = 8000;
+const LIVE_TIMEOUT = 6000;  // live data is best-effort only
 
 // ─────────────────────────────────────────────────────────────
 // CLIENT STATE (UI only — no calculation logic)
@@ -1399,24 +1396,35 @@ function getSymbol() {
 async function loadLiveData(force = false) {
   const dot   = document.getElementById('live-dot');
   const label = document.getElementById('live-label');
-  dot.className = 'live-dot stale'; label.textContent = 'Fetching live data…';
+  // Helper — updates ALL elements sharing an id (safe with duplicate IDs)
+  function setLive(id, val) {
+    document.querySelectorAll(`[id="${id}"]`).forEach(el => el.textContent = val);
+  }
+  dot.className = 'live-dot stale'; label.textContent = 'Fetching…';
   try {
-    const data = await apiGet(API_LIVE + '?type=all');
+    const ctrl2 = new AbortController();
+    const liveTimer = setTimeout(() => ctrl2.abort(), LIVE_TIMEOUT);
+    const data = await fetch(API_LIVE + '?type=all', { signal: ctrl2.signal }).then(r=>r.json()).finally(()=>clearTimeout(liveTimer));
     LIVE_DATA = data;
     // Update strip
     const fx = data.fx?.rates || {};
-    document.getElementById('ld-cepci').textContent  = data.cepci?.cepci_estimate || '—';
-    document.getElementById('ld-cepci-src').textContent = data.cepci?.source ? `(${data.cepci.source})` : '';
-    document.getElementById('ld-inr').textContent    = fx.INR  ? fx.INR.toFixed(1)  : '—';
-    document.getElementById('ld-eur').textContent    = fx.EUR  ? fx.EUR.toFixed(4)  : '—';
-    document.getElementById('ld-gbp').textContent    = fx.GBP  ? fx.GBP.toFixed(4)  : '—';
-    document.getElementById('ld-steel').textContent  = data.commodities?.hrc_steel_t ? `$${data.commodities.hrc_steel_t}` : '—';
-    document.getElementById('ld-copper').textContent = data.commodities?.copper_t    ? `$${data.commodities.copper_t.toLocaleString()}` : '—';
-    document.getElementById('ld-ts').textContent     = data.cached ? `Cached · ${data.cache_age_min}m ago` : `Live · ${new Date().toLocaleTimeString()}`;
+    setLive('ld-cepci',data.cepci?.cepci_estimate || '—');
+    setLive('ld-cepci-src',data.cepci?.source ? `(${data.cepci.source})` : '');
+    setLive('ld-inr',fx.INR  ? fx.INR.toFixed(1)  : '—');
+    setLive('ld-eur',fx.EUR  ? fx.EUR.toFixed(4)  : '—');
+    setLive('ld-gbp',fx.GBP  ? fx.GBP.toFixed(4)  : '—');
+    setLive('ld-steel',data.commodities?.hrc_steel_t ? `$${data.commodities.hrc_steel_t}` : '—');
+    setLive('ld-copper',data.commodities?.copper_t    ? `$${data.commodities.copper_t.toLocaleString()}` : '—');
+    setLive('ld-ts',data.cached ? `Cached · ${data.cache_age_min}m ago` : `Live · ${new Date().toLocaleTimeString()}`);
     dot.className = 'live-dot live'; label.textContent = 'Live Data';
+    const mini = document.getElementById('live-badge-mini');
+    if (mini && LIVE_DATA?.cepci?.cepci_estimate) {
+      mini.textContent = ` · CEPCI ${LIVE_DATA.cepci.cepci_estimate}`;
+    }
   } catch (e) {
-    dot.className = 'live-dot'; label.textContent = 'Offline (static data)';
-    document.getElementById('ld-ts').textContent = 'Live data unavailable';
+    dot.className = 'live-dot';
+    label.textContent = e.name === 'AbortError' ? 'Timeout' : 'Static data';
+    setLive('ld-ts', e.name === 'AbortError' ? 'Timed out — using static values' : 'Live data unavailable');
   }
 }
 
@@ -1438,9 +1446,17 @@ async function loadCatalog() {
     });
     renderAllTables();
     renderIndirectPanel();
+    renderDiscHome();   // refresh disc cards now catalog is loaded
   } catch (e) {
     console.error('Catalog load failed:', e);
-    document.getElementById('proc-tables').innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);font-family:var(--fm)">⚠ Failed to load calculator: ${e.message}<br><br><button class="btn btn-acc" onclick="loadCatalog()">Retry</button></div>`;
+    // Show error on the visible disc-grid, not the hidden legacy container
+    const grid = document.getElementById('disc-grid');
+    if (grid) grid.innerHTML = `
+      <div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--red);font-family:var(--fm);font-size:14px">
+        ⚠ Failed to load equipment catalog: ${e.message}<br>
+        <small style="color:var(--t3)">Check your network connection and ensure the API is reachable.</small><br><br>
+        <button class="btn btn-acc" onclick="loadCatalog()" style="margin-top:8px">↺ Retry</button>
+      </div>`;
   }
 }
 
@@ -3166,15 +3182,7 @@ document.addEventListener('click', e => {
 });
 
 // Patch loadLiveData to also update badge mini text
-const _origLoadLiveData = loadLiveData;
-loadLiveData = async function(force) {
-  await _origLoadLiveData(force);
-  // Update badge mini — show CEPCI
-  const mini = document.getElementById('live-badge-mini');
-  if (mini && LIVE_DATA?.cepci?.cepci_estimate) {
-    mini.textContent = `CEPCI ${LIVE_DATA.cepci.cepci_estimate}`;
-  }
-};
+// live-badge-mini updated inline in loadLiveData
 
 // ══════════════════════════════════════════════════════════════════════
 // v7-B: WBS TAGS + REVISION TRACKING
@@ -3966,10 +3974,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // v5 init
   initOfflineMode();
   const urlLoaded = loadFromURL();
-  // Load live data in parallel with catalog
-  await Promise.allSettled([loadLiveData(), loadCatalog()]);
+  // Load catalog first (blocking — page needs it)
+  // Load live data independently — don't block the UI on it
+  loadLiveData();              // fire and forget — updates badge when ready
+  await loadCatalog();         // wait only for catalog
 
-  // v7: init
+  // v7: init — renders immediately once catalog is ready
   renderDiscHome();
   renderQLPanel();
   updateChangeCount();
