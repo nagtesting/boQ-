@@ -134,6 +134,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .disc-card-cost{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--teal);text-align:right;
   white-space:nowrap;flex-shrink:0;max-width:90px;overflow:hidden;text-overflow:ellipsis;}
 .disc-card-active{border-color:var(--acc)!important;background:rgba(209,69,0,.03);}
+/* Tool cards — teal accent, same structure as disc cards */
+.tool-card{border-color:rgba(10,124,110,.3);background:rgba(10,124,110,.03);}
+.tool-card:hover{border-color:var(--teal)!important;background:rgba(10,124,110,.07);box-shadow:0 6px 20px rgba(10,124,110,.13)!important;}
+.tool-card-name{color:var(--teal)!important;}
+/* Home section labels */
+.home-section-label{grid-column:1/-1;font-family:var(--fm);font-size:11px;font-weight:700;
+  color:var(--t2);text-transform:uppercase;letter-spacing:.08em;
+  padding:4px 0 2px;border-bottom:1px solid var(--bd);margin-bottom:4px;}
 
 /* ══ v7: QUICK-ADD ROW ══ */
 .qarow{background:rgba(10,124,110,.03);border-top:1px dashed rgba(10,124,110,.2);}
@@ -723,11 +731,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
         Live Market Data
         <button onclick="loadLiveData(true)" style="background:none;border:1px solid var(--bd);border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--t2)">↻</button>
       </div>
-      <div style="margin-bottom:8px">
-        <div class="live-item">📊 CEPCI estimate: <strong id="ld-cepci">—</strong></div>
-        <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.5" id="ld-cepci-src">—</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:1px">
-          ⚠ Approximate — BLS PPI proxy ×1.94. Official CEPCI published quarterly by IHS Markit / AIChE.
+      <div style="margin-bottom:10px;padding:8px 10px;background:rgba(10,124,110,.06);border-radius:8px;border:1px solid rgba(10,124,110,.2)">
+        <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cost Escalation Indices (2025)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
+          <div class="live-item">📊 CEPCI (process): <strong id="ld-cepci">—</strong></div>
+          <div class="live-item">⚙️ Nelson-Farrar: <strong>4,620</strong></div>
+          <div class="live-item">🏗 ENR CCI (civil): <strong>14,550</strong></div>
+          <div class="live-item">⚡ BLS PPI (elec): <strong>239.0</strong></div>
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:6px" id="ld-cepci-src">—</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">
+          ⚠ CEPCI is live-estimated via BLS PPI proxy. NF/ENR/BLS are 2025 annual values. Each index applied per equipment category.
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
@@ -782,8 +796,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
     </div>
     <div class="proj-body" id="proj-body">
       <div class="proj-fields">
-        <div class="proj-f" style="max-width:280px"><span class="proj-l">Project Name</span><input class="proj-inp" id="pn" placeholder="e.g. Ammonia Plant Phase 1"></div>
-        <div class="proj-f" style="max-width:200px"><span class="proj-l">Client</span><input class="proj-inp" id="pc" placeholder="e.g. IFFCO Ltd"></div>
+        <div class="proj-f" style="max-width:280px"><span class="proj-l">Project Name</span><input class="proj-inp" id="pn" placeholder="e.g. Greenfield Refinery Phase 1"></div>
+        <div class="proj-f" style="max-width:200px"><span class="proj-l">Client</span><input class="proj-inp" id="pc" placeholder="e.g. Client Name"></div>
         <div class="proj-f" style="max-width:160px"><span class="proj-l">Project No.</span><input class="proj-inp" id="pno" placeholder="e.g. 2025-042"></div>
         <div class="proj-f" style="max-width:120px"><span class="proj-l">Revision</span><input class="proj-inp" id="prev" placeholder="Rev A"></div>
         <div class="proj-f"><span class="proj-l">Scope</span><input class="proj-inp" id="pdesc" placeholder="e.g. FEED estimate, greenfield, 500 MTPD"></div>
@@ -1507,7 +1521,7 @@ async function loadLiveData(force = false) {
     dot.className = 'live-dot live'; label.textContent = 'Live Data';
     const mini = document.getElementById('live-badge-mini');
     if (mini && LIVE_DATA?.cepci?.cepci_estimate) {
-      mini.textContent = ` · CEPCI ~${LIVE_DATA.cepci.cepci_estimate}`;
+      mini.textContent = ` · CEPCI ~${LIVE_DATA.cepci.cepci_estimate} | 4 Indices`;
     }
   } catch (e) {
     dot.className = 'live-dot';
@@ -3069,16 +3083,19 @@ function renderDiscHome() {
   }).join('');
 
   const toolHtml = TOOL_ENTRIES.map(t =>
-    `<div class="disc-card" onclick="${t.action}" style="border-style:dashed">
-      <span class="disc-card-icon" style="font-size:24px">${t.icon}</span>
-      <div class="disc-card-name" style="font-size:15px">${t.name}</div>
+    `<div class="disc-card tool-card" onclick="${t.action}">
+      <span class="disc-card-icon">${t.icon}</span>
+      <div class="disc-card-body">
+        <div class="disc-card-name tool-card-name">${t.name}</div>
+        <div class="disc-card-sub">Click to open</div>
+      </div>
     </div>`
   ).join('');
 
-  grid.innerHTML = discHtml +
-    `<div style="grid-column:1/-1;border-top:1px solid var(--bd);margin:4px 0;padding-top:4px;
-      font-family:var(--fm);font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.07em">
-      Tools & Analysis</div>` +
+  grid.innerHTML =
+    `<div class="home-section-label">⚙️ Engineering Disciplines</div>` +
+    discHtml +
+    `<div class="home-section-label" style="margin-top:8px">📊 Tools &amp; Analysis</div>` +
     toolHtml;
 }
 
