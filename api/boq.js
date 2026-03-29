@@ -1,7 +1,8 @@
 // api/boq.js
-// BOQ Capital Cost Estimator v4 — Unified API
+// BOQ Capital Cost Estimator v5 — Unified API
 // Handles: calc engine + live market data in one serverless function
 // multicalci.com | Server-side IP protection — calculation logic never exposed to client
+// Multi-index escalation: CEPCI (process) | Nelson-Farrar (rotating) | ENR (civil) | BLS PPI (electrical)
 //
 // Routes (via action param):
 //   Calc:      get_catalog | validate | calc_items | calc_physics | calc_indirect | calc_summary | export_csv
@@ -14,6 +15,113 @@
 // ─────────────────────────────────────────────────────────────
 const CEPCI_REF = 397.0;
 const CEPCI = { 2020: 596.2, 2021: 708.0, 2022: 816.0, 2023: 789.6, 2024: 798.4, 2025: 810.0 };
+
+// ── MULTI-INDEX ESCALATION ─────────────────────────────────────────────────────
+// Each index has a reference year (base) and annual values.
+// Sources:
+//   CEPCI  — Chemical Engineering Plant Cost Index (process/chemical equipment)
+//   NF     — Nelson-Farrar Refinery Cost Index (rotating machinery, refinery equip)
+//   ENR    — Engineering News-Record Construction Cost Index (civil/buildings)
+//   BLS    — BLS PPI for Electrical Equipment (NAICS 335, transformers/switchgear/motors)
+//
+// Reference year 2020 for all indices (CEPCI 596.2 = 100% baseline for cross-check)
+
+const NF_REF  = 3592.0;  // Nelson-Farrar 2020 baseline
+const NF  = { 2020: 3592, 2021: 3838, 2022: 4243, 2023: 4412, 2024: 4538, 2025: 4620 };
+
+const ENR_REF = 11787;   // ENR CCI 2020 (20-city average)
+const ENR = { 2020: 11787, 2021: 12418, 2022: 13505, 2023: 13986, 2024: 14280, 2025: 14550 };
+
+const BLS_REF = 182.1;   // BLS PPI Series PCU335 (Electrical equip) 2020
+const BLS = { 2020: 182.1, 2021: 196.4, 2022: 221.8, 2023: 228.5, 2024: 234.2, 2025: 239.0 };
+
+// Map each equipment category → which index to use for escalation
+// cat values from CATALOG: 'process' | 'mech' | 'civil' | 'elec' | 'inst'
+// sub values used for finer splits within mech
+const INDEX_MAP = {
+  // Process equipment — CEPCI (vessels, HX, columns, reactors, utilities)
+  'process':            'CEPCI',
+
+  // Rotating equipment — Nelson-Farrar (pumps, compressors, turbines, gearboxes)
+  'mech-pumps':         'NF',
+  'mech-comp':          'NF',
+  'mech-ht':            'NF',
+  // Vessels & tanks — CEPCI (fabricated pressure vessels, storage tanks)
+  'mech-vessels':       'CEPCI',
+  // Valves — CEPCI (process valves, control valves)
+  'mech-valves':        'CEPCI',
+  // Piping bulk — CEPCI
+  'mech-piping':        'CEPCI',
+  // Insulation/painting — ENR (labour-intensive, construction cost driven)
+  'mech-insulation':    'ENR',
+  // Material handling — NF
+  'mech-handling':      'NF',
+  // Separation/drying — CEPCI
+  'mech-separation':    'CEPCI',
+  // Safety equipment — CEPCI
+  'mech-safety':        'CEPCI',
+
+  // Civil / structural — ENR Construction Cost Index
+  'civil':              'ENR',
+
+  // Electrical equipment — BLS PPI for electrical equipment
+  // Power distribution: transformers, switchgear, MCC, VFD, motors — BLS
+  'elec-power':         'BLS',
+  'elec-mcc':           'BLS',
+  'elec-motors':        'BLS',
+  // Cables & conduit — split: 70% BLS (copper/material) + 30% ENR (labour)
+  // Approximated as BLS (material cost dominates)
+  'elec-cables':        'BLS',
+  // Earthing/lightning — ENR (mostly civil labour and GI materials)
+  'elec-earthing':      'ENR',
+  // Lighting — BLS
+  'elec-lighting':      'BLS',
+
+  // Instrumentation — CEPCI (manufactured instruments, similar to process equip)
+  'inst-transmitters':  'CEPCI',
+  'inst-control-valves':'CEPCI',
+  'inst-systems':       'CEPCI',
+  'inst-cables':        'BLS',
+  'inst-utilities':     'CEPCI',
+};
+
+// Fallback if sub not in map — use cat-level
+const CAT_INDEX_FALLBACK = {
+  process: 'CEPCI',
+  mech:    'NF',
+  civil:   'ENR',
+  elec:    'BLS',
+  inst:    'CEPCI',
+};
+
+// Get escalation factor Fc for a specific item using correct index
+function getEscalationFactor(item, year, overrideCEPCI) {
+  const sub = item.sub || '';
+  const cat = item.cat || 'process';
+
+  // Determine which index to use
+  const indexName = INDEX_MAP[sub] || CAT_INDEX_FALLBACK[cat] || 'CEPCI';
+
+  let Fc;
+  switch (indexName) {
+    case 'NF':
+      Fc = (NF[year] || NF[2025]) / NF_REF;
+      break;
+    case 'ENR':
+      Fc = (ENR[year] || ENR[2025]) / ENR_REF;
+      break;
+    case 'BLS':
+      Fc = (BLS[year] || BLS[2025]) / BLS_REF;
+      break;
+    case 'CEPCI':
+    default:
+      // Support live CEPCI override from market data fetch
+      const ci = overrideCEPCI || CEPCI[year] || 810;
+      Fc = ci / CEPCI_REF;
+      break;
+  }
+  return Fc;
+}
 
 const LOC = {
   US: { f: 1.00, c: 'USD', s: '$',  n: 'United States' },
@@ -381,6 +489,8 @@ function buildGlobals(params, liveFX) {
   const complexity = params.complexity || 'moderate';
   const loc        = LOC[country]      || LOC.US;
   const ci         = params.liveCEPCI  || CEPCI[year] || 810;
+  // Fc here is CEPCI-based — used only as a reference/display value.
+  // Per-item escalation now uses getEscalationFactor() with the correct index.
   const Fc         = ci / CEPCI_REF;
   const Fl         = loc.f;
   const fxRates    = liveFX            || FX_STATIC;
@@ -388,11 +498,14 @@ function buildGlobals(params, liveFX) {
   const sym        = currMode === 'usd' ? '$' : loc.s;
   const toLocal    = currMode === 'usd' ? (v => v) : (v => v * fxR);
   const cxF        = CX_F[complexity]  || 1.0;
-  return { loc, ci, Fc, Fl, fxR, sym, toLocal, cxF, basis, year };
+  // Pass year and liveCEPCI into globals so calcItem can use correct index
+  return { loc, ci, Fc, Fl, fxR, sym, toLocal, cxF, basis, year, liveCEPCI: ci };
 }
 
 function calcItem(item, size, matKey, qty, pressure, temperature, globals) {
-  const { Fc, Fl, toLocal, basis, cxF } = globals;
+  const { Fl, toLocal, basis, cxF, year, liveCEPCI } = globals;
+  // Use the correct escalation index for this equipment category/sub-group
+  const Fc = getEscalationFactor(item, year, liveCEPCI);
   const Fm   = MAT_F[matKey] || 1.0;
   const Fpt  = (item.hasPT && pressure != null && temperature != null)
     ? calcPTFactor(pressure, temperature) : 1.0;
@@ -674,6 +787,12 @@ export default async function handler(req, res) {
       const payload = {};
       if (type === 'all' || type === 'fx')          payload.fx          = live.fx;
       if (type === 'all' || type === 'cepci')       payload.cepci       = live.cepci;
+      if (type === 'all') payload.indices = {
+        CEPCI: { current: CEPCI[2025], ref: CEPCI_REF, note: 'Process/chemical equipment' },
+        NF:    { current: NF[2025],    ref: NF_REF,    note: 'Rotating machinery, refinery' },
+        ENR:   { current: ENR[2025],   ref: ENR_REF,   note: 'Civil/construction' },
+        BLS:   { current: BLS[2025],   ref: BLS_REF,   note: 'Electrical equipment (PPI NAICS 335)' },
+      };
       if (type === 'all' || type === 'commodities') payload.commodities = live.commodities;
       payload.cached        = live.cached;
       payload.cache_age_min = live.cache_age_min;
