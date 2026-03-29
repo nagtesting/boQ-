@@ -1326,6 +1326,7 @@ const LIVE_TIMEOUT = 6000;  // live data is best-effort only
 // CLIENT STATE (UI only — no calculation logic)
 // ─────────────────────────────────────────────────────────────
 let CATALOG    = [];     // from API: item definitions (no Cref/n exposed)
+let COUNTRIES_MAP = {}; // from API: country/currency data — replaces client-side LOC_CLIENT
 let STATE      = {};     // { [id]: { size, qty, mat, pressure, temperature } }
 let RESULTS    = {};     // { [id]: { unit_local, total_local, low_local, high_local } }
 let SUMMARY    = null;   // last summary response
@@ -1495,6 +1496,10 @@ async function loadCatalog() {
   try {
     const data = await apiPostWithFallback(API_CALC, { action: 'get_catalog' });
     CATALOG = data.items || [];
+    // Store server-provided country/currency map — eliminates client-side LOC_CLIENT duplication
+    if (data.countries) {
+      data.countries.forEach(c => { COUNTRIES_MAP[c.code] = c; });
+    }
     console.log('[BOQ] Catalog loaded:', CATALOG.length, 'items');
     if (CATALOG.length === 0) console.error('[BOQ] WARNING: Catalog is empty — check API response:', data);
     // Init state
@@ -2291,22 +2296,19 @@ function showDrillDown(itemId) {
   const sym = SUMMARY?.sym || getSymbol();
   const g   = getParams();
 
-  // Location factor lookup (client-side copy for display only)
-  const LOC_F = {US:1.00,IN:0.62,SA:0.88,AE:0.95,QA:0.92,DE:1.18,GB:1.22,AU:1.30,
-                 CN:0.68,SG:1.15,BR:0.80,CA:1.08,NO:1.45,FR:1.15,NL:1.20,JP:1.25,KR:1.05,ZA:0.72,EG:0.65};
-  const CEPCI_VALS = {2020:596.2,2021:708.0,2022:816.0,2023:789.6,2024:798.4,2025:810.0};
-  const Fl  = LOC_F[g.country] || 1;
-  const ci  = (LIVE_DATA?.cepci?.cepci_estimate) || CEPCI_VALS[parseInt(g.year)] || 810;
-  const Fc  = ci / 397.0;
+  // Use globals already computed server-side and returned in SUMMARY — no client-side re-derivation
+  const Fc  = SUMMARY?.globals?.Fc  || 1.0;
+  const Fl  = SUMMARY?.globals?.Fl  || 1.0;
+  const ci  = SUMMARY?.globals?.ci  || 810;
   const Fpt = res.Fpt || 1.0;
   const Fm  = res.Fm  || 1.0;
   const Fadd= res.Fadd|| 1.0;
   const totalFactor = Fc * Fl * Fm * Fpt * Fadd;
 
   const isTIC = g.basis === 'tic';
-  const CX_LABELS = {simple:'0.85',moderate:'1.00',complex:'1.25',extreme:'1.55'};
-  const cxF = parseFloat(CX_LABELS[g.complexity]||'1.00');
-  const instFactor = isTIC ? (1 + (it.instF||0.5) * cxF) : 1.0;
+  const CX_F  = { simple: 0.85, moderate: 1.00, complex: 1.25, extreme: 1.55 };
+  const cxF   = CX_F[g.complexity] || 1.00;
+  const instFactor = isTIC ? (1 + (it.instF || 0.5) * cxF) : 1.0;
 
   function pctBar(val, max, color='var(--teal)') {
     const w = Math.min(100, Math.round((val/max)*100));
@@ -2526,16 +2528,17 @@ function downloadImportTemplate() {
 // FEATURE 4: COMPARISON MODE
 // ══════════════════════════════════════════════════════════════════════
 const LOC_CLIENT = {
-  US:{f:1.00,c:'USD',s:'$',n:'United States'},IN:{f:0.62,c:'INR',s:'₹',n:'India'},
-  SA:{f:0.88,c:'USD',s:'$',n:'Saudi Arabia'},AE:{f:0.95,c:'USD',s:'$',n:'UAE'},
-  QA:{f:0.92,c:'USD',s:'$',n:'Qatar'},DE:{f:1.18,c:'EUR',s:'€',n:'Germany'},
-  GB:{f:1.22,c:'GBP',s:'£',n:'United Kingdom'},AU:{f:1.30,c:'AUD',s:'A$',n:'Australia'},
-  CN:{f:0.68,c:'CNY',s:'¥',n:'China'},SG:{f:1.15,c:'SGD',s:'S$',n:'Singapore'},
-  NO:{f:1.45,c:'NOK',s:'kr',n:'Norway'},JP:{f:1.25,c:'JPY',s:'¥',n:'Japan'},
+  // Kept as minimal fallback ONLY for compare dropdowns when catalog hasn't loaded yet.
+  // Primary source is COUNTRIES_MAP populated from get_catalog. No location factors here.
+  US:{s:'$',n:'United States',c:'USD'},IN:{s:'₹',n:'India',c:'INR'},
+  SA:{s:'$',n:'Saudi Arabia',c:'USD'},AE:{s:'$',n:'UAE',c:'USD'},
+  QA:{s:'$',n:'Qatar',c:'USD'},DE:{s:'€',n:'Germany',c:'EUR'},
+  GB:{s:'£',n:'United Kingdom',c:'GBP'},AU:{s:'A$',n:'Australia',c:'AUD'},
+  CN:{s:'¥',n:'China',c:'CNY'},SG:{s:'S$',n:'Singapore',c:'SGD'},
+  NO:{s:'kr',n:'Norway',c:'NOK'},JP:{s:'¥',n:'Japan',c:'JPY'},
 };
-const FX_CLIENT = {
-  USD:1,EUR:0.93,GBP:0.80,INR:83.5,AUD:1.52,SGD:1.34,NOK:10.8,JPY:148,
-};
+// FX_CLIENT removed — FX rates come from LIVE_DATA.fx or are applied server-side.
+// Location factors (f) removed — never used client-side for calculation, only for display.
 
 async function renderCompare() {
   const el = document.getElementById('compare-content');
@@ -2566,12 +2569,17 @@ async function renderCompare() {
         items:allItems, indirectPct:INDIRECT_PCT}),
     ]);
 
-    const locA = LOC_CLIENT[cA]||{s:'$',n:cA};
-    const locB = LOC_CLIENT[cB]||{s:'$',n:cB};
-    const fxA  = (liveFX||FX_CLIENT)[locA.c]||1;
-    const fxB  = (liveFX||FX_CLIENT)[locB.c]||1;
+    // Use server-returned country data (COUNTRIES_MAP) with LOC_CLIENT as fallback
+    const locA = COUNTRIES_MAP[cA] || LOC_CLIENT[cA] || {s:'$',n:cA,c:'USD'};
+    const locB = COUNTRIES_MAP[cB] || LOC_CLIENT[cB] || {s:'$',n:cB,c:'USD'};
+    // FX conversion: use live rates from LIVE_DATA, applied to server-returned local totals
+    const fxA  = (liveFX || {})[locA.c] || 1;
+    const fxB  = (liveFX || {})[locB.c] || 1;
     const toA  = v => locA.s + fmtBig(v * fxA);
     const toB  = v => locB.s + fmtBig(v * fxB);
+    // Location factors come from server globals, not client table
+    const flA  = resA.globals?.Fl?.toFixed(2) || '—';
+    const flB  = resB.globals?.Fl?.toFixed(2) || '—';
 
     const gA = resA.grand?.total||0, gB = resB.grand?.total||0;
     const diff = gB - gA, pct = gA > 0 ? ((gB-gA)/gA*100) : 0;
@@ -2607,8 +2615,8 @@ async function renderCompare() {
             <span class="compare-val" style="color:var(--grn)">${toA(resA.grand?.lo||0)}</span></div>
           <div class="compare-row"><span class="compare-lbl">P90 (Pessimistic)</span>
             <span class="compare-val" style="color:var(--red)">${toA(resA.grand?.hi||0)}</span></div>
-          <div class="compare-row"><span class="compare-lbl">Location Factor</span>
-            <span class="compare-val">${(LOC_CLIENT[cA]?.f||1).toFixed(2)}</span></div>
+          <div class="compare-row"><span class="compare-lbl">Location Factor (Fl)</span>
+            <span class="compare-val">${flA}</span></div>
         </div>
         <div style="padding:16px 20px">
           <div class="compare-col-head">Scenario B: ${locB.n} <span class="badge b">${bB.toUpperCase()}</span></div>
@@ -2622,8 +2630,8 @@ async function renderCompare() {
             <span class="compare-val" style="color:var(--grn)">${toB(resB.grand?.lo||0)}</span></div>
           <div class="compare-row"><span class="compare-lbl">P90 (Pessimistic)</span>
             <span class="compare-val" style="color:var(--red)">${toB(resB.grand?.hi||0)}</span></div>
-          <div class="compare-row"><span class="compare-lbl">Location Factor</span>
-            <span class="compare-val">${(LOC_CLIENT[cB]?.f||1).toFixed(2)}</span></div>
+          <div class="compare-row"><span class="compare-lbl">Location Factor (Fl)</span>
+            <span class="compare-val">${flB}</span></div>
         </div>
       </div>
       <div style="padding:14px 20px;border-top:1px solid var(--bd)">
