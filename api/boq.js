@@ -730,7 +730,8 @@ export default async function handler(req, res) {
           id: it.id, desc: it.desc, disc: it.disc, cat: it.cat, sub: it.sub,
           sizing: it.sizing, matOpts: it.matOpts, hasPT: it.hasPT,
           pDef: it.pDef, tDef: it.tDef,
-          // Cref, Sref, n, correction factors intentionally omitted — IP protected
+          instF: it.instF,   // installation factor — display only, not Cref/Sref/n
+          // Cref, Sref, n, and all correction factor coefficients intentionally omitted — IP protected
         })),
         countries: Object.entries(LOC).map(([k, v]) => ({ code: k, name: v.n, currency: v.c, symbol: v.s })),
         materials: MAT_L,
