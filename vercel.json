@@ -75,6 +75,30 @@
       "destination": "/api/boq"
     },
     {
+      "source": "/boq-line-item-finder",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
+      "source": "/boq-line-item-finder/",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
+      "source": "/boq-item-finder",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
+      "source": "/boq-item-finder/",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
+      "source": "/boq-finder",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
+      "source": "/boq-finder/",
+      "destination": "/boq-line-item-finder/index.html"
+    },
+    {
       "source": "/unit-converter/pressure",
       "destination": "/unit-converter/pressure/index.html"
     },
@@ -780,6 +804,23 @@
     }
   ],
   "headers": [
+    {
+      "source": "/boq-line-item-finder/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
     {
       "source": "/boq-capital-cost-estimator/index.html",
       "headers": [
