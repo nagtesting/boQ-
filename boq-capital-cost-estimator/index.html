@@ -124,26 +124,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .disc-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;
   cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;min-height:72px;}
 .disc-card:hover{border-color:var(--acc);box-shadow:0 6px 20px rgba(0,0,0,.09);transform:translateY(-1px);}
+.tool-card{border-color:rgba(10,124,110,.3);background:rgba(10,124,110,.03);}
+.tool-card:hover{border-color:var(--teal)!important;background:rgba(10,124,110,.07);box-shadow:0 6px 20px rgba(10,124,110,.13)!important;}
+.tool-card .disc-card-name{color:var(--teal);}
+.home-section-label{grid-column:1/-1;font-family:var(--fm);font-size:10px;font-weight:700;
+  color:var(--t3);text-transform:uppercase;letter-spacing:.1em;
+  padding:8px 0 6px;margin:6px 0 2px;border-bottom:1px solid var(--bd);}
 .disc-card-icon{font-size:24px;flex-shrink:0;}
 .disc-card-body{flex:1;min-width:0;overflow:hidden;}
 .disc-card-name{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--t1);
-  overflow:hidden;letter-spacing:-.01em;line-height:1.2;}
+  letter-spacing:-.01em;line-height:1.2;}
 .disc-card-sub{font-size:11px;font-weight:400;color:var(--t2);margin-top:2px;line-height:1.3;}
 .disc-card-items{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:4px;
   letter-spacing:.02em;line-height:1.4;}
 .disc-card-cost{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--teal);text-align:right;
   white-space:nowrap;flex-shrink:0;max-width:90px;overflow:hidden;text-overflow:ellipsis;}
 .disc-card-active{border-color:var(--acc)!important;background:rgba(209,69,0,.03);}
-/* Tool cards — teal accent, same structure as disc cards */
-.tool-card{border-color:rgba(10,124,110,.3);background:rgba(10,124,110,.03);}
-.tool-card:hover{border-color:var(--teal)!important;background:rgba(10,124,110,.07);box-shadow:0 6px 20px rgba(10,124,110,.13)!important;}
-.tool-card .disc-card-body{display:flex;flex-direction:column;justify-content:center;}
-.tool-card-name{color:var(--teal)!important;}
-/* Home section labels */
-.home-section-label{grid-column:1/-1;font-family:var(--fm);font-size:10px;font-weight:700;
-  color:var(--t3);text-transform:uppercase;letter-spacing:.1em;
-  padding:8px 0 6px;border-bottom:1px solid var(--bd);margin:6px 0 2px;display:flex;align-items:center;gap:8px;}
-.home-section-label::after{content:"";flex:1;height:1px;background:var(--bd);}
 
 /* ══ v7: QUICK-ADD ROW ══ */
 .qarow{background:rgba(10,124,110,.03);border-top:1px dashed rgba(10,124,110,.2);}
@@ -701,99 +697,94 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 }
 
 
-/* ═══════════════════════════════════════════════════════════════
-   BOQ ITEM FINDER — embedded tab CSS
-   ═══════════════════════════════════════════════════════════════ */
-.fi-wrap{display:flex;flex-direction:column;height:100%;min-height:600px;background:var(--bg);}
-
-/* Search bar */
-.fi-search-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:14px 20px;position:sticky;top:60px;z-index:10;}
-.fi-search-inner{display:flex;align-items:center;gap:10px;background:var(--sf2);border:1.5px solid var(--bd);border-radius:10px;padding:0 14px;transition:border-color .15s;}
+/* ── BOQ ITEM FINDER embedded CSS ── */
+.fi-wrap{display:flex;flex-direction:column;background:var(--bg);}
+.fi-search-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:14px 20px;}
+.fi-search-inner{display:flex;align-items:center;gap:10px;background:var(--sf2);
+  border:1.5px solid var(--bd);border-radius:10px;padding:0 14px;transition:border-color .15s;}
 .fi-search-inner:focus-within{border-color:var(--acc);}
 .fi-search-icon{font-size:15px;color:var(--t3);flex-shrink:0;}
-.fi-inp{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:var(--fb);font-size:13px;padding:11px 0;width:100%;}
+.fi-inp{flex:1;background:none;border:none;outline:none;color:var(--t1);
+  font-family:var(--fb);font-size:13px;padding:11px 0;width:100%;}
 .fi-inp::placeholder{color:var(--t3);font-size:12px;}
-.fi-clear{background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;padding:4px;display:none;border-radius:4px;}
+.fi-clear{background:none;border:none;cursor:pointer;color:var(--t3);
+  font-size:14px;padding:4px;display:none;border-radius:4px;}
 .fi-clear.show{display:block;}
-.fi-clear:hover{color:var(--t1);background:var(--sf3);}
-.fi-count{font-family:var(--fm);font-size:11px;color:var(--t3);margin-top:6px;letter-spacing:.02em;}
-
-/* Body layout — left panel + right detail */
-.fi-body{display:flex;flex:1;overflow:hidden;min-height:500px;}
+.fi-count{font-family:var(--fm);font-size:11px;color:var(--t3);margin-top:6px;}
+.fi-body{display:flex;flex:1;min-height:500px;}
 .fi-left{flex:1;overflow-y:auto;padding:20px 24px;}
-.fi-right{width:340px;flex-shrink:0;border-left:1px solid var(--bd);overflow-y:auto;background:var(--sf);padding:0;}
-
-/* Home view — discipline card grid */
-.fi-home{width:100%;}
-.fi-home-title{font-family:var(--fh);font-size:26px;font-weight:900;color:var(--t1);margin-bottom:6px;letter-spacing:-.02em;}
+.fi-right{width:320px;flex-shrink:0;border-left:1px solid var(--bd);
+  overflow-y:auto;background:var(--sf);}
+.fi-home-title{font-family:var(--fh);font-size:24px;font-weight:900;
+  color:var(--t1);margin-bottom:6px;letter-spacing:-.02em;}
 .fi-home-title span{color:var(--acc);}
-.fi-home-sub{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6;}
-.fi-disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
-.fi-disc-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;cursor:pointer;transition:all .18s;border-top-width:3px;}
+.fi-home-sub{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.6;}
+.fi-disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;}
+.fi-disc-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
+  padding:14px;cursor:pointer;transition:all .18s;border-top-width:3px;}
 .fi-disc-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.1);transform:translateY(-2px);}
-.fi-disc-icon{font-size:22px;margin-bottom:8px;}
-.fi-disc-name{font-family:var(--fh);font-size:14px;font-weight:800;margin-bottom:4px;}
-.fi-disc-desc{font-size:11px;color:var(--t2);margin-bottom:10px;line-height:1.4;}
+.fi-disc-icon{font-size:20px;margin-bottom:6px;}
+.fi-disc-name{font-family:var(--fh);font-size:13px;font-weight:800;margin-bottom:3px;}
+.fi-disc-desc{font-size:11px;color:var(--t2);margin-bottom:8px;line-height:1.4;}
 .fi-disc-chips{display:flex;gap:5px;flex-wrap:wrap;}
-.fi-chip-eq{background:rgba(10,124,110,.1);color:var(--teal);font-family:var(--fm);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
-.fi-chip-act{background:rgba(209,69,0,.1);color:var(--acc);font-family:var(--fm);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
-.fi-disc-total{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:6px;}
-
-/* Discipline view */
-.fi-disc-hero{background:linear-gradient(135deg,var(--sf),var(--sf2));border-bottom:1px solid var(--bd);padding:16px 20px;margin-bottom:16px;border-radius:8px;}
-.fi-disc-hero-title{font-family:var(--fh);font-size:20px;font-weight:900;margin-bottom:4px;}
-.fi-back-btn{background:none;border:1px solid var(--bd);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--t2);font-family:var(--fb);margin-bottom:12px;transition:all .15s;}
+.fi-chip-eq{background:rgba(10,124,110,.1);color:var(--teal);font-family:var(--fm);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.fi-chip-act{background:rgba(209,69,0,.1);color:var(--acc);font-family:var(--fm);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.fi-disc-total{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:5px;}
+.fi-back-btn{background:none;border:1px solid var(--bd);border-radius:6px;
+  padding:5px 12px;font-size:12px;cursor:pointer;color:var(--t2);
+  font-family:var(--fb);margin-bottom:12px;}
 .fi-back-btn:hover{border-color:var(--acc);color:var(--acc);}
-.fi-subg-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.fi-subg-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:5px 13px;font-size:11px;font-family:var(--fm);font-weight:600;cursor:pointer;color:var(--t2);transition:all .15s;}
+.fi-subg-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.fi-subg-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:20px;
+  padding:5px 12px;font-size:11px;font-family:var(--fm);font-weight:600;
+  cursor:pointer;color:var(--t2);transition:all .15s;}
 .fi-subg-btn.active,.fi-subg-btn:hover{background:var(--acc);border-color:var(--acc);color:#fff;}
-
-/* Table */
 .fi-tbl{width:100%;border-collapse:collapse;font-size:12px;}
-.fi-tbl thead tr{background:var(--sf2);border-bottom:2px solid var(--bd);}
-.fi-tbl th{padding:8px 10px;text-align:left;font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);white-space:nowrap;}
+.fi-tbl thead tr{background:var(--sf2);}
+.fi-tbl th{padding:7px 10px;text-align:left;font-family:var(--fm);font-size:10px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);}
 .fi-tbl td{padding:8px 10px;border-bottom:1px solid var(--sf2);vertical-align:top;}
 .fi-tbl tbody tr{cursor:pointer;transition:background .1s;}
 .fi-tbl tbody tr:hover{background:rgba(10,124,110,.04);}
-.fi-tbl tbody tr.fi-row-selected{background:rgba(10,124,110,.08);border-left:3px solid var(--teal);}
-.fi-id-badge{font-family:var(--fm);font-size:10px;color:var(--t3);background:var(--sf2);padding:2px 6px;border-radius:4px;white-space:nowrap;}
+.fi-tbl tbody tr.fi-row-selected{background:rgba(10,124,110,.08);}
+.fi-id-badge{font-family:var(--fm);font-size:10px;color:var(--t3);
+  background:var(--sf2);padding:2px 6px;border-radius:4px;}
 .fi-item-name{font-weight:600;color:var(--t1);font-size:12px;line-height:1.35;}
-.fi-specs-preview{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.fi-type-badge{font-family:var(--fm);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.fi-specs-preview{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.fi-type-badge{font-family:var(--fm);font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:10px;}
 .fi-type-badge.eq{background:rgba(10,124,110,.1);color:var(--teal);}
 .fi-type-badge.act{background:rgba(209,69,0,.1);color:var(--acc);}
-
-/* Detail panel */
-.fi-detail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 24px;text-align:center;}
-.fi-detail-empty-icon{font-size:32px;margin-bottom:12px;opacity:.4;}
-.fi-detail{padding:20px;}
-.fi-detail-id{font-family:var(--fm);font-size:11px;color:var(--t3);margin-bottom:8px;}
-.fi-detail-name{font-family:var(--fh);font-size:17px;font-weight:800;color:var(--t1);margin-bottom:4px;line-height:1.3;}
-.fi-detail-disc{font-size:11px;color:var(--t2);margin-bottom:14px;}
-.fi-detail-specs-label{font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:6px;}
-.fi-detail-specs{font-size:12px;color:var(--t1);line-height:1.7;background:var(--sf2);border-radius:8px;padding:12px 14px;border:1px solid var(--bd);}
-.fi-detail-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
-.fi-btn-add{background:var(--acc);border:none;border-radius:7px;color:#fff;font-family:var(--fm);font-size:12px;font-weight:700;padding:9px 18px;cursor:pointer;transition:all .15s;flex:1;}
+.fi-detail-empty{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;height:100%;padding:40px 20px;text-align:center;}
+.fi-detail-empty-icon{font-size:28px;margin-bottom:10px;opacity:.4;}
+.fi-detail{padding:18px;}
+.fi-detail-id{font-family:var(--fm);font-size:11px;color:var(--t3);margin-bottom:6px;}
+.fi-detail-name{font-family:var(--fh);font-size:16px;font-weight:800;
+  color:var(--t1);margin-bottom:4px;line-height:1.3;}
+.fi-detail-disc{font-size:11px;color:var(--t2);margin-bottom:12px;}
+.fi-detail-specs-label{font-family:var(--fm);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:5px;}
+.fi-detail-specs{font-size:12px;color:var(--t1);line-height:1.7;
+  background:var(--sf2);border-radius:8px;padding:12px;border:1px solid var(--bd);}
+.fi-detail-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.fi-btn-add{background:var(--acc);border:none;border-radius:7px;color:#fff;
+  font-family:var(--fm);font-size:12px;font-weight:700;padding:9px 16px;
+  cursor:pointer;flex:1;}
 .fi-btn-add:hover{background:var(--adim);}
-.fi-btn-copy{background:var(--sf2);border:1px solid var(--bd);border-radius:7px;color:var(--t2);font-family:var(--fm);font-size:12px;font-weight:600;padding:9px 14px;cursor:pointer;transition:all .15s;}
+.fi-btn-copy{background:var(--sf2);border:1px solid var(--bd);border-radius:7px;
+  color:var(--t2);font-family:var(--fm);font-size:12px;padding:9px 12px;cursor:pointer;}
 .fi-btn-copy:hover{border-color:var(--acc);color:var(--acc);}
 .fi-qty-wrap{display:flex;align-items:center;gap:8px;margin-top:10px;}
-.fi-qty-label{font-size:12px;color:var(--t2);white-space:nowrap;}
-.fi-qty-inp{width:70px;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:var(--fm);font-size:13px;padding:6px 10px;outline:none;text-align:center;}
+.fi-qty-inp{width:65px;background:var(--sf2);border:1px solid var(--bd);
+  border-radius:6px;color:var(--t1);font-family:var(--fm);font-size:13px;
+  padding:6px 8px;outline:none;text-align:center;}
 .fi-qty-inp:focus{border-color:var(--acc);}
-
-/* Search results */
-.fi-search-result-header{font-family:var(--fm);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
-
-/* Responsive — on mobile collapse right panel */
-@media(max-width:900px){
-  .fi-right{display:none;}
-  .fi-body{flex-direction:column;}
-}
-@media(max-width:600px){
-  .fi-disc-grid{grid-template-columns:1fr 1fr;}
-  .fi-left{padding:12px;}
-}
+@media(max-width:900px){.fi-right{display:none;}}
+@media(max-width:600px){.fi-disc-grid{grid-template-columns:1fr 1fr;}.fi-left{padding:12px;}}
 </style>
 </head>
 <body>
@@ -830,22 +821,20 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
       <div style="margin-bottom:10px;padding:8px 10px;background:rgba(10,124,110,.06);border-radius:8px;border:1px solid rgba(10,124,110,.2)">
         <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cost Escalation Indices (2025)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
-          <div class="live-item">📊 CEPCI (process): <strong id="ld-cepci">—</strong></div>
-          <div class="live-item">⚙️ Nelson-Farrar: <strong>4,620</strong></div>
-          <div class="live-item">🏗 ENR CCI (civil): <strong>14,550</strong></div>
-          <div class="live-item">⚡ BLS PPI (elec): <strong>239.0</strong></div>
+          <div class="live-item">CEPCI (process): <strong id="ld-cepci">—</strong></div>
+          <div class="live-item">Nelson-Farrar: <strong>4,620</strong></div>
+          <div class="live-item">ENR CCI (civil): <strong>14,550</strong></div>
+          <div class="live-item">BLS PPI (elec): <strong>239.0</strong></div>
         </div>
         <div style="font-size:10px;color:var(--t3);margin-top:6px" id="ld-cepci-src">—</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:2px">
-          ⚠ CEPCI is live-estimated via BLS PPI proxy. NF/ENR/BLS are 2025 annual values. Each index applied per equipment category.
-        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Each index applied per equipment category.</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-        <div class="live-item">💱 INR: <strong id="ld-inr">—</strong></div>
-        <div class="live-item">💱 EUR: <strong id="ld-eur">—</strong></div>
-        <div class="live-item">💱 GBP: <strong id="ld-gbp">—</strong></div>
-        <div class="live-item">🏗 Steel: <strong id="ld-steel">—</strong>/t</div>
-        <div class="live-item">🔴 Copper: <strong id="ld-copper">—</strong>/t</div>
+        <div class="live-item">INR: <strong id="ld-inr">—</strong></div>
+        <div class="live-item">EUR: <strong id="ld-eur">—</strong></div>
+        <div class="live-item">GBP: <strong id="ld-gbp">—</strong></div>
+        <div class="live-item">Steel: <strong id="ld-steel">—</strong>/t</div>
+        <div class="live-item">Copper: <strong id="ld-copper">—</strong>/t</div>
       </div>
       <div style="color:var(--t3);font-size:11px;margin-top:8px" id="ld-ts">Loading…</div>
     </div>
@@ -3153,14 +3142,14 @@ function renderDiscHome() {
 
   // Tab-style nav below the home hero
   const TOOL_ENTRIES = [
-    { icon:'📈', name:'Summary & BOQ',    action:"navigatePage('tools','summary')",    sub:'BOQ export & totals' },
-    { icon:'🔍', name:'Item Finder',       action:"navigatePage('tools','finder')",     sub:'1,353 spec'd items' },
-    { icon:'📋', name:'Indirect Costs',   action:"navigatePage('tools','indirect')",   sub:'Eng, PMC, contingency' },
-    { icon:'📉', name:'Sensitivity',      action:"navigatePage('tools','sensitivity')", sub:'Market impact sliders' },
-    { icon:'⚖️', name:'Compare',          action:"navigatePage('tools','compare')",    sub:'Country comparisons' },
-    { icon:'📥', name:'Bulk Import',      action:"navigatePage('tools','import')",     sub:'CSV batch upload' },
-    { icon:'🔗', name:'Share',            action:"navigatePage('tools','share')",      sub:'Export & collaborate' },
-    { icon:'🔗', name:'System View',      action:"navigatePage('tools','system')",     sub:'WBS / process unit' },
+    { icon:'📈', name:'Summary & BOQ',   sub:'BOQ export & totals',     action:"navigatePage('tools','summary')" },
+    { icon:'🔍', name:'Item Finder',     sub:'1353 spec items',          action:"navigatePage('tools','finder')" },
+    { icon:'📋', name:'Indirect Costs',  sub:'Eng, PMC, contingency',    action:"navigatePage('tools','indirect')" },
+    { icon:'📉', name:'Sensitivity',     sub:'Market impact sliders',    action:"navigatePage('tools','sensitivity')" },
+    { icon:'⚖️', name:'Compare',         sub:'Country comparisons',      action:"navigatePage('tools','compare')" },
+    { icon:'📥', name:'Bulk Import',     sub:'CSV batch upload',         action:"navigatePage('tools','import')" },
+    { icon:'🔗', name:'Share',           sub:'Export & collaborate',     action:"navigatePage('tools','share')" },
+    { icon:'🔗', name:'System View',     sub:'WBS / process unit',       action:"navigatePage('tools','system')" },
   ];
 
   const discHtml = Object.entries(DISC_META).map(([key, m]) => {
@@ -3183,16 +3172,16 @@ function renderDiscHome() {
     `<div class="disc-card tool-card" onclick="${t.action}">
       <span class="disc-card-icon">${t.icon}</span>
       <div class="disc-card-body">
-        <div class="disc-card-name tool-card-name">${t.name}</div>
-        <div class="disc-card-sub">${t.sub||''}</div>
+        <div class="disc-card-name">${t.name}</div>
+        <div class="disc-card-sub">${t.sub||""}</div>
       </div>
     </div>`
   ).join('');
 
   grid.innerHTML =
-    `<div class="home-section-label">⚙️ Engineering Disciplines</div>` +
+    `<div class="home-section-label">Engineering Disciplines</div>` +
     discHtml +
-    `<div class="home-section-label" style="margin-top:8px">📊 Tools &amp; Analysis</div>` +
+    `<div class="home-section-label" style="margin-top:8px">Tools & Analysis</div>` +
     toolHtml;
 }
 
