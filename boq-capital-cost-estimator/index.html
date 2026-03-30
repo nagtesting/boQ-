@@ -292,9 +292,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .ql-footer-total{font-family:var(--fm);font-size:15px;font-weight:800;color:var(--teal);}
 
 /* Add-to-list button on each row */
-.add-to-ql{background:none;border:1px solid var(--bd);border-radius:4px;
-  padding:3px 8px;font-family:var(--fm);font-size:11px;font-weight:600;
-  color:var(--t3);cursor:pointer;transition:all .13s;white-space:nowrap;margin-left:4px;}
+.add-to-ql{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;color:var(--t2);font-size:10px;font-family:var(--fm);font-weight:600;padding:5px 9px;cursor:pointer;white-space:nowrap;transition:all .15s;}
 .add-to-ql:hover{border-color:var(--acc);color:var(--acc);background:rgba(209,69,0,.05);}
 .add-to-ql.in-list{border-color:var(--teal);color:var(--teal);background:rgba(10,124,110,.07);}
 
@@ -800,6 +798,50 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 @media(max-width:900px){.fi-right{display:none;}}
 @media(max-width:600px){.fi-disc-grid{grid-template-columns:1fr 1fr;}.fi-left{padding:12px;}}
 /* ═══════════ END FINDER CSS ═══════════ */
+
+/* ═══════════════════════════════════════════════════
+   UNIFIED TABLE SYSTEM — shared by Cost Estimator & Item Finder
+   ═══════════════════════════════════════════════════ */
+/* Code badge */
+.uni-code{font-family:var(--fm);font-size:9px;color:var(--t3);
+  background:var(--sf2);padding:2px 5px;border-radius:4px;
+  display:inline-block;margin-bottom:3px;letter-spacing:.02em;}
+/* Type badges — unified across both tables */
+.uni-type-badge{display:inline-block;font-family:var(--fm);font-size:9px;
+  font-weight:700;padding:1px 6px;border-radius:8px;}
+.uni-type-badge.eq{background:rgba(10,124,110,.1);color:var(--teal);}
+.uni-type-badge.act{background:rgba(209,69,0,.1);color:var(--acc);}
+/* Item name — unified */
+.uni-item-name{font-size:12px;font-weight:600;color:var(--t1);line-height:1.3;}
+.uni-item-basis{font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:2px;}
+/* Add button — unified across both tables */
+.uni-add-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;
+  color:var(--t2);font-size:10px;font-family:var(--fm);font-weight:600;
+  padding:5px 9px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.uni-add-btn:hover{border-color:var(--teal);color:var(--teal);
+  background:rgba(10,124,110,.05);}
+.uni-add-btn.added{background:rgba(10,124,110,.1);border-color:var(--teal);
+  color:var(--teal);font-weight:700;}
+/* Row highlight when in QL */
+.row-in-ql td{background:rgba(10,124,110,.03);}
+/* Unified table header style */
+.boq-table th,.fi-tbl th{
+  font-family:var(--fm);font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--t3);
+  padding:8px 10px;border-bottom:1px solid var(--bd);
+  background:var(--sf2);white-space:nowrap;}
+/* Unified table cell style */
+.boq-table td,.fi-tbl td{
+  padding:8px 10px;border-bottom:1px solid var(--sf2);
+  vertical-align:middle;font-size:12px;}
+/* Unified table row hover */
+.boq-table tbody tr:hover td,.fi-tbl tbody tr:hover td{
+  background:rgba(10,124,110,.04);}
+/* Unified cost badge */
+.cost-badge.total-cost{
+  background:rgba(10,124,110,.08);border:1px solid rgba(10,124,110,.2);
+  border-radius:4px;padding:2px 6px;font-family:var(--fm);
+  font-size:12px;font-weight:700;color:var(--teal);}
 </style>
 </head>
 <body>
@@ -1690,14 +1732,15 @@ function renderAllTables() {
       </div>
       <table class="boq-table">
         <thead><tr>
-          <th style="width:20%">Item</th>
-          <th style="width:14%">Sizing</th>
-          <th style="width:10%">P/T Conditions</th>
-          <th style="width:12%">Material</th>
-          <th style="width:7%">Qty</th>
-          <th class="r" style="width:11%">Unit Cost</th>
-          <th class="r" style="width:13%">Total Cost</th>
-          <th class="r" style="width:13%">P10 — P90</th>
+          <th style="width:90px">Code</th>
+          <th style="width:18%">Description</th>
+          <th style="width:15%">Sizing · P/T</th>
+          <th style="width:11%">Material</th>
+          <th style="width:55px">Qty</th>
+          <th class="r" style="width:10%">Unit Cost</th>
+          <th class="r" style="width:11%">Total Cost</th>
+          <th class="r" style="width:12%">P10 — P90</th>
+          <th style="width:68px"></th>
         </tr></thead>
         <tbody id="tbody-${g.sub}">${g.items.map(renderItemRow).join('')}</tbody>
       </table>
@@ -1732,25 +1775,37 @@ function renderItemRow(it) {
     unitCostHtml = `${sym}${fmtNum(res.unit_local)}`;
   }
 
-  return `<tr id="row-${it.id}">
-    <td class="tdp"><div class="item-name">${it.desc}</div><div class="item-basis">${it.sizing.lbl} (${it.sizing.unit})</div></td>
-    <td class="tdp">
-      <div style="display:flex;align-items:center;gap:5px">
+  const inQL = isInQL(it.id);
+  return `<tr id="row-${it.id}" class="${inQL?'row-in-ql':''}">
+    <td class="tdp" style="min-width:90px">
+      <div class="uni-code">${it.id}</div>
+      <span class="uni-type-badge eq">Equip</span>
+    </td>
+    <td class="tdp" style="min-width:160px">
+      <div class="uni-item-name">${it.desc}</div>
+      <div class="uni-item-basis">📐 ${it.sizing.lbl} · ${it.sizing.unit}</div>
+    </td>
+    <td class="tdp" style="min-width:140px">
+      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
         <input class="sz-inp" id="sz-${it.id}" type="number" value="${st.size}" min="${it.sizing.min}" max="${it.sizing.max}" step="any"
           oninput="onSize('${it.id}',this.value)" onchange="onSize('${it.id}',this.value)">
         <span class="sz-unit">${it.sizing.unit}</span>
       </div>
+      ${ptHtml}
     </td>
-    <td class="tdp">${ptHtml}</td>
-    <td class="tdp"><select class="spec-sel" onchange="onMat('${it.id}',this.value)">${matSel}</select></td>
-    <td class="tdp"><input class="qty-inp" type="number" value="${st.qty}" min="0" step="1"
-      oninput="onQty('${it.id}',this.value)" onchange="onQty('${it.id}',this.value)"></td>
-    <td class="cost-cell unit-cost" id="uc-${it.id}">${unitCostHtml}</td>
-    <td class="cost-cell" id="tc-${it.id}">${totalCostHtml}</td>
-    <td class="range-cell" id="rc-${it.id}">${rangeHtml}</td>
-    <td class="tdp" style="width:52px">
-      <button class="add-to-ql" data-id="${it.id}" onclick="addToQL('${it.id}')"
-        title="Add to Quote List">${isInQL(it.id)?'✓ Added':'+ Add'}</button>
+    <td class="tdp" style="min-width:110px">
+      <select class="spec-sel" onchange="onMat('${it.id}',this.value)">${matSel}</select>
+    </td>
+    <td class="tdp" style="width:60px">
+      <input class="qty-inp" type="number" value="${st.qty}" min="0" step="1"
+        oninput="onQty('${it.id}',this.value)" onchange="onQty('${it.id}',this.value)">
+    </td>
+    <td class="cost-cell unit-cost" id="uc-${it.id}" style="min-width:90px">${unitCostHtml}</td>
+    <td class="cost-cell" id="tc-${it.id}" style="min-width:100px">${totalCostHtml}</td>
+    <td class="range-cell" id="rc-${it.id}" style="min-width:120px">${rangeHtml}</td>
+    <td class="tdp" style="width:68px;text-align:right">
+      <button class="uni-add-btn ${inQL?'added':''}" data-id="${it.id}" onclick="addToQL('${it.id}')"
+        title="Add to Quote List">${inQL?'✓ Added':'+ Add'}</button>
     </td>
   </tr>`;
 }
@@ -4549,9 +4604,12 @@ function fiRenderTable(discName,subcat){
   </div>
   <div class="fi-tbl-wrap"><table class="fi-tbl">
     <thead><tr>
-      <th style="width:105px">Code</th><th>Description</th><th>Specifications &amp; Ratings</th>
-      <th class="r" style="width:52px">Qty</th><th class="r" style="width:44px">Unit</th>
-      <th class="r" style="width:62px">Action</th>
+      <th style="width:100px">Code</th>
+      <th style="width:22%">Description</th>
+      <th>Specifications &amp; Ratings</th>
+      <th class="r" style="width:45px">Qty</th>
+      <th class="r" style="width:42px">Unit</th>
+      <th class="r" style="width:65px">Action</th>
     </tr></thead>
     <tbody>${
     filtered.length===0?`<tr><td colspan="6" class="fi-no-items">No items match "<strong>${FI_LOCAL}</strong>"</td></tr>`:
@@ -4618,9 +4676,9 @@ function fiRunSearch(q){
           const isAdded=qlIds.has(it.id);
           return `<tr id="fir-${it.id.replace(/[^a-zA-Z0-9]/g,'_')}"
             class="${FI_SELECTED===it.id?'fi-selected':''}" onclick="fiSelectItem('${it.id.replace(/'/g,"\'")}')">
-            <td><div class="fi-id-cell">${fiHl(it.id,ql)}</div>
+            <td><div class="uni-code">${fiHl(it.id,ql)}</div>
               <span class="fi-type-badge ${it.type==='equipment'?'fi-eq':'fi-act'}">${it.type==='equipment'?'Equip':'Activity'}</span></td>
-            <td><div class="fi-desc-cell">${fiHl(it.desc,ql)}</div></td>
+            <td><div class="uni-item-name">${fiHl(it.desc,ql)}</div></td>
             <td><div class="fi-spec-cell">${sp?fiHl(sp.substring(0,160)+(sp.length>160?'&#x2026;':''),ql):'<span style="color:var(--t3)">Activity</span>'}</div></td>
             <td style="font-family:var(--fm);font-size:11px;font-weight:600;text-align:right">${it.qty||'&#x2014;'}</td>
             <td style="font-family:var(--fm);font-size:10px;color:var(--t3);text-align:right">${it.unit||'Job'}</td>
