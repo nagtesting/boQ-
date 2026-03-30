@@ -697,94 +697,109 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 }
 
 
-/* ── BOQ ITEM FINDER embedded CSS ── */
-.fi-wrap{display:flex;flex-direction:column;background:var(--bg);}
-.fi-search-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:14px 20px;}
-.fi-search-inner{display:flex;align-items:center;gap:10px;background:var(--sf2);
-  border:1.5px solid var(--bd);border-radius:10px;padding:0 14px;transition:border-color .15s;}
+/* ═══════════ BOQ ITEM FINDER — complete CSS ═══════════ */
+.fi-wrap{display:flex;flex-direction:column;background:var(--bg);min-height:600px;}
+.fi-search-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:12px 20px;position:sticky;top:60px;z-index:10;}
+.fi-search-inner{display:flex;align-items:center;gap:10px;background:var(--sf2);border:1.5px solid var(--bd);border-radius:10px;padding:0 14px;transition:border-color .15s;}
 .fi-search-inner:focus-within{border-color:var(--acc);}
 .fi-search-icon{font-size:15px;color:var(--t3);flex-shrink:0;}
-.fi-inp{flex:1;background:none;border:none;outline:none;color:var(--t1);
-  font-family:var(--fb);font-size:13px;padding:11px 0;width:100%;}
+.fi-inp{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:var(--fb);font-size:13px;padding:11px 0;min-width:0;}
 .fi-inp::placeholder{color:var(--t3);font-size:12px;}
-.fi-clear{background:none;border:none;cursor:pointer;color:var(--t3);
-  font-size:14px;padding:4px;display:none;border-radius:4px;}
+.fi-clear{background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px;padding:4px;display:none;border-radius:4px;}
 .fi-clear.show{display:block;}
-.fi-count{font-family:var(--fm);font-size:11px;color:var(--t3);margin-top:6px;}
-.fi-body{display:flex;flex:1;min-height:500px;}
-.fi-left{flex:1;overflow-y:auto;padding:20px 24px;}
-.fi-right{width:320px;flex-shrink:0;border-left:1px solid var(--bd);
-  overflow-y:auto;background:var(--sf);}
-.fi-home-title{font-family:var(--fh);font-size:24px;font-weight:900;
-  color:var(--t1);margin-bottom:6px;letter-spacing:-.02em;}
+.fi-count{font-family:var(--fm);font-size:11px;color:var(--teal);font-weight:600;margin-top:5px;}
+.fi-body{display:flex;flex:1;min-height:520px;}
+.fi-left{flex:1;overflow-y:auto;padding:16px 20px;min-width:0;}
+.fi-right{width:310px;flex-shrink:0;border-left:1px solid var(--bd);overflow-y:auto;background:var(--sf);display:flex;flex-direction:column;}
+.fi-home{width:100%;}
+.fi-home-title{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--t1);margin-bottom:5px;letter-spacing:-.02em;}
 .fi-home-title span{color:var(--acc);}
-.fi-home-sub{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.6;}
-.fi-disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;}
-.fi-disc-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
-  padding:14px;cursor:pointer;transition:all .18s;border-top-width:3px;}
-.fi-disc-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.1);transform:translateY(-2px);}
-.fi-disc-icon{font-size:20px;margin-bottom:6px;}
-.fi-disc-name{font-family:var(--fh);font-size:13px;font-weight:800;margin-bottom:3px;}
-.fi-disc-desc{font-size:11px;color:var(--t2);margin-bottom:8px;line-height:1.4;}
-.fi-disc-chips{display:flex;gap:5px;flex-wrap:wrap;}
-.fi-chip-eq{background:rgba(10,124,110,.1);color:var(--teal);font-family:var(--fm);
-  font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.fi-chip-act{background:rgba(209,69,0,.1);color:var(--acc);font-family:var(--fm);
-  font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.fi-disc-total{font-family:var(--fm);font-size:10px;color:var(--t3);margin-top:5px;}
-.fi-back-btn{background:none;border:1px solid var(--bd);border-radius:6px;
-  padding:5px 12px;font-size:12px;cursor:pointer;color:var(--t2);
-  font-family:var(--fb);margin-bottom:12px;}
-.fi-back-btn:hover{border-color:var(--acc);color:var(--acc);}
-.fi-subg-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.fi-subg-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:20px;
-  padding:5px 12px;font-size:11px;font-family:var(--fm);font-weight:600;
-  cursor:pointer;color:var(--t2);transition:all .15s;}
+.fi-home-sub{font-size:12px;color:var(--t2);margin-bottom:16px;line-height:1.6;}
+.fi-disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.fi-disc-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .18s;border-top-width:3px;}
+.fi-disc-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-1px);}
+.fi-disc-icon{font-size:18px;margin-bottom:5px;}
+.fi-disc-name{font-family:var(--fh);font-size:12px;font-weight:800;margin-bottom:3px;}
+.fi-disc-desc{font-size:10px;color:var(--t2);margin-bottom:7px;line-height:1.4;}
+.fi-disc-body{flex:1;min-width:0;}
+.fi-disc-chips{display:flex;gap:4px;flex-wrap:wrap;}
+.fi-chip-eq{background:rgba(10,124,110,.1);color:var(--teal);font-family:var(--fm);font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;}
+.fi-chip-act{background:rgba(209,69,0,.1);color:var(--acc);font-family:var(--fm);font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;}
+.fi-disc-total{font-family:var(--fm);font-size:9px;color:var(--t3);margin-top:5px;}
+.fi-disc-hero{background:linear-gradient(135deg,var(--sf),var(--sf2));border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;}
+.fi-hero-icon{font-size:26px;margin-right:12px;flex-shrink:0;}
+.fi-hero-info{flex:1;min-width:0;}
+.fi-hero-title{font-family:var(--fh);font-size:17px;font-weight:900;}
+.fi-hero-sub{font-size:11px;color:var(--t2);margin-top:2px;}
+.fi-hero-stats{display:flex;gap:12px;margin-top:6px;}
+.fi-stat{font-family:var(--fm);font-size:10px;font-weight:600;color:var(--t3);}
+.fi-back{background:none;border:1px solid var(--bd);border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--t2);font-family:var(--fb);margin-bottom:10px;display:inline-block;}
+.fi-back:hover{border-color:var(--acc);color:var(--acc);}
+.fi-filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.fi-filter-wrap{flex:1;min-width:140px;}
+.fi-filter-inp{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:11px;padding:5px 9px;outline:none;}
+.fi-filter-inp:focus{border-color:var(--acc);}
+.fi-filter-icon{font-size:12px;} .fi-filter-meta{font-family:var(--fm);font-size:10px;color:var(--t3);white-space:nowrap;}
+.fi-subg{margin-bottom:14px;}
+.fi-subg-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:4px 11px;font-size:10px;font-family:var(--fm);font-weight:600;cursor:pointer;color:var(--t2);transition:all .15s;display:inline-block;margin:2px;}
 .fi-subg-btn.active,.fi-subg-btn:hover{background:var(--acc);border-color:var(--acc);color:#fff;}
+.fi-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--bd);}
 .fi-tbl{width:100%;border-collapse:collapse;font-size:12px;}
 .fi-tbl thead tr{background:var(--sf2);}
-.fi-tbl th{padding:7px 10px;text-align:left;font-family:var(--fm);font-size:10px;
-  font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);}
-.fi-tbl td{padding:8px 10px;border-bottom:1px solid var(--sf2);vertical-align:top;}
+.fi-tbl th{padding:7px 8px;text-align:left;font-family:var(--fm);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);border-bottom:1px solid var(--bd);white-space:nowrap;}
+.fi-tbl td{padding:7px 8px;border-bottom:1px solid var(--sf2);vertical-align:middle;}
 .fi-tbl tbody tr{cursor:pointer;transition:background .1s;}
 .fi-tbl tbody tr:hover{background:rgba(10,124,110,.04);}
-.fi-tbl tbody tr.fi-row-selected{background:rgba(10,124,110,.08);}
-.fi-id-badge{font-family:var(--fm);font-size:10px;color:var(--t3);
-  background:var(--sf2);padding:2px 6px;border-radius:4px;}
-.fi-item-name{font-weight:600;color:var(--t1);font-size:12px;line-height:1.35;}
-.fi-specs-preview{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.fi-type-badge{font-family:var(--fm);font-size:10px;font-weight:700;
-  padding:2px 7px;border-radius:10px;}
-.fi-type-badge.eq{background:rgba(10,124,110,.1);color:var(--teal);}
-.fi-type-badge.act{background:rgba(209,69,0,.1);color:var(--acc);}
-.fi-detail-empty{display:flex;flex-direction:column;align-items:center;
-  justify-content:center;height:100%;padding:40px 20px;text-align:center;}
-.fi-detail-empty-icon{font-size:28px;margin-bottom:10px;opacity:.4;}
-.fi-detail{padding:18px;}
-.fi-detail-id{font-family:var(--fm);font-size:11px;color:var(--t3);margin-bottom:6px;}
-.fi-detail-name{font-family:var(--fh);font-size:16px;font-weight:800;
-  color:var(--t1);margin-bottom:4px;line-height:1.3;}
-.fi-detail-disc{font-size:11px;color:var(--t2);margin-bottom:12px;}
-.fi-detail-specs-label{font-family:var(--fm);font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:5px;}
-.fi-detail-specs{font-size:12px;color:var(--t1);line-height:1.7;
-  background:var(--sf2);border-radius:8px;padding:12px;border:1px solid var(--bd);}
-.fi-detail-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.fi-btn-add{background:var(--acc);border:none;border-radius:7px;color:#fff;
-  font-family:var(--fm);font-size:12px;font-weight:700;padding:9px 16px;
-  cursor:pointer;flex:1;}
-.fi-btn-add:hover{background:var(--adim);}
-.fi-btn-copy{background:var(--sf2);border:1px solid var(--bd);border-radius:7px;
-  color:var(--t2);font-family:var(--fm);font-size:12px;padding:9px 12px;cursor:pointer;}
-.fi-btn-copy:hover{border-color:var(--acc);color:var(--acc);}
-.fi-qty-wrap{display:flex;align-items:center;gap:8px;margin-top:10px;}
-.fi-qty-inp{width:65px;background:var(--sf2);border:1px solid var(--bd);
-  border-radius:6px;color:var(--t1);font-family:var(--fm);font-size:13px;
-  padding:6px 8px;outline:none;text-align:center;}
+.fi-tbl tbody tr.fi-selected td{background:rgba(10,124,110,.07)!important;border-left:2px solid var(--teal);}
+.fi-tbl tbody tr:last-child td{border-bottom:none;}
+.fi-id-cell{font-family:var(--fm);font-size:9px;color:var(--t3);margin-bottom:2px;}
+.fi-desc-cell{font-weight:600;font-size:11px;color:var(--t1);line-height:1.3;}
+.fi-spec-cell{font-size:10px;color:var(--t2);line-height:1.4;margin-top:1px;}
+.fi-type-badge{display:inline-block;font-family:var(--fm);font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;margin-top:2px;}
+.fi-eq{background:rgba(10,124,110,.1);color:var(--teal);}
+.fi-act{background:rgba(209,69,0,.1);color:var(--acc);}
+.fi-add-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:4px;color:var(--t2);font-size:10px;font-family:var(--fm);font-weight:600;padding:4px 8px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.fi-add-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(10,124,110,.05);}
+.fi-add-btn.added{background:rgba(10,124,110,.1);border-color:var(--teal);color:var(--teal);font-weight:700;}
+.fi-srg-hdr{display:flex;align-items:center;gap:8px;padding:10px 2px 6px;font-family:var(--fm);font-size:10px;font-weight:700;color:var(--t2);border-bottom:1px solid var(--bd);margin-bottom:4px;}
+.fi-tbl em,.fi-spec-cell em,.fi-desc-cell em,.fi-id-cell em{font-style:normal;background:rgba(209,69,0,.15);color:var(--acc);border-radius:2px;padding:0 1px;font-weight:700;}
+.fi-no-items{padding:40px;text-align:center;color:var(--t3);font-size:13px;}
+.fi-detail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:30px 20px;text-align:center;}
+.fi-detail-empty-icon{font-size:28px;margin-bottom:10px;opacity:.35;}
+.fi-detail-head{padding:14px 16px 10px;border-bottom:1px solid var(--bd);}
+.fi-detail-id{font-family:var(--fm);font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.fi-detail-title{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--t1);line-height:1.3;margin-bottom:6px;}
+.fi-detail-disc-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;font-family:var(--fm);}
+.fi-detail-body{padding:12px 14px;overflow-y:auto;flex:1;}
+.fi-d-sec{margin-bottom:14px;}
+.fi-d-sec-title{font-family:var(--fm);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px;padding-bottom:3px;border-bottom:1px solid var(--sf2);}
+.fi-spec-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.fi-spec-chip{font-size:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:3px 7px;color:var(--t1);line-height:1.4;}
+.fi-spec-chip.hl{background:rgba(209,69,0,.1);border-color:rgba(209,69,0,.3);color:var(--acc);font-weight:600;}
+.fi-std-chip{font-size:10px;font-family:var(--fm);font-weight:700;background:rgba(10,124,110,.08);border:1px solid rgba(10,124,110,.2);border-radius:4px;padding:3px 7px;color:var(--teal);}
+.fi-spec-ta{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:var(--fm);font-size:11px;padding:8px 10px;outline:none;resize:vertical;min-height:70px;line-height:1.6;box-sizing:border-box;}
+.fi-spec-ta:focus{border-color:var(--acc);}
+.fi-spec-actions{display:flex;gap:5px;margin-top:5px;}
+.fi-sbtn{padding:6px 10px;border-radius:5px;font-size:10px;font-family:var(--fm);font-weight:600;cursor:pointer;border:1px solid var(--bd);background:var(--sf2);color:var(--t2);transition:all .15s;}
+.fi-sbtn:hover{border-color:var(--acc);color:var(--acc);}
+.fi-sbtn-save{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important;}
+.fi-sbtn-save:hover{opacity:.85;}
+.fi-saved-note{font-size:10px;color:var(--teal);font-family:var(--fm);font-weight:600;margin-top:4px;display:none;}
+.fi-saved-note.show{display:block;}
+.fi-custom-badge{font-size:9px;font-family:var(--fm);font-weight:700;padding:2px 5px;border-radius:3px;vertical-align:middle;}
+.fi-qty-row{display:flex;align-items:center;gap:8px;margin-top:12px;padding:12px 0 0;border-top:1px solid var(--bd);}
+.fi-qty-inp{width:60px;background:var(--sf2);border:1px solid var(--bd);border-radius:5px;color:var(--t1);font-family:var(--fm);font-size:14px;font-weight:700;padding:5px 6px;outline:none;text-align:center;}
 .fi-qty-inp:focus{border-color:var(--acc);}
+.fi-unit-tag{font-family:var(--fm);font-size:10px;color:var(--t3);}
+.fi-add-main{flex:1;background:var(--acc);border:none;border-radius:6px;color:#fff;font-family:var(--fm);font-size:12px;font-weight:700;padding:9px 12px;cursor:pointer;transition:all .15s;}
+.fi-add-main:hover{background:var(--adim);}
+.fi-add-main.in-list{background:var(--teal);}
+.fi-in-list-note{font-family:var(--fm);font-size:10px;color:var(--teal);margin-top:5px;font-weight:600;}
+.fi-remove-btn{background:none;border:1px solid rgba(220,38,38,.3);border-radius:5px;color:#dc2626;font-size:10px;font-family:var(--fm);padding:6px 9px;cursor:pointer;}
+.fi-remove-btn:hover{background:rgba(220,38,38,.06);}
 @media(max-width:900px){.fi-right{display:none;}}
 @media(max-width:600px){.fi-disc-grid{grid-template-columns:1fr 1fr;}.fi-left{padding:12px;}}
+/* ═══════════ END FINDER CSS ═══════════ */
 </style>
 </head>
 <body>
@@ -3143,7 +3158,7 @@ function renderDiscHome() {
   // Tab-style nav below the home hero
   const TOOL_ENTRIES = [
     { icon:'📈', name:'Summary & BOQ',   sub:'BOQ export & totals',     action:"navigatePage('tools','summary')" },
-    { icon:'🔍', name:'Item Finder',     sub:'1353 spec items',          action:"navigatePage('tools','finder')" },
+    { icon:'🔍', name:'Item Finder',     sub:'1353 items with specs',    action:"navigatePage('tools','finder')" },
     { icon:'📋', name:'Indirect Costs',  sub:'Eng, PMC, contingency',    action:"navigatePage('tools','indirect')" },
     { icon:'📉', name:'Sensitivity',     sub:'Market impact sliders',    action:"navigatePage('tools','sensitivity')" },
     { icon:'⚖️', name:'Compare',         sub:'Country comparisons',      action:"navigatePage('tools','compare')" },
@@ -4385,12 +4400,16 @@ const FI_ITEMS = [{"id":"11-711-TC-001","desc":"Tablet Compression Machine","spe
 const FI_GROUPS = {"Process & Petrochemical":{"icon":"⚗️","color":"#d14500","desc":"Reactors, Heat Exchangers, Vessels, Columns, Boilers, Fired Heaters"},"Rotating Equipment":{"icon":"🔄","color":"#0a7c6e","desc":"Pumps, Compressors, Blowers, Fans, Turbines, Gearboxes, Bulk Handling"},"Piping & Valves":{"icon":"🔧","color":"#475569","desc":"Pipe Supply, Fabrication, Erection, Welding, NDT, Valves"},"Vessels & Tanks":{"icon":"🛢️","color":"#6d4fc2","desc":"Pressure Vessels, Storage Tanks, Separators, Columns, Reactors"},"Structural & Civil":{"icon":"🏗️","color":"#b07d00","desc":"Structural Steel, Platforms, Skids, Insulation, Painting"},"HVAC & Utilities":{"icon":"❄️","color":"#0891b2","desc":"HVAC, Chillers, Cooling Towers, Water Treatment, Fire Protection"},"Civil & Infrastructure":{"icon":"🏛️","color":"#92400e","desc":"Buildings, Roads, Drainage, Water Supply, Sewerage, Landscaping"},"Instrumentation":{"icon":"🎛️","color":"#7c3aed","desc":"Pressure, Temperature, Flow, Level, Analyzers, Vibration, Control Valves"},"Control Systems":{"icon":"🖥️","color":"#1d6fb5","desc":"DCS, PLC, SCADA, HMI, Networks, Commissioning & Services"},"Safety Systems":{"icon":"🛡️","color":"#dc2626","desc":"SIS/SIL3, ESD, Fire & Gas Detection, Emergency Shutdown"},"Electrical":{"icon":"⚡","color":"#d97706","desc":"Transformers, HV/LV Switchgear, MCC, VFD, Cables, Earthing, CTs, PTs, Lighting"},"Pharma & Food":{"icon":"💊","color":"#7c3aed","desc":"Pharmaceutical Equipment, Clean Rooms, Sterilizers, Packaging"},"Testing & Commissioning":{"icon":"✅","color":"#16803c","desc":"Hydrotesting, Pneumatic, Performance Testing, Pre-commissioning"},"General Site Works":{"icon":"🔨","color":"#64748b","desc":"Equipment Installation, Alignment, Grouting, Preservation, Misc Works"}};
 const FI_SUBCATS= {"Pharma & Food":{"Pharma & Food":{"icon":"💊","color":"#7c3aed","count":5}},"HVAC & Utilities":{"Fire Protection":{"icon":"🔥","color":"#dc2626","count":4},"Water & Utilities":{"icon":"💧","color":"#0284c7","count":7},"HVAC & Mech Utilities":{"icon":"❄️","color":"#0891b2","count":11},"Utility Systems":{"icon":"❄️","color":"#0891b2","count":8},"Fire & Safety":{"icon":"🔥","color":"#dc2626","count":4}},"Process & Petrochemical":{"Process & Petrochemical":{"icon":"⚗️","color":"#d14500","count":42},"Heat Exchangers":{"icon":"♨️","color":"#dc2626","count":4},"Columns & Internals":{"icon":"🗼","color":"#0284c7","count":6},"Fired Equipment":{"icon":"🔥","color":"#ea580c","count":5}},"Rotating Equipment":{"Bulk Handling":{"icon":"⚙️","color":"#059669","count":8},"Pumps & Compressors":{"icon":"🔄","color":"#0a7c6e","count":24},"Pumps & Seals":{"icon":"💧","color":"#0a7c6e","count":17},"Compressors":{"icon":"🔄","color":"#d14500","count":10},"Turbines & Drives":{"icon":"⚙️","color":"#059669","count":9},"Blowers & Fans":{"icon":"💨","color":"#0891b2","count":6}},"Testing & Commissioning":{"Testing & Commissioning":{"icon":"✅","color":"#16803c","count":6}},"Vessels & Tanks":{"Vessels & Tanks":{"icon":"🛢️","color":"#6d4fc2","count":50}},"General Site Works":{"General Site Works":{"icon":"🔨","color":"#64748b","count":227}},"Piping & Valves":{"Piping Works":{"icon":"🔧","color":"#475569","count":57},"Welding & NDT":{"icon":"⚡","color":"#b45309","count":5},"Valves":{"icon":"🔩","color":"#7c3aed","count":49}},"Structural & Civil":{"Structural & Civil":{"icon":"🏗️","color":"#b07d00","count":9},"Skid & Package Units":{"icon":"📦","color":"#475569","count":10},"Insulation & Painting":{"icon":"🎨","color":"#db2777","count":18}},"Instrumentation":{"Field Instruments":{"icon":"🎛️","color":"#7c3aed","count":102},"Cables & Cabinets":{"icon":"🔌","color":"#64748b","count":57}},"Control Systems":{"DCS & SCADA":{"icon":"🖥️","color":"#1d6fb5","count":52},"PLC Systems":{"icon":"⚡","color":"#0891b2","count":26},"Commissioning & Services":{"icon":"✅","color":"#059669","count":17}},"Safety Systems":{"Safety Instrumented Systems":{"icon":"🛡️","color":"#dc2626","count":14},"Fire & Gas / ESD":{"icon":"🔴","color":"#b91c1c","count":14}},"Electrical":{"Current & Voltage Transformers":{"icon":"⚡","color":"#b45309","count":25},"Transformers & Switchgear":{"icon":"🔆","color":"#d97706","count":5},"Cables & Wiring":{"icon":"🔌","color":"#6366f1","count":3},"Earthing & Lightning":{"icon":"⚡","color":"#059669","count":2},"Lighting & Small Power":{"icon":"💡","color":"#f59e0b","count":17},"Transformers":{"icon":"⚡","color":"#d97706","count":18},"HV Switchgear":{"icon":"⚡","color":"#b45309","count":17},"LV Switchgear & Distribution":{"icon":"⚡","color":"#b45309","count":11},"MCC & Motor Control":{"icon":"🔧","color":"#ea580c","count":11},"VFDs & Soft Starters":{"icon":"⚡","color":"#dc2626","count":9},"Distribution Boards":{"icon":"⚡","color":"#7c3aed","count":4},"UPS & DC Systems":{"icon":"🔋","color":"#1d6fb5","count":12},"Diesel Generators":{"icon":"⚙️","color":"#059669","count":3},"MV Cables":{"icon":"🔌","color":"#6366f1","count":13},"Cable Management":{"icon":"🔌","color":"#64748b","count":14},"Earthing & Lightning Protection":{"icon":"⚡","color":"#16803c","count":10},"Panel Accessories":{"icon":"⚡","color":"#94a3b8","count":3},"Junction Boxes & Field Boxes":{"icon":"📦","color":"#475569","count":3},"Local Control & Field Accessories":{"icon":"🎛️","color":"#0891b2","count":13},"Metering CTs & VTs":{"icon":"⚡","color":"#b45309","count":5},"Panel Meters & Instruments":{"icon":"📊","color":"#7c3aed","count":8},"Protection Relays":{"icon":"🛡️","color":"#dc2626","count":8},"Control Panels":{"icon":"🖥️","color":"#0a7c6e","count":10},"Electrical Commissioning & Services":{"icon":"✅","color":"#059669","count":44}},"Civil & Infrastructure":{"Earthwork & Site Preparation":{"icon":"🏗️","color":"#92400e","count":8},"Concrete & Reinforcement":{"icon":"🏗️","color":"#b45309","count":12},"Masonry Works":{"icon":"🧱","color":"#b07d00","count":6},"Plastering & Painting":{"icon":"🎨","color":"#d97706","count":19},"Flooring & Wall Cladding":{"icon":"🪟","color":"#7c3aed","count":15},"False Ceiling":{"icon":"🏠","color":"#6366f1","count":5},"Doors & Windows":{"icon":"🚪","color":"#059669","count":13},"Roofing & Waterproofing":{"icon":"🏠","color":"#1d6fb5","count":8},"Structural Steel & Platforms":{"icon":"🔩","color":"#b45309","count":14},"Roads & Pavements":{"icon":"🛣️","color":"#64748b","count":20},"Storm Water Drainage":{"icon":"💧","color":"#0891b2","count":12},"Water Supply Systems":{"icon":"💧","color":"#0284c7","count":15},"Sewerage & Treatment":{"icon":"♻️","color":"#16803c","count":10},"Landscaping & Horticulture":{"icon":"🌳","color":"#16803c","count":12},"Fencing, Gates & Security":{"icon":"🔒","color":"#475569","count":10},"Parking & Amenities":{"icon":"🅿️","color":"#6366f1","count":10},"Civil Commissioning & Services":{"icon":"✅","color":"#059669","count":13}}};
 const FI_SPEC_KEY = 'boqfinder_specs_v2';
-const FI_QL_KEY   = 'boqfinder_ql_v2';
+const FI_QL_KEY = 'boq_v6_quotelist'; // unified with main Quote List
 
 function fiGetCS(){try{return JSON.parse(localStorage.getItem(FI_SPEC_KEY)||'{}')}catch{return{}}}
 function fiSaveCS(d){localStorage.setItem(FI_SPEC_KEY,JSON.stringify(d));}
 function fiGetQL(){try{return JSON.parse(localStorage.getItem(FI_QL_KEY)||'[]')}catch{return[];}}
-function fiSaveQL(l){localStorage.setItem(FI_QL_KEY,JSON.stringify(l));}
+function fiSaveQL(l){
+  localStorage.setItem(FI_QL_KEY,JSON.stringify(l));
+  if(typeof renderQLFab==='function') renderQLFab();
+  if(typeof renderQLPanel==='function' && typeof QL_OPEN!=='undefined' && QL_OPEN) renderQLPanel();
+}
 
 let FI_VIEW='home', FI_DISC='', FI_SUBCAT='', FI_SELECTED='', FI_LOCAL='', FI_Q='';
 let fi_initialized=false;
@@ -4570,7 +4589,7 @@ function fiRunSearch(q){
     }
     if(hay.includes(ql)) score+=50;
     return{it,score};
-  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  }).filter(x=>x.score>=15).sort((a,b)=>b.score-a.score);
 
   const cnt=document.getElementById('fi-count');
   if(cnt) cnt.innerHTML=`<span>${scored.length}</span> result${scored.length!==1?'s':''}`;
@@ -4675,12 +4694,13 @@ function fiRenderDetail(id){
         </div>
       </div>
       <div class="fi-d-sec">
-        <div class="fi-d-sec-title">Add to Finder List</div>
+        <div class="fi-d-sec-title">Add to BOQ Quote List</div>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-pri" style="flex:1" onclick="fiAddToQL('${id.replace(/'/g,"\'")}')">
-            ${exist?'&#x1F504; Update':'+ Add to List'}
+          ${exist?'<div class="fi-in-list-note">✓ In your BOQ Quote List</div>':''}
+          <button class="fi-add-main ${exist?'is-added':''}" onclick="fiAddToQL('${id.replace(/'/g,"\'")}')" >
+            ${exist?'↻ Update Quantity':'➕ Add to BOQ Quote List'}
           </button>
-          ${exist?`<button class="btn btn-sec" onclick="fiRemoveQL('${id.replace(/'/g,"\'")}')">&#x2715; Remove</button>`:''}
+          ${exist?`<button class="fi-remove-btn" onclick="fiRemoveQL('${id.replace(/'/g,"\'")}')">✕ Remove from List</button>`:''}
         </div>
       </div>
     </div>`;
@@ -4718,8 +4738,13 @@ function fiQuickAdd(id,e){
   e.stopPropagation();
   const it=FI_ITEMS.find(x=>x.id===id); if(!it)return;
   const ql=fiGetQL(); const idx=ql.findIndex(r=>r.id===id);
-  if(idx>=0){ql.splice(idx,1);fiSaveQL(ql);}
-  else{ql.push({id,qty:it.qty||1,unit:it.unit||'Job'});fiSaveQL(ql);}
+  if(idx>=0){
+    ql.splice(idx,1); fiSaveQL(ql);
+    if(typeof showToast!=='undefined') showToast('✕ Removed from BOQ List');
+  } else {
+    ql.push({id,qty:parseFloat(it.qty)||1,unit:it.unit||'Job'}); fiSaveQL(ql);
+    if(typeof showToast!=='undefined') showToast('✓ Added to BOQ Quote List — see Quote List ↘');
+  }
   fiRefreshView();
   if(FI_SELECTED===id) fiRenderDetail(id);
 }
@@ -4729,11 +4754,12 @@ function fiAddToQL(id){
   const ql=fiGetQL(); const idx=ql.findIndex(r=>r.id===id);
   if(idx>=0) ql[idx].qty=qty; else ql.push({id,qty,unit:it.unit||'Job'});
   fiSaveQL(ql); fiRefreshView(); fiRenderDetail(id);
-  if(typeof showToast!=='undefined') showToast('&#x2713; Added to Finder list');
+  if(typeof showToast!=='undefined') showToast('✓ Added to BOQ Quote List — see Quote List ↘');
 }
 function fiRemoveQL(id){
   fiSaveQL(fiGetQL().filter(r=>r.id!==id));
   fiRefreshView(); fiRenderDetail(id);
+  if(typeof showToast!=='undefined') showToast('✕ Removed from BOQ Quote List');
 }
 // Hook showTool to init finder when tab is first clicked
 (function(){
