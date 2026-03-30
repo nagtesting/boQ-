@@ -970,8 +970,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   <!-- HOME: Discipline selector -->
   <div id="page-home" class="disc-landing active">
     <div class="disc-home-hero">
-      <div class="disc-home-title">Select a Discipline to Begin</div>
-      <div class="disc-home-sub">Each discipline opens as a full focused workspace. Select line items to add them to your Quote List — which builds across all disciplines and is downloadable at any time.</div>
+      <div class="disc-home-title">BOQ Capital Cost Estimator</div>
+      <div class="disc-home-sub">Two tools in one: the <strong>Cost Estimator</strong> below uses parametric sizing to calculate equipment costs (5 disciplines, power-law models). The <strong>Item Finder</strong> in Tools is a separate BOQ reference library with 1,353 fully spec'd items across 14 disciplines — use it to look up, tailor, and add items to your Quote List.</div>
     </div>
     <div class="disc-grid" id="disc-grid"><!-- populated by JS --></div>
   </div>
@@ -3158,7 +3158,7 @@ function renderDiscHome() {
   // Tab-style nav below the home hero
   const TOOL_ENTRIES = [
     { icon:'📈', name:'Summary & BOQ',   sub:'BOQ export & totals',     action:"navigatePage('tools','summary')" },
-    { icon:'🔍', name:'Item Finder',     sub:'1353 items with specs',    action:"navigatePage('tools','finder')" },
+    { icon:'🔍', name:'Item Finder',     sub:'BOQ reference: 14 disciplines, 1353 items',    action:"navigatePage('tools','finder')" },
     { icon:'📋', name:'Indirect Costs',  sub:'Eng, PMC, contingency',    action:"navigatePage('tools','indirect')" },
     { icon:'📉', name:'Sensitivity',     sub:'Market impact sliders',    action:"navigatePage('tools','sensitivity')" },
     { icon:'⚖️', name:'Compare',         sub:'Country comparisons',      action:"navigatePage('tools','compare')" },
@@ -3177,7 +3177,7 @@ function renderDiscHome() {
       <div class="disc-card-body">
         <div class="disc-card-name">${m.name}</div>
         <div class="disc-card-sub">${m.desc}</div>
-        <div class="disc-card-items">${count} equipment types · ${activeItems.length} active</div>
+        <div class="disc-card-items">📐 ${count} cost models · ${activeItems.length} active</div>
       </div>
       <div class="disc-card-cost">${total>0?sym+fmtBig(total):'—'}</div>
     </div>`;
@@ -3194,9 +3194,9 @@ function renderDiscHome() {
   ).join('');
 
   grid.innerHTML =
-    `<div class="home-section-label">Engineering Disciplines</div>` +
+    `<div class="home-section-label">⚙️ Cost Estimator — 5 Disciplines (Parametric Sizing → Cost)</div>` +
     discHtml +
-    `<div class="home-section-label" style="margin-top:8px">Tools & Analysis</div>` +
+    `<div class="home-section-label" style="margin-top:8px">📊 Tools & Analysis — including BOQ Item Finder (14 disciplines, 1353 items)</div>` +
     toolHtml;
 }
 
@@ -4449,7 +4449,12 @@ function fiClearSearch(){
 function fiRenderHome(){
   let html=`<div class="fi-home">
     <div class="fi-home-title">BOQ Line Item <span>Finder</span></div>
-    <div class="fi-home-sub">1353 equipment &amp; activity items across 14 disciplines. Click a discipline to browse or search above.</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(10,124,110,.08);
+      border:1px solid rgba(10,124,110,.2);border-radius:6px;padding:4px 10px;margin-bottom:10px;font-size:11px;color:var(--teal);font-family:var(--fm);font-weight:600">
+      🔍 Reference Library &nbsp;·&nbsp; 14 Disciplines &nbsp;·&nbsp; 1,353 Items with Specifications
+      &nbsp;·&nbsp; <span style="color:var(--t3);font-weight:400">Separate from the 5-discipline Cost Calculator</span>
+    </div>
+    <div class="fi-home-sub">📋 BOQ Reference Library — 1,353 fully spec&apos;d items across 14 engineering disciplines. Separate from the 5-discipline Cost Estimator above. Use this to find, tailor and add items to your Quote List.</div>
     <div class="fi-disc-grid">`;
   Object.entries(FI_GROUPS).forEach(([name,info])=>{
     const items=FI_ITEMS.filter(it=>it.group===name);
