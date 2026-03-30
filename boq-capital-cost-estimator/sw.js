@@ -1,7 +1,7 @@
 // sw.js — BOQ Capital Cost Estimator v5 Service Worker
 // Provides offline capability for field engineers at remote sites
 
-const CACHE_NAME  = 'boq-v5-cache-v1';
+const CACHE_NAME  = 'boq-v5-cache-v2';  // v2: fix AbortSignal DataCloneError
 const CACHE_PAGES = [
   '/boq-capital-cost-estimator/',
   '/boq-capital-cost-estimator/index.html',
@@ -40,31 +40,48 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
   // API: /api/boq — network first, cache on success
+  // NOTE: We reconstruct the request instead of clone() to avoid DataCloneError.
+  // AbortSignal (attached by the client's apiPost timeout) is NOT structured-cloneable.
+  // The SW manages its own fetch — no signal needed here.
   if (url.pathname.startsWith('/api/boq')) {
     event.respondWith(
-      fetch(event.request.clone())
-        .then(response => {
-          // Only cache successful GET requests (live data)
+      (async () => {
+        try {
+          // Reconstruct request body without AbortSignal (clone() would throw DataCloneError)
+          let safeRequest;
+          if (event.request.method === 'POST') {
+            const body = await event.request.text();
+            safeRequest = new Request(event.request.url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: body,
+            });
+          } else {
+            safeRequest = new Request(event.request.url, {
+              method: event.request.method,
+              headers: event.request.headers,
+            });
+          }
+          const response = await fetch(safeRequest);
+          // Only cache successful GET responses
           if (response.ok && event.request.method === 'GET') {
             const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request.url, clone));
           }
           return response;
-        })
-        .catch(() => {
-          // Offline: return cached API response if available
-          return caches.match(event.request).then(cached => {
-            if (cached) return cached;
-            // For POST calc requests, return a structured error so the client knows why
-            if (event.request.method === 'POST') {
-              return new Response(JSON.stringify({
-                ok: false, offline: true,
-                error: 'Offline — calculation requires API connection. Results shown use cached data only.'
-              }), { headers: { 'Content-Type': 'application/json' } });
-            }
-            return new Response('Offline', { status: 503 });
-          });
-        })
+        } catch (err) {
+          // Offline fallback — return cached response or structured error
+          const cached = await caches.match(event.request.url);
+          if (cached) return cached;
+          if (event.request.method === 'POST') {
+            return new Response(JSON.stringify({
+              ok: false, offline: true,
+              error: 'Offline — calculation requires API connection.'
+            }), { headers: { 'Content-Type': 'application/json' } });
+          }
+          return new Response('Offline', { status: 503 });
+        }
+      })()
     );
     return;
   }
